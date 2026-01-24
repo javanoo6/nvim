@@ -1,4 +1,6 @@
--- lua/plugins/formatting.lua
+-- ./lua/plugins/formatting.lua
+-- Formatting: conform.nvim configuration
+
 return {
   {
     "stevearc/conform.nvim",
@@ -17,7 +19,10 @@ return {
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
-        java = { "google-java-format" },
+        java = { "prettier" },
+        json = { "prettier" },
+        yaml = { "prettier" },
+        markdown = { "prettier" },
       },
       format_on_save = {
         timeout_ms = 500,

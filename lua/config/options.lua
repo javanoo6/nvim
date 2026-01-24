@@ -1,3 +1,5 @@
+-- ./lua/config/options.lua
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
@@ -35,3 +37,6 @@ opt.pumheight = 10
 opt.showmode = false
 opt.laststatus = 3
 opt.fillchars = { eob = " " }
+
+-- Disable lspconfig jdtls (we use nvim-jdtls)
+vim.g.lspconfig_jdtls_enabled = false

@@ -1,3 +1,5 @@
+-- ./lua/util/init.lua
+
 local M = {}
 
 -- Safe keymap set (replaces LazyVim.safe_keymap_set)

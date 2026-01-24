@@ -1,11 +1,15 @@
+-- ./lua/plugins/lsp.lua
+
+-- LSP: Language Server Protocol configuration
+-- General LSP setup (excluding Java which uses nvim-jdtls)
+
 return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      { "williamboman/mason.nvim", config = true },
+      "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
       { "j-hui/fidget.nvim", opts = {} },
       "hrsh7th/cmp-nvim-lsp",
     },
@@ -30,8 +34,6 @@ return {
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      require("mason").setup()
-
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -47,6 +49,9 @@ return {
               })
             end
           end,
+          -- Skip jdtls (handled by nvim-jdtls)
+          ["jdtls"] = function() end,
+          -- Lua specific
           ["lua_ls"] = function()
             require("lspconfig").lua_ls.setup({
               capabilities = capabilities,
@@ -61,15 +66,7 @@ return {
         },
       })
 
-      require("mason-tool-installer").setup({
-        ensure_installed = {
-          "java-debug-adapter",
-          "java-test",
-          "stylua",
-        },
-      })
-
-      -- Floating borders
+      -- Rounded borders for floating windows
       local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
       function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
         opts = opts or {}
@@ -78,6 +75,4 @@ return {
       end
     end,
   },
-
-  { "mfussenegger/nvim-jdtls", ft = "java" },
 }
