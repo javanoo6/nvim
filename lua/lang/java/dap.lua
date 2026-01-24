@@ -17,13 +17,16 @@ function M.get_bundles()
 		table.insert(bundles, debug_jar)
 	end
 
-	-- java-test (exclude runner and jacoco)
+	-- java-test (only valid extension jars)
 	local test_jars = vim.split(vim.fn.glob(mason_path .. "/share/java-test/*.jar", true), "\n")
 	for _, jar in ipairs(test_jars) do
-		if jar ~= ""
-				and not jar:match("runner%-jar%-with%-dependencies")
-				and not jar:match("jacocoagent") then
-			table.insert(bundles, jar)
+		if jar ~= "" then
+			local name = vim.fn.fnamemodify(jar, ":t")
+			-- Exclude non-bundle jars
+			if not vim.startswith(name, "com.microsoft.java.test.runner")
+					and name ~= "jacocoagent.jar" then
+				table.insert(bundles, jar)
+			end
 		end
 	end
 
