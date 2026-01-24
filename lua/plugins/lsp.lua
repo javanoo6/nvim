@@ -1,7 +1,6 @@
 -- ./lua/plugins/lsp.lua
 
 -- LSP: Language Server Protocol configuration
--- General LSP setup (excluding Java which uses nvim-jdtls)
 
 return {
   {
