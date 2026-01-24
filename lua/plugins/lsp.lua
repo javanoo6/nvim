@@ -49,8 +49,7 @@ return {
               })
             end
           end,
-          -- Skip jdtls (handled by nvim-jdtls)
-          ["jdtls"] = function() end,
+
           -- Lua specific
           ["lua_ls"] = function()
             require("lspconfig").lua_ls.setup({

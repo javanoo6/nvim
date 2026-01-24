@@ -20,7 +20,6 @@ Event.mappings["User LazyFile"] = Event.mappings.LazyFile
 require("lazy").setup({
 	spec = {
 		{ import = "plugins" },
-		{ import = "plugins.lang" },
 	},
 	defaults = {
 		lazy = false,
