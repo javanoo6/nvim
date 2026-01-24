@@ -122,5 +122,31 @@ return {
     "max397574/better-escape.nvim",
     event = "InsertEnter",
     opts = {},
+    },
+
+  -- Lazygit
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = { "LazyGit", "LazyGitConfig", "LazyGitCurrentFile", "LazyGitFilter", "LazyGitFilterCurrentFile" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    keys = {
+      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
+  },
+
+  -- Harpoon
+  {
+    "ThePrimeagen/harpoon",
+    branch = "master",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    keys = {
+      { "<leader>ha", function() require("harpoon.mark").add_file() end, desc = "Add file" },
+      { "<leader>hh", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Harpoon menu" },
+      { "<leader>h1", function() require("harpoon.ui").nav_file(1) end, desc = "File 1" },
+      { "<leader>h2", function() require("harpoon.ui").nav_file(2) end, desc = "File 2" },
+      { "<leader>h3", function() require("harpoon.ui").nav_file(3) end, desc = "File 3" },
+      { "<leader>h4", function() require("harpoon.ui").nav_file(4) end, desc = "File 4" },
+    },
+    opts = { menu = { width = 120 } },
   },
 }

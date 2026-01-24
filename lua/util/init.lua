@@ -88,7 +88,14 @@ end
 M.formatters = {}
 
 function M.format()
-  if vim.lsp.buf.format then
+  local buf = vim.api.nvim_get_current_buf()
+  local ft = vim.bo[buf].filetype
+
+  -- Try conform.nvim first if available
+  local have_conform, conform = pcall(require, "conform")
+  if have_conform then
+    conform.format({ bufnr = buf, lsp_fallback = true })
+  else
     vim.lsp.buf.format({ async = false })
   end
 end
