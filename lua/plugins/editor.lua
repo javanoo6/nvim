@@ -1,7 +1,6 @@
 -- ./lua/plugins/editor.lua
 
 -- Editor: Navigation, file explorer, git integration
-
 return {
 	-- Telescope
 	{

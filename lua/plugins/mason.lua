@@ -1,6 +1,6 @@
 -- ./lua/plugins/mason.lua
--- Mason: Package manager for LSP servers, DAP, linters, formatters
 
+-- Mason: Package manager for LSP servers, DAP, linters, formatters
 return {
   {
     "williamboman/mason.nvim",

@@ -1,6 +1,6 @@
 -- ./lua/plugins/formatting.lua
--- Formatting: conform.nvim configuration
 
+-- Formatting: conform.nvim configuration
 return {
   {
     "stevearc/conform.nvim",

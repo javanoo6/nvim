@@ -1,4 +1,5 @@
 -- ./lua/plugins/ui.lua
+
 -- UI: Visual elements - colorscheme, statusline, bufferline, notifications
 return {
 	-- Colorscheme

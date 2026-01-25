@@ -1,7 +1,6 @@
 -- ./lua/plugins/lsp.lua
 
 -- LSP: Language Server Protocol configuration
-
 return {
   {
     "neovim/nvim-lspconfig",

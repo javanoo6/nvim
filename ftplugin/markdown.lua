@@ -1,4 +1,5 @@
 -- ./ftplugin/markdown.lua
+
 -- Markdown specific settings
 vim.opt.wrap = true -- Wrap text
 vim.opt.breakindent = true -- Match indent on line break

@@ -1,6 +1,6 @@
 -- ./lua/plugins/coding.lua
--- Coding: Mini.nvim utilities for coding
 
+-- Coding: Mini.nvim utilities for coding
 return {
 	-- Auto pairs
 	{

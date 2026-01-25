@@ -1,5 +1,6 @@
--- Treesitter: Syntax highlighting and code understanding
 -- ./lua/plugins/treesitter.lua
+
+-- Treesitter: Syntax highlighting and code understanding
 return {
   {
     "nvim-treesitter/nvim-treesitter",

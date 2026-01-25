@@ -1,3 +1,5 @@
+-- ./lua/plugins/projects.lua
+
 return {
 	"coffebar/neovim-project",
 	opts = {

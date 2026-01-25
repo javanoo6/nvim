@@ -1,7 +1,6 @@
 -- ./lua/plugins/completion.lua
 
 -- Completion: nvim-cmp and snippet configuration
-
 return {
 	{
 		"hrsh7th/nvim-cmp",

@@ -1,3 +1,5 @@
+-- ./lua/plugins/nvim-java.lua
+
 return {
 	'nvim-java/nvim-java',
 	config = function()
