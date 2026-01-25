@@ -72,11 +72,15 @@ map("n", "<leader>uw", function() util.toggle("wrap") end, { desc = "Toggle wrap
 map("n", "<leader>ul", function() util.toggle("relativenumber") end, { desc = "Toggle relative line numbers" })
 map("n", "<leader>un", function() util.toggle("number") end, { desc = "Toggle line numbers" })
 
--- Diagnostic keymaps
+-- Diagnostics
 map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
-map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostic loclist" })
+map("n", "<leader>xd", vim.diagnostic.open_float, { desc = "Show diagnostic" })
+map("n", "<leader>xl", vim.diagnostic.setloclist, { desc = "Diagnostic loclist" })
+
+-- Quickfix navigation
+map("n", "[q", "<cmd>cprev<cr>", { desc = "Prev quickfix" })
+map("n", "]q", "<cmd>cnext<cr>", { desc = "Next quickfix" })
 
 -- Format
 map({ "n", "v" }, "<leader>cf", function() util.format() end, { desc = "Format" })
