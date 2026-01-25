@@ -12,7 +12,7 @@ return {
 
 			-- JDTLS configuration
 			jdtls = {
-				version = '1.43.0',
+				version = '1.54.0',
 			},
 
 			-- Extensions
@@ -23,7 +23,7 @@ return {
 
 			java_test = {
 				enable = true,
-				version = '0.40.1',
+				version = '0.43.0',
 			},
 
 			java_debug_adapter = {
