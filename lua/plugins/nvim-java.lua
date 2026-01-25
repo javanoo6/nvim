@@ -6,7 +6,7 @@ return {
 		require('java').setup({
 			-- Startup checks
 			checks = {
-				nvim_version = true,        -- Check Neovim version
+				nvim_version = true,    -- Check Neovim version
 				nvim_jdtls_conflict = true, -- Check for nvim-jdtls conflict
 			},
 
@@ -34,6 +34,10 @@ return {
 			spring_boot_tools = {
 				enable = true,
 				version = '1.55.1',
+			},
+
+			jdk = {
+				auto_install = false,
 			},
 
 			-- Logging
