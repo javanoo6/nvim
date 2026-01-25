@@ -83,12 +83,41 @@ return {
 			filesystem = {
 				follow_current_file = { enabled = true },
 				hijack_netrw_behavior = "open_current",
-				scan_mode = "deep",
-			},
-			window = {
-				mappings = {
-					["<cr>"] = "open_drop",
-					["o"] = "open_drop",
+				commands = {
+					-- Expand node and all single-child descendants
+					expand_single_children = function(state)
+						local node = state.tree:get_node()
+						if node.type ~= "directory" then return end
+
+						local fs = require("neo-tree.sources.filesystem")
+						local renderer = require("neo-tree.ui.renderer")
+
+						local function expand_node(n)
+							if n.type ~= "directory" then return end
+							if not n:is_expanded() then
+								n:expand()
+							end
+							fs.navigate(state, state.path, n:get_id(), function()
+								local children = state.tree:get_nodes(n:get_id())
+								-- Single child that's a directory -> keep expanding
+								if #children == 1 and children[1].type == "directory" then
+									expand_node(children[1])
+								end
+								renderer.redraw(state)
+							end)
+						end
+
+						expand_node(node)
+					end,
+				},
+				window = {
+					mappings = {
+						-- Override default open behavior
+						["<cr>"] = "expand_single_children",
+						["o"] = "expand_single_children",
+						-- Keep normal open for files
+						["<2-LeftMouse>"] = "open",
+					},
 				},
 			},
 		},
