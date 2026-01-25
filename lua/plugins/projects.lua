@@ -9,7 +9,10 @@ return {
 		},
 		picker = {
 			type = "telescope",       -- one of "telescope", "fzf-lua", or "snacks"
-		}
+		},
+		session_manager_opts = {
+			autoload_mode = "Disabled",
+		},
 	},
 	init = function()
 		-- enable saving the state of plugins in the session
