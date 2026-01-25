@@ -83,6 +83,13 @@ return {
 			filesystem = {
 				follow_current_file = { enabled = true },
 				hijack_netrw_behavior = "open_current",
+				scan_mode = "deep",
+			},
+			window = {
+				mappings = {
+					["<cr>"] = "open_drop",
+					["o"] = "open_drop",
+				},
 			},
 		},
 	},
