@@ -78,3 +78,25 @@ map("n", "<leader>un", function() util.toggle("number") end, { desc = "Line numb
 
 -- Code
 map({ "n", "v" }, "<leader>cf", function() util.format() end, { desc = "Format" })
+
+-- Treesitter re-attach
+map("n", "<leader>xh", function()
+  vim.cmd("TSBufDisable highlight")
+  vim.cmd("TSBufEnable highlight")
+  vim.notify("Treesitter rehighlighted")
+end, { desc = "Rehighlight buffer" })
+
+map("n", "<leader>xc", function()
+  local cache_dirs = {
+    vim.fn.expand("~/.cache/jdtls"),
+    vim.fn.expand("~/.cache/nvim/jdtls"),
+    vim.fn.expand("~/.cache/nvim/jdtls-workspace"),
+  }
+  for _, dir in ipairs(cache_dirs) do
+    if vim.fn.isdirectory(dir) == 1 then
+      vim.fn.delete(dir, "rf")
+      vim.notify("Deleted: " .. dir)
+    end
+  end
+  vim.notify("JDTLS cache cleared. Restart Neovim.", vim.log.levels.WARN)
+end, { desc = "Clear JDTLS cache" })
