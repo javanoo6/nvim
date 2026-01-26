@@ -83,7 +83,7 @@ map("n", "<leader>ci", function()
         context = { only = { "source.organizeImports" } },
         apply = true,
     })
-end, vim.tbl_extend("force", opts, { desc = "Organize imports" }))
+end, { desc = "Organize imports" })
 map("n", "<leader>cp", function()
     vim.lsp.buf.code_action({
         filter = function(action)
@@ -91,7 +91,10 @@ map("n", "<leader>cp", function()
         end,
         apply = true,
     })
-end, vim.tbl_extend("force", opts, { desc = "Fix package declaration" }))
+end, { desc = "Fix package declaration" })
+
+-- Replaicng
+map("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word under cursor" })
 
 
 -- Treesitter re-attach
