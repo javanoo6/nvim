@@ -78,6 +78,13 @@ map("n", "<leader>un", function() util.toggle("number") end, { desc = "Line numb
 
 -- Code
 map({ "n", "v" }, "<leader>cf", function() util.format() end, { desc = "Format" })
+map("n", "<leader>ci", function()
+    vim.lsp.buf.code_action({
+        context = { only = { "source.organizeImports" } },
+        apply = true,
+    })
+end, vim.tbl_extend("force", opts, { desc = "Organize imports" }))
+
 
 -- Treesitter re-attach
 map("n", "<leader>xh", function()
