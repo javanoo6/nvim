@@ -114,9 +114,7 @@ return {
 					mappings = {
 						-- Override default open behavior
 						["<cr>"] = "expand_single_children",
-						["o"] = "expand_single_children",
-						-- Keep normal open for files
-						["<2-LeftMouse>"] = "open",
+						["o"] = "open",
 					},
 				},
 			},
