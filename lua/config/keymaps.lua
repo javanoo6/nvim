@@ -84,6 +84,14 @@ map("n", "<leader>ci", function()
         apply = true,
     })
 end, vim.tbl_extend("force", opts, { desc = "Organize imports" }))
+map("n", "<leader>cp", function()
+    vim.lsp.buf.code_action({
+        filter = function(action)
+            return action.title:match("package")
+        end,
+        apply = true,
+    })
+end, vim.tbl_extend("force", opts, { desc = "Fix package declaration" }))
 
 
 -- Treesitter re-attach
