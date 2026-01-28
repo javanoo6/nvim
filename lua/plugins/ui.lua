@@ -1,26 +1,7 @@
 -- ./lua/plugins/ui.lua
 
--- UI: Visual elements - colorscheme, statusline, bufferline, notifications
+-- UI: Visual elements - statusline, bufferline, notifications
 return {
-	-- Colorscheme
-	{
-		"folke/tokyonight.nvim",
-		lazy = false,
-		priority = 1000,
-		opts = {
-			style = "night",
-			transparent = false,
-			styles = {
-				sidebars = "dark",
-				floats = "dark",
-			},
-		},
-		config = function(_, opts)
-			require("tokyonight").setup(opts)
-			vim.cmd.colorscheme("tokyonight")
-		end,
-	},
-
 	-- Icons
 	{ "nvim-tree/nvim-web-devicons", lazy = true },
 
@@ -45,7 +26,7 @@ return {
 				{ "<leader>j",     group = "java" },
 				{ "<leader>q",     group = "quit/session" },
 				{ "<leader>s",     group = "search" },
-				{ "<leader>t",     group = "test" },
+				{ "<leader>t",     group = "test/theme" },
 				{ "<leader>u",     group = "ui" },
 				{ "<leader>w",     group = "windows" },
 				{ "<leader>x",     group = "diagnostics/quickfix" },
