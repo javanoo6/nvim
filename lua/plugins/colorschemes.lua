@@ -64,15 +64,75 @@ return {
 		priority = 1000,
 	},
 
-	-- Nyoom (this includes the color scheme)
+	-- Nordic
 	{
-		"nyoom-engineering/nyoom.nvim",
+		"AlexvZyl/nordic.nvim",
 		lazy = true,
 		priority = 1000,
-		config = function()
-			-- Nyoom needs special loading
-			vim.cmd("colorscheme nyoom")
-		end,
+		opts = {
+			cursorline = {
+				bold = false,
+				bold_number = true,
+				theme = "dark",
+				blend = 0.85,
+			},
+			noice = {
+				style = "classic",
+			},
+			telescope = {
+				style = "flat",
+			},
+			leap = {
+				dim_backdrop = false,
+			},
+			ts_context = {
+				dark_background = true,
+			},
+			transparent = {
+				bg = false,
+				float = false,
+			},
+			swap_backgrounds = false,
+			on_palette = function(palette) end,
+			on_highlight = function(highlights, palette) end,
+		},
+	},
+
+	-- Vague
+	{
+		"vague-theme/vague.nvim",
+		lazy = true,
+		priority = 1000,
+		opts = {},
+	},
+
+	-- OneNord
+	{
+		"rmehri01/onenord.nvim",
+		lazy = true,
+		priority = 1000,
+		opts = {},
+	},
+
+	-- Evergarden
+	{
+		"everviolet/nvim",
+		name = "evergarden",
+		lazy = true,
+		priority = 1000,
+		opts = {},
+	},
+
+	-- Poimandres
+	{
+		"olivercederborg/poimandres.nvim",
+		lazy = true,
+		priority = 1000,
+		opts = {
+			disable_background = false,
+			disable_float_background = false,
+			disable_italics = false,
+		},
 	},
 
 	-- Color scheme switcher
@@ -81,40 +141,19 @@ return {
 		event = "VeryLazy",
 		opts = {
 			themes = {
-				{
-					name = "TokyoNight Night",
-					colorscheme = "tokyonight-night",
-				},
-				{
-					name = "TokyoNight Storm",
-					colorscheme = "tokyonight-storm",
-				},
-				{
-					name = "Kanagawa Wave",
-					colorscheme = "kanagawa-wave",
-				},
-				{
-					name = "Kanagawa Dragon",
-					colorscheme = "kanagawa-dragon",
-				},
-				{
-					name = "Kanagawa Lotus",
-					colorscheme = "kanagawa-lotus",
-				},
-				{
-					name = "JB",
-					colorscheme = "jb",
-				},
-				{
-					name = "Oxocarbon",
-					colorscheme = "oxocarbon",
-				},
-				{
-					name = "Nyoom",
-					colorscheme = "nyoom",
-				},
+				{ name = "TokyoNight Night", colorscheme = "tokyonight-night" },
+				{ name = "TokyoNight Storm", colorscheme = "tokyonight-storm" },
+				{ name = "Kanagawa Wave",    colorscheme = "kanagawa-wave",   before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]] },
+				{ name = "Kanagawa Dragon",  colorscheme = "kanagawa-dragon", before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]] },
+				{ name = "Kanagawa Lotus",   colorscheme = "kanagawa-lotus",  before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]] },
+				{ name = "JB",               colorscheme = "jb",              before = [[require("lazy").load({ plugins = { "jb.nvim" } })]] },
+				{ name = "Oxocarbon",        colorscheme = "oxocarbon",       before = [[require("lazy").load({ plugins = { "oxocarbon.nvim" } })]] },
+				{ name = "Nordic",           colorscheme = "nordic",          before = [[require("lazy").load({ plugins = { "nordic.nvim" } })]] },
+				{ name = "Vague",            colorscheme = "vague",           before = [[require("lazy").load({ plugins = { "vague.nvim" } })]] },
+				{ name = "OneNord",          colorscheme = "onenord",         before = [[require("lazy").load({ plugins = { "onenord.nvim" } })]] },
+				{ name = "Evergarden",       colorscheme = "evergarden",      before = [[require("lazy").load({ plugins = { "evergarden" } })]] },
+				{ name = "Poimandres",       colorscheme = "poimandres",      before = [[require("lazy").load({ plugins = { "poimandres.nvim" } })]] },
 			},
-			livePreview = true,
 		},
 		keys = {
 			{ "<leader>tc", "<cmd>Themery<cr>", desc = "Color schemes" },
