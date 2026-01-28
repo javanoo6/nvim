@@ -50,6 +50,7 @@ return {
 		config = function(_, opts)
 			require("telescope").setup(opts)
 			require("util").picker = require("telescope.builtin")
+			require("telescope").load_extension("yank_history")
 		end,
 	},
 

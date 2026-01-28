@@ -53,4 +53,24 @@ return {
 			}
 		end,
 	},
+
+	-- Auto pairs
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		dependencies = "hrsh7th/nvim-cmp",
+		config = function()
+			local npairs = require("nvim-autopairs")
+			npairs.setup({
+				check_ts = true,
+				ts_config = {
+					lua = { "string", "source" },
+					java = { "string" },
+				},
+			})
+			-- Integrate with cmp
+			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+			require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
+		end,
+	},
 }

@@ -75,6 +75,7 @@ map("n", "<leader>us", function() util.toggle("spell") end, { desc = "Spelling" 
 map("n", "<leader>uw", function() util.toggle("wrap") end, { desc = "Wrap" })
 map("n", "<leader>ul", function() util.toggle("relativenumber") end, { desc = "Relative numbers" })
 map("n", "<leader>un", function() util.toggle("number") end, { desc = "Line numbers" })
+map("n", "<leader>uf", function() util.toggle("foldenable") end, { desc = "Fold" })
 
 -- Code
 map({ "n", "v" }, "<leader>cf", function() util.format() end, { desc = "Format" })
@@ -118,3 +119,26 @@ map("n", "<leader>xc", function()
   end
   vim.notify("JDTLS cache cleared. Restart Neovim.", vim.log.levels.WARN)
 end, { desc = "Clear JDTLS cache" })
+
+-- Keep cursor centered when scrolling/jumping
+map("n", "<C-d>", "<C-d>zz", { desc = "Scroll down and center" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
+map("n", "n", "nzzzv", { desc = "Next match and center" })
+map("n", "N", "Nzzzv", { desc = "Prev match and center" })
+
+-- Better join (keep cursor position)
+map("n", "J", "mzJ`z", { desc = "Join lines keep cursor" })
+
+-- Quick macro recording
+map("n", "Q", "qq", { desc = "Record macro to q" })
+map("n", "q", "@q", { desc = "Play macro q" })
+
+-- Resize with Alt + arrows
+map("n", "<M-Up>", "<cmd>resize +2<cr>", { desc = "Increase height" })
+map("n", "<M-Down>", "<cmd>resize -2<cr>", { desc = "Decrease height" })
+map("n", "<M-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease width" })
+map("n", "<M-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase width" })
+
+-- Marks navigation
+map("n", "]'", "`]", { desc = "Next mark" })
+map("n", "['", "`[", { desc = "Prev mark" })
