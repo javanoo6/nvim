@@ -80,18 +80,18 @@ map("n", "<leader>uf", function() util.toggle("foldenable") end, { desc = "Fold"
 -- Code
 map({ "n", "v" }, "<leader>cf", function() util.format() end, { desc = "Format" })
 map("n", "<leader>ci", function()
-    vim.lsp.buf.code_action({
-        context = { only = { "source.organizeImports" } },
-        apply = true,
-    })
+	vim.lsp.buf.code_action({
+		context = { only = { "source.organizeImports" } },
+		apply = true,
+	})
 end, { desc = "Organize imports" })
 map("n", "<leader>cp", function()
-    vim.lsp.buf.code_action({
-        filter = function(action)
-            return action.title:match("package")
-        end,
-        apply = true,
-    })
+	vim.lsp.buf.code_action({
+		filter = function(action)
+			return action.title:match("package")
+		end,
+		apply = true,
+	})
 end, { desc = "Fix package declaration" })
 
 -- Replaicng
@@ -100,24 +100,24 @@ map("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], {
 
 -- Treesitter re-attach
 map("n", "<leader>xh", function()
-  vim.cmd("TSBufDisable highlight")
-  vim.cmd("TSBufEnable highlight")
-  vim.notify("Treesitter rehighlighted")
+	vim.cmd("TSBufDisable highlight")
+	vim.cmd("TSBufEnable highlight")
+	vim.notify("Treesitter rehighlighted")
 end, { desc = "Rehighlight buffer" })
 
 map("n", "<leader>xc", function()
-  local cache_dirs = {
-    vim.fn.expand("~/.cache/jdtls"),
-    vim.fn.expand("~/.cache/nvim/jdtls"),
-    vim.fn.expand("~/.cache/nvim/jdtls-workspace"),
-  }
-  for _, dir in ipairs(cache_dirs) do
-    if vim.fn.isdirectory(dir) == 1 then
-      vim.fn.delete(dir, "rf")
-      vim.notify("Deleted: " .. dir)
-    end
-  end
-  vim.notify("JDTLS cache cleared. Restart Neovim.", vim.log.levels.WARN)
+	local cache_dirs = {
+		vim.fn.expand("~/.cache/jdtls"),
+		vim.fn.expand("~/.cache/nvim/jdtls"),
+		vim.fn.expand("~/.cache/nvim/jdtls-workspace"),
+	}
+	for _, dir in ipairs(cache_dirs) do
+		if vim.fn.isdirectory(dir) == 1 then
+			vim.fn.delete(dir, "rf")
+			vim.notify("Deleted: " .. dir)
+		end
+	end
+	vim.notify("JDTLS cache cleared. Restart Neovim.", vim.log.levels.WARN)
 end, { desc = "Clear JDTLS cache" })
 
 -- Keep cursor centered when scrolling/jumping

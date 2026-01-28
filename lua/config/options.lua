@@ -42,14 +42,14 @@ opt.fillchars = { eob = " " }
 vim.g.lspconfig_jdtls_enabled = false
 
 -- Better search
-opt.inccommand = "split"      -- Preview substitutions live
-opt.virtualedit = "block"     -- Allow cursor in virtual space in visual block mode
-opt.smoothscroll = true       -- Smooth scrolling (Neovim 0.10+)
+opt.inccommand = "split"  -- Preview substitutions live
+opt.virtualedit = "block" -- Allow cursor in virtual space in visual block mode
+opt.smoothscroll = true   -- Smooth scrolling (Neovim 0.10+)
 
 -- Disable folding - always show unfolded code
 opt.foldenable = false
 
 -- Better completion experience
 opt.completeopt = "menu,menuone,noselect,preview"
-opt.pumblend = 10             -- Slight transparency for popup menu
-opt.winblend = 10             -- Slight transparency for floating windows
+opt.pumblend = 10 -- Slight transparency for popup menu
+opt.winblend = 10 -- Slight transparency for floating windows
