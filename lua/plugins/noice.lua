@@ -15,6 +15,9 @@ return {
 				["vim.lsp.util.stylize_markdown"] = true,
 				["cmp.entry.get_documentation"] = true,
 			},
+			-- Disable hover/signature help to avoid inlay hint conflicts
+			hover = { enabled = false },
+			signature = { enabled = false },
 		},
 		presets = {
 			bottom_search = true,
