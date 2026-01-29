@@ -32,6 +32,7 @@ return {
 			indent = { enable = true },
 			incremental_selection = {
 				enable = true,
+				-- THIS WORKS ONLY IN V MODE
 				keymaps = {
 					init_selection = "<A-o>",
 					node_incremental = "<A-o>",
