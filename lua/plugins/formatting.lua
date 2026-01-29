@@ -17,16 +17,17 @@ return {
 			},
 		},
 		opts = {
-			formatters = {
+--[[			formatters = {
 				prettier_java = {
 					command = "prettier",
 					args = { "--stdin-filepath", "$FILENAME", "--plugin", "prettier-plugin-java" },
 					stdin = true,
 				},
-			},
+			},]]
 			formatters_by_ft = {
 				lua = { "stylua" },
-				java = { "prettier_java" },
+				go = { "gofmt" },
+				python = { "black" },
 				json = { "prettier" },
 				yaml = { "prettier" },
 				markdown = { "prettier" },

@@ -50,6 +50,7 @@ return {
 				show_location = false,
 			},
 		})
-		vim.lsp.enable('jdtls')
+		-- nvim-java handles jdtls internally - do NOT enable manually
+		-- vim.lsp.enable('jdtls') causes duplicate LSP clients
 	end,
 }

@@ -43,6 +43,8 @@ return {
 					"bashls",
 					"jsonls",
 					"yamlls",
+					"gopls",
+					"pyright",
 				},
 				handlers = {
 					function(server_name)
