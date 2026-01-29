@@ -2,10 +2,14 @@
 
 return {
 	"coffebar/neovim-project",
+	event = "VimEnter",
 	opts = {
 		projects = { -- define project roots
 			"~/.config/*",
 			"~/Desktop/*",
+			"~/projects/*",
+			"~/go/src/*",
+			"~/workspace/*",
 		},
 		picker = {
 			type = "telescope", -- one of "telescope", "fzf-lua", or "snacks"

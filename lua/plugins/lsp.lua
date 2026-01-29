@@ -33,6 +33,12 @@ return {
 					map("n", "gK", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
 					map("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
 					map("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
+
+					-- Enable inlay hints if supported
+					local client = vim.lsp.get_client_by_id(event.data.client_id)
+					if client and client.server_capabilities.inlayHintProvider then
+						vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+					end
 				end,
 			})
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -77,6 +83,14 @@ return {
 				opts.border = "rounded"
 				return orig_util_open_floating_preview(contents, syntax, opts, ...)
 			end
+
+			-- Java keymaps (using <leader>j group defined in which-key)
+			local map = require("util").map
+			map("n", "<leader>jr", "<cmd>JavaRunnerRunMain<cr>", { desc = "Run Main" })
+			map("n", "<leader>jc", "<cmd>JavaRunnerStopMain<cr>", { desc = "Stop Main" })
+			map("n", "<leader>jt", "<cmd>JavaTestRunCurrentClass<cr>", { desc = "Test Current Class" })
+			map("n", "<leader>jm", "<cmd>JavaTestRunCurrentMethod<cr>", { desc = "Test Current Method" })
+			map("n", "<leader>jv", "<cmd>JavaTestViewLastReport<cr>", { desc = "View Test Report" })
 		end,
 	},
 }

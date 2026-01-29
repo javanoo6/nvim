@@ -16,6 +16,8 @@ return {
         "bash-language-server",
         "json-lsp",
         "yaml-language-server",
+        "black",
+        "golangci-lint",
       },
     },
   },

@@ -12,6 +12,21 @@ return {
 		opts = {
 			preset = "modern",
 			plugins = { spelling = true },
+			win = {
+				border = "rounded",
+				padding = { 1, 2 },
+				no_overlap = true,
+			},
+			layout = {
+				width = { min = 30, max = 50 },
+				height = { min = 4, max = 25 },
+				spacing = 1,
+				align = "right",
+			},
+			sort = { "local", "order", "group", "alphanum" },
+			filter = function(mapping)
+				return true
+			end,
 		},
 		config = function(_, opts)
 			local wk = require("which-key")
@@ -35,6 +50,8 @@ return {
 				{ "]",             group = "next" },
 				{ "g",             group = "goto" },
 				{ "z",             group = "fold" },
+				-- Override <leader>cs from aerial to not conflict with Trouble
+				{ "<leader>co",    group = "outline" },
 			})
 		end,
 	},

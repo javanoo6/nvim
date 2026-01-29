@@ -31,9 +31,7 @@ map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate buffer" })
 
--- Quickfix/Loclist
-map("n", "[q", "<cmd>cprev<cr>", { desc = "Prev quickfix" })
-map("n", "]q", "<cmd>cnext<cr>", { desc = "Next quickfix" })
+-- Loclist navigation (quickfix is handled by trouble.nvim)
 map("n", "[l", "<cmd>lprev<cr>", { desc = "Prev loclist" })
 map("n", "]l", "<cmd>lnext<cr>", { desc = "Next loclist" })
 
