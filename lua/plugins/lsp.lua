@@ -22,10 +22,8 @@ return {
 					-- Glance
 					map("n", "gd", "<cmd>Glance definitions<cr>", vim.tbl_extend("force", opts, { desc = "Goto Definitions" }))
 					map("n", "gr", "<cmd>Glance references<cr>", vim.tbl_extend("force", opts, { desc = "Goto References" }))
-					map("n", "gy", "<cmd>Glance type_definitions<cr>",
-						vim.tbl_extend("force", opts, { desc = "Goto Type Definitions" }))
-					map("n", "gI", "<cmd>Glance implementations<cr>",
-						vim.tbl_extend("force", opts, { desc = "Goto Implementations" }))
+					map("n", "gy", "<cmd>Glance type_definitions<cr>", vim.tbl_extend("force", opts, { desc = "Goto Type Definitions" }))
+					map("n", "gI", "<cmd>Glance implementations<cr>", vim.tbl_extend("force", opts, { desc = "Goto Implementations" }))
 
 					-- Native LSP
 					map("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Goto declaration" }))

@@ -181,6 +181,7 @@ return {
 		},
 		opts = {
 			timeout = 3000,
+			background_colour = "#1a1b26", -- tokyonight bg color
 			max_height = function()
 				return math.floor(vim.o.lines * 0.75)
 			end,
