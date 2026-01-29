@@ -2,13 +2,6 @@
 
 -- Coding: Mini.nvim utilities for coding
 return {
-	-- Auto pairs
-	{
-		"echasnovski/mini.pairs",
-		event = "VeryLazy",
-		opts = {},
-	},
-
 	-- Comments
 	{
 		"echasnovski/mini.comment",
