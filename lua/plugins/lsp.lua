@@ -34,10 +34,12 @@ return {
 					map("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
 					map("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
 
-					-- Enable inlay hints if supported
+					-- Enable inlay hints if supported (with error handling for noice conflicts)
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.server_capabilities.inlayHintProvider then
-						vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+						vim.defer_fn(function()
+							pcall(vim.lsp.inlay_hint.enable, true, { bufnr = event.buf })
+						end, 100)
 					end
 				end,
 			})
