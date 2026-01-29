@@ -9,7 +9,7 @@ return {
 			local lint = require("lint")
 
 			lint.linters_by_ft = {
-				java = { "checkstyle" },
+				--java = { "checkstyle" },
 				go = { "golangcilint" },
 				python = { "ruff" },
 			}
