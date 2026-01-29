@@ -26,6 +26,7 @@ return {
 			{ "<leader>fr",      "<cmd>Telescope oldfiles<cr>",              desc = "Recent files" },
 			{ "<leader>fh",      "<cmd>Telescope help_tags<cr>",             desc = "Help" },
 			{ "<leader>:",       "<cmd>Telescope command_history<cr>",       desc = "Command history" },
+			{ "<leader>r",       "<cmd>Telescope registers<cr>",             desc = "Registers (paste history)" },
 			{ "<leader>ss",      "<cmd>Telescope lsp_document_symbols<cr>",  desc = "Document symbols" },
 			{ "<leader>sS",      "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
 		},
@@ -50,7 +51,6 @@ return {
 		config = function(_, opts)
 			require("telescope").setup(opts)
 			require("util").picker = require("telescope.builtin")
-			require("telescope").load_extension("yank_history")
 		end,
 	},
 
