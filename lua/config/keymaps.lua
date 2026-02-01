@@ -17,6 +17,15 @@ map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease height" })
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease width" })
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase width" })
 
+-- Terminal mode
+map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+-- Terminal window navigation (without leaving terminal mode)
+map("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Go to left window" })
+map("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Go to lower window" })
+map("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Go to upper window" })
+map("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Go to right window" })
+
 -- Move lines
 map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
 map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
@@ -140,3 +149,9 @@ map("n", "<M-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase width" }
 -- Marks navigation
 map("n", "]'", "`]", { desc = "Next mark" })
 map("n", "['", "`[", { desc = "Prev mark" })
+
+-- Run Go program
+map("n", "<leader>gr", "<cmd>term go run .<cr>", { desc = "Go run (current dir)" })
+map("n", "<leader>gR", "<cmd>term go run %<cr>", { desc = "Go run (current file)" })
+map("n", "<leader>gb", "<cmd>term go build .<cr>", { desc = "Go build" })
+map("n", "<leader>gt", "<cmd>term go test ./...<cr>", { desc = "Go test all" })

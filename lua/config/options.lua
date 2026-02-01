@@ -2,6 +2,7 @@
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
+vim.opt.termguicolors = true
 
 local opt = vim.opt
 

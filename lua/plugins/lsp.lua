@@ -61,6 +61,48 @@ return {
 						end
 					end,
 
+					-- Go specific
+					["gopls"] = function()
+						require("lspconfig").gopls.setup({
+							capabilities = capabilities,
+							cmd = { "gopls" },
+							filetypes = { "go", "gomod", "gowork", "gotmpl" },
+							root_dir = require("lspconfig/util").root_pattern("go.work", "go.mod", ".git"),
+							settings = {
+								gopls = {
+									-- Auto-complete unimported packages
+									completeUnimported = true,
+									-- Use placeholders in function signatures
+									usePlaceholders = true,
+									-- Analyses
+									analyses = {
+										unusedparams = true,
+										shadow = true,
+									},
+									staticcheck = true,
+									gofumpt = true,
+									-- Inlay hints
+									hints = {
+										assignVariableTypes = true,
+										compositeLiteralFields = true,
+										compositeLiteralTypes = true,
+										constantValues = true,
+										functionTypeParameters = true,
+										parameterNames = true,
+										rangeVariableTypes = true,
+									},
+									ui = {
+										annotation = {
+											bounds = true,
+											escape = true,
+											inline = true,
+										},
+									},
+								},
+							},
+						})
+					end,
+
 					-- Lua specific
 					["lua_ls"] = function()
 						require("lspconfig").lua_ls.setup({

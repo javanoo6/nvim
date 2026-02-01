@@ -31,6 +31,9 @@ return {
 			{ "<leader>ds", function() require("dap").session() end, desc = "Session" },
 			{ "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
 			{ "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
+			-- Go specific
+			{ "<leader>dgt", function() require("dap-go").debug_test() end, desc = "Debug Go Test" },
+			{ "<leader>dgl", function() require("dap-go").debug_last() end, desc = "Debug Last Go Test" },
 		},
 		config = function()
 			local dap = require("dap")

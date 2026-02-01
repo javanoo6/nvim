@@ -24,9 +24,20 @@ return {
 					stdin = true,
 				},
 			},]]
+			formatters = {
+				["goimports-reviser"] = {
+					command = "goimports-reviser",
+					args = { "-output", "stdout", "$FILENAME" },
+					stdin = false,
+				},
+				golines = {
+					command = "golines",
+					args = { "--max-len", "120", "--base-formatter", "gofumpt" },
+				},
+			},
 			formatters_by_ft = {
 				lua = { "stylua" },
-				go = { "gofmt" },
+				go = { "gofumpt", "goimports-reviser", "golines" },
 				python = { "black" },
 				json = { "prettier" },
 				yaml = { "prettier" },
