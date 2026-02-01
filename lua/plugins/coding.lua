@@ -6,7 +6,14 @@ return {
 	{
 		"echasnovski/mini.comment",
 		event = "VeryLazy",
-		opts = {},
+		opts = {
+			mappings = {
+				comment = 'gc',                  -- Toggle comment (operator)
+				comment_line = 'gcc',            -- Toggle comment on current line
+				comment_visual = 'gc',           -- Toggle comment on selection
+				textobject = 'gc',               -- Textobject for comments
+			},
+		},
 	},
 
 	-- Surround
