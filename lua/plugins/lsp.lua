@@ -32,17 +32,14 @@ return {
 					map("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
 					map("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
 
-					-- Enable inlay hints if supported (with error handling for noice conflicts)
+					-- Enable inlay hints if supported
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.server_capabilities.inlayHintProvider then
 						vim.defer_fn(function()
-							local ok, _ = pcall(vim.lsp.inlay_hint.enable, true, { bufnr = event.buf })
-							if not ok then
-								-- Silently ignore inlay hint errors (known Neovim bug)
-							end
+							vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
 						end, 100)
 					end
-					
+
 					-- Toggle inlay hints keymap
 					map("n", "<leader>uh", function()
 						local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
