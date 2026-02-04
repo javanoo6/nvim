@@ -36,6 +36,20 @@ return {
 				defaults = {
 					prompt_prefix = " ",
 					selection_caret = " ",
+					-- Ignore binary and generated files
+					file_ignore_patterns = {
+						"%.git/",
+						"%.DS_Store$",
+						"node_modules/",
+						"%.jpg$", "%.jpeg$", "%.png$", "%.gif$", "%.webp$",
+						"%.ico$", "%.svg$", "%.mp4$", "%.webm$", "%.avi$",
+						"%.mov$", "%.pdf$", "%.zip$", "%.tar$", "%.gz$",
+						"%.exe$", "%.dll$", "%.so$", "%.dylib$", "%.bin$",
+						"%.class$", "%.jar$", "%.war$", "%.ear$",
+						"%.o$", "%.obj$", "%.a$", "%.lib$", "%.pyc$",
+						"__pycache__/", "%.min.js$", "%.min.css$",
+						"dist/", "build/", "target/", "%.lock$",
+					},
 					mappings = {
 						i = {
 							["<C-j>"] = actions.move_selection_next,
