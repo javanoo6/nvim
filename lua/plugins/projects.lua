@@ -1,32 +1,33 @@
 -- ./lua/plugins/projects.lua
 
 return {
-	"coffebar/neovim-project",
-	event = "VimEnter",
-	opts = {
-		projects = { -- define project roots
-			"~/.config/*",
-			"~/Desktop/*",
-			"~/projects/*",
-			"~/go/src/*",
-			"~/workspace/*",
+	-- Project management with Telescope integration
+	{
+		"ahmedkhalf/project.nvim",
+		event = "VimEnter",
+		opts = {
+			-- Manual mode - don't auto-add projects, use patterns below
+			manual_mode = false,
+			-- Detection methods: "lsp" (lsp root), "pattern" (git/etc markers)
+			detection_methods = { "pattern", "lsp" },
+			-- Patterns that indicate a project root
+			patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "go.mod", "pom.xml" },
+			-- Show hidden files in project root
+			show_hidden = false,
+			-- Silent mode
+			silent_chdir = true,
+			-- Don't change directory automatically
+			scope_chdir = "global",
+			-- Path to store project history
+			datapath = vim.fn.stdpath("data"),
 		},
-		picker = {
-			type = "telescope", -- one of "telescope", "fzf-lua", or "snacks"
-		},
-		session_manager_opts = {
-			autoload_mode = "Disabled",
+		config = function(_, opts)
+			require("project_nvim").setup(opts)
+			-- Load the Telescope extension
+			require("telescope").load_extension("projects")
+		end,
+		dependencies = {
+			"nvim-telescope/telescope.nvim",
 		},
 	},
-	init = function()
-		-- enable saving the state of plugins in the session
-		vim.opt.sessionoptions:append("globals") -- save global variables that start with an uppercase letter and contain at least one lowercase letter.
-	end,
-	dependencies = {
-		{ "nvim-lua/plenary.nvim" },
-		{ "nvim-telescope/telescope.nvim" },
-		{ "Shatur/neovim-session-manager" },
-	},
-	lazy = false,
-	priority = 100,
 }

@@ -59,6 +59,9 @@ map("v", ">", ">gv")
 -- Files
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New file" })
 
+-- Projects
+map("n", "<leader>fp", "<cmd>Telescope projects<cr>", { desc = "Projects" })
+
 -- Quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
 
