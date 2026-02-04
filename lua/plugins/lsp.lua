@@ -36,9 +36,18 @@ return {
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.server_capabilities.inlayHintProvider then
 						vim.defer_fn(function()
-							pcall(vim.lsp.inlay_hint.enable, true, { bufnr = event.buf })
+							local ok, _ = pcall(vim.lsp.inlay_hint.enable, true, { bufnr = event.buf })
+							if not ok then
+								-- Silently ignore inlay hint errors (known Neovim bug)
+							end
 						end, 100)
 					end
+					
+					-- Toggle inlay hints keymap
+					map("n", "<leader>uh", function()
+						local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
+						vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
+					end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
 				end,
 			})
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()

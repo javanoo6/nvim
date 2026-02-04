@@ -74,3 +74,27 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.spell = true
   end,
 })
+
+-- Suppress inlay hint errors (known Neovim bug with decoration provider)
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = augroup("inlay_hint_fix"),
+  callback = function(args)
+    local bufnr = args.buf
+    -- Disable inlay hints on buffer changes to prevent "Invalid 'col'" errors
+    vim.api.nvim_create_autocmd({ "BufWritePost", "TextChanged", "InsertLeave" }, {
+      group = augroup("inlay_hint_refresh_" .. bufnr),
+      buffer = bufnr,
+      callback = function()
+        -- Small delay to let LSP update before refreshing hints
+        vim.defer_fn(function()
+          pcall(function()
+            if vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }) then
+              vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+              vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+            end
+          end)
+        end, 50)
+      end,
+    })
+  end,
+})
