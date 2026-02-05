@@ -34,6 +34,10 @@ map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
 map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
+-- IntelliJ-style: Move selected code with Shift+Ctrl+Up/Down
+map("v", "<C-S-Up>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
+map("v", "<C-S-Down>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
+
 -- Buffers
 map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
@@ -89,6 +93,12 @@ map("n", "<leader>uf", function() util.toggle("foldenable") end, { desc = "Fold"
 
 -- Code
 map({ "n", "v" }, "<leader>cf", function() util.format() end, { desc = "Format" })
+
+-- Go to definition in vertical split (right)
+map("n", "<leader>gd", function()
+  vim.cmd("vsplit")
+  vim.lsp.buf.definition()
+end, { desc = "Goto definition in vsplit" })
 map("n", "<leader>ci", function()
 	vim.lsp.buf.code_action({
 		context = { only = { "source.organizeImports" } },
