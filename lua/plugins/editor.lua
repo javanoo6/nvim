@@ -77,6 +77,24 @@ return {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
 			"MunifTanjim/nui.nvim",
+			-- Window picker for choosing which window to open files in
+			{
+				"s1n7ax/nvim-window-picker",
+				version = "2.*",
+				config = function()
+					require("window-picker").setup({
+						filter_rules = {
+							include_current_win = false,
+							autoselect_one = true,
+							-- Filter out floating windows and neo-tree
+							bo = {
+								filetype = { "neo-tree", "neo-tree-popup", "notify" },
+								buftype = { "terminal", "quickfix" },
+							},
+						},
+					})
+				end,
+			},
 		},
 		keys = {
 			{
@@ -124,13 +142,49 @@ return {
 
 						expand_node(node)
 					end,
+					-- Open with window picker
+					open_with_window_picker = function(state)
+						local node = state.tree:get_node()
+						local path = node:get_id()
+						local open = require("neo-tree.utils").open_file
+
+						-- Use window picker to select window
+						local ok, window_picker = pcall(require, "window-picker")
+						if not ok then
+							-- Fallback to default open if window-picker not available
+							open(state, path)
+							return
+						end
+
+						local picked_window_id = window_picker.pick_window({
+							include_current_win = false,
+						}) or vim.api.nvim_get_current_win()
+
+						-- Set the picked window as current and open file there
+						vim.api.nvim_set_current_win(picked_window_id)
+						open(state, path)
+					end,
 				},
 				window = {
 					mappings = {
 						-- Override default open behavior
 						["<cr>"] = "expand_single_children",
 						["o"] = "open",
+						["s"] = "open_with_window_picker",  -- Open with window picker
+						["<C-v>"] = "open_vsplit",
+						["<C-x>"] = "open_split",
+						["<C-t>"] = "open_tabnew",
 					},
+				},
+			},
+			open_files_do_not_replace_types = { "terminal", "trouble", "qf" },
+			event_handlers = {
+				{
+					event = "file_opened",
+					handler = function(file_path)
+						-- Optional: auto close neo-tree when file opened
+						-- require("neo-tree.command").execute({ action = "close" })
+					end,
 				},
 			},
 		},
@@ -189,6 +243,18 @@ return {
 		keys = {
 			{ "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
 		},
+		config = function()
+			-- Disable <esc> exiting terminal mode in lazygit
+			-- so <esc> works properly in lazygit UI
+			vim.api.nvim_create_autocmd("TermOpen", {
+				pattern = "*lazygit*",
+				callback = function()
+					vim.keymap.set("t", "<esc>", "<esc>", { buffer = true, remap = false })
+					-- Use <C-q> to exit terminal mode instead
+					vim.keymap.set("t", "<C-q>", "<C-\\><C-n>", { buffer = true, desc = "Exit terminal mode" })
+				end,
+			})
+		end,
 	},
 
 	-- Harpoon

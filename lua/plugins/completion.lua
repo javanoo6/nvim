@@ -104,6 +104,7 @@ return {
 			})
 
 			-- Command line completion
+			-- Keymaps: <Tab>/<S-Tab> - navigate, <C-y> - confirm (don't execute), <C-e> - cancel
 			cmp.setup.cmdline({ "/", "?" }, {
 				mapping = cmp.mapping.preset.cmdline(),
 				sources = { { name = "buffer" } },

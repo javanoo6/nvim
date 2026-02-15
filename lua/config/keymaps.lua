@@ -1,4 +1,16 @@
 -- ./lua/config/keymaps.lua
+--
+-- NOTE: Command Line (Cmdline) Completion Keymaps (nvim-cmp):
+--   <Tab> / <S-Tab>  - Navigate next/previous completion item
+--   <C-y>            - Confirm selection (stay in cmdline, DON'T execute)
+--   <C-e>            - Cancel completion
+--   <CR>             - Confirm and execute immediately
+--   Use <C-y> instead of <CR> when you want to chain completions without executing
+--
+-- NOTE: LazyGit Keymaps:
+--   <leader>gg     - Open LazyGit
+--   <esc> (in LG)  - Back/Cancel in lazygit UI
+--   <C-q> (in LG)  - Exit terminal mode (back to nvim)
 
 local util = require("util")
 local map = util.map
@@ -43,6 +55,8 @@ map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate buffer" })
+map("n", "<leader>b-", "<cmd>new<cr>", { desc = "New buffer below" })
+map("n", "<leader>b|", "<cmd>vnew<cr>", { desc = "New buffer right" })
 
 -- Loclist navigation (quickfix is handled by trouble.nvim)
 map("n", "[l", "<cmd>lprev<cr>", { desc = "Prev loclist" })

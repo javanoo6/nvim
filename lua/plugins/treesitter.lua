@@ -38,10 +38,10 @@ return {
 				enable = true,
 				-- THIS WORKS ONLY IN V MODE
 				keymaps = {
-					init_selection = "<A-o>",
-					node_incremental = "<A-o>",
-					scope_incremental = "<A-O>",
-					node_decremental = "<A-i>",
+					init_selection = "<cr>", -- Start selection
+					node_incremental = "<tab>", -- Move to parent node
+					scope_incremental = "<S-tab>", -- Move to next scope
+					node_decremental = "<bs>", -- Back to previous node
 				},
 			},
 		},
