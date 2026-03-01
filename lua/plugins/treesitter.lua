@@ -59,32 +59,12 @@ return {
 					select = {
 						enable = true,
 						lookahead = true,
-						keymaps = {
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = "@class.inner",
-							["aa"] = "@parameter.outer",
-							["ia"] = "@parameter.inner",
-							["al"] = "@loop.outer",
-							["il"] = "@loop.inner",
-							["ai"] = "@conditional.outer",
-							["ii"] = "@conditional.inner",
-						},
+						-- Keymaps are defined in lua/config/keymaps.lua for Which-key visibility
 					},
 					move = {
 						enable = true,
 						set_jumps = true,
-						goto_next_start = {
-							["]f"] = "@function.outer",
-							["]c"] = "@class.outer",
-							["]a"] = "@parameter.inner",
-						},
-						goto_previous_start = {
-							["[f"] = "@function.outer",
-							["[c"] = "@class.outer",
-							["[a"] = "@parameter.inner",
-						},
+						-- Keymaps are defined in lua/config/keymaps.lua for Which-key visibility
 					},
 				},
 			})

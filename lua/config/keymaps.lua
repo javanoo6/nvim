@@ -182,3 +182,50 @@ map("n", "<leader>gr", "<cmd>term go run .<cr>", { desc = "Go run (current dir)"
 map("n", "<leader>gR", "<cmd>term go run %<cr>", { desc = "Go run (current file)" })
 map("n", "<leader>gb", "<cmd>term go build .<cr>", { desc = "Go build" })
 map("n", "<leader>gt", "<cmd>term go test ./...<cr>", { desc = "Go test all" })
+
+-- Split line at cursor (like reverse of J), stay in normal mode
+-- ga: text right of cursor goes to line above
+-- gA: text right of cursor goes to line below
+map("n", "ga", function()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local left = line:sub(1, col)
+  local right = line:sub(col + 1)
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
+  vim.api.nvim_win_set_cursor(0, { lnum, 0 })
+end, { desc = "Split line up (text right of cursor goes up)" })
+
+map("n", "gA", function()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local left = line:sub(1, col)
+  local right = line:sub(col + 1)
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
+  vim.api.nvim_win_set_cursor(0, { lnum + 1, 0 })
+end, { desc = "Split line down (text right of cursor goes down)" })
+
+-- Treesitter Text Objects (visual and operator-pending modes)
+-- These require nvim-treesitter-textobjects plugin
+-- Select mappings
+map({ "x", "o" }, "af", function() require("nvim-treesitter.textobjects.select").select_textobject("@function.outer") end, { desc = "Select outer function" })
+map({ "x", "o" }, "if", function() require("nvim-treesitter.textobjects.select").select_textobject("@function.inner") end, { desc = "Select inner function" })
+map({ "x", "o" }, "ac", function() require("nvim-treesitter.textobjects.select").select_textobject("@class.outer") end, { desc = "Select outer class" })
+map({ "x", "o" }, "ic", function() require("nvim-treesitter.textobjects.select").select_textobject("@class.inner") end, { desc = "Select inner class" })
+map({ "x", "o" }, "aa", function() require("nvim-treesitter.textobjects.select").select_textobject("@parameter.outer") end, { desc = "Select outer parameter" })
+map({ "x", "o" }, "ia", function() require("nvim-treesitter.textobjects.select").select_textobject("@parameter.inner") end, { desc = "Select inner parameter" })
+map({ "x", "o" }, "al", function() require("nvim-treesitter.textobjects.select").select_textobject("@loop.outer") end, { desc = "Select outer loop" })
+map({ "x", "o" }, "il", function() require("nvim-treesitter.textobjects.select").select_textobject("@loop.inner") end, { desc = "Select inner loop" })
+map({ "x", "o" }, "ai", function() require("nvim-treesitter.textobjects.select").select_textobject("@conditional.outer") end, { desc = "Select outer conditional" })
+map({ "x", "o" }, "ii", function() require("nvim-treesitter.textobjects.select").select_textobject("@conditional.inner") end, { desc = "Select inner conditional" })
+
+-- Move to next text object
+map({ "n", "x", "o" }, "]f", function() require("nvim-treesitter.textobjects.move").goto_next_start("@function.outer") end, { desc = "Next function start" })
+map({ "n", "x", "o" }, "]c", function() require("nvim-treesitter.textobjects.move").goto_next_start("@class.outer") end, { desc = "Next class start" })
+map({ "n", "x", "o" }, "]a", function() require("nvim-treesitter.textobjects.move").goto_next_start("@parameter.inner") end, { desc = "Next parameter start" })
+
+-- Move to previous text object
+map({ "n", "x", "o" }, "[f", function() require("nvim-treesitter.textobjects.move").goto_previous_start("@function.outer") end, { desc = "Previous function start" })
+map({ "n", "x", "o" }, "[c", function() require("nvim-treesitter.textobjects.move").goto_previous_start("@class.outer") end, { desc = "Previous class start" })
+map({ "n", "x", "o" }, "[a", function() require("nvim-treesitter.textobjects.move").goto_previous_start("@parameter.inner") end, { desc = "Previous parameter start" })
