@@ -49,14 +49,14 @@ M.root_patterns = { ".git", "lua" }
 
 function M.get_root()
   local path = vim.api.nvim_buf_get_name(0)
-  path = path ~= "" and vim.loop.fs_realpath(path) or nil
+  path = path ~= "" and vim.uv.fs_realpath(path) or nil
 
   if not path then
-    return vim.loop.cwd()
+    return vim.uv.cwd()
   end
 
   local root = vim.fs.find(M.root_patterns, { path = path, upward = true })[1]
-  return root and vim.fs.dirname(root) or vim.loop.cwd()
+  return root and vim.fs.dirname(root) or vim.uv.cwd()
 end
 
 -- Picker abstraction (telescope/fzf) - simplified

@@ -63,8 +63,8 @@ map("n", "[l", "<cmd>lprev<cr>", { desc = "Prev loclist" })
 map("n", "]l", "<cmd>lnext<cr>", { desc = "Next loclist" })
 
 -- Diagnostics
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, { desc = "Prev diagnostic" })
+map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "Next diagnostic" })
 map("n", "<leader>xd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 map("n", "<leader>xl", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 

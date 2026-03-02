@@ -2,7 +2,6 @@
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
-vim.opt.termguicolors = true
 
 local opt = vim.opt
 
@@ -33,7 +32,6 @@ opt.undofile = true
 opt.backup = false
 opt.writebackup = false
 opt.swapfile = false
-opt.completeopt = "menu,menuone,noselect"
 opt.pumheight = 10
 opt.showmode = false
 opt.laststatus = 3

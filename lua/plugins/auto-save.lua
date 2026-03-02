@@ -30,7 +30,7 @@ return {
       if #diagnostics > 0 then
         -- Throttle notification
         local last_notify = vim.b[buf].last_autosave_notify or 0
-        local now = vim.loop.now()
+        local now = vim.uv.now()
         if (now - last_notify) > 5000 then -- Max once per 5 seconds
           vim.notify(
             "Auto-save blocked: " .. #diagnostics .. " LSP error(s)",
@@ -64,7 +64,7 @@ return {
       callback = function(args)
         if args.data.saved_buffer then
           local buf = args.data.saved_buffer
-          local has_lsp = #vim.lsp.get_active_clients({ bufnr = buf }) > 0
+          local has_lsp = #vim.lsp.get_clients({ bufnr = buf }) > 0
           if has_lsp then
             vim.lsp.buf.format({
               bufnr = buf,
