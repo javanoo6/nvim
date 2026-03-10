@@ -9,21 +9,22 @@ nvim setup reference guide.
 1. [Vim Basics](#vim-basics)
 2. [Movement & Navigation](#movement--navigation)
 3. [Editing & Text Objects](#editing--text-objects)
-4. [Search & Replace](#search--replace)
-5. [Window Management](#window-management)
-6. [Buffer Management](#buffer-management)
-7. [File Explorer](#file-explorer)
-8. [LSP & Code Navigation](#lsp--code-navigation)
-9. [Debugging](#debugging)
-10. [Testing](#testing)
-11. [Git Integration](#git-integration)
-12. [UI & Toggles](#ui--toggles)
-13. [Telescope (Fuzzy Finder)](#telescope-fuzzy-finder)
-14. [Harpoon (Quick File Switching)](#harpoon-quick-file-switching)
-15. [Marks](#marks)
-16. [Terminal Mode](#terminal-mode)
-17. [Go Development](#go-development)
-18. [Miscellaneous](#miscellaneous)
+4. [Commenting](#commenting)
+5. [Search & Replace](#search--replace)
+6. [Window Management](#window-management)
+7. [Buffer Management](#buffer-management)
+8. [File Explorer](#file-explorer)
+9. [LSP & Code Navigation](#lsp--code-navigation)
+10. [Debugging](#debugging)
+11. [Testing](#testing)
+12. [Git Integration](#git-integration)
+13. [UI & Toggles](#ui--toggles)
+14. [Telescope (Fuzzy Finder)](#telescope-fuzzy-finder)
+15. [Harpoon (Quick File Switching)](#harpoon-quick-file-switching)
+16. [Marks](#marks)
+17. [Terminal Mode](#terminal-mode)
+18. [Go Development](#go-development)
+19. [Miscellaneous](#miscellaneous)
 
 ---
 
@@ -257,6 +258,23 @@ Select text first, then press `gsa` + bracket/quote:
 
 ---
 
+## Commenting
+
+| Key   | Action                                 |
+|-------|----------------------------------------|
+| `gcc` | Toggle comment on current line         |
+| `gc`  | Toggle comment (operator, e.g. `gcip`) |
+| `gc`  | Toggle comment on visual selection     |
+
+**Examples:**
+
+- `gcc` - Comment/uncomment current line
+- `gcip` - Comment/uncomment inner paragraph
+- `V5jgc` - Select 5 lines down, then comment all
+- `gc` (in visual) - Comment/uncomment selection
+
+---
+
 ## Search & Replace
 
 ### Search
@@ -282,6 +300,7 @@ Select text first, then press `gsa` + bracket/quote:
 | `:%s/old/new/g`  | Replace all in file                     |
 | `:%s/old/new/gc` | Replace all with confirmation           |
 | `<leader>rw`     | Replace word under cursor (interactive) |
+| `<leader>rw`     | Replace word in visual selection        |
 
 ---
 
