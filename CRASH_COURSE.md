@@ -572,17 +572,52 @@ When typing commands with `:` and autocomplete menu appears:
 | `<leader>gg` | Open LazyGit |
 
 **Inside LazyGit window:**
-| Key | Action |
-|-----|--------|
-| `<esc>` | Back / Cancel (works now!) |
-| `q` | Quit lazygit |
+
+| Key     | Action                            |
+|---------|-----------------------------------|
+| `<esc>` | Back / Cancel                     |
+| `q`     | Quit lazygit                      |
 | `<C-q>` | Exit terminal mode (back to nvim) |
 
-### Merge Conflict Resolution
+### Diffview
 
-When lazygit shows conflicted files, press `e` to open the file in nvim.
+| Key          | Action                   |
+|--------------|--------------------------|
+| `<leader>gD` | Repo diff (DiffviewOpen) |
+| `<leader>gF` | File history             |
+| `<leader>gH` | Repo history             |
+| `<leader>gL` | Line history (normal)    |
+| `<leader>gL` | Range history (visual)   |
+| `<leader>gm` | Diff vs main/master      |
+| `<leader>gM` | Diff vs origin/main      |
 
-**Conflict marker anatomy:**
+**Inside Diffview:**
+
+| Key          | Action                   |
+|--------------|--------------------------|
+| `q`          | Close panel / quit       |
+| `<tab>`      | Next changed file        |
+| `<S-tab>`    | Prev changed file        |
+| `[x` / `]x`  | Prev / Next conflict     |
+| `<leader>co` | Choose ours (conflict)   |
+| `<leader>ct` | Choose theirs (conflict) |
+| `<leader>cb` | Choose base (conflict)   |
+| `<leader>ca` | Choose all (conflict)    |
+| `dx`         | Delete conflict region   |
+
+### Merge Conflict Resolution (with Diffview)
+
+1. In lazygit — conflicts show as `AA` in Files panel
+2. Press `e` on conflicted file → opens in nvim
+3. Run `:DiffviewOpen` → 3-way merge view opens
+4. Use `[x` / `]x` to navigate between conflicts
+5. Use `<leader>co/ct/cb` to pick ours/theirs/base, or edit manually
+6. Save with `<C-s>`, then `:DiffviewClose`
+7. Back in lazygit — stage the file (`<space>`) → commit (`c`)
+
+**Manual resolution (without Diffview):**
+
+Conflict marker anatomy:
 
 ```
 <<<<<<< HEAD
@@ -592,46 +627,30 @@ their changes (incoming branch)
 >>>>>>> feature-branch
 ```
 
-**Navigate between conflicts:**
-
-| Key       | Action                       |
-|-----------|------------------------------|
-| `/<<<`    | Jump to next conflict marker |
-| `n` / `N` | Next / Prev match            |
-
-**Resolve a conflict (place cursor anywhere inside it):**
-
 | Goal            | What to do                                                           |
 |-----------------|----------------------------------------------------------------------|
 | Keep **ours**   | Delete the `=======` → `>>>>>>> ...` block + the `<<<<<<< HEAD` line |
 | Keep **theirs** | Delete the `<<<<<<< HEAD` → `=======` block + the `>>>>>>> ...` line |
 | Keep **both**   | Delete only the three marker lines (`<<<<<<<`, `=======`, `>>>>>>>`) |
 
-**Practical workflow:**
-
-1. In lazygit — conflicts show as `AA` (both modified) in the Files panel
-2. Press `e` on a conflicted file → opens in nvim
-3. Search `/<<<` to find each conflict, resolve manually, repeat
-4. Save with `<C-s>` and close the buffer
-5. Back in lazygit — stage the file (`<space>`) → conflict is marked resolved
-6. Continue with commit (`c`) when all conflicts are resolved
-
-**Tip:** Use `:%s/<<<<<<< HEAD\n.*\n=======\n//g` carefully for bulk keep-theirs — but manual is safer.
-
 ### Gitsigns (in-buffer)
 
 | Key           | Action            |
 |---------------|-------------------|
-| `]h`          | Next hunk         |
-| `[h`          | Prev hunk         |
+| `]h` / `[h`   | Next / Prev hunk  |
 | `<leader>ghs` | Stage hunk        |
 | `<leader>ghr` | Reset hunk        |
 | `<leader>ghS` | Stage buffer      |
-| `<leader>ghu` | Undo stage hunk   |
 | `<leader>ghR` | Reset buffer      |
+| `<leader>ghu` | Undo stage hunk   |
 | `<leader>ghp` | Preview hunk      |
 | `<leader>ghb` | Blame line (full) |
+| `<leader>ghB` | Toggle blame      |
 | `<leader>ghd` | Diff this         |
+| `<leader>ghw` | Toggle word diff  |
+| `<leader>ghl` | Toggle line hl    |
+| `<leader>ghv` | Toggle deleted    |
+| `ih`          | Text object: hunk |
 
 ---
 

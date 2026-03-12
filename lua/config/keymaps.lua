@@ -11,6 +11,24 @@
 --   <leader>gg     - Open LazyGit
 --   <esc> (in LG)  - Back/Cancel in lazygit UI
 --   <C-q> (in LG)  - Exit terminal mode (back to nvim)
+--
+-- NOTE: Diffview Keymaps:
+--   <leader>gD     - Repo diff (DiffviewOpen)
+--   <leader>gF     - File history
+--   <leader>gH     - Repo history
+--   <leader>gL     - Line/range history
+--   <leader>gm     - Diff vs main/master
+--   <leader>gM     - Diff vs origin/main
+--
+-- NOTE: Gitsigns Keymaps (buffer-local, defined in plugins/git.lua):
+--   ]h / [h          - Next/prev hunk
+--   <leader>ghs/ghr  - Stage/reset hunk
+--   <leader>ghS/ghR  - Stage/reset buffer
+--   <leader>ghu      - Undo stage hunk
+--   <leader>ghp      - Preview hunk
+--   <leader>ghb/ghB  - Blame line / toggle blame
+--   <leader>ghd      - Diff this
+--   <leader>ghw/ghl/ghv - Toggles: word diff / line hl / deleted
 
 local util = require("util")
 local map = util.map
@@ -177,6 +195,20 @@ map("n", "<M-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase width" }
 -- Marks navigation
 map("n", "]'", "`]", { desc = "Next mark" })
 map("n", "['", "`[", { desc = "Prev mark" })
+
+-- Diffview
+local function default_branch()
+	local res = vim.system({ "git", "rev-parse", "--verify", "main" }, { capture_output = true }):wait()
+	return res.code == 0 and "main" or "master"
+end
+
+map("n", "<leader>gD", "<cmd>DiffviewOpen<cr>",                          { desc = "Repo diff" })
+map("n", "<leader>gF", "<cmd>DiffviewFileHistory --follow %<cr>",        { desc = "File history" })
+map("n", "<leader>gH", "<cmd>DiffviewFileHistory<cr>",                   { desc = "Repo history" })
+map("n", "<leader>gL", "<Cmd>.DiffviewFileHistory --follow<CR>",         { desc = "Line history" })
+map("v", "<leader>gL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>",{ desc = "Range history" })
+map("n", "<leader>gm", function() vim.cmd("DiffviewOpen " .. default_branch()) end,              { desc = "Diff vs main/master" })
+map("n", "<leader>gM", function() vim.cmd("DiffviewOpen HEAD..origin/" .. default_branch()) end, { desc = "Diff vs origin/main" })
 
 -- Run Go program
 map("n", "<leader>gr", "<cmd>term go run .<cr>", { desc = "Go run (current dir)" })
