@@ -9,9 +9,7 @@ return {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
 		},
-		build = function()
-			vim.cmd.GoInstallDeps()
-		end,
+		build = ":GoInstallDeps",
 		config = function(_, opts)
 			require("gopher").setup(opts)
 		end,
