@@ -51,4 +51,4 @@ opt.foldenable = false
 -- Better completion experience
 opt.completeopt = "menu,menuone,noselect,preview"
 opt.pumblend = 10 -- Slight transparency for popup menu
-opt.winblend = 10 -- Slight transparency for floating windows
+opt.winblend = 0

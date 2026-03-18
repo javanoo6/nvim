@@ -25,6 +25,20 @@ return {
 			{ "<leader>fb",      "<cmd>Telescope buffers<cr>",               desc = "Buffers" },
 			{ "<leader>fr",      "<cmd>Telescope oldfiles<cr>",              desc = "Recent files" },
 			{ "<leader>fh",      "<cmd>Telescope help_tags<cr>",             desc = "Help" },
+		{
+			"<leader>fe",
+			function()
+				vim.ui.input({ prompt = "Extension: " }, function(ext)
+					if ext and ext ~= "" then
+						require("telescope.builtin").live_grep({
+							glob_pattern = "*." .. ext,
+							prompt_title = "Grep in *." .. ext,
+						})
+					end
+				end)
+			end,
+			desc = "Grep by extension",
+		},
 			{ "<leader>:",       "<cmd>Telescope command_history<cr>",       desc = "Command history" },
 			{ "<leader>r",       "<cmd>Telescope registers<cr>",             desc = "Registers (paste history)" },
 			{ "<leader>ss",      "<cmd>Telescope lsp_document_symbols<cr>",  desc = "Document symbols" },
@@ -32,10 +46,18 @@ return {
 		},
 		opts = function()
 			local actions = require("telescope.actions")
+			local previewable_extensions = {
+				java = true, go = true, py = true, lua = true, ts = true,
+				js = true, tsx = true, jsx = true, rs = true, c = true,
+				cpp = true, h = true, hpp = true, sh = true, bash = true,
+				zsh = true, yaml = true, yml = true, json = true, toml = true,
+				md = true, sql = true, html = true, css = true, xml = true,
+				kt = true, swift = true, rb = true, php = true, cs = true,
+			}
 			return {
 				defaults = {
 					prompt_prefix = " ",
-					selection_caret = " ",
+					selection_caret = "  ",
 					-- Ignore binary and generated files
 					file_ignore_patterns = {
 						"%.git/",
@@ -50,6 +72,15 @@ return {
 						"__pycache__/", "%.min.js$", "%.min.css$",
 						"dist/", "build/", "target/", "%.lock$",
 					},
+					preview = {
+						filetype_hook = function(filepath, bufnr, opts)
+							local ext = filepath:match("%.([^%.]+)$")
+							if ext and previewable_extensions[ext] then
+								return true
+							end
+							return false
+						end,
+					},
 					mappings = {
 						i = {
 							["<C-j>"] = actions.move_selection_next,
@@ -57,6 +88,8 @@ return {
 							["<C-n>"] = actions.cycle_history_next,
 							["<C-p>"] = actions.cycle_history_prev,
 							["<esc>"] = actions.close,
+							["<C-d>"] = actions.preview_scrolling_down,
+							["<C-u>"] = actions.preview_scrolling_up,
 						},
 					},
 				},
