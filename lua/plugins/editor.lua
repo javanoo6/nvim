@@ -2,6 +2,18 @@
 
 -- Editor: Navigation, file explorer, git integration
 return {
+	-- LSP-aware file operations (rename file → update imports)
+	{
+		"antosha417/nvim-lsp-file-operations",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-neo-tree/neo-tree.nvim",
+		},
+		config = function()
+			require("lsp-file-operations").setup()
+		end,
+	},
+
 	-- Telescope
 	{
 		"nvim-telescope/telescope.nvim",
@@ -114,7 +126,6 @@ return {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
 			"MunifTanjim/nui.nvim",
-			"antosha417/nvim-lsp-file-operations",
 			-- Window picker for choosing which window to open files in
 			{
 				"s1n7ax/nvim-window-picker",

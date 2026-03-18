@@ -10,7 +10,7 @@ return {
 			"williamboman/mason-lspconfig.nvim",
 			{ "j-hui/fidget.nvim", opts = {} },
 			"hrsh7th/cmp-nvim-lsp",
-			{ "antosha417/nvim-lsp-file-operations", config = true },
+			"antosha417/nvim-lsp-file-operations",
 		},
 		config = function()
 			local map = require("util").map
@@ -48,7 +48,11 @@ return {
 					end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
 				end,
 			})
-			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			local capabilities = vim.tbl_deep_extend(
+			"force",
+			require("cmp_nvim_lsp").default_capabilities(),
+			require("lsp-file-operations").default_capabilities()
+		)
 
 			require("mason-lspconfig").setup({
 				ensure_installed = {
