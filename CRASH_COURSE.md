@@ -435,6 +435,8 @@ When typing commands with `:` and autocomplete menu appears:
 | `<leader>sS`      | Workspace symbols           |
 | `<leader>r`       | Yank history (Yanky)        |
 | `<leader>st`      | Search TODOs                |
+| `<leader>fe`      | Grep by file extension      |
+| `<leader>fR`      | Resume last search          |
 
 ### Inside Telescope
 
@@ -442,11 +444,14 @@ When typing commands with `:` and autocomplete menu appears:
 |-------------------|----------------------------|
 | `<C-j>` / `<C-k>` | Next / Previous            |
 | `<C-n>` / `<C-p>` | Next / Previous in history |
+| `<C-d>` / `<C-u>` | Scroll preview down / up   |
 | `<CR>`            | Open                       |
 | `<C-x>`           | Open in horizontal split   |
 | `<C-v>`           | Open in vertical split     |
 | `<C-t>`           | Open in tab                |
 | `<Esc>`           | Close                      |
+
+**Tip:** `<leader>fe` prompts for an extension (e.g. `java`, `go`, `py`) then opens live grep scoped to `*.{ext}` files only.
 
 ---
 

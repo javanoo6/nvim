@@ -25,6 +25,7 @@ return {
 			{ "<leader>fb",      "<cmd>Telescope buffers<cr>",               desc = "Buffers" },
 			{ "<leader>fr",      "<cmd>Telescope oldfiles<cr>",              desc = "Recent files" },
 			{ "<leader>fh",      "<cmd>Telescope help_tags<cr>",             desc = "Help" },
+		{ "<leader>fR",      "<cmd>Telescope resume<cr>",                desc = "Resume last search" },
 		{
 			"<leader>fe",
 			function()
@@ -56,6 +57,7 @@ return {
 			}
 			return {
 				defaults = {
+					scroll_strategy = "limit",
 					prompt_prefix = " ",
 					selection_caret = "  ",
 					-- Ignore binary and generated files
@@ -90,6 +92,8 @@ return {
 							["<esc>"] = actions.close,
 							["<C-d>"] = actions.preview_scrolling_down,
 							["<C-u>"] = actions.preview_scrolling_up,
+							["<Home>"] = actions.move_to_top,
+							["<End>"]  = actions.move_to_bottom,
 						},
 					},
 				},
