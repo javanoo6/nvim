@@ -10,6 +10,7 @@ return {
 			"williamboman/mason-lspconfig.nvim",
 			{ "j-hui/fidget.nvim", opts = {} },
 			"hrsh7th/cmp-nvim-lsp",
+			{ "antosha417/nvim-lsp-file-operations", config = true },
 		},
 		config = function()
 			local map = require("util").map

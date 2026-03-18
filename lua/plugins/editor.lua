@@ -114,6 +114,7 @@ return {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
 			"MunifTanjim/nui.nvim",
+			"antosha417/nvim-lsp-file-operations",
 			-- Window picker for choosing which window to open files in
 			{
 				"s1n7ax/nvim-window-picker",
