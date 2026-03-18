@@ -54,6 +54,22 @@ return {
 		end,
 	},
 
+	-- Yank history
+	{
+		"gbprod/yanky.nvim",
+		event = "VeryLazy",
+		opts = {
+			ring = { history_length = 50 },
+		},
+		keys = {
+			{ "p",          "<Plug>(YankyPutAfter)",       mode = { "n", "x" }, desc = "Put after" },
+			{ "P",          "<Plug>(YankyPutBefore)",      mode = { "n", "x" }, desc = "Put before" },
+			{ "<C-p>",      "<Plug>(YankyCycleForward)",                        desc = "Cycle yank forward" },
+			{ "<C-n>",      "<Plug>(YankyCycleBackward)",                       desc = "Cycle yank backward" },
+			{ "<leader>r",  "<cmd>YankyRingHistory<cr>",                        desc = "Yank history" },
+		},
+	},
+
 	-- Auto pairs
 	{
 		"windwp/nvim-autopairs",

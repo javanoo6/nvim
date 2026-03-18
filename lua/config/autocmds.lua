@@ -76,15 +76,18 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Set up illuminate highlight colors
+local function set_illuminate_hl()
+  local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
+  local hl_bg = bg and (bg + 0x101010) or nil
+  vim.api.nvim_set_hl(0, "IlluminatedWordText",  { bg = hl_bg, underline = false })
+  vim.api.nvim_set_hl(0, "IlluminatedWordRead",  { bg = hl_bg, underline = false })
+  vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = hl_bg, underline = false, bold = true })
+end
+
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = augroup("illuminate_colors"),
-  callback = function()
-    -- Highlight for word under cursor (subtle background)
-    vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = "#3b4261", underline = false })
-    -- Highlight for read references
-    vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = "#3b4261", underline = false })
-    -- Highlight for write references
-    vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = "#3b4261", underline = false, bold = true })
-  end,
+  callback = function() vim.schedule(set_illuminate_hl) end,
 })
+
+vim.schedule(set_illuminate_hl)
 

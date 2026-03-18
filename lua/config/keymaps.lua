@@ -1,5 +1,11 @@
 -- ./lua/config/keymaps.lua
 --
+-- NOTE: Yanky (Yank History) Keymaps:
+--   p / P        - Paste after/before (yanky-aware)
+--   <C-p>        - Cycle yank history forward (after paste)
+--   <C-n>        - Cycle yank history backward (after paste)
+--   <leader>r    - Open yank history picker
+--
 -- NOTE: Command Line (Cmdline) Completion Keymaps (nvim-cmp):
 --   <Tab> / <S-Tab>  - Navigate next/previous completion item
 --   <C-y>            - Confirm selection (stay in cmdline, DON'T execute)
@@ -107,6 +113,8 @@ map("n", "<leader>pl", "<cmd>Lazy<cr>", { desc = "Lazy" })
 -- Splits
 map("n", "<leader>-", "<C-W>s", { desc = "Split below" })
 map("n", "<leader>|", "<C-W>v", { desc = "Split right" })
+map("n", "<leader>wj", "<C-W>s<C-W>J", { desc = "Move buffer to bottom split" })
+map("n", "<leader>wl", "<C-W>v<C-W>L", { desc = "Move buffer to right split" })
 
 -- Tabs
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last" })

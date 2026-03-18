@@ -433,7 +433,7 @@ When typing commands with `:` and autocomplete menu appears:
 | `<leader>:`       | Command history             |
 | `<leader>ss`      | Document symbols            |
 | `<leader>sS`      | Workspace symbols           |
-| `<leader>r`       | Registers (paste history)   |
+| `<leader>r`       | Yank history (Yanky)        |
 | `<leader>st`      | Search TODOs                |
 
 ### Inside Telescope
@@ -651,6 +651,19 @@ their changes (incoming branch)
 | `<leader>ghl` | Toggle line hl    |
 | `<leader>ghv` | Toggle deleted    |
 | `ih`          | Text object: hunk |
+
+---
+
+## Yank History (Yanky)
+
+| Key          | Action                              |
+|--------------|-------------------------------------|
+| `p` / `P`    | Paste after / before (yanky-aware)  |
+| `<C-p>`      | Cycle forward through yank history  |
+| `<C-n>`      | Cycle backward through yank history |
+| `<leader>r`  | Open yank history picker            |
+
+**Tip:** paste with `p`, then keep pressing `<C-p>` to replace the pasted text with earlier yanks.
 
 ---
 
