@@ -53,7 +53,6 @@ return {
 			desc = "Grep by extension",
 		},
 			{ "<leader>:",       "<cmd>Telescope command_history<cr>",       desc = "Command history" },
-			{ "<leader>r",       "<cmd>Telescope registers<cr>",             desc = "Registers (paste history)" },
 			{ "<leader>ss",      "<cmd>Telescope lsp_document_symbols<cr>",  desc = "Document symbols" },
 			{ "<leader>sS",      "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
 		},

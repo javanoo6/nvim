@@ -6,35 +6,15 @@ return {
 		require('java').setup({
 			-- Startup checks
 			checks = {
-				nvim_version = true,    -- Check Neovim version
-				nvim_jdtls_conflict = true, -- Check for nvim-jdtls conflict
+				nvim_version = true,
+				nvim_jdtls_conflict = true,
 			},
 
-			-- JDTLS configuration
-			jdtls = {
-				version = '1.54.0',
-			},
-
-			-- Extensions
-			lombok = {
-				enable = true,
-				version = '1.18.40',
-			},
-
-			java_test = {
-				enable = true,
-				version = '0.43.0',
-			},
-
-			java_debug_adapter = {
-				enable = true,
-				version = '0.58.2',
-			},
-
-			spring_boot_tools = {
-				enable = true,
-				version = '1.55.1',
-			},
+			-- Extensions (no pinned versions — let nvim-java pick compatible ones)
+			lombok = { enable = true },
+			java_test = { enable = true },
+			java_debug_adapter = { enable = true },
+			spring_boot_tools = { enable = true },
 
 			jdk = {
 				auto_install = false,
@@ -50,6 +30,6 @@ return {
 				show_location = false,
 			},
 		})
-		 vim.lsp.enable('jdtls')
+		vim.lsp.enable('jdtls')
 	end,
 }

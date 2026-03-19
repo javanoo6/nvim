@@ -386,6 +386,8 @@ Select text first, then press `gsa` + bracket/quote:
 | `m`     | Move                                         |
 | `H`     | Toggle hidden files                          |
 
+**Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — JDTLS automatically updates all imports and references across the project. This may modify many buffers at once. Save them all with `:wall`.
+
 ---
 
 ## Quick Directory Navigation
@@ -433,7 +435,6 @@ When typing commands with `:` and autocomplete menu appears:
 | `<leader>:`       | Command history             |
 | `<leader>ss`      | Document symbols            |
 | `<leader>sS`      | Workspace symbols           |
-| `<leader>r`       | Yank history (Yanky)        |
 | `<leader>st`      | Search TODOs                |
 | `<leader>fe`      | Grep by file extension      |
 | `<leader>fR`      | Resume last search          |

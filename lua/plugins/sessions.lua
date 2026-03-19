@@ -32,8 +32,8 @@ return {
   },
   keys = {
     -- Session management keymaps
-    { "<leader>Ss", "<cmd>SessionSave<cr>", desc = "Save session" },
-    { "<leader>Sr", "<cmd>SessionRestore<cr>", desc = "Restore session" },
+    { "<leader>Ss", "<cmd>AutoSession save<cr>", desc = "Save session" },
+    { "<leader>Sr", "<cmd>AutoSession restore<cr>", desc = "Restore session" },
     { "<leader>Sd", "<cmd>SessionDelete<cr>", desc = "Delete session" },
     { "<leader>Sf", "<cmd>AutoSession search<cr>", desc = "Find sessions" },
     { "<leader>Sa", "<cmd>AutoSession toggle<cr>", desc = "Toggle auto-save" },
