@@ -430,14 +430,14 @@ When typing commands with `:` and autocomplete menu appears:
 | `<leader>ff`      | Find files                  |
 | `<leader>fg`      | Live grep (search in files) |
 | `<leader>fb`      | Buffers                     |
-| `<leader>fr`      | Recent files                |
+| `<leader>fR`      | Recent files                |
 | `<leader>fh`      | Help tags                   |
 | `<leader>:`       | Command history             |
 | `<leader>ss`      | Document symbols            |
 | `<leader>sS`      | Workspace symbols           |
 | `<leader>st`      | Search TODOs                |
 | `<leader>fe`      | Grep by file extension      |
-| `<leader>fR`      | Resume last search          |
+| `<leader>fr`      | Resume last search          |
 
 ### Inside Telescope
 
@@ -456,7 +456,7 @@ When typing commands with `:` and autocomplete menu appears:
 
 **Tip:** `<leader>fe` prompts for an extension (e.g. `java`, `go`, `py`) then opens live grep scoped to `*.{ext}` files only.
 
-**Tip:** `<leader>fR` resumes the last Telescope search exactly where you left off — useful for returning to a search after editing a file.
+**Tip:** `<leader>fr` resumes the last Telescope search exactly where you left off — useful for returning to a search after editing a file.
 
 ### Workflow: Edit multiple files from a search
 
@@ -479,7 +479,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 | Key  | Action                         |
 |------|--------------------------------|
 | `gd` | Go to definition (Glance)      |
-| `gr` | Go to references (Glance)      |
+| `gR` | Go to references (Glance)      |
 | `gy` | Go to type definition (Glance) |
 | `gI` | Go to implementation (Glance)  |
 | `gD` | Go to declaration (native LSP) |
