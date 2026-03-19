@@ -64,8 +64,8 @@ return {
 		keys = {
 			{ "p",          "<Plug>(YankyPutAfter)",       mode = { "n", "x" }, desc = "Put after" },
 			{ "P",          "<Plug>(YankyPutBefore)",      mode = { "n", "x" }, desc = "Put before" },
-			{ "<C-p>",      "<Plug>(YankyCycleForward)",                        desc = "Cycle yank forward" },
-			{ "<C-n>",      "<Plug>(YankyCycleBackward)",                       desc = "Cycle yank backward" },
+			{ "<C-p>",      "<Plug>(YankyPreviousEntry)",                       desc = "Cycle yank backward" },
+			{ "<C-n>",      "<Plug>(YankyNextEntry)",                           desc = "Cycle yank forward" },
 			{ "<leader>r",  "<cmd>YankyRingHistory<cr>",                        desc = "Yank history" },
 		},
 	},

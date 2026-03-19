@@ -6,8 +6,6 @@ return {
 		"nvim-neotest/neotest",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
-			"antoinemadec/FixCursorHold.nvim",
 			-- Adapters
 			"rcasia/neotest-java", -- Java (Maven/Gradle)
 			"nvim-neotest/neotest-go", -- Go

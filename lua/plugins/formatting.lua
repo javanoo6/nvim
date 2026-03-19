@@ -10,7 +10,7 @@ return {
 			{
 				"<leader>cf",
 				function()
-					require("conform").format({ lsp_fallback = true })
+					require("conform").format({ lsp_format = "fallback" })
 				end,
 				mode = { "n", "v" },
 				desc = "Format",
@@ -50,7 +50,7 @@ return {
 				if vim.bo[bufnr].filetype == "java" or vim.bo[bufnr].filetype == "go" then
 					return
 				end
-				return { timeout_ms = 500, lsp_fallback = true }
+				return { timeout_ms = 500, lsp_format = "fallback" }
 			end,
 		},
 		config = function(_, opts)

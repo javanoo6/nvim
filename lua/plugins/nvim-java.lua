@@ -42,9 +42,9 @@ return {
 
 			-- Logging
 			log = {
-				use_console = true,
+				use_console = false,
 				use_file = true,
-				level = 'info',
+				level = 'warn',
 				log_file = vim.fn.stdpath('state') .. '/nvim-java.log',
 				max_lines = 1000,
 				show_location = false,

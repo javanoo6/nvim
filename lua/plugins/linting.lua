@@ -15,7 +15,7 @@ return {
 			}
 
 			-- Run linting on save
-			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+			vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
 				group = require("util").augroup("lint"),
 				callback = function()
 					lint.try_lint()

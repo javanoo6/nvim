@@ -3,7 +3,7 @@
 -- Trouble.nvim - better diagnostics UI
 return {
 	"folke/trouble.nvim",
-	cmd = { "TroubleToggle", "Trouble" },
+	cmd = { "Trouble" },
 	dependencies = "nvim-tree/nvim-web-devicons",
 	keys = {
 		{ "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>",              desc = "Diagnostics (Trouble)" },

@@ -35,7 +35,7 @@ return {
     { "<leader>Ss", "<cmd>SessionSave<cr>", desc = "Save session" },
     { "<leader>Sr", "<cmd>SessionRestore<cr>", desc = "Restore session" },
     { "<leader>Sd", "<cmd>SessionDelete<cr>", desc = "Delete session" },
-    { "<leader>Sf", "<cmd>Autosession search<cr>", desc = "Find sessions" },
-    { "<leader>Sa", "<cmd>Autosession toggle<cr>", desc = "Toggle auto-save" },
+    { "<leader>Sf", "<cmd>AutoSession search<cr>", desc = "Find sessions" },
+    { "<leader>Sa", "<cmd>AutoSession toggle<cr>", desc = "Toggle auto-save" },
   },
 }
