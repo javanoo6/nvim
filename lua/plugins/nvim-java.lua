@@ -10,7 +10,15 @@ return {
 				nvim_jdtls_conflict = true,
 			},
 
-			-- Extensions (no pinned versions — let nvim-java pick compatible ones)
+			-- Increase JVM heap to avoid OOM after many rename/refactor operations
+		jdtls = {
+			vmargs = {
+				"-Xms1g",
+				"-Xmx4g",
+			},
+		},
+
+		-- Extensions (no pinned versions — let nvim-java pick compatible ones)
 			lombok = { enable = true },
 			java_test = { enable = true },
 			java_debug_adapter = { enable = true },
