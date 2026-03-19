@@ -449,9 +449,25 @@ When typing commands with `:` and autocomplete menu appears:
 | `<C-x>`           | Open in horizontal split   |
 | `<C-v>`           | Open in vertical split     |
 | `<C-t>`           | Open in tab                |
+| `<Tab>`           | Multi-select entry         |
+| `<C-q>`           | Send selected (or all) to quickfix list |
 | `<Esc>`           | Close                      |
 
 **Tip:** `<leader>fe` prompts for an extension (e.g. `java`, `go`, `py`) then opens live grep scoped to `*.{ext}` files only.
+
+**Tip:** `<leader>fR` resumes the last Telescope search exactly where you left off — useful for returning to a search after editing a file.
+
+### Workflow: Edit multiple files from a search
+
+Use this when you need to rename variables or make targeted edits across many files one by one:
+
+1. `<leader>ff` or `<leader>fe` — search for files
+2. `<Tab>` to select specific files, or skip to send all results
+3. `<C-q>` — send to quickfix list
+4. `<leader>xQ` — open quickfix as a persistent Trouble sidebar
+5. `<CR>` on a file in the sidebar — jump to it and edit
+6. `]q` / `[q` — jump to next/prev file without leaving the sidebar
+7. Repeat until done, then `<leader>xQ` to close
 
 ---
 
