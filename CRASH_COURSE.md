@@ -746,6 +746,15 @@ their changes (incoming branch)
 
 ## Terminal Mode
 
+### Toggleterm (floating terminal)
+
+| Key     | Action                              |
+|---------|-------------------------------------|
+| `<A-a>` | Open / show terminal                |
+| `<A-c>` | Hide terminal (process keeps running) |
+
+### Inside terminal buffer
+
 | Key          | Action                   |
 |--------------|--------------------------|
 | `<Esc>`      | Exit terminal mode       |

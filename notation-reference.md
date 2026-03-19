@@ -2,12 +2,12 @@
 
 ## Modifiers
 
-| Notation | Key     | Example              |
-|----------|---------|----------------------|
-| `<C-x>`  | Ctrl+x  | `<C-s>` = Ctrl+s     |
-| `<A-x>`  | Alt+x   | `<A-j>` = Alt+j      |
-| `<M-x>`  | Meta+x  | Same as Alt          |
-| `<S-x>`  | Shift+x | `<S-l>` = Shift+l    |
+| Notation | Key     | Example           |
+|----------|---------|-------------------|
+| `<C-x>`  | Ctrl+x  | `<C-s>` = Ctrl+s  |
+| `<A-x>`  | Alt+x   | `<A-j>` = Alt+j   |
+| `<M-x>`  | Meta+x  | Same as Alt       |
+| `<S-x>`  | Shift+x | `<S-l>` = Shift+l |
 
 ## Special Keys
 
