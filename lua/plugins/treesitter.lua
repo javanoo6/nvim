@@ -40,8 +40,8 @@ return {
 				keymaps = {
 					init_selection = "<cr>", -- Start selection
 					node_incremental = "<tab>", -- Move to parent node
-					scope_incremental = "<S-tab>", -- Move to next scope
-					node_decremental = "<bs>", -- Back to previous node
+					node_decremental = "<S-tab>", -- Back to previous node
+					scope_incremental = "<bs>", -- Move to next scope
 				},
 			},
 		},
