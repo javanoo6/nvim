@@ -386,7 +386,8 @@ Select text first, then press `gsa` + bracket/quote:
 | `m`     | Move                                         |
 | `H`     | Toggle hidden files                          |
 
-**Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — JDTLS automatically updates all imports and references across the project. This may modify many buffers at once. Save them all with `:wall`.
+**Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — JDTLS automatically updates all imports and references
+across the project. This may modify many buffers at once. Save them all with `:wall`.
 
 ---
 
@@ -441,18 +442,18 @@ When typing commands with `:` and autocomplete menu appears:
 
 ### Inside Telescope
 
-| Key               | Action                     |
-|-------------------|----------------------------|
-| `<C-j>` / `<C-k>` | Next / Previous            |
-| `<C-n>` / `<C-p>` | Next / Previous in history |
-| `<C-d>` / `<C-u>` | Scroll preview down / up   |
-| `<CR>`            | Open                       |
-| `<C-x>`           | Open in horizontal split   |
-| `<C-v>`           | Open in vertical split     |
-| `<C-t>`           | Open in tab                |
-| `<Tab>`           | Multi-select entry         |
+| Key               | Action                                  |
+|-------------------|-----------------------------------------|
+| `<C-j>` / `<C-k>` | Next / Previous                         |
+| `<C-n>` / `<C-p>` | Next / Previous in history              |
+| `<C-d>` / `<C-u>` | Scroll preview down / up                |
+| `<CR>`            | Open                                    |
+| `<C-x>`           | Open in horizontal split                |
+| `<C-v>`           | Open in vertical split                  |
+| `<C-t>`           | Open in tab                             |
+| `<Tab>`           | Multi-select entry                      |
 | `<C-q>`           | Send selected (or all) to quickfix list |
-| `<Esc>`           | Close                      |
+| `<Esc>`           | Close                                   |
 
 **Tip:** `<leader>fe` prompts for an extension (e.g. `java`, `go`, `py`) then opens live grep scoped to `*.{ext}` files only.
 
@@ -678,12 +679,12 @@ their changes (incoming branch)
 
 ## Yank History (Yanky)
 
-| Key          | Action                              |
-|--------------|-------------------------------------|
-| `p` / `P`    | Paste after / before (yanky-aware)  |
-| `<C-p>`      | Cycle forward through yank history  |
-| `<C-n>`      | Cycle backward through yank history |
-| `<leader>r`  | Open yank history picker            |
+| Key         | Action                              |
+|-------------|-------------------------------------|
+| `p` / `P`   | Paste after / before (yanky-aware)  |
+| `<C-p>`     | Cycle forward through yank history  |
+| `<C-n>`     | Cycle backward through yank history |
+| `<leader>r` | Open yank history picker            |
 
 **Tip:** paste with `p`, then keep pressing `<C-p>` to replace the pasted text with earlier yanks.
 
@@ -748,9 +749,9 @@ their changes (incoming branch)
 
 ### Toggleterm (floating terminal)
 
-| Key     | Action                              |
-|---------|-------------------------------------|
-| `<A-a>` | Open / show terminal                |
+| Key     | Action                                |
+|---------|---------------------------------------|
+| `<A-a>` | Open / show terminal                  |
 | `<A-c>` | Hide terminal (process keeps running) |
 
 ### Inside terminal buffer
