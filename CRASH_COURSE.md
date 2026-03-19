@@ -215,8 +215,9 @@ nvim setup reference guide.
 | Key       | Action                         |
 |-----------|--------------------------------|
 | `<cr>`    | Initialize/Increment selection |
-| `<S-tab>` | Increment scope                |
-| `<bs>`    | Decrement selection            |
+| `<tab>`   | Increment node                 |
+| `<S-tab>` | Decrement scope                |
+| `<bs>`    | Scope increment                |
 
 ### Moving Lines
 
