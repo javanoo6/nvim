@@ -35,9 +35,9 @@ return {
 			{ "<leader>ff",      "<cmd>Telescope find_files<cr>",            desc = "Find files" },
 			{ "<leader>fg",      "<cmd>Telescope live_grep<cr>",             desc = "Grep" },
 			{ "<leader>fb",      "<cmd>Telescope buffers<cr>",               desc = "Buffers" },
-			{ "<leader>fr",      "<cmd>Telescope oldfiles<cr>",              desc = "Recent files" },
+			{ "<leader>fR",      "<cmd>Telescope oldfiles<cr>",              desc = "Recent files" },
 			{ "<leader>fh",      "<cmd>Telescope help_tags<cr>",             desc = "Help" },
-		{ "<leader>fR",      "<cmd>Telescope resume<cr>",                desc = "Resume last search" },
+		{ "<leader>fr",      "<cmd>Telescope resume<cr>",                desc = "Resume last search" },
 		{
 			"<leader>fe",
 			function()
