@@ -73,8 +73,8 @@ nvim setup reference guide.
 | `b`             | Previous word start (camelCase aware) |
 | `ge`            | Previous word end (camelCase aware)   |
 | `0`             | Start of line                         |
-| `^`             | First non-blank character             |
-| `$`             | End of line                           |
+| `$`             | First non-blank character (remapped)  |
+| `^`             | End of line (remapped)                |
 | `gg`            | First line of file                    |
 | `G`             | Last line of file                     |
 | `:{n}`          | Go to line n                          |
@@ -682,11 +682,11 @@ their changes (incoming branch)
 
 ## Yank History (Yanky)
 
-| Key         | Action                              |
-|-------------|-------------------------------------|
-| `p` / `P`   | Paste after / before (yanky-aware)  |
-| `<C-p>`     | Cycle forward through yank history  |
-| `<C-n>`     | Cycle backward through yank history |
+| Key          | Action                              |
+|--------------|-------------------------------------|
+| `p` / `P`    | Paste after / before (yanky-aware)  |
+| `<C-p>`      | Cycle forward through yank history  |
+| `<C-n>`      | Cycle backward through yank history |
 | `<leader>fh` | Open yank history picker            |
 
 **Tip:** paste with `p`, then keep pressing `<C-p>` to replace the pasted text with earlier yanks.
