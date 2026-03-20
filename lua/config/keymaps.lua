@@ -42,6 +42,8 @@ local map = util.map
 -- Movement (no leader)
 map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gj' : 'j'", { expr = true })
+map({ "n", "x", "o" }, "$", "^", { desc = "First non-blank char" })
+map({ "n", "x", "o" }, "^", "$", { desc = "End of line" })
 
 -- Windows
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
@@ -154,9 +156,8 @@ map("n", "<leader>cp", function()
 	})
 end, { desc = "Fix package declaration" })
 
--- Replaicng
-map("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word under cursor" })
-map("v", "<leader>rw", [[:s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word in selection" })
+-- Replacing
+map("v", "<leader>rw", [[:s/<C-r><C-w>//gI<Left><Left><Left>]], { desc = "Replace word in selection" })
 
 
 -- Treesitter re-attach
