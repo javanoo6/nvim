@@ -14,19 +14,22 @@ return {
 				python = { "ruff" },
 			}
 
-			-- Fix: golangci-lint needs cwd set to the file's directory (or module root)
-			-- so it can find go.mod, otherwise it exits with code 5 (no Go files found)
-			lint.linters.golangcilint = vim.tbl_extend("force", lint.linters.golangcilint, {
-				cwd = function()
-					return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
-				end,
-			})
+			-- BROKEN: linter.cwd must be a string, not a function —
+			-- passing a function causes "Invalid 'args': Cannot convert given Lua type"
+			-- at vim.cmd.cd() inside nvim-lint's with_cwd()
+			-- lint.linters.golangcilint = vim.tbl_extend("force", lint.linters.golangcilint, {
+			-- 	cwd = function()
+			-- 		return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
+			-- 	end,
+			-- })
 
-			-- Run linting on save
+			-- FIX: pass cwd per-invocation via try_lint opts instead
+			-- https://github.com/mfussenegger/nvim-lint#usage (try_lint opts.cwd)
 			vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
 				group = require("util").augroup("lint"),
 				callback = function()
-					lint.try_lint()
+					local cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
+					lint.try_lint(nil, { cwd = cwd })
 				end,
 			})
 		end,
