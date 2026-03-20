@@ -105,7 +105,7 @@ map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New file" })
 map("n", "<leader>fp", "<cmd>Telescope projects<cr>", { desc = "Projects" })
 
 -- Quit
-map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
+map("n", "<leader>qq", "<cmd>AutoSession save<cr><cmd>qa<cr>", { desc = "Quit all" })
 
 -- Lazy
 map("n", "<leader>pl", "<cmd>Lazy<cr>", { desc = "Lazy" })

@@ -62,11 +62,12 @@ return {
 			ring = { history_length = 50 },
 		},
 		keys = {
-			{ "p",          "<Plug>(YankyPutAfter)",       mode = { "n", "x" }, desc = "Put after" },
-			{ "P",          "<Plug>(YankyPutBefore)",      mode = { "n", "x" }, desc = "Put before" },
+			{ "p",          "<Plug>(YankyPutAfter)",       mode = "n",          desc = "Put after" },
+			{ "P",          "<Plug>(YankyPutBefore)",      mode = "n",          desc = "Put before" },
+			{ "p",          '"_dP',                        mode = "x",          desc = "Put (preserve yank)" },
+			{ "P",          '"_dP',                        mode = "x",          desc = "Put before (preserve yank)" },
 			{ "<C-p>",      "<Plug>(YankyPreviousEntry)",                       desc = "Cycle yank backward" },
 			{ "<C-n>",      "<Plug>(YankyNextEntry)",                           desc = "Cycle yank forward" },
-			{ "<leader>r",  "<cmd>YankyRingHistory<cr>",                        desc = "Yank history" },
 		},
 	},
 

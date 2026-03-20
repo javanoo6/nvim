@@ -36,8 +36,10 @@ return {
 			{ "<leader>fg",      "<cmd>Telescope live_grep<cr>",             desc = "Grep" },
 			{ "<leader>fb",      "<cmd>Telescope buffers<cr>",               desc = "Buffers" },
 			{ "<leader>fR",      "<cmd>Telescope oldfiles<cr>",              desc = "Recent files" },
-			{ "<leader>fh",      "<cmd>Telescope help_tags<cr>",             desc = "Help" },
-		{ "<leader>fr",      "<cmd>Telescope resume<cr>",                desc = "Resume last search" },
+			{ "<leader>fh",      "<cmd>YankyRingHistory<cr>",                 desc = "Yank history" },
+		{ "<leader>fH",      "<cmd>Telescope command_history<cr>",        desc = "Command history" },
+		{ "<leader>fS",      "<cmd>Telescope search_history<cr>",         desc = "Search history" },
+		{ "<leader>fr",      "<cmd>Telescope resume<cr>",                 desc = "Resume last search" },
 		{
 			"<leader>fe",
 			function()

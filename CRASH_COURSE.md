@@ -433,7 +433,9 @@ When typing commands with `:` and autocomplete menu appears:
 | `<leader>fg`      | Live grep (search in files) |
 | `<leader>fb`      | Buffers                     |
 | `<leader>fR`      | Recent files                |
-| `<leader>fh`      | Help tags                   |
+| `<leader>fh`      | Yank history                |
+| `<leader>fH`      | Command history             |
+| `<leader>fS`      | Search history              |
 | `<leader>:`       | Command history             |
 | `<leader>ss`      | Document symbols            |
 | `<leader>sS`      | Workspace symbols           |
@@ -685,7 +687,7 @@ their changes (incoming branch)
 | `p` / `P`   | Paste after / before (yanky-aware)  |
 | `<C-p>`     | Cycle forward through yank history  |
 | `<C-n>`     | Cycle backward through yank history |
-| `<leader>r` | Open yank history picker            |
+| `<leader>fh` | Open yank history picker            |
 
 **Tip:** paste with `p`, then keep pressing `<C-p>` to replace the pasted text with earlier yanks.
 
