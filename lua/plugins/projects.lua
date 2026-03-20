@@ -7,7 +7,7 @@ return {
 		event = "VimEnter",
 		opts = {
 			-- Manual mode - don't auto-add projects, use patterns below
-			manual_mode = false,
+			manual_mode = true,
 			-- Detection methods: "lsp" (lsp root), "pattern" (git/etc markers)
 			detection_methods = { "pattern", "lsp" },
 			-- Patterns that indicate a project root
