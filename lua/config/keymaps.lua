@@ -132,6 +132,22 @@ map("n", "<leader>uw", function() util.toggle("wrap") end, { desc = "Wrap" })
 map("n", "<leader>ul", function() util.toggle("relativenumber") end, { desc = "Relative numbers" })
 map("n", "<leader>un", function() util.toggle("number") end, { desc = "Line numbers" })
 map("n", "<leader>uf", function() util.toggle("foldenable") end, { desc = "Fold" })
+map("n", "<leader>ud", function()
+  local vl = vim.diagnostic.config().virtual_lines
+  if vl then
+    vim.diagnostic.config({ virtual_lines = false, virtual_text = true })
+  else
+    vim.diagnostic.config({ virtual_lines = { only_current_line = true }, virtual_text = false })
+  end
+end, { desc = "Toggle diagnostic virtual lines" })
+map("n", "<leader>uD", function()
+  local config = vim.diagnostic.config()
+  if config.virtual_lines or config.virtual_text then
+    vim.diagnostic.config({ virtual_lines = false, virtual_text = false })
+  else
+    vim.diagnostic.config({ virtual_lines = { only_current_line = true }, virtual_text = false })
+  end
+end, { desc = "Toggle diagnostic messages" })
 
 -- Code
 map({ "n", "v" }, "<leader>cf", function() util.format() end, { desc = "Format" })
@@ -157,7 +173,7 @@ map("n", "<leader>cp", function()
 end, { desc = "Fix package declaration" })
 
 -- Replacing
-map("v", "<leader>rw", [[:s/<C-r><C-w>//gI<Left><Left><Left>]], { desc = "Replace word in selection" })
+map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })
 
 
 -- Treesitter re-attach

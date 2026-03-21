@@ -294,16 +294,32 @@ Select text first, then press `gsa` + bracket/quote:
 | `g#`    | Search partial word (backward)      |
 | `<Esc>` | Clear search highlight              |
 
-### Replace
+### Replace (in-buffer)
 
-| Key              | Action                                  |
-| ---------------- | --------------------------------------- |
-| `:s/old/new/`    | Replace first occurrence in line        |
-| `:s/old/new/g`   | Replace all in line                     |
-| `:%s/old/new/g`  | Replace all in file                     |
-| `:%s/old/new/gc` | Replace all with confirmation           |
-| `<leader>rw`     | Replace word under cursor (interactive) |
-| `<leader>rw`     | Replace word in visual selection        |
+| Key              | Action                           |
+| ---------------- | -------------------------------- |
+| `:s/old/new/`    | Replace first occurrence in line |
+| `:s/old/new/g`   | Replace all in line              |
+| `:%s/old/new/g`  | Replace all in file              |
+| `:%s/old/new/gc` | Replace all with confirmation    |
+
+### Replace (project-wide — grug-far)
+
+| Key          | Mode   | Action                              |
+| ------------ | ------ | ----------------------------------- |
+| `<leader>rg` | normal | Open search & replace panel (blank) |
+| `<leader>rw` | normal | Open with word under cursor         |
+| `<leader>rg` | visual | Open with selection as search term  |
+
+**Tip:** Inside grug-far you can scope to specific paths/globs, preview all matches before replacing, and undo all replacements at once.
+
+### Replace (within visual selection)
+
+| Key          | Mode   | Action                                       |
+| ------------ | ------ | -------------------------------------------- |
+| `<leader>rw` | visual | `:s/\%V` — replace only within selected text |
+
+**Tip:** After `<leader>rw` in visual mode, type your pattern and replacement: `old/new/g` then `<CR>`.
 
 ---
 
@@ -340,7 +356,7 @@ Select text first, then press `gsa` + bracket/quote:
 ### Resizing
 
 | Key                      | Action              |
-| ------------------------ | ------------------- | -------------- |
+| ------------------------ | ------------------- |
 | `<C-Up>`                 | Increase height     |
 | `<C-Down>`               | Decrease height     |
 | `<C-Left>`               | Decrease width      |
@@ -349,7 +365,7 @@ Select text first, then press `gsa` + bracket/quote:
 | `<M-Left>` / `<M-Right>` | Resize width (alt)  |
 | `<C-w>=`                 | Equalize windows    |
 | `<C-w>_`                 | Maximize height     |
-| `<C-w>                   | `                   | Maximize width |
+| `<C-w>                   | Maximize width      |
 
 ---
 
@@ -742,16 +758,18 @@ their changes (incoming branch)
 
 ## UI & Toggles
 
-| Key          | Action                  |
-| ------------ | ----------------------- |
-| `<leader>us` | Toggle spell            |
-| `<leader>uw` | Toggle wrap             |
-| `<leader>ul` | Toggle relative numbers |
-| `<leader>un` | Toggle line numbers     |
-| `<leader>uf` | Toggle fold             |
-| `<leader>uh` | Toggle inlay hints      |
-| `<leader>tc` | Color schemes           |
-| `<leader>un` | Dismiss notifications   |
+| Key          | Action                                                      |
+| ------------ | ----------------------------------------------------------- |
+| `<leader>us` | Toggle spell                                                |
+| `<leader>uw` | Toggle wrap                                                 |
+| `<leader>ul` | Toggle relative numbers                                     |
+| `<leader>un` | Toggle line numbers                                         |
+| `<leader>uf` | Toggle fold                                                 |
+| `<leader>ud` | Toggle diagnostic virtual lines                             |
+| `<leader>uD` | Toggle diagnostic messages (hide all msgs, keep underlines) |
+| `<leader>uh` | Toggle inlay hints                                          |
+| `<leader>tc` | Color schemes                                               |
+| `<leader>un` | Dismiss notifications                                       |
 
 ---
 

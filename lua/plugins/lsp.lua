@@ -15,6 +15,19 @@ return {
 		config = function()
 			local map = require("util").map
 
+			vim.diagnostic.config({
+				virtual_text = false,
+				virtual_lines = { only_current_line = true },
+				signs = true,
+				underline = true,
+				update_in_insert = false,
+				severity_sort = true,
+				float = {
+					border = "rounded",
+					source = true,
+				},
+			})
+
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = require("util").augroup("lsp_attach"),
 				callback = function(event)
@@ -51,14 +64,14 @@ return {
 
 			-- LSP server management
 			map("n", "<leader>lr", "<cmd>LspRestart<cr>", { desc = "Restart LSP" })
-			map("n", "<leader>li", "<cmd>LspInfo<cr>",    { desc = "LSP info" })
-			map("n", "<leader>ll", "<cmd>LspLog<cr>",     { desc = "LSP log" })
+			map("n", "<leader>li", "<cmd>LspInfo<cr>", { desc = "LSP info" })
+			map("n", "<leader>ll", "<cmd>LspLog<cr>", { desc = "LSP log" })
 
 			local capabilities = vim.tbl_deep_extend(
-			"force",
-			require("cmp_nvim_lsp").default_capabilities(),
-			require("lsp-file-operations").default_capabilities()
-		)
+				"force",
+				require("cmp_nvim_lsp").default_capabilities(),
+				require("lsp-file-operations").default_capabilities()
+			)
 
 			require("mason-lspconfig").setup({
 				ensure_installed = {
