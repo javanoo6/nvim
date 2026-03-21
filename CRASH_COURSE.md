@@ -25,6 +25,7 @@ nvim setup reference guide.
 17. [Terminal Mode](#terminal-mode)
 18. [Go Development](#go-development)
 19. [Miscellaneous](#miscellaneous)
+20. [Obsidian (Notes)](#obsidian-notes)
 
 ---
 
@@ -33,7 +34,7 @@ nvim setup reference guide.
 ### Modes
 
 | Key              | Action                             |
-|------------------|------------------------------------|
+| ---------------- | ---------------------------------- |
 | `i`              | Insert mode (before cursor)        |
 | `a`              | Insert mode (after cursor)         |
 | `I`              | Insert at beginning of line        |
@@ -51,7 +52,7 @@ nvim setup reference guide.
 ### Saving & Quitting
 
 | Key           | Action              |
-|---------------|---------------------|
+| ------------- | ------------------- |
 | `:w`          | Save file           |
 | `:q`          | Quit                |
 | `:wq` or `ZZ` | Save and quit       |
@@ -66,7 +67,7 @@ nvim setup reference guide.
 ### Basic Movement
 
 | Key             | Action                                |
-|-----------------|---------------------------------------|
+| --------------- | ------------------------------------- |
 | `h` `j` `k` `l` | Left, Up, Down, Right                 |
 | `w`             | Next word start (camelCase aware)     |
 | `e`             | Next word end (camelCase aware)       |
@@ -85,7 +86,7 @@ nvim setup reference guide.
 ### Scrolling (Centered)
 
 | Key     | Action                           |
-|---------|----------------------------------|
+| ------- | -------------------------------- |
 | `<C-d>` | Scroll down half page (centered) |
 | `<C-u>` | Scroll up half page (centered)   |
 | `<C-f>` | Scroll down full page            |
@@ -95,7 +96,7 @@ nvim setup reference guide.
 ### Fast Navigation (Flash.nvim)
 
 | Key                    | Action                            |
-|------------------------|-----------------------------------|
+| ---------------------- | --------------------------------- |
 | `s`                    | Flash jump (type 2 chars to jump) |
 | `S`                    | Flash treesitter (select node)    |
 | `r` (operator)         | Remote flash                      |
@@ -105,14 +106,14 @@ nvim setup reference guide.
 ### Jump Lists
 
 | Key     | Action       |
-|---------|--------------|
+| ------- | ------------ |
 | `<C-o>` | Jump back    |
 | `<C-i>` | Jump forward |
 
 ### Buffer Navigation
 
 | Key          | Action                       |
-|--------------|------------------------------|
+| ------------ | ---------------------------- |
 | `[b`         | Previous buffer              |
 | `]b`         | Next buffer                  |
 | `<S-h>`      | Previous buffer (alt)        |
@@ -123,7 +124,7 @@ nvim setup reference guide.
 ### Quickfix & Location List
 
 | Key  | Action                    |
-|------|---------------------------|
+| ---- | ------------------------- |
 | `]q` | Next trouble/quickfix     |
 | `[q` | Previous trouble/quickfix |
 | `[l` | Previous location list    |
@@ -136,7 +137,7 @@ nvim setup reference guide.
 ### Insert Mode
 
 | Key     | Action                    |
-|---------|---------------------------|
+| ------- | ------------------------- |
 | `<C-h>` | Delete previous character |
 | `<C-w>` | Delete previous word      |
 | `<C-u>` | Delete to start of line   |
@@ -148,7 +149,7 @@ nvim setup reference guide.
 ### Operators (wait for motion)
 
 | Key  | Action                          |
-|------|---------------------------------|
+| ---- | ------------------------------- |
 | `d`  | Delete                          |
 | `c`  | Change (delete + insert)        |
 | `y`  | Yank (copy)                     |
@@ -163,7 +164,7 @@ nvim setup reference guide.
 ### Common Combos
 
 | Key     | Action                             |
-|---------|------------------------------------|
+| ------- | ---------------------------------- |
 | `dd`    | Delete line                        |
 | `cc`    | Change line                        |
 | `yy`    | Yank line                          |
@@ -181,7 +182,7 @@ nvim setup reference guide.
 ### Text Objects (Mini.ai)
 
 | Object        | Description                        |
-|---------------|------------------------------------|
+| ------------- | ---------------------------------- |
 | `af` / `if`   | Around / Inside function           |
 | `ac` / `ic`   | Around / Inside class              |
 | `aa` / `ia`   | Around / Inside parameter/argument |
@@ -207,13 +208,13 @@ nvim setup reference guide.
 ### Treesitter Text Objects
 
 | Key                   | Action                 |
-|-----------------------|------------------------|
+| --------------------- | ---------------------- |
 | `m` (visual/operator) | Select treesitter node |
 
 ### Treesitter Incremental Selection
 
 | Key       | Action                         |
-|-----------|--------------------------------|
+| --------- | ------------------------------ |
 | `<cr>`    | Initialize/Increment selection |
 | `<tab>`   | Increment node                 |
 | `<S-tab>` | Decrement scope                |
@@ -222,7 +223,7 @@ nvim setup reference guide.
 ### Moving Lines
 
 | Key                                     | Action         |
-|-----------------------------------------|----------------|
+| --------------------------------------- | -------------- |
 | `<A-j>`                                 | Move line up   |
 | `<A-k>`                                 | Move line down |
 | (Works in normal, insert, visual modes) |
@@ -230,7 +231,7 @@ nvim setup reference guide.
 ### Surround (Mini.surround)
 
 | Key   | Action                                                     |
-|-------|------------------------------------------------------------|
+| ----- | ---------------------------------------------------------- |
 | `gsa` | Add surround (e.g., `gsaiw"` to surround word with quotes) |
 | `gsd` | Delete surround                                            |
 | `gsr` | Replace surround                                           |
@@ -250,7 +251,7 @@ nvim setup reference guide.
 Select text first, then press `gsa` + bracket/quote:
 
 | After Selection | Press     | Result            |
-|-----------------|-----------|-------------------|
+| --------------- | --------- | ----------------- |
 | `viw` (word)    | `gsa"`    | `"word"`          |
 | `V` (line)      | `gsa(`    | `(selected line)` |
 | `viw`           | `gsa[`    | `[word]`          |
@@ -262,7 +263,7 @@ Select text first, then press `gsa` + bracket/quote:
 ## Commenting
 
 | Key   | Action                                 |
-|-------|----------------------------------------|
+| ----- | -------------------------------------- |
 | `gcc` | Toggle comment on current line         |
 | `gc`  | Toggle comment (operator, e.g. `gcip`) |
 | `gc`  | Toggle comment on visual selection     |
@@ -281,7 +282,7 @@ Select text first, then press `gsa` + bracket/quote:
 ### Search
 
 | Key     | Action                              |
-|---------|-------------------------------------|
+| ------- | ----------------------------------- |
 | `/`     | Search forward                      |
 | `?`     | Search backward                     |
 | `n`     | Next match (centered)               |
@@ -295,7 +296,7 @@ Select text first, then press `gsa` + bracket/quote:
 ### Replace
 
 | Key              | Action                                  |
-|------------------|-----------------------------------------|
+| ---------------- | --------------------------------------- |
 | `:s/old/new/`    | Replace first occurrence in line        |
 | `:s/old/new/g`   | Replace all in line                     |
 | `:%s/old/new/g`  | Replace all in file                     |
@@ -310,7 +311,7 @@ Select text first, then press `gsa` + bracket/quote:
 ### Navigation
 
 | Key     | Action             |
-|---------|--------------------|
+| ------- | ------------------ |
 | `<C-h>` | Go to left window  |
 | `<C-j>` | Go to down window  |
 | `<C-k>` | Go to up window    |
@@ -319,7 +320,7 @@ Select text first, then press `gsa` + bracket/quote:
 ### Splitting
 
 | Key          | Action                          |
-|--------------|---------------------------------|
+| ------------ | ------------------------------- |
 | `<leader>-`  | Split horizontally (below)      |
 | `<leader>\|` | Split vertically (right)        |
 | `<C-w>s`     | Split horizontal                |
@@ -330,16 +331,16 @@ Select text first, then press `gsa` + bracket/quote:
 
 ### Resizing
 
-| Key | Action |
+| Key                      | Action              |
 | ------------------------ | ------------------- | -------------- |
-| `<C-Up>`                 | Increase height |
-| `<C-Down>`               | Decrease height |
-| `<C-Left>`               | Decrease width |
-| `<C-Right>`              | Increase width |
+| `<C-Up>`                 | Increase height     |
+| `<C-Down>`               | Decrease height     |
+| `<C-Left>`               | Decrease width      |
+| `<C-Right>`              | Increase width      |
 | `<M-Up>` / `<M-Down>`    | Resize height (alt) |
 | `<M-Left>` / `<M-Right>` | Resize width (alt)  |
-| `<C-w>=`                 | Equalize windows |
-| `<C-w>_`                 | Maximize height |
+| `<C-w>=`                 | Equalize windows    |
+| `<C-w>_`                 | Maximize height     |
 | `<C-w>                   | `                   | Maximize width |
 
 ---
@@ -347,7 +348,7 @@ Select text first, then press `gsa` + bracket/quote:
 ## Buffer Management
 
 | Key               | Action                      |
-|-------------------|-----------------------------|
+| ----------------- | --------------------------- |
 | `[b` / `]b`       | Prev / Next buffer          |
 | `<S-h>` / `<S-l>` | Prev / Next buffer (alt)    |
 | `<leader>bb`      | Alternate buffer            |
@@ -363,14 +364,14 @@ Select text first, then press `gsa` + bracket/quote:
 ## File Explorer (Neo-tree)
 
 | Key         | Action                       |
-|-------------|------------------------------|
+| ----------- | ---------------------------- |
 | `<leader>e` | Explorer (project root)      |
 | `<leader>E` | Explorer (current directory) |
 
 ### Inside Neo-tree
 
 | Key     | Action                                       |
-|---------|----------------------------------------------|
+| ------- | -------------------------------------------- |
 | `<CR>`  | Open file / Expand folder (with auto-expand) |
 | `o`     | Open file                                    |
 | `h`     | Collapse folder / Go to parent               |
@@ -395,7 +396,7 @@ across the project. This may modify many buffers at once. Save them all with `:w
 ## Quick Directory Navigation
 
 | Key          | Action                                  |
-|--------------|-----------------------------------------|
+| ------------ | --------------------------------------- |
 | `-`          | Open **Oil** (edit directory like text) |
 | `<leader>-`  | Open **Oil** in cwd                     |
 | `<leader>fp` | Switch project (Telescope)              |
@@ -403,7 +404,7 @@ across the project. This may modify many buffers at once. Save them all with `:w
 ### Inside Oil
 
 | Key    | Action                 |
-|--------|------------------------|
+| ------ | ---------------------- |
 | `<CR>` | Open file / Enter dir  |
 | `-`    | Go to parent directory |
 | `q`    | Close Oil              |
@@ -415,7 +416,7 @@ across the project. This may modify many buffers at once. Save them all with `:w
 When typing commands with `:` and autocomplete menu appears:
 
 | Key       | Action                                          |
-|-----------|-------------------------------------------------|
+| --------- | ----------------------------------------------- |
 | `<Tab>`   | Next completion item                            |
 | `<S-Tab>` | Previous completion item                        |
 | `<C-y>`   | **Confirm selection** (stay in cmdline)         |
@@ -427,7 +428,7 @@ When typing commands with `:` and autocomplete menu appears:
 ## Telescope (Fuzzy Finder)
 
 | Key               | Action                      |
-|-------------------|-----------------------------|
+| ----------------- | --------------------------- |
 | `<leader><space>` | Find files                  |
 | `<leader>ff`      | Find files                  |
 | `<leader>fg`      | Live grep (search in files) |
@@ -446,7 +447,7 @@ When typing commands with `:` and autocomplete menu appears:
 ### Inside Telescope
 
 | Key               | Action                                  |
-|-------------------|-----------------------------------------|
+| ----------------- | --------------------------------------- |
 | `<C-j>` / `<C-k>` | Next / Previous                         |
 | `<C-n>` / `<C-p>` | Next / Previous in history              |
 | `<C-d>` / `<C-u>` | Scroll preview down / up                |
@@ -481,7 +482,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 ### Go To
 
 | Key  | Action                         |
-|------|--------------------------------|
+| ---- | ------------------------------ |
 | `gd` | Go to definition (Glance)      |
 | `gR` | Go to references (Glance)      |
 | `gy` | Go to type definition (Glance) |
@@ -491,14 +492,14 @@ Use this when you need to rename variables or make targeted edits across many fi
 ### Documentation
 
 | Key  | Action              |
-|------|---------------------|
+| ---- | ------------------- |
 | `K`  | Hover documentation |
 | `gK` | Signature help      |
 
 ### Code Actions
 
 | Key          | Action                  |
-|--------------|-------------------------|
+| ------------ | ----------------------- |
 | `<leader>ca` | Code action             |
 | `<leader>cr` | Rename                  |
 | `<leader>ci` | Organize imports        |
@@ -508,7 +509,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 ### Symbols & Outline
 
 | Key          | Action                               |
-|--------------|--------------------------------------|
+| ------------ | ------------------------------------ |
 | `<leader>co` | Aerial (Symbols outline)             |
 | `<leader>cO` | Aerial Nav                           |
 | `<leader>cs` | Symbols (Trouble)                    |
@@ -517,7 +518,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 ### Diagnostics
 
 | Key          | Action                       |
-|--------------|------------------------------|
+| ------------ | ---------------------------- |
 | `[d`         | Prev diagnostic              |
 | `]d`         | Next diagnostic              |
 | `<leader>xd` | Line diagnostics (float)     |
@@ -530,7 +531,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 ### Todos
 
 | Key          | Action                   |
-|--------------|--------------------------|
+| ------------ | ------------------------ |
 | `]t`         | Next TODO comment        |
 | `[t`         | Previous TODO comment    |
 | `<leader>xt` | TODOs (Trouble)          |
@@ -541,7 +542,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 ## Debugging (DAP)
 
 | Key          | Action                     |
-|--------------|----------------------------|
+| ------------ | -------------------------- |
 | `<leader>db` | Toggle breakpoint          |
 | `<leader>dB` | Breakpoint with condition  |
 | `<leader>dc` | Continue / Start debugging |
@@ -566,7 +567,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 ## Testing (Neotest)
 
 | Key          | Action              |
-|--------------|---------------------|
+| ------------ | ------------------- |
 | `<leader>tt` | Run file            |
 | `<leader>tT` | Run all test files  |
 | `<leader>tr` | Run nearest test    |
@@ -580,7 +581,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 ### Java-specific
 
 | Key          | Action              |
-|--------------|---------------------|
+| ------------ | ------------------- |
 | `<leader>jr` | Run Main            |
 | `<leader>jc` | Stop Main           |
 | `<leader>jt` | Test Current Class  |
@@ -594,13 +595,13 @@ Use this when you need to rename variables or make targeted edits across many fi
 ### LazyGit
 
 | Key          | Action       |
-|--------------|--------------|
+| ------------ | ------------ |
 | `<leader>gg` | Open LazyGit |
 
 **Inside LazyGit window:**
 
 | Key     | Action                            |
-|---------|-----------------------------------|
+| ------- | --------------------------------- |
 | `<esc>` | Back / Cancel                     |
 | `q`     | Quit lazygit                      |
 | `<C-q>` | Exit terminal mode (back to nvim) |
@@ -608,7 +609,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 ### Diffview
 
 | Key          | Action                   |
-|--------------|--------------------------|
+| ------------ | ------------------------ |
 | `<leader>gD` | Repo diff (DiffviewOpen) |
 | `<leader>gF` | File history             |
 | `<leader>gH` | Repo history             |
@@ -620,7 +621,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 **Inside Diffview:**
 
 | Key          | Action                   |
-|--------------|--------------------------|
+| ------------ | ------------------------ |
 | `q`          | Close panel / quit       |
 | `<tab>`      | Next changed file        |
 | `<S-tab>`    | Prev changed file        |
@@ -654,7 +655,7 @@ their changes (incoming branch)
 ```
 
 | Goal            | What to do                                                           |
-|-----------------|----------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------- |
 | Keep **ours**   | Delete the `=======` → `>>>>>>> ...` block + the `<<<<<<< HEAD` line |
 | Keep **theirs** | Delete the `<<<<<<< HEAD` → `=======` block + the `>>>>>>> ...` line |
 | Keep **both**   | Delete only the three marker lines (`<<<<<<<`, `=======`, `>>>>>>>`) |
@@ -662,7 +663,7 @@ their changes (incoming branch)
 ### Gitsigns (in-buffer)
 
 | Key           | Action            |
-|---------------|-------------------|
+| ------------- | ----------------- |
 | `]h` / `[h`   | Next / Prev hunk  |
 | `<leader>ghs` | Stage hunk        |
 | `<leader>ghr` | Reset hunk        |
@@ -683,7 +684,7 @@ their changes (incoming branch)
 ## Yank History (Yanky)
 
 | Key          | Action                              |
-|--------------|-------------------------------------|
+| ------------ | ----------------------------------- |
 | `p` / `P`    | Paste after / before (yanky-aware)  |
 | `<C-p>`      | Cycle forward through yank history  |
 | `<C-n>`      | Cycle backward through yank history |
@@ -696,7 +697,7 @@ their changes (incoming branch)
 ## Harpoon (Quick File Switching)
 
 | Key          | Action              |
-|--------------|---------------------|
+| ------------ | ------------------- |
 | `<leader>ha` | Add file to harpoon |
 | `<leader>hh` | Open harpoon menu   |
 | `<leader>h1` | Go to file 1        |
@@ -709,7 +710,7 @@ their changes (incoming branch)
 ## Marks
 
 | Key         | Action                     |
-|-------------|----------------------------|
+| ----------- | -------------------------- |
 | `mx`        | Toggle mark x (a-z)        |
 | `dmx`       | Delete mark x              |
 | `dm-`       | Delete all marks in line   |
@@ -724,7 +725,7 @@ their changes (incoming branch)
 ## UI & Toggles
 
 | Key          | Action                  |
-|--------------|-------------------------|
+| ------------ | ----------------------- |
 | `<leader>us` | Toggle spell            |
 | `<leader>uw` | Toggle wrap             |
 | `<leader>ul` | Toggle relative numbers |
@@ -738,7 +739,7 @@ their changes (incoming branch)
 ## Tabs
 
 | Key                  | Action    |
-|----------------------|-----------|
+| -------------------- | --------- |
 | `<leader><tab>]`     | Next tab  |
 | `<leader><tab>[`     | Prev tab  |
 | `<leader><tab>f`     | First tab |
@@ -753,21 +754,21 @@ their changes (incoming branch)
 ### Toggleterm (floating terminal)
 
 | Key     | Action                                |
-|---------|---------------------------------------|
+| ------- | ------------------------------------- |
 | `<A-a>` | Open / show terminal                  |
 | `<A-c>` | Hide terminal (process keeps running) |
 
 ### Inside terminal buffer
 
 | Key          | Action                   |
-|--------------|--------------------------|
+| ------------ | ------------------------ |
 | `<Esc>`      | Exit terminal mode       |
 | `<C-\><C-n>` | Exit terminal mode (alt) |
 
 **Note:** Terminal window navigation:
 
 | Key     | Action             |
-|---------|--------------------|
+| ------- | ------------------ |
 | `<C-h>` | Go to left window  |
 | `<C-j>` | Go to lower window |
 | `<C-k>` | Go to upper window |
@@ -780,7 +781,7 @@ their changes (incoming branch)
 ### Running Go Programs
 
 | Command                | Action                     |
-|------------------------|----------------------------|
+| ---------------------- | -------------------------- |
 | `:term go run .`       | Run program in current dir |
 | `:term go run main.go` | Run specific file          |
 | `<leader>gr`           | Go run (keymap)            |
@@ -791,7 +792,7 @@ their changes (incoming branch)
 ### Go Struct Tags (Gopher.nvim)
 
 | Key           | Action               |
-|---------------|----------------------|
+| ------------- | -------------------- |
 | `<leader>gsj` | Add JSON struct tags |
 | `<leader>gsy` | Add YAML struct tags |
 | `<leader>gsd` | Add DB struct tags   |
@@ -800,7 +801,7 @@ their changes (incoming branch)
 ### Go Debugging
 
 | Key           | Action             |
-|---------------|--------------------|
+| ------------- | ------------------ |
 | `<leader>dgt` | Debug Go test      |
 | `<leader>dgl` | Debug last Go test |
 
@@ -809,7 +810,7 @@ their changes (incoming branch)
 ## Miscellaneous
 
 | Key          | Action                 |
-|--------------|------------------------|
+| ------------ | ---------------------- |
 | `<leader>fn` | New file               |
 | `<leader>U`  | Undotree toggle        |
 | `<leader>pl` | Open Lazy              |
@@ -825,7 +826,7 @@ their changes (incoming branch)
 Press `<leader>` and wait to see all groups:
 
 | Prefix          | Group                |
-|-----------------|----------------------|
+| --------------- | -------------------- |
 | `<leader>b`     | Buffer               |
 | `<leader>c`     | Code                 |
 | `<leader>d`     | Debug                |
@@ -856,6 +857,44 @@ Press `<leader>` and wait to see all groups:
 5. **Macros**: `qa` records to `a`, `q` stops, `@a` plays, `@@` repeats last
 6. **Marks**: Use uppercase marks (A-Z) for global marks across files
 7. **Jumplist**: `<C-o>` and `<C-i>` to navigate back/forward in jump history
+
+---
+
+## Obsidian (Notes)
+
+Vault: `~/Obsidian`. Active only in `.md` files.
+
+### Navigation
+
+| Key    | Action                                     |
+| ------ | ------------------------------------------ |
+| `<CR>` | Follow `[[wikilink]]` or `[text](#anchor)` |
+
+### Note Management
+
+| Key          | Action                                 |
+| ------------ | -------------------------------------- |
+| `<leader>of` | Quick switch between notes (Telescope) |
+| `<leader>os` | Full-text search across vault          |
+| `<leader>on` | New note                               |
+| `<leader>or` | Rename note (updates all links)        |
+| `<leader>oo` | Open current note in Obsidian app      |
+
+### Links & Tags
+
+| Key          | Action                    |
+| ------------ | ------------------------- |
+| `<leader>ob` | Backlinks to current note |
+| `<leader>ol` | All links in current note |
+| `<leader>ot` | Browse tags               |
+
+### Other
+
+| Key          | Action                     |
+| ------------ | -------------------------- |
+| `<leader>oc` | Toggle `- [ ]` checkbox    |
+| `<leader>od` | Daily notes                |
+| `<leader>op` | Paste image from clipboard |
 
 ---
 
