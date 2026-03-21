@@ -25,7 +25,8 @@ nvim setup reference guide.
 17. [Terminal Mode](#terminal-mode)
 18. [Go Development](#go-development)
 19. [Miscellaneous](#miscellaneous)
-20. [Obsidian (Notes)](#obsidian-notes)
+20. [Sessions](#sessions)
+21. [Obsidian (Notes)](#obsidian-notes)
 
 ---
 
@@ -317,6 +318,13 @@ Select text first, then press `gsa` + bracket/quote:
 | `<C-k>` | Go to up window    |
 | `<C-l>` | Go to right window |
 
+### Move Buffer to Split
+
+| Key          | Action                        |
+| ------------ | ----------------------------- |
+| `<leader>wj` | Move buffer to bottom split   |
+| `<leader>wl` | Move buffer to right split    |
+
 ### Splitting
 
 | Key          | Action                          |
@@ -353,6 +361,8 @@ Select text first, then press `gsa` + bracket/quote:
 | `<S-h>` / `<S-l>` | Prev / Next buffer (alt)    |
 | `<leader>bb`      | Alternate buffer            |
 | `<leader>bd`      | Delete buffer               |
+| `<leader>b-`      | New buffer below            |
+| `<leader>b\|`     | New buffer right            |
 | `<leader>bp`      | Toggle pin                  |
 | `<leader>bP`      | Delete non-pinned buffers   |
 | `<leader>bo`      | Delete other buffers        |
@@ -731,6 +741,7 @@ their changes (incoming branch)
 | `<leader>ul` | Toggle relative numbers |
 | `<leader>un` | Toggle line numbers     |
 | `<leader>uf` | Toggle fold             |
+| `<leader>uh` | Toggle inlay hints      |
 | `<leader>tc` | Color schemes           |
 | `<leader>un` | Dismiss notifications   |
 
@@ -829,13 +840,22 @@ Press `<leader>` and wait to see all groups:
 | --------------- | -------------------- |
 | `<leader>b`     | Buffer               |
 | `<leader>c`     | Code                 |
+| `<leader>co`    | Outline              |
 | `<leader>d`     | Debug                |
+| `<leader>dg`    | Debug Go             |
 | `<leader>f`     | File/Find            |
 | `<leader>g`     | Git                  |
+| `<leader>gh`    | Hunks                |
+| `<leader>gi`    | Go Insert            |
+| `<leader>gs`    | Go Struct Tags       |
 | `<leader>h`     | Harpoon              |
 | `<leader>j`     | Java                 |
+| `<leader>o`     | Obsidian             |
+| `<leader>p`     | Plugins              |
 | `<leader>q`     | Quit/Session         |
+| `<leader>r`     | Replace              |
 | `<leader>s`     | Search               |
+| `<leader>S`     | Sessions             |
 | `<leader>t`     | Test/Theme           |
 | `<leader>u`     | UI                   |
 | `<leader>w`     | Windows              |
@@ -843,7 +863,9 @@ Press `<leader>` and wait to see all groups:
 | `<leader><tab>` | Tabs                 |
 | `[`             | Previous             |
 | `]`             | Next                 |
-| `g`             | Go to                |
+| `g`             | Goto/Misc            |
+| `gc`            | Comment              |
+| `gs`            | Surround             |
 | `z`             | Fold                 |
 
 ---
@@ -857,6 +879,20 @@ Press `<leader>` and wait to see all groups:
 5. **Macros**: `qa` records to `a`, `q` stops, `@a` plays, `@@` repeats last
 6. **Marks**: Use uppercase marks (A-Z) for global marks across files
 7. **Jumplist**: `<C-o>` and `<C-i>` to navigate back/forward in jump history
+
+---
+
+## Sessions
+
+Auto-saved per project directory. Restores open files, splits, and cursor positions.
+
+| Key          | Action              |
+| ------------ | ------------------- |
+| `<leader>Ss` | Save session        |
+| `<leader>Sr` | Restore session     |
+| `<leader>Sd` | Delete session      |
+| `<leader>Sf` | Find sessions       |
+| `<leader>Sa` | Toggle auto-save    |
 
 ---
 
