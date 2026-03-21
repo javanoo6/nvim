@@ -43,6 +43,7 @@ return {
 				{ "<leader>gi",    group = "go insert" },
 				{ "<leader>gs",    group = "go struct tags" },
 				{ "<leader>h",     group = "harpoon" },
+				{ "<leader>l",     group = "lsp" },
 				{ "<leader>j",     group = "java" },
 				{ "<leader>o",     group = "obsidian" },
 				{ "<leader>p",     group = "plugins" },

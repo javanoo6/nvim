@@ -320,10 +320,10 @@ Select text first, then press `gsa` + bracket/quote:
 
 ### Move Buffer to Split
 
-| Key          | Action                        |
-| ------------ | ----------------------------- |
-| `<leader>wj` | Move buffer to bottom split   |
-| `<leader>wl` | Move buffer to right split    |
+| Key          | Action                      |
+| ------------ | --------------------------- |
+| `<leader>wj` | Move buffer to bottom split |
+| `<leader>wl` | Move buffer to right split  |
 
 ### Splitting
 
@@ -524,6 +524,14 @@ Use this when you need to rename variables or make targeted edits across many fi
 | `<leader>cO` | Aerial Nav                           |
 | `<leader>cs` | Symbols (Trouble)                    |
 | `<leader>cl` | LSP definitions/references (Trouble) |
+
+### LSP Server Management
+
+| Key          | Action      |
+| ------------ | ----------- |
+| `<leader>lr` | Restart LSP |
+| `<leader>li` | LSP info    |
+| `<leader>ll` | LSP log     |
 
 ### Diagnostics
 
@@ -849,6 +857,7 @@ Press `<leader>` and wait to see all groups:
 | `<leader>gi`    | Go Insert            |
 | `<leader>gs`    | Go Struct Tags       |
 | `<leader>h`     | Harpoon              |
+| `<leader>l`     | LSP                  |
 | `<leader>j`     | Java                 |
 | `<leader>o`     | Obsidian             |
 | `<leader>p`     | Plugins              |
@@ -886,13 +895,13 @@ Press `<leader>` and wait to see all groups:
 
 Auto-saved per project directory. Restores open files, splits, and cursor positions.
 
-| Key          | Action              |
-| ------------ | ------------------- |
-| `<leader>Ss` | Save session        |
-| `<leader>Sr` | Restore session     |
-| `<leader>Sd` | Delete session      |
-| `<leader>Sf` | Find sessions       |
-| `<leader>Sa` | Toggle auto-save    |
+| Key          | Action           |
+| ------------ | ---------------- |
+| `<leader>Ss` | Save session     |
+| `<leader>Sr` | Restore session  |
+| `<leader>Sd` | Delete session   |
+| `<leader>Sf` | Find sessions    |
+| `<leader>Sa` | Toggle auto-save |
 
 ---
 

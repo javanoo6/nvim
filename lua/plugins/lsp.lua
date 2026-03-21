@@ -48,6 +48,12 @@ return {
 					end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
 				end,
 			})
+
+			-- LSP server management
+			map("n", "<leader>lr", "<cmd>LspRestart<cr>", { desc = "Restart LSP" })
+			map("n", "<leader>li", "<cmd>LspInfo<cr>",    { desc = "LSP info" })
+			map("n", "<leader>ll", "<cmd>LspLog<cr>",     { desc = "LSP log" })
+
 			local capabilities = vim.tbl_deep_extend(
 			"force",
 			require("cmp_nvim_lsp").default_capabilities(),
