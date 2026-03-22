@@ -74,7 +74,34 @@ npm install -g prettier prettier-plugin-java
 
 ---
 
-## 4. LazyGit
+## 4. Kitty terminal
+
+This config is used with **Kitty** as the primary terminal.
+
+```bash
+# Install kitty:
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+
+# Or via apt:
+sudo apt-get install kitty
+```
+
+**Required:** a **Nerd Font** must be set in `~/.config/kitty/kitty.conf` so that
+bufferline separators, lualine icons, neo-tree glyphs, and devicons render correctly.
+
+Current font in use: `IosevkaTerm Nerd Font Mono`
+
+```bash
+# kitty.conf
+font_family IosevkaTerm Nerd Font Mono
+font_size 15.0
+```
+
+Download Nerd Fonts from: https://www.nerdfonts.com/font-downloads
+
+---
+
+## 6. LazyGit
 
 ```bash
 # Ubuntu PPA:
@@ -86,13 +113,13 @@ sudo apt-get update && sudo apt-get install lazygit
 
 ---
 
-## 5. Mason-managed tools (auto-installed on first launch)
+## 7. Mason-managed tools (auto-installed on first launch)
 
 These are installed automatically by Mason — no manual action needed.
 Listed here for reference only.
 
 | Tool                   | Purpose                  |
-|------------------------|--------------------------|
+| ---------------------- | ------------------------ |
 | `lua-language-server`  | Lua LSP                  |
 | `bash-language-server` | Bash LSP                 |
 | `json-lsp`             | JSON LSP                 |
@@ -111,7 +138,7 @@ Listed here for reference only.
 
 ---
 
-## 6. Go extras (run once inside Neovim)
+## 8. Go extras (run once inside Neovim)
 
 ```
 :GoInstallDeps
@@ -121,7 +148,7 @@ Installs: `gomodifytags`, `iferr` — used by gopher.nvim for struct tag generat
 
 ---
 
-## 7. MapStruct (Java projects)
+## 9. MapStruct (Java projects)
 
 For MapStruct + Lombok to work correctly, `annotationProcessorPaths` in `pom.xml` must follow this order:
 
@@ -148,7 +175,7 @@ For MapStruct + Lombok to work correctly, `annotationProcessorPaths` in `pom.xml
 
 ---
 
-## 8. Treesitter parsers (auto-compiled on first launch)
+## 10. Treesitter parsers (auto-compiled on first launch)
 
 Installed automatically via `:TSUpdate`. Requires `gcc` or `clang`:
 

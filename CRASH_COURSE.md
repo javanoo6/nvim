@@ -305,13 +305,22 @@ Select text first, then press `gsa` + bracket/quote:
 
 ### Replace (project-wide — grug-far)
 
-| Key          | Mode   | Action                              |
-| ------------ | ------ | ----------------------------------- |
-| `<leader>rg` | normal | Open search & replace panel (blank) |
-| `<leader>rw` | normal | Open with word under cursor         |
-| `<leader>rg` | visual | Open with selection as search term  |
+| Key          | Mode   | Action                                              |
+| ------------ | ------ | --------------------------------------------------- |
+| `<leader>rg` | normal | Open scoped to **current file** (Paths pre-filled)  |
+| `<leader>rG` | normal | Open across **all files** (blank, full project)     |
+| `<leader>rw` | normal | Open with word under cursor, scoped to current file |
+| `<leader>rg` | visual | Open with selection, scoped to current file         |
 
-**Tip:** Inside grug-far you can scope to specific paths/globs, preview all matches before replacing, and undo all replacements at once.
+**How to use grug-far:**
+
+1. Open with one of the keys above
+2. Fill in **Search** and **Replace** fields (`Tab` to move between them)
+3. Results preview updates live as you type
+4. Press `\r` (`<localleader>r`) to **apply** all replacements
+5. Press `q` to close
+
+**Tip:** Clear the **Paths** field to expand search to the whole project. Use glob patterns like `*.go` in Paths to scope by filetype.
 
 ### Replace (within visual selection)
 

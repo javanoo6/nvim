@@ -5,24 +5,31 @@ return {
 		{
 			"<leader>rg",
 			function()
+				require("grug-far").open({ prefills = { paths = vim.fn.expand("%") } })
+			end,
+			desc = "Search & Replace (current file)",
+		},
+		{
+			"<leader>rG",
+			function()
 				require("grug-far").open()
 			end,
-			desc = "Search & Replace (grug-far)",
+			desc = "Search & Replace (all files)",
 		},
 		{
 			"<leader>rw",
 			function()
-				require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
+				require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>"), paths = vim.fn.expand("%") } })
 			end,
-			desc = "Replace word under cursor",
+			desc = "Replace word under cursor (current file)",
 			mode = "n",
 		},
 		{
 			"<leader>rg",
 			function()
-				require("grug-far").with_visual_selection()
+				require("grug-far").with_visual_selection({ prefills = { paths = vim.fn.expand("%") } })
 			end,
-			desc = "Search & Replace selection (grug-far)",
+			desc = "Search & Replace selection (current file)",
 			mode = "v",
 		},
 	},

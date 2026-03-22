@@ -147,9 +147,28 @@ return {
 			{ "]b",         "<cmd>BufferLineCycleNext<cr>",            desc = "Next buffer" },
 		},
 		opts = {
+			highlights = {
+				buffer_selected = {
+					italic = true,
+					bold = false,
+					fg = { highlight = "Function", attribute = "fg" },
+				},
+				separator = {
+					fg = { highlight = "Normal", attribute = "bg" },
+				},
+				separator_selected = {
+					fg = { highlight = "Normal", attribute = "bg" },
+				},
+				separator_visible = {
+					fg = { highlight = "Normal", attribute = "bg" },
+				},
+			},
 			options = {
 				diagnostics = "nvim_lsp",
 				always_show_bufferline = false,
+				separator_style = "slant",
+				indicator = { style = "none" },
+				color_icons = true,
 				offsets = {
 					{
 						filetype = "neo-tree",
