@@ -89,8 +89,12 @@ map("n", "[l", "<cmd>lprev<cr>", { desc = "Prev loclist" })
 map("n", "]l", "<cmd>lnext<cr>", { desc = "Next loclist" })
 
 -- Diagnostics
-map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, { desc = "Prev diagnostic" })
-map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "Next diagnostic" })
+map("n", "[d", function()
+	vim.diagnostic.jump({ count = -1 })
+end, { desc = "Prev diagnostic" })
+map("n", "]d", function()
+	vim.diagnostic.jump({ count = 1 })
+end, { desc = "Next diagnostic" })
 map("n", "<leader>xd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 map("n", "<leader>xl", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 
@@ -127,35 +131,47 @@ map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Prev" })
 map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close" })
 
 -- UI Toggles
-map("n", "<leader>us", function() util.toggle("spell") end, { desc = "Spelling" })
-map("n", "<leader>uw", function() util.toggle("wrap") end, { desc = "Wrap" })
-map("n", "<leader>ul", function() util.toggle("relativenumber") end, { desc = "Relative numbers" })
-map("n", "<leader>un", function() util.toggle("number") end, { desc = "Line numbers" })
-map("n", "<leader>uf", function() util.toggle("foldenable") end, { desc = "Fold" })
+map("n", "<leader>us", function()
+	util.toggle("spell")
+end, { desc = "Spelling" })
+map("n", "<leader>uw", function()
+	util.toggle("wrap")
+end, { desc = "Wrap" })
+map("n", "<leader>ul", function()
+	util.toggle("relativenumber")
+end, { desc = "Relative numbers" })
+map("n", "<leader>un", function()
+	util.toggle("number")
+end, { desc = "Line numbers" })
+map("n", "<leader>uf", function()
+	util.toggle("foldenable")
+end, { desc = "Fold" })
 map("n", "<leader>ud", function()
-  local vl = vim.diagnostic.config().virtual_lines
-  if vl then
-    vim.diagnostic.config({ virtual_lines = false, virtual_text = true })
-  else
-    vim.diagnostic.config({ virtual_lines = { only_current_line = true }, virtual_text = false })
-  end
+	local vl = vim.diagnostic.config().virtual_lines
+	if vl then
+		vim.diagnostic.config({ virtual_lines = false, virtual_text = true })
+	else
+		vim.diagnostic.config({ virtual_lines = { only_current_line = true }, virtual_text = false })
+	end
 end, { desc = "Toggle diagnostic virtual lines" })
 map("n", "<leader>uD", function()
-  local config = vim.diagnostic.config()
-  if config.virtual_lines or config.virtual_text then
-    vim.diagnostic.config({ virtual_lines = false, virtual_text = false })
-  else
-    vim.diagnostic.config({ virtual_lines = { only_current_line = true }, virtual_text = false })
-  end
+	local config = vim.diagnostic.config()
+	if config.virtual_lines or config.virtual_text then
+		vim.diagnostic.config({ virtual_lines = false, virtual_text = false })
+	else
+		vim.diagnostic.config({ virtual_lines = { only_current_line = true }, virtual_text = false })
+	end
 end, { desc = "Toggle diagnostic messages" })
 
 -- Code
-map({ "n", "v" }, "<leader>cf", function() util.format() end, { desc = "Format" })
+map({ "n", "v" }, "<leader>cf", function()
+	util.format()
+end, { desc = "Format" })
 
 -- Go to definition in vertical split (right)
 map("n", "<leader>gd", function()
-  vim.cmd("vsplit")
-  vim.lsp.buf.definition()
+	vim.cmd("vsplit")
+	vim.lsp.buf.definition()
 end, { desc = "Goto definition in vsplit" })
 map("n", "<leader>ci", function()
 	vim.lsp.buf.code_action({
@@ -174,7 +190,6 @@ end, { desc = "Fix package declaration" })
 
 -- Replacing
 map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })
-
 
 -- Treesitter re-attach
 map("n", "<leader>xh", function()
@@ -227,13 +242,17 @@ local function default_branch()
 	return res.code == 0 and "main" or "master"
 end
 
-map("n", "<leader>gD", "<cmd>DiffviewOpen<cr>",                          { desc = "Repo diff" })
-map("n", "<leader>gF", "<cmd>DiffviewFileHistory --follow %<cr>",        { desc = "File history" })
-map("n", "<leader>gH", "<cmd>DiffviewFileHistory<cr>",                   { desc = "Repo history" })
-map("n", "<leader>gL", "<Cmd>.DiffviewFileHistory --follow<CR>",         { desc = "Line history" })
-map("v", "<leader>gL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>",{ desc = "Range history" })
-map("n", "<leader>gm", function() vim.cmd("DiffviewOpen " .. default_branch()) end,              { desc = "Diff vs main/master" })
-map("n", "<leader>gM", function() vim.cmd("DiffviewOpen HEAD..origin/" .. default_branch()) end, { desc = "Diff vs origin/main" })
+map("n", "<leader>gD", "<cmd>DiffviewOpen<cr>", { desc = "Repo diff" })
+map("n", "<leader>gF", "<cmd>DiffviewFileHistory --follow %<cr>", { desc = "File history" })
+map("n", "<leader>gH", "<cmd>DiffviewFileHistory<cr>", { desc = "Repo history" })
+map("n", "<leader>gL", "<Cmd>.DiffviewFileHistory --follow<CR>", { desc = "Line history" })
+map("v", "<leader>gL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Range history" })
+map("n", "<leader>gm", function()
+	vim.cmd("DiffviewOpen " .. default_branch())
+end, { desc = "Diff vs main/master" })
+map("n", "<leader>gM", function()
+	vim.cmd("DiffviewOpen HEAD..origin/" .. default_branch())
+end, { desc = "Diff vs origin/main" })
 
 -- Run Go program
 map("n", "<leader>gr", "<cmd>term go run .<cr>", { desc = "Go run (current dir)" })
@@ -245,45 +264,77 @@ map("n", "<leader>gt", "<cmd>term go test ./...<cr>", { desc = "Go test all" })
 -- ga: text right of cursor goes to line above
 -- gA: text right of cursor goes to line below
 map("n", "ga", function()
-  local line = vim.api.nvim_get_current_line()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
-  local left = line:sub(1, col)
-  local right = line:sub(col + 1)
-  local lnum = vim.api.nvim_win_get_cursor(0)[1]
-  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
-  vim.api.nvim_win_set_cursor(0, { lnum, 0 })
+	local line = vim.api.nvim_get_current_line()
+	local col = vim.api.nvim_win_get_cursor(0)[2]
+	local left = line:sub(1, col)
+	local right = line:sub(col + 1)
+	local lnum = vim.api.nvim_win_get_cursor(0)[1]
+	vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
+	vim.api.nvim_win_set_cursor(0, { lnum, 0 })
 end, { desc = "Split line up (text right of cursor goes up)" })
 
 map("n", "gA", function()
-  local line = vim.api.nvim_get_current_line()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
-  local left = line:sub(1, col)
-  local right = line:sub(col + 1)
-  local lnum = vim.api.nvim_win_get_cursor(0)[1]
-  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
-  vim.api.nvim_win_set_cursor(0, { lnum + 1, 0 })
+	local line = vim.api.nvim_get_current_line()
+	local col = vim.api.nvim_win_get_cursor(0)[2]
+	local left = line:sub(1, col)
+	local right = line:sub(col + 1)
+	local lnum = vim.api.nvim_win_get_cursor(0)[1]
+	vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
+	vim.api.nvim_win_set_cursor(0, { lnum + 1, 0 })
 end, { desc = "Split line down (text right of cursor goes down)" })
 
 -- Treesitter Text Objects (visual and operator-pending modes)
 -- These require nvim-treesitter-textobjects plugin
 -- Select mappings
-map({ "x", "o" }, "af", function() require("nvim-treesitter.textobjects.select").select_textobject("@function.outer") end, { desc = "Select outer function" })
-map({ "x", "o" }, "if", function() require("nvim-treesitter.textobjects.select").select_textobject("@function.inner") end, { desc = "Select inner function" })
-map({ "x", "o" }, "ac", function() require("nvim-treesitter.textobjects.select").select_textobject("@class.outer") end, { desc = "Select outer class" })
-map({ "x", "o" }, "ic", function() require("nvim-treesitter.textobjects.select").select_textobject("@class.inner") end, { desc = "Select inner class" })
-map({ "x", "o" }, "aa", function() require("nvim-treesitter.textobjects.select").select_textobject("@parameter.outer") end, { desc = "Select outer parameter" })
-map({ "x", "o" }, "ia", function() require("nvim-treesitter.textobjects.select").select_textobject("@parameter.inner") end, { desc = "Select inner parameter" })
-map({ "x", "o" }, "al", function() require("nvim-treesitter.textobjects.select").select_textobject("@loop.outer") end, { desc = "Select outer loop" })
-map({ "x", "o" }, "il", function() require("nvim-treesitter.textobjects.select").select_textobject("@loop.inner") end, { desc = "Select inner loop" })
-map({ "x", "o" }, "ai", function() require("nvim-treesitter.textobjects.select").select_textobject("@conditional.outer") end, { desc = "Select outer conditional" })
-map({ "x", "o" }, "ii", function() require("nvim-treesitter.textobjects.select").select_textobject("@conditional.inner") end, { desc = "Select inner conditional" })
+map({ "x", "o" }, "af", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@function.outer")
+end, { desc = "Select outer function" })
+map({ "x", "o" }, "if", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@function.inner")
+end, { desc = "Select inner function" })
+map({ "x", "o" }, "ac", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@class.outer")
+end, { desc = "Select outer class" })
+map({ "x", "o" }, "ic", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@class.inner")
+end, { desc = "Select inner class" })
+map({ "x", "o" }, "aa", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@parameter.outer")
+end, { desc = "Select outer parameter" })
+map({ "x", "o" }, "ia", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@parameter.inner")
+end, { desc = "Select inner parameter" })
+map({ "x", "o" }, "al", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@loop.outer")
+end, { desc = "Select outer loop" })
+map({ "x", "o" }, "il", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@loop.inner")
+end, { desc = "Select inner loop" })
+map({ "x", "o" }, "ai", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@conditional.outer")
+end, { desc = "Select outer conditional" })
+map({ "x", "o" }, "ii", function()
+	require("nvim-treesitter.textobjects.select").select_textobject("@conditional.inner")
+end, { desc = "Select inner conditional" })
 
 -- Move to next text object
-map({ "n", "x", "o" }, "]f", function() require("nvim-treesitter.textobjects.move").goto_next_start("@function.outer") end, { desc = "Next function start" })
-map({ "n", "x", "o" }, "]c", function() require("nvim-treesitter.textobjects.move").goto_next_start("@class.outer") end, { desc = "Next class start" })
-map({ "n", "x", "o" }, "]a", function() require("nvim-treesitter.textobjects.move").goto_next_start("@parameter.inner") end, { desc = "Next parameter start" })
+map({ "n", "x", "o" }, "]f", function()
+	require("nvim-treesitter.textobjects.move").goto_next_start("@function.outer")
+end, { desc = "Next function start" })
+map({ "n", "x", "o" }, "]c", function()
+	require("nvim-treesitter.textobjects.move").goto_next_start("@class.outer")
+end, { desc = "Next class start" })
+map({ "n", "x", "o" }, "]a", function()
+	require("nvim-treesitter.textobjects.move").goto_next_start("@parameter.inner")
+end, { desc = "Next parameter start" })
 
 -- Move to previous text object
-map({ "n", "x", "o" }, "[f", function() require("nvim-treesitter.textobjects.move").goto_previous_start("@function.outer") end, { desc = "Previous function start" })
-map({ "n", "x", "o" }, "[c", function() require("nvim-treesitter.textobjects.move").goto_previous_start("@class.outer") end, { desc = "Previous class start" })
-map({ "n", "x", "o" }, "[a", function() require("nvim-treesitter.textobjects.move").goto_previous_start("@parameter.inner") end, { desc = "Previous parameter start" })
+map({ "n", "x", "o" }, "[f", function()
+	require("nvim-treesitter.textobjects.move").goto_previous_start("@function.outer")
+end, { desc = "Previous function start" })
+map({ "n", "x", "o" }, "[c", function()
+	require("nvim-treesitter.textobjects.move").goto_previous_start("@class.outer")
+end, { desc = "Previous class start" })
+map({ "n", "x", "o" }, "[a", function()
+	require("nvim-treesitter.textobjects.move").goto_previous_start("@parameter.inner")
+end, { desc = "Previous parameter start" })

@@ -16,8 +16,8 @@ return {
 		keys = {
 			{ "<leader>gsj", "<cmd>GoTagAdd json<cr>", desc = "Add JSON struct tags" },
 			{ "<leader>gsy", "<cmd>GoTagAdd yaml<cr>", desc = "Add YAML struct tags" },
-			{ "<leader>gsd", "<cmd>GoTagAdd db<cr>", desc = "Add DB struct tags" },
-			{ "<leader>gie", "<cmd>GoIfErr<cr>", desc = "Add if err != nil" },
+			{ "<leader>gsd", "<cmd>GoTagAdd db<cr>",   desc = "Add DB struct tags" },
+			{ "<leader>gie", "<cmd>GoIfErr<cr>",       desc = "Add if err != nil" },
 		},
 	},
 }

@@ -143,16 +143,56 @@ return {
 			themes = {
 				{ name = "TokyoNight Night", colorscheme = "tokyonight-night" },
 				{ name = "TokyoNight Storm", colorscheme = "tokyonight-storm" },
-				{ name = "Kanagawa Wave",    colorscheme = "kanagawa-wave",   before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]] },
-				{ name = "Kanagawa Dragon",  colorscheme = "kanagawa-dragon", before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]] },
-				{ name = "Kanagawa Lotus",   colorscheme = "kanagawa-lotus",  before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]] },
-				{ name = "JB",               colorscheme = "jb",              before = [[require("lazy").load({ plugins = { "jb.nvim" } })]] },
-				{ name = "Oxocarbon",        colorscheme = "oxocarbon",       before = [[require("lazy").load({ plugins = { "oxocarbon.nvim" } })]] },
-				{ name = "Nordic",           colorscheme = "nordic",          before = [[require("lazy").load({ plugins = { "nordic.nvim" } })]] },
-				{ name = "Vague",            colorscheme = "vague",           before = [[require("lazy").load({ plugins = { "vague.nvim" } })]] },
-				{ name = "OneNord",          colorscheme = "onenord",         before = [[require("lazy").load({ plugins = { "onenord.nvim" } })]] },
-				{ name = "Evergarden",       colorscheme = "evergarden",      before = [[require("lazy").load({ plugins = { "evergarden" } })]] },
-				{ name = "Poimandres",       colorscheme = "poimandres",      before = [[require("lazy").load({ plugins = { "poimandres.nvim" } })]] },
+				{
+					name = "Kanagawa Wave",
+					colorscheme = "kanagawa-wave",
+					before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]],
+				},
+				{
+					name = "Kanagawa Dragon",
+					colorscheme = "kanagawa-dragon",
+					before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]],
+				},
+				{
+					name = "Kanagawa Lotus",
+					colorscheme = "kanagawa-lotus",
+					before = [[require("lazy").load({ plugins = { "kanagawa.nvim" } })]],
+				},
+				{
+					name = "JB",
+					colorscheme = "jb",
+					before = [[require("lazy").load({ plugins = { "jb.nvim" } })]],
+				},
+				{
+					name = "Oxocarbon",
+					colorscheme = "oxocarbon",
+					before = [[require("lazy").load({ plugins = { "oxocarbon.nvim" } })]],
+				},
+				{
+					name = "Nordic",
+					colorscheme = "nordic",
+					before = [[require("lazy").load({ plugins = { "nordic.nvim" } })]],
+				},
+				{
+					name = "Vague",
+					colorscheme = "vague",
+					before = [[require("lazy").load({ plugins = { "vague.nvim" } })]],
+				},
+				{
+					name = "OneNord",
+					colorscheme = "onenord",
+					before = [[require("lazy").load({ plugins = { "onenord.nvim" } })]],
+				},
+				{
+					name = "Evergarden",
+					colorscheme = "evergarden",
+					before = [[require("lazy").load({ plugins = { "evergarden" } })]],
+				},
+				{
+					name = "Poimandres",
+					colorscheme = "poimandres",
+					before = [[require("lazy").load({ plugins = { "poimandres.nvim" } })]],
+				},
 			},
 		},
 		keys = {

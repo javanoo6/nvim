@@ -31,42 +31,66 @@ return {
 			},
 		},
 		keys = {
-			{ "<leader><space>", "<cmd>Telescope find_files<cr>",            desc = "Find files" },
-			{ "<leader>ff",      "<cmd>Telescope find_files<cr>",            desc = "Find files" },
-			{ "<leader>fg",      "<cmd>Telescope live_grep<cr>",             desc = "Grep" },
-			{ "<leader>fb",      "<cmd>Telescope buffers<cr>",               desc = "Buffers" },
-			{ "<leader>fR",      "<cmd>Telescope oldfiles<cr>",              desc = "Recent files" },
-			{ "<leader>fh",      "<cmd>YankyRingHistory<cr>",                 desc = "Yank history" },
-		{ "<leader>fH",      "<cmd>Telescope command_history<cr>",        desc = "Command history" },
-		{ "<leader>fS",      "<cmd>Telescope search_history<cr>",         desc = "Search history" },
-		{ "<leader>fr",      "<cmd>Telescope resume<cr>",                 desc = "Resume last search" },
-		{
-			"<leader>fe",
-			function()
-				vim.ui.input({ prompt = "Extension: " }, function(ext)
-					if ext and ext ~= "" then
-						require("telescope.builtin").live_grep({
-							glob_pattern = "*." .. ext,
-							prompt_title = "Grep in *." .. ext,
-						})
-					end
-				end)
-			end,
-			desc = "Grep by extension",
-		},
-			{ "<leader>:",       "<cmd>Telescope command_history<cr>",       desc = "Command history" },
-			{ "<leader>ss",      "<cmd>Telescope lsp_document_symbols<cr>",  desc = "Document symbols" },
-			{ "<leader>sS",      "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
+			{ "<leader><space>", "<cmd>Telescope find_files<cr>",      desc = "Find files" },
+			{ "<leader>ff",      "<cmd>Telescope find_files<cr>",      desc = "Find files" },
+			{ "<leader>fg",      "<cmd>Telescope live_grep<cr>",       desc = "Grep" },
+			{ "<leader>fb",      "<cmd>Telescope buffers<cr>",         desc = "Buffers" },
+			{ "<leader>fR",      "<cmd>Telescope oldfiles<cr>",        desc = "Recent files" },
+			{ "<leader>fh",      "<cmd>YankyRingHistory<cr>",          desc = "Yank history" },
+			{ "<leader>fH",      "<cmd>Telescope command_history<cr>", desc = "Command history" },
+			{ "<leader>fS",      "<cmd>Telescope search_history<cr>",  desc = "Search history" },
+			{ "<leader>fr",      "<cmd>Telescope resume<cr>",          desc = "Resume last search" },
+			{
+				"<leader>fe",
+				function()
+					vim.ui.input({ prompt = "Extension: " }, function(ext)
+						if ext and ext ~= "" then
+							require("telescope.builtin").live_grep({
+								glob_pattern = "*." .. ext,
+								prompt_title = "Grep in *." .. ext,
+							})
+						end
+					end)
+				end,
+				desc = "Grep by extension",
+			},
+			{ "<leader>:",  "<cmd>Telescope command_history<cr>",       desc = "Command history" },
+			{ "<leader>ss", "<cmd>Telescope lsp_document_symbols<cr>",  desc = "Document symbols" },
+			{ "<leader>sS", "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
 		},
 		opts = function()
 			local actions = require("telescope.actions")
 			local previewable_extensions = {
-				java = true, go = true, py = true, lua = true, ts = true,
-				js = true, tsx = true, jsx = true, rs = true, c = true,
-				cpp = true, h = true, hpp = true, sh = true, bash = true,
-				zsh = true, yaml = true, yml = true, json = true, toml = true,
-				md = true, sql = true, html = true, css = true, xml = true,
-				kt = true, swift = true, rb = true, php = true, cs = true,
+				java = true,
+				go = true,
+				py = true,
+				lua = true,
+				ts = true,
+				js = true,
+				tsx = true,
+				jsx = true,
+				rs = true,
+				c = true,
+				cpp = true,
+				h = true,
+				hpp = true,
+				sh = true,
+				bash = true,
+				zsh = true,
+				yaml = true,
+				yml = true,
+				json = true,
+				toml = true,
+				md = true,
+				sql = true,
+				html = true,
+				css = true,
+				xml = true,
+				kt = true,
+				swift = true,
+				rb = true,
+				php = true,
+				cs = true,
 			}
 			return {
 				defaults = {
@@ -78,14 +102,42 @@ return {
 						"%.git/",
 						"%.DS_Store$",
 						"node_modules/",
-						"%.jpg$", "%.jpeg$", "%.png$", "%.gif$", "%.webp$",
-						"%.ico$", "%.svg$", "%.mp4$", "%.webm$", "%.avi$",
-						"%.mov$", "%.pdf$", "%.zip$", "%.tar$", "%.gz$",
-						"%.exe$", "%.dll$", "%.so$", "%.dylib$", "%.bin$",
-						"%.class$", "%.jar$", "%.war$", "%.ear$",
-						"%.o$", "%.obj$", "%.a$", "%.lib$", "%.pyc$",
-						"__pycache__/", "%.min.js$", "%.min.css$",
-						"dist/", "build/", "target/", "%.lock$",
+						"%.jpg$",
+						"%.jpeg$",
+						"%.png$",
+						"%.gif$",
+						"%.webp$",
+						"%.ico$",
+						"%.svg$",
+						"%.mp4$",
+						"%.webm$",
+						"%.avi$",
+						"%.mov$",
+						"%.pdf$",
+						"%.zip$",
+						"%.tar$",
+						"%.gz$",
+						"%.exe$",
+						"%.dll$",
+						"%.so$",
+						"%.dylib$",
+						"%.bin$",
+						"%.class$",
+						"%.jar$",
+						"%.war$",
+						"%.ear$",
+						"%.o$",
+						"%.obj$",
+						"%.a$",
+						"%.lib$",
+						"%.pyc$",
+						"__pycache__/",
+						"%.min.js$",
+						"%.min.css$",
+						"dist/",
+						"build/",
+						"target/",
+						"%.lock$",
 					},
 					preview = {
 						filetype_hook = function(filepath, bufnr, opts)
@@ -106,7 +158,7 @@ return {
 							["<C-d>"] = actions.preview_scrolling_down,
 							["<C-u>"] = actions.preview_scrolling_up,
 							["<Home>"] = actions.move_to_top,
-							["<End>"]  = actions.move_to_bottom,
+							["<End>"] = actions.move_to_bottom,
 						},
 					},
 				},
@@ -170,13 +222,17 @@ return {
 					-- Expand node and all single-child descendants
 					expand_single_children = function(state)
 						local node = state.tree:get_node()
-						if node.type ~= "directory" then return end
+						if node.type ~= "directory" then
+							return
+						end
 
 						local fs = require("neo-tree.sources.filesystem")
 						local renderer = require("neo-tree.ui.renderer")
 
 						local function expand_node(n)
-							if n.type ~= "directory" then return end
+							if n.type ~= "directory" then
+								return
+							end
 							if not n:is_expanded() then
 								n:expand()
 							end
@@ -220,7 +276,7 @@ return {
 						-- Override default open behavior
 						["<cr>"] = "expand_single_children",
 						["o"] = "open",
-						["s"] = "open_with_window_picker",  -- Open with window picker
+						["s"] = "open_with_window_picker", -- Open with window picker
 						["<C-v>"] = "open_vsplit",
 						["<C-x>"] = "open_split",
 						["<C-t>"] = "open_tabnew",
@@ -237,44 +293,6 @@ return {
 					end,
 				},
 			},
-		},
-	},
-
-	-- Git signs
-	{
-		"lewis6991/gitsigns.nvim",
-		event = "LazyFile",
-		opts = {
-			signs = {
-				add = { text = "▎" },
-				change = { text = "▎" },
-				delete = { text = "" },
-				topdelete = { text = "" },
-				changedelete = { text = "▎" },
-				untracked = { text = "▎" },
-			},
-			current_line_blame = false,
-			current_line_blame_opts = {
-				virt_text = true,
-				virt_text_pos = "eol",
-				delay = 500,
-				ignore_whitespace = false,
-			},
-			on_attach = function(buffer)
-				local gs = package.loaded.gitsigns
-				local map = require("util").map
-
-				map("n", "]h", gs.next_hunk, { buffer = buffer, desc = "Next hunk" })
-				map("n", "[h", gs.prev_hunk, { buffer = buffer, desc = "Prev hunk" })
-				map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", { buffer = buffer, desc = "Stage hunk" })
-				map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", { buffer = buffer, desc = "Reset hunk" })
-				map("n", "<leader>ghS", gs.stage_buffer, { buffer = buffer, desc = "Stage buffer" })
-				map("n", "<leader>ghu", gs.undo_stage_hunk, { buffer = buffer, desc = "Undo stage hunk" })
-				map("n", "<leader>ghR", gs.reset_buffer, { buffer = buffer, desc = "Reset buffer" })
-				map("n", "<leader>ghp", gs.preview_hunk, { buffer = buffer, desc = "Preview hunk" })
-				map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, { buffer = buffer, desc = "Blame line" })
-				map("n", "<leader>ghd", gs.diffthis, { buffer = buffer, desc = "Diff this" })
-			end,
 		},
 	},
 
@@ -313,12 +331,48 @@ return {
 		branch = "master",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		keys = {
-			{ "<leader>ha", function() require("harpoon.mark").add_file() end,        desc = "Add file" },
-			{ "<leader>hh", function() require("harpoon.ui").toggle_quick_menu() end, desc = "Harpoon menu" },
-			{ "<leader>h1", function() require("harpoon.ui").nav_file(1) end,         desc = "File 1" },
-			{ "<leader>h2", function() require("harpoon.ui").nav_file(2) end,         desc = "File 2" },
-			{ "<leader>h3", function() require("harpoon.ui").nav_file(3) end,         desc = "File 3" },
-			{ "<leader>h4", function() require("harpoon.ui").nav_file(4) end,         desc = "File 4" },
+			{
+				"<leader>ha",
+				function()
+					require("harpoon.mark").add_file()
+				end,
+				desc = "Add file",
+			},
+			{
+				"<leader>hh",
+				function()
+					require("harpoon.ui").toggle_quick_menu()
+				end,
+				desc = "Harpoon menu",
+			},
+			{
+				"<leader>h1",
+				function()
+					require("harpoon.ui").nav_file(1)
+				end,
+				desc = "File 1",
+			},
+			{
+				"<leader>h2",
+				function()
+					require("harpoon.ui").nav_file(2)
+				end,
+				desc = "File 2",
+			},
+			{
+				"<leader>h3",
+				function()
+					require("harpoon.ui").nav_file(3)
+				end,
+				desc = "File 3",
+			},
+			{
+				"<leader>h4",
+				function()
+					require("harpoon.ui").nav_file(4)
+				end,
+				desc = "File 4",
+			},
 		},
 		opts = { menu = { width = 120 } },
 	},

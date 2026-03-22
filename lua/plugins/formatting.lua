@@ -17,7 +17,7 @@ return {
 			},
 		},
 		opts = {
---[[			formatters = {
+			--[[			formatters = {
 				prettier_java = {
 					command = "prettier",
 					args = { "--stdin-filepath", "$FILENAME", "--plugin", "prettier-plugin-java" },

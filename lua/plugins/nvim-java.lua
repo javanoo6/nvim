@@ -1,9 +1,9 @@
 -- ./lua/plugins/nvim-java.lua
 
 return {
-	'nvim-java/nvim-java',
+	"nvim-java/nvim-java",
 	config = function()
-		require('java').setup({
+		require("java").setup({
 			-- Startup checks
 			checks = {
 				nvim_version = true,
@@ -11,14 +11,14 @@ return {
 			},
 
 			-- Increase JVM heap to avoid OOM after many rename/refactor operations
-		jdtls = {
-			vmargs = {
-				"-Xms1g",
-				"-Xmx4g",
+			jdtls = {
+				vmargs = {
+					"-Xms1g",
+					"-Xmx4g",
+				},
 			},
-		},
 
-		-- Extensions (no pinned versions — let nvim-java pick compatible ones)
+			-- Extensions (no pinned versions — let nvim-java pick compatible ones)
 			lombok = { enable = true },
 			java_test = { enable = true },
 			java_debug_adapter = { enable = true },
@@ -32,12 +32,12 @@ return {
 			log = {
 				use_console = false,
 				use_file = true,
-				level = 'warn',
-				log_file = vim.fn.stdpath('state') .. '/nvim-java.log',
+				level = "warn",
+				log_file = vim.fn.stdpath("state") .. "/nvim-java.log",
 				max_lines = 1000,
 				show_location = false,
 			},
 		})
-		vim.lsp.enable('jdtls')
+		vim.lsp.enable("jdtls")
 	end,
 }

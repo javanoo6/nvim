@@ -14,12 +14,16 @@ return {
 		{ "<leader>xQ", "<cmd>Trouble qflist toggle<cr>",                   desc = "Quickfix List" },
 		{
 			"]q",
-			function() require("trouble").next({ skip_groups = true, jump = true }) end,
+			function()
+				require("trouble").next({ skip_groups = true, jump = true })
+			end,
 			desc = "Next trouble",
 		},
 		{
 			"[q",
-			function() require("trouble").prev({ skip_groups = true, jump = true }) end,
+			function()
+				require("trouble").prev({ skip_groups = true, jump = true })
+			end,
 			desc = "Prev trouble",
 		},
 	},

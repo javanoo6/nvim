@@ -14,7 +14,9 @@ return {
 		},
 		-- <A-c> to hide from within terminal mode
 		on_create = function(term)
-			vim.keymap.set("t", "<A-c>", function() term:toggle() end, { buffer = term.bufnr, desc = "Hide terminal" })
+			vim.keymap.set("t", "<A-c>", function()
+				term:toggle()
+			end, { buffer = term.bufnr, desc = "Hide terminal" })
 		end,
 	},
 }
