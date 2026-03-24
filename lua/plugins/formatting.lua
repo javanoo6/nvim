@@ -15,6 +15,14 @@ return {
 				mode = { "n", "v" },
 				desc = "Format",
 			},
+			{
+				"<leader>cI",
+				function()
+					require("conform").format({ formatters = { "idea_formatter" }, async = true })
+				end,
+				mode = { "n", "v" },
+				desc = "Format with IntelliJ formatter",
+			},
 		},
 		opts = {
 			--[[			formatters = {
@@ -25,6 +33,15 @@ return {
 				},
 			},]]
 			formatters = {
+				idea_formatter = {
+					command = "java",
+					args = {
+						"-jar",
+						"/home/konkov/Desktop/repos/idea-code-formatter/idea-code-formatter/target/idea-code-formatter-1.0.0-SNAPSHOT.jar",
+						"$FILENAME",
+					},
+					stdin = false,
+				},
 				["goimports-reviser"] = {
 					command = "goimports-reviser",
 					args = { "-output", "stdout", "$FILENAME" },

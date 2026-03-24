@@ -181,6 +181,10 @@ noice.nvim  (noice.lua)
 
 ```
 editor.lua
+  ├── oil.nvim                ── buffer-based file manager (rename/move/copy by editing text)
+  │     — `-` open parent dir, `<leader>-` open cwd
+  │     — edit filenames like a buffer, `:w` to apply; `g.` toggle hidden
+  │
   ├── telescope.nvim          ── fuzzy finder (<leader><space>, <leader>f*, <leader>s*)
   │     └── telescope-fzf-native.nvim  ── faster sorter (requires make)
   │
@@ -188,7 +192,7 @@ editor.lua
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │
-  ├── lazygit.nvim            ── LazyGit TUI  →  <leader>gg
+  ├── lazygit.nvim            ── LazyGit TUI  →  <leader>G
   │
   └── harpoon                 ── file bookmarks  →  <leader>ha add, <leader>hh menu
                                   <leader>h1-4 jump to slot
@@ -210,9 +214,9 @@ glance.lua
 ```
 git.lua
   ├── gitsigns.nvim       ── hunk signs, blame, diff, stage/reset
-  │                          Keymaps: ]h/[h, <leader>gh* (buffer-local)
+  │                          Keymaps: ]h/[h, <leader>Gh* (buffer-local)
   └── diffview.nvim       ── full diff viewer + file history
-                             Keymaps in keymaps.lua: <leader>gD/gF/gH/gL/gm/gM
+                             Keymaps in keymaps.lua: <leader>GD/GF/GH/GL/Gm/GM
 
 ```
 
@@ -221,24 +225,24 @@ git.lua
 | Key                   | Action                                |
 | --------------------- | ------------------------------------- |
 | `]h` / `[h`           | Next / prev hunk                      |
-| `<leader>ghs/ghr`     | Stage / reset hunk                    |
-| `<leader>ghS/ghR`     | Stage / reset buffer                  |
-| `<leader>ghu`         | Undo stage                            |
-| `<leader>ghp`         | Preview hunk                          |
-| `<leader>ghb/ghB`     | Blame line / toggle                   |
-| `<leader>ghd`         | Diff this                             |
-| `<leader>ghw/ghl/ghv` | Word diff / line hl / deleted toggles |
+| `<leader>Ghs/Ghr`     | Stage / reset hunk                    |
+| `<leader>GhS/GhR`     | Stage / reset buffer                  |
+| `<leader>Ghu`         | Undo stage                            |
+| `<leader>Ghp`         | Preview hunk                          |
+| `<leader>Ghb/GhB`     | Blame line / toggle                   |
+| `<leader>Ghd`         | Diff this                             |
+| `<leader>Ghw/Ghl/Ghv` | Word diff / line hl / deleted toggles |
 
 **Diffview keymaps** (keymaps.lua):
 
 | Key          | Action                   |
 | ------------ | ------------------------ |
-| `<leader>gD` | DiffviewOpen (repo diff) |
-| `<leader>gF` | File history             |
-| `<leader>gH` | Repo history             |
-| `<leader>gL` | Line/range history       |
-| `<leader>gm` | Diff vs main/master      |
-| `<leader>gM` | Diff vs origin/main      |
+| `<leader>GD` | DiffviewOpen (repo diff) |
+| `<leader>GF` | File history             |
+| `<leader>GH` | Repo history             |
+| `<leader>GL` | Line/range history       |
+| `<leader>Gm` | Diff vs main/master      |
+| `<leader>GM` | Diff vs origin/main      |
 
 ---
 
@@ -325,7 +329,7 @@ coding.lua
   ├── mini.surround   ── gsa/gsd/gsr/gsf add/delete/replace/find surrounding
   ├── mini.ai         ── enhanced text objects (af, if, ac, ic, ao, io, t=tag)
   └── yanky.nvim      ── yank history ring (p/P yanky-aware, <C-p>/<C-n> cycle)
-                          <leader>fh open yank history picker
+                          <leader>Hy open yank history picker
 
 editor.lua
   └── better-escape.nvim  ── smarter <Esc> handling in insert mode
@@ -467,6 +471,7 @@ lazy.nvim
 │   └── noice.nvim → nui.nvim + nvim-notify
 │
 ├── NAVIGATION
+│   ├── oil.nvim → nvim-web-devicons
 │   ├── telescope.nvim → telescope-fzf-native
 │   │   ├── project.nvim (projects.lua)
 │   │   └── obsidian.nvim (uses telescope as picker)
@@ -529,11 +534,13 @@ lazy.nvim
 | `<leader>d`     | debug          | nvim-dap                                                                  |
 | `<leader>dg`    | debug go       | nvim-dap-go                                                               |
 | `<leader>e/E`   | explorer       | neo-tree                                                                  |
+| `-` / `<leader>-` | oil          | oil.nvim                                                                  |
 | `<leader>f`     | file/find      | telescope, yanky                                                          |
-| `<leader>g`     | git            | gitsigns, diffview, lazygit, gopls                                        |
-| `<leader>gh`    | hunks          | gitsigns                                                                  |
+| `<leader>g`     | go             | gopls, gopher                                                             |
 | `<leader>gi`    | go insert      | gopher                                                                    |
 | `<leader>gs`    | go struct tags | gopher                                                                    |
+| `<leader>G`     | git            | gitsigns, diffview, lazygit                                               |
+| `<leader>Gh`    | hunks          | gitsigns                                                                  |
 | `<leader>h`     | harpoon        | harpoon                                                                   |
 | `<leader>j`     | java           | nvim-java                                                                 |
 | `<leader>l`     | lsp            | nvim-lspconfig                                                            |

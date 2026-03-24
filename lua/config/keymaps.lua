@@ -14,27 +14,27 @@
 --   Use <C-y> instead of <CR> when you want to chain completions without executing
 --
 -- NOTE: LazyGit Keymaps:
---   <leader>gg     - Open LazyGit
+--   <leader>G      - Open LazyGit
 --   <esc> (in LG)  - Back/Cancel in lazygit UI
 --   <C-q> (in LG)  - Exit terminal mode (back to nvim)
 --
 -- NOTE: Diffview Keymaps:
---   <leader>gD     - Repo diff (DiffviewOpen)
---   <leader>gF     - File history
---   <leader>gH     - Repo history
---   <leader>gL     - Line/range history
---   <leader>gm     - Diff vs main/master
---   <leader>gM     - Diff vs origin/main
+--   <leader>GD     - Repo diff (DiffviewOpen)
+--   <leader>GF     - File history
+--   <leader>GH     - Repo history
+--   <leader>GL     - Line/range history
+--   <leader>Gm     - Diff vs main/master
+--   <leader>GM     - Diff vs origin/main
 --
 -- NOTE: Gitsigns Keymaps (buffer-local, defined in plugins/git.lua):
 --   ]h / [h          - Next/prev hunk
---   <leader>ghs/ghr  - Stage/reset hunk
---   <leader>ghS/ghR  - Stage/reset buffer
---   <leader>ghu      - Undo stage hunk
---   <leader>ghp      - Preview hunk
---   <leader>ghb/ghB  - Blame line / toggle blame
---   <leader>ghd      - Diff this
---   <leader>ghw/ghl/ghv - Toggles: word diff / line hl / deleted
+--   <leader>Ghs/Ghr  - Stage/reset hunk
+--   <leader>GhS/GhR  - Stage/reset buffer
+--   <leader>Ghu      - Undo stage hunk
+--   <leader>Ghp      - Preview hunk
+--   <leader>Ghb/GhB  - Blame line / toggle blame
+--   <leader>Ghd      - Diff this
+--   <leader>Ghw/Ghl/Ghv - Toggles: word diff / line hl / deleted
 
 local util = require("util")
 local map = util.map
@@ -169,7 +169,7 @@ map({ "n", "v" }, "<leader>cf", function()
 end, { desc = "Format" })
 
 -- Go to definition in vertical split (right)
-map("n", "<leader>gd", function()
+map("n", "<leader>cd", function()
 	vim.cmd("vsplit")
 	vim.lsp.buf.definition()
 end, { desc = "Goto definition in vsplit" })
@@ -214,8 +214,23 @@ map("n", "<leader>xc", function()
 end, { desc = "Clear JDTLS cache" })
 
 -- Keep cursor centered when scrolling/jumping
-map("n", "<C-d>", "<C-d>zz", { desc = "Scroll down and center" })
 map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
+
+-- IntelliJ-style duplicate line/selection
+map("n", "<C-d>", function()
+	local lnum = vim.api.nvim_win_get_cursor(0)[1]
+	local col = vim.api.nvim_win_get_cursor(0)[2]
+	local line = vim.api.nvim_get_current_line()
+	vim.api.nvim_buf_set_lines(0, lnum, lnum, false, { line })
+	vim.api.nvim_win_set_cursor(0, { lnum + 1, col })
+end, { desc = "Duplicate line" })
+map("v", "<C-d>", function()
+	local start_line = vim.fn.line("'<")
+	local end_line = vim.fn.line("'>")
+	local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+	vim.api.nvim_buf_set_lines(0, end_line, end_line, false, lines)
+	vim.api.nvim_win_set_cursor(0, { end_line + 1, 0 })
+end, { desc = "Duplicate selection" })
 map("n", "n", "nzzzv", { desc = "Next match and center" })
 map("n", "N", "Nzzzv", { desc = "Prev match and center" })
 
@@ -242,15 +257,15 @@ local function default_branch()
 	return res.code == 0 and "main" or "master"
 end
 
-map("n", "<leader>gD", "<cmd>DiffviewOpen<cr>", { desc = "Repo diff" })
-map("n", "<leader>gF", "<cmd>DiffviewFileHistory --follow %<cr>", { desc = "File history" })
-map("n", "<leader>gH", "<cmd>DiffviewFileHistory<cr>", { desc = "Repo history" })
-map("n", "<leader>gL", "<Cmd>.DiffviewFileHistory --follow<CR>", { desc = "Line history" })
-map("v", "<leader>gL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Range history" })
-map("n", "<leader>gm", function()
+map("n", "<leader>GD", "<cmd>DiffviewOpen<cr>", { desc = "Repo diff" })
+map("n", "<leader>GF", "<cmd>DiffviewFileHistory --follow %<cr>", { desc = "File history" })
+map("n", "<leader>GH", "<cmd>DiffviewFileHistory<cr>", { desc = "Repo history" })
+map("n", "<leader>GL", "<Cmd>.DiffviewFileHistory --follow<CR>", { desc = "Line history" })
+map("v", "<leader>GL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Range history" })
+map("n", "<leader>Gm", function()
 	vim.cmd("DiffviewOpen " .. default_branch())
 end, { desc = "Diff vs main/master" })
-map("n", "<leader>gM", function()
+map("n", "<leader>GM", function()
 	vim.cmd("DiffviewOpen HEAD..origin/" .. default_branch())
 end, { desc = "Diff vs origin/main" })
 

@@ -88,7 +88,6 @@ nvim setup reference guide.
 
 | Key     | Action                           |
 | ------- | -------------------------------- |
-| `<C-d>` | Scroll down half page (centered) |
 | `<C-u>` | Scroll up half page (centered)   |
 | `<C-f>` | Scroll down full page            |
 | `<C-b>` | Scroll up full page              |
@@ -228,6 +227,13 @@ nvim setup reference guide.
 | `<A-j>`                                 | Move line up   |
 | `<A-k>`                                 | Move line down |
 | (Works in normal, insert, visual modes) |
+
+### Duplicating Lines (IntelliJ-style)
+
+| Key     | Mode   | Action                                                      |
+| ------- | ------ | ----------------------------------------------------------- |
+| `<C-d>` | normal | Duplicate current line below, cursor moves to the copy     |
+| `<C-d>` | visual | Duplicate all lines in selection below, cursor on first copy |
 
 ### Surround (Mini.surround)
 
@@ -432,17 +438,40 @@ across the project. This may modify many buffers at once. Save them all with `:w
 
 | Key          | Action                                  |
 | ------------ | --------------------------------------- |
-| `-`          | Open **Oil** (edit directory like text) |
+| `-`          | Open **Oil** (parent dir of current file) |
 | `<leader>-`  | Open **Oil** in cwd                     |
 | `<leader>fp` | Switch project (Telescope)              |
 
-### Inside Oil
+### Inside Oil (stevearc/oil.nvim)
 
-| Key    | Action                 |
-| ------ | ---------------------- |
-| `<CR>` | Open file / Enter dir  |
-| `-`    | Go to parent directory |
-| `q`    | Close Oil              |
+Oil treats the directory as a buffer — **edit filenames directly and `:w` to apply**.
+
+| Key      | Action                        |
+| -------- | ----------------------------- |
+| `<CR>`   | Open file / Enter dir         |
+| `-`      | Go to parent directory        |
+| `_`      | Open cwd root                 |
+| `<C-v>`  | Open in vertical split        |
+| `<C-x>`  | Open in horizontal split      |
+| `<C-t>`  | Open in new tab               |
+| `<C-r>`  | Refresh                       |
+| `g.`     | Toggle hidden files           |
+| `gx`     | Open with system app          |
+| `g?`     | Show help                     |
+| `q`      | Close Oil                     |
+
+**File operations (buffer-editing workflow):**
+
+| Task   | How                                                          |
+| ------ | ------------------------------------------------------------ |
+| Rename | Edit filename text inline → `:w`                            |
+| Move   | `dd` the line → navigate to target dir → `p` → `:w`        |
+| Copy   | `yy` the line → navigate to target dir → `p` → `:w`        |
+| Create | `o` new line with filename (trailing `/` = dir) → `:w`     |
+| Delete | `dd` the line → `:w`                                        |
+
+> **Tip:** All path edits have full vim completion (`<C-x><C-f>` for paths). Move across
+> directories by opening a second Oil split and yanking between them.
 
 ---
 
@@ -469,9 +498,9 @@ When typing commands with `:` and autocomplete menu appears:
 | `<leader>fg`      | Live grep (search in files) |
 | `<leader>fb`      | Buffers                     |
 | `<leader>fR`      | Recent files                |
-| `<leader>fh`      | Yank history                |
-| `<leader>fH`      | Command history             |
-| `<leader>fS`      | Search history              |
+| `<leader>Hy`      | Yank history                |
+| `<leader>Hc`      | Command history             |
+| `<leader>Hs`      | Search history              |
 | `<leader>:`       | Command history             |
 | `<leader>ss`      | Document symbols            |
 | `<leader>sS`      | Workspace symbols           |
@@ -639,7 +668,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 | Key          | Action       |
 | ------------ | ------------ |
-| `<leader>gg` | Open LazyGit |
+| `<leader>G` | Open LazyGit |
 
 **Inside LazyGit window:**
 
@@ -653,13 +682,13 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 | Key          | Action                   |
 | ------------ | ------------------------ |
-| `<leader>gD` | Repo diff (DiffviewOpen) |
-| `<leader>gF` | File history             |
-| `<leader>gH` | Repo history             |
-| `<leader>gL` | Line history (normal)    |
-| `<leader>gL` | Range history (visual)   |
-| `<leader>gm` | Diff vs main/master      |
-| `<leader>gM` | Diff vs origin/main      |
+| `<leader>GD` | Repo diff (DiffviewOpen) |
+| `<leader>GF` | File history             |
+| `<leader>GH` | Repo history             |
+| `<leader>GL` | Line history (normal)    |
+| `<leader>GL` | Range history (visual)   |
+| `<leader>Gm` | Diff vs main/master      |
+| `<leader>GM` | Diff vs origin/main      |
 
 **Inside Diffview:**
 
@@ -708,18 +737,18 @@ their changes (incoming branch)
 | Key           | Action            |
 | ------------- | ----------------- |
 | `]h` / `[h`   | Next / Prev hunk  |
-| `<leader>ghs` | Stage hunk        |
-| `<leader>ghr` | Reset hunk        |
-| `<leader>ghS` | Stage buffer      |
-| `<leader>ghR` | Reset buffer      |
-| `<leader>ghu` | Undo stage hunk   |
-| `<leader>ghp` | Preview hunk      |
-| `<leader>ghb` | Blame line (full) |
-| `<leader>ghB` | Toggle blame      |
-| `<leader>ghd` | Diff this         |
-| `<leader>ghw` | Toggle word diff  |
-| `<leader>ghl` | Toggle line hl    |
-| `<leader>ghv` | Toggle deleted    |
+| `<leader>Ghs` | Stage hunk        |
+| `<leader>Ghr` | Reset hunk        |
+| `<leader>GhS` | Stage buffer      |
+| `<leader>GhR` | Reset buffer      |
+| `<leader>Ghu` | Undo stage hunk   |
+| `<leader>Ghp` | Preview hunk      |
+| `<leader>Ghb` | Blame line (full) |
+| `<leader>GhB` | Toggle blame      |
+| `<leader>Ghd` | Diff this         |
+| `<leader>Ghw` | Toggle word diff  |
+| `<leader>Ghl` | Toggle line hl    |
+| `<leader>Ghv` | Toggle deleted    |
 | `ih`          | Text object: hunk |
 
 ---
@@ -731,7 +760,7 @@ their changes (incoming branch)
 | `p` / `P`    | Paste after / before (yanky-aware)  |
 | `<C-p>`      | Cycle forward through yank history  |
 | `<C-n>`      | Cycle backward through yank history |
-| `<leader>fh` | Open yank history picker            |
+| `<leader>Hy` | Open yank history picker            |
 
 **Tip:** paste with `p`, then keep pressing `<C-p>` to replace the pasted text with earlier yanks.
 
@@ -879,10 +908,11 @@ Press `<leader>` and wait to see all groups:
 | `<leader>d`     | Debug                |
 | `<leader>dg`    | Debug Go             |
 | `<leader>f`     | File/Find            |
-| `<leader>g`     | Git                  |
-| `<leader>gh`    | Hunks                |
+| `<leader>g`     | Go                   |
 | `<leader>gi`    | Go Insert            |
 | `<leader>gs`    | Go Struct Tags       |
+| `<leader>G`     | Git                  |
+| `<leader>Gh`    | Hunks                |
 | `<leader>h`     | Harpoon              |
 | `<leader>l`     | LSP                  |
 | `<leader>j`     | Java                 |
