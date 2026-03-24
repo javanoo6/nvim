@@ -683,7 +683,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 | Key          | Action       |
 | ------------ | ------------ |
-| `<leader>G` | Open LazyGit |
+| `<leader>Gg` | Open LazyGit |
 
 **Inside LazyGit window:**
 

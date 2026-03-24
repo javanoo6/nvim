@@ -192,7 +192,7 @@ editor.lua
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │
-  ├── lazygit.nvim            ── LazyGit TUI  →  <leader>G
+  ├── lazygit.nvim            ── LazyGit TUI  →  <leader>Gg
   │
   └── harpoon                 ── file bookmarks  →  <leader>ha add, <leader>hh menu
                                   <leader>h1-4 jump to slot

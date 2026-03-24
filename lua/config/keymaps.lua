@@ -14,7 +14,7 @@
 --   Use <C-y> instead of <CR> when you want to chain completions without executing
 --
 -- NOTE: LazyGit Keymaps:
---   <leader>G      - Open LazyGit
+--   <leader>Gg     - Open LazyGit
 --   <esc> (in LG)  - Back/Cancel in lazygit UI
 --   <C-q> (in LG)  - Exit terminal mode (back to nvim)
 --
