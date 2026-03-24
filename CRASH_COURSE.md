@@ -336,6 +336,21 @@ Select text first, then press `gsa` + bracket/quote:
 
 **Tip:** After `<leader>rw` in visual mode, type your pattern and replacement: `old/new/g` then `<CR>`.
 
+### Refactoring (refactoring.nvim — treesitter-based)
+
+Select code visually first, then:
+
+| Key           | Mode    | Action                        |
+| ------------- | ------- | ----------------------------- |
+| `<leader>Re`  | visual  | Extract function               |
+| `<leader>Rf`  | visual  | Extract function to file       |
+| `<leader>Rv`  | visual  | Extract variable               |
+| `<leader>Ri`  | n/v     | Inline variable                |
+| `<leader>Rb`  | normal  | Extract block                  |
+| `<leader>RB`  | normal  | Extract block to file          |
+
+**Tip:** For extract function/variable, visually select the expression or block first, then press the key. Supports Go, Java, Python, Lua, JS/TS.
+
 ---
 
 ## Window Management
@@ -806,7 +821,7 @@ their changes (incoming branch)
 | `<leader>ud` | Toggle diagnostic virtual lines                             |
 | `<leader>uD` | Toggle diagnostic messages (hide all msgs, keep underlines) |
 | `<leader>uh` | Toggle inlay hints                                          |
-| `<leader>tc` | Color schemes                                               |
+| `<leader>ut` | Color schemes                                               |
 | `<leader>un` | Dismiss notifications                                       |
 
 ---

@@ -71,6 +71,21 @@ return {
 		},
 	},
 
+	-- Refactoring (extract function/variable, inline variable)
+	{
+		"ThePrimeagen/refactoring.nvim",
+		dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
+		keys = {
+			{ "<leader>Re", function() require("refactoring").refactor("Extract Function") end,          mode = "x", desc = "Extract function" },
+			{ "<leader>Rf", function() require("refactoring").refactor("Extract Function To File") end,  mode = "x", desc = "Extract function to file" },
+			{ "<leader>Rv", function() require("refactoring").refactor("Extract Variable") end,          mode = "x", desc = "Extract variable" },
+			{ "<leader>Ri", function() require("refactoring").refactor("Inline Variable") end,           mode = { "n", "x" }, desc = "Inline variable" },
+			{ "<leader>Rb", function() require("refactoring").refactor("Extract Block") end,             mode = "n", desc = "Extract block" },
+			{ "<leader>RB", function() require("refactoring").refactor("Extract Block To File") end,     mode = "n", desc = "Extract block to file" },
+		},
+		opts = {},
+	},
+
 	-- Auto pairs
 	{
 		"windwp/nvim-autopairs",

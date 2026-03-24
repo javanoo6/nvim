@@ -196,7 +196,7 @@ return {
 			},
 		},
 		keys = {
-			{ "<leader>tc", "<cmd>Themery<cr>", desc = "Color schemes" },
+			{ "<leader>ut", "<cmd>Themery<cr>", desc = "Color schemes" },
 		},
 	},
 }

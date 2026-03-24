@@ -43,7 +43,7 @@ return {
 					map("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Goto declaration" }))
 					map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover" }))
 					map("n", "gK", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
-					map("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
+					-- <leader>ca is handled globally by actions-preview.nvim
 					map("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
 
 					-- Enable inlay hints if supported
@@ -163,6 +163,38 @@ return {
 			map("n", "<leader>jt", "<cmd>JavaTestRunCurrentClass<cr>", { desc = "Test Current Class" })
 			map("n", "<leader>jm", "<cmd>JavaTestRunCurrentMethod<cr>", { desc = "Test Current Method" })
 			map("n", "<leader>jv", "<cmd>JavaTestViewLastReport<cr>", { desc = "View Test Report" })
+		end,
+	},
+
+	-- Light bulb indicator when code actions are available
+	{
+		"kosayoda/nvim-lightbulb",
+		event = { "BufReadPre", "BufNewFile" },
+		opts = {
+			autocmd = { enabled = true },
+			sign = { enabled = true, text = "💡" },
+			virtual_text = { enabled = false },
+		},
+	},
+
+	-- Code action preview with diff (replaces default code action picker)
+	{
+		"aznhe21/actions-preview.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		config = function()
+			require("actions-preview").setup({
+				telescope = {
+					sorting_strategy = "ascending",
+					layout_strategy = "vertical",
+					layout_config = {
+						width = 0.8,
+						height = 0.9,
+						prompt_position = "bottom",
+						preview_cutoff = 20,
+					},
+				},
+			})
+			vim.keymap.set({ "n", "v" }, "<leader>ca", require("actions-preview").code_actions, { desc = "Code action" })
 		end,
 	},
 }
