@@ -674,6 +674,37 @@ Use this when you need to rename variables or make targeted edits across many fi
 | `<leader>jt` | Test Current Class  |
 | `<leader>jm` | Test Current Method |
 | `<leader>jv` | View Test Report    |
+| `<leader>ci` | Organize imports (silent, auto-apply) |
+
+### Java Refactor (`<leader>jR`)
+
+jdtls code actions — open actions-preview picker with diff before applying.
+
+| Key           | Action               |
+| ------------- | -------------------- |
+| `<leader>jRe` | Extract function     |
+| `<leader>jRv` | Extract variable     |
+| `<leader>jRc` | Extract constant     |
+| `<leader>jRf` | Extract field        |
+| `<leader>jRi` | Extract interface    |
+| `<leader>jRp` | Introduce parameter  |
+| `<leader>jRs` | Change signature     |
+| `<leader>jRm` | Move                 |
+| `<leader>jRa` | Assign variable      |
+| `<leader>jRq` | Quick assist         |
+
+### Java Generate (`<leader>jg`)
+
+| Key           | Action               |
+| ------------- | -------------------- |
+| `<leader>jga` | Accessors (get/set)  |
+| `<leader>jgc` | Constructors         |
+| `<leader>jgd` | Delegate methods     |
+| `<leader>jgf` | Final modifiers      |
+| `<leader>jgh` | hashCode / equals    |
+| `<leader>jgt` | toString             |
+| `<leader>jgo` | Override methods     |
+| `<leader>jgs` | Sort members         |
 
 ---
 
