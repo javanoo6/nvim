@@ -17,6 +17,13 @@ return {
 			desc = "Search & Replace (all files)",
 		},
 		{
+			"<leader>rR",
+			function()
+				require("grug-far").open({ prefills = { flags = "" } })
+			end,
+			desc = "Search & Replace regex (all files)",
+		},
+		{
 			"<leader>rw",
 			function()
 				require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>"), paths = vim.fn.expand("%") } })
@@ -35,6 +42,7 @@ return {
 	},
 	opts = {
 		headerMaxWidth = 80,
+		prefills = { flags = "--fixed-strings" },
 	},
 	config = function(_, opts)
 		require("grug-far").setup(opts)
