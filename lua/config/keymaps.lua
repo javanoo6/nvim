@@ -155,21 +155,11 @@ map("n", "<leader>uf", function()
 	util.toggle("foldenable")
 end, { desc = "Fold" })
 map("n", "<leader>ud", function()
-	local vl = vim.diagnostic.config().virtual_lines
-	if vl then
-		vim.diagnostic.config({ virtual_lines = false, virtual_text = true })
-	else
-		vim.diagnostic.config({ virtual_lines = { only_current_line = true }, virtual_text = false })
-	end
-end, { desc = "Toggle diagnostic virtual lines" })
+	require("tiny-inline-diagnostic").toggle()
+end, { desc = "Toggle inline diagnostics" })
 map("n", "<leader>uD", function()
-	local config = vim.diagnostic.config()
-	if config.virtual_lines or config.virtual_text then
-		vim.diagnostic.config({ virtual_lines = false, virtual_text = false })
-	else
-		vim.diagnostic.config({ virtual_lines = { only_current_line = true }, virtual_text = false })
-	end
-end, { desc = "Toggle diagnostic messages" })
+	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = "Toggle diagnostics" })
 
 -- Code
 map({ "n", "v" }, "<leader>cf", function()

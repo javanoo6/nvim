@@ -17,7 +17,6 @@ return {
 
 			vim.diagnostic.config({
 				virtual_text = false,
-				virtual_lines = { only_current_line = true },
 				signs = true,
 				underline = true,
 				update_in_insert = false,
@@ -201,17 +200,6 @@ return {
 		end,
 	},
 
-	-- Light bulb indicator when code actions are available
-	{
-		"kosayoda/nvim-lightbulb",
-		event = { "BufReadPre", "BufNewFile" },
-		opts = {
-			autocmd = { enabled = true },
-			sign = { enabled = true, text = "💡" },
-			virtual_text = { enabled = false },
-		},
-	},
-
 	-- Code action preview with diff (replaces default code action picker)
 	{
 		"aznhe21/actions-preview.nvim",
@@ -230,6 +218,37 @@ return {
 				},
 			})
 			vim.keymap.set({ "n", "v" }, "<leader>ca", require("actions-preview").code_actions, { desc = "Code action" })
+		end,
+	},
+
+	-- Inline diagnostics with wrapping support (replaces built-in virtual_text/virtual_lines)
+	{
+		"rachartier/tiny-inline-diagnostic.nvim",
+		event = "LspAttach",
+		priority = 1000,
+		opts = {
+			preset = "modern",
+			options = {
+				show_source = true,
+				use_icons_from_diagnostic = true,
+				multilines = {
+					enabled = true,
+					always_show = false,
+				},
+				overflow = {
+					mode = "wrap",
+				},
+				break_line = {
+					enabled = true,
+					after = 80,
+				},
+			},
+		},
+		config = function(_, opts)
+			local tid = require("tiny-inline-diagnostic")
+			tid.setup(opts)
+			tid.disable()
+			vim.diagnostic.config({ virtual_text = false })
 		end,
 	},
 }
