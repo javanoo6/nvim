@@ -159,6 +159,7 @@ return {
               ["<C-u>"] = actions.preview_scrolling_up,
               ["<Home>"] = actions.move_to_top,
               ["<End>"] = actions.move_to_bottom,
+              ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
             },
           },
         },
