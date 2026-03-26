@@ -104,6 +104,14 @@ map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save" })
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
+-- Delete/change to black hole register (yank is the only way to fill the clipboard)
+map({ "n", "x" }, "d", '"_d', { desc = "Delete (black hole)" })
+map({ "n", "x" }, "D", '"_D', { desc = "Delete to EOL (black hole)" })
+map({ "n", "x" }, "c", '"_c', { desc = "Change (black hole)" })
+map({ "n", "x" }, "C", '"_C', { desc = "Change to EOL (black hole)" })
+map({ "n", "x" }, "x", '"_x', { desc = "Delete char (black hole)" })
+map({ "n", "x" }, "X", '"_X', { desc = "Delete char before (black hole)" })
+
 -- Files
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New file" })
 
