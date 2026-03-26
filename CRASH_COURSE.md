@@ -86,12 +86,12 @@ nvim setup reference guide.
 
 ### Scrolling (Centered)
 
-| Key     | Action                           |
-| ------- | -------------------------------- |
-| `<C-u>` | Scroll up half page (centered)   |
-| `<C-f>` | Scroll down full page            |
-| `<C-b>` | Scroll up full page              |
-| `zz`    | Center cursor on screen          |
+| Key     | Action                         |
+| ------- | ------------------------------ |
+| `<C-u>` | Scroll up half page (centered) |
+| `<C-f>` | Scroll down full page          |
+| `<C-b>` | Scroll up full page            |
+| `zz`    | Center cursor on screen        |
 
 ### Fast Navigation (Flash.nvim)
 
@@ -230,9 +230,9 @@ nvim setup reference guide.
 
 ### Duplicating Lines (IntelliJ-style)
 
-| Key     | Mode   | Action                                                      |
-| ------- | ------ | ----------------------------------------------------------- |
-| `<C-d>` | normal | Duplicate current line below, cursor moves to the copy     |
+| Key     | Mode   | Action                                                       |
+| ------- | ------ | ------------------------------------------------------------ |
+| `<C-d>` | normal | Duplicate current line below, cursor moves to the copy       |
 | `<C-d>` | visual | Duplicate all lines in selection below, cursor on first copy |
 
 ### Surround (Mini.surround)
@@ -340,14 +340,14 @@ Select text first, then press `gsa` + bracket/quote:
 
 Select code visually first, then:
 
-| Key           | Mode    | Action                        |
-| ------------- | ------- | ----------------------------- |
-| `<leader>Re`  | visual  | Extract function               |
-| `<leader>Rf`  | visual  | Extract function to file       |
-| `<leader>Rv`  | visual  | Extract variable               |
-| `<leader>Ri`  | n/v     | Inline variable                |
-| `<leader>Rb`  | normal  | Extract block                  |
-| `<leader>RB`  | normal  | Extract block to file          |
+| Key          | Mode   | Action                   |
+| ------------ | ------ | ------------------------ |
+| `<leader>Re` | visual | Extract function         |
+| `<leader>Rf` | visual | Extract function to file |
+| `<leader>Rv` | visual | Extract variable         |
+| `<leader>Ri` | n/v    | Inline variable          |
+| `<leader>Rb` | normal | Extract block            |
+| `<leader>RB` | normal | Extract block to file    |
 
 **Tip:** For extract function/variable, visually select the expression or block first, then press the key. Supports Go, Java, Python, Lua, JS/TS.
 
@@ -451,39 +451,39 @@ across the project. This may modify many buffers at once. Save them all with `:w
 
 ## Quick Directory Navigation
 
-| Key          | Action                                  |
-| ------------ | --------------------------------------- |
+| Key          | Action                                    |
+| ------------ | ----------------------------------------- |
 | `-`          | Open **Oil** (parent dir of current file) |
-| `<leader>-`  | Open **Oil** in cwd                     |
-| `<leader>fp` | Switch project (Telescope)              |
+| `<leader>-`  | Open **Oil** in cwd                       |
+| `<leader>fp` | Switch project (Telescope)                |
 
 ### Inside Oil (stevearc/oil.nvim)
 
 Oil treats the directory as a buffer — **edit filenames directly and `:w` to apply**.
 
-| Key      | Action                        |
-| -------- | ----------------------------- |
-| `<CR>`   | Open file / Enter dir         |
-| `-`      | Go to parent directory        |
-| `_`      | Open cwd root                 |
-| `<C-v>`  | Open in vertical split        |
-| `<C-x>`  | Open in horizontal split      |
-| `<C-t>`  | Open in new tab               |
-| `<C-r>`  | Refresh                       |
-| `g.`     | Toggle hidden files           |
-| `gx`     | Open with system app          |
-| `g?`     | Show help                     |
-| `q`      | Close Oil                     |
+| Key     | Action                   |
+| ------- | ------------------------ |
+| `<CR>`  | Open file / Enter dir    |
+| `-`     | Go to parent directory   |
+| `_`     | Open cwd root            |
+| `<C-v>` | Open in vertical split   |
+| `<C-x>` | Open in horizontal split |
+| `<C-t>` | Open in new tab          |
+| `<C-r>` | Refresh                  |
+| `g.`    | Toggle hidden files      |
+| `gx`    | Open with system app     |
+| `g?`    | Show help                |
+| `q`     | Close Oil                |
 
 **File operations (buffer-editing workflow):**
 
-| Task   | How                                                          |
-| ------ | ------------------------------------------------------------ |
-| Rename | Edit filename text inline → `:w`                            |
-| Move   | `dd` the line → navigate to target dir → `p` → `:w`        |
-| Copy   | `yy` the line → navigate to target dir → `p` → `:w`        |
-| Create | `o` new line with filename (trailing `/` = dir) → `:w`     |
-| Delete | `dd` the line → `:w`                                        |
+| Task   | How                                                    |
+| ------ | ------------------------------------------------------ |
+| Rename | Edit filename text inline → `:w`                       |
+| Move   | `dd` the line → navigate to target dir → `p` → `:w`    |
+| Copy   | `yy` the line → navigate to target dir → `p` → `:w`    |
+| Create | `o` new line with filename (trailing `/` = dir) → `:w` |
+| Delete | `dd` the line → `:w`                                   |
 
 > **Tip:** All path edits have full vim completion (`<C-x><C-f>` for paths). Move across
 > directories by opening a second Oil split and yanking between them.
@@ -525,18 +525,18 @@ When typing commands with `:` and autocomplete menu appears:
 
 ### Inside Telescope
 
-| Key               | Action                                  |
-| ----------------- | --------------------------------------- |
-| `<C-j>` / `<C-k>` | Next / Previous                         |
-| `<C-n>` / `<C-p>` | Next / Previous in history              |
-| `<C-d>` / `<C-u>` | Scroll preview down / up                |
-| `<CR>`            | Open                                    |
-| `<C-x>`           | Open in horizontal split                |
-| `<C-v>`           | Open in vertical split                  |
-| `<C-t>`           | Open in tab                             |
-| `<Tab>`           | Multi-select entry                      |
-| `<C-q>`           | Send selected (or all) to quickfix list |
-| `<Esc>`           | Close                                   |
+| Key               | Action                                                       |
+| ----------------- | ------------------------------------------------------------ |
+| `<C-j>` / `<C-k>` | Next / Previous                                              |
+| `<C-n>` / `<C-p>` | Next / Previous in history                                   |
+| `<C-d>` / `<C-u>` | Scroll preview down / up                                     |
+| `<CR>`            | Open                                                         |
+| `<C-x>`           | Open in horizontal split                                     |
+| `<C-v>`           | Open in vertical split                                       |
+| `<C-t>`           | Open in tab                                                  |
+| `<Tab>`           | Multi-select entry                                           |
+| `<C-q>`           | Send Tab-selected (or all if none selected) to quickfix list |
+| `<Esc>`           | Close                                                        |
 
 **Tip:** `<leader>fe` prompts for an extension (e.g. `java`, `go`, `py`) then opens live grep scoped to `*.{ext}` files only.
 
@@ -667,44 +667,44 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 ### Java-specific
 
-| Key          | Action              |
-| ------------ | ------------------- |
-| `<leader>jr` | Run Main            |
-| `<leader>jc` | Stop Main           |
-| `<leader>jt` | Test Current Class  |
-| `<leader>jm` | Test Current Method |
-| `<leader>jv` | View Test Report    |
+| Key          | Action                                |
+| ------------ | ------------------------------------- |
+| `<leader>jr` | Run Main                              |
+| `<leader>jc` | Stop Main                             |
+| `<leader>jt` | Test Current Class                    |
+| `<leader>jm` | Test Current Method                   |
+| `<leader>jv` | View Test Report                      |
 | `<leader>ci` | Organize imports (silent, auto-apply) |
 
 ### Java Refactor (`<leader>jR`)
 
 jdtls code actions — open actions-preview picker with diff before applying.
 
-| Key           | Action               |
-| ------------- | -------------------- |
-| `<leader>jRe` | Extract function     |
-| `<leader>jRv` | Extract variable     |
-| `<leader>jRc` | Extract constant     |
-| `<leader>jRf` | Extract field        |
-| `<leader>jRi` | Extract interface    |
-| `<leader>jRp` | Introduce parameter  |
-| `<leader>jRs` | Change signature     |
-| `<leader>jRm` | Move                 |
-| `<leader>jRa` | Assign variable      |
-| `<leader>jRq` | Quick assist         |
+| Key           | Action              |
+| ------------- | ------------------- |
+| `<leader>jRe` | Extract function    |
+| `<leader>jRv` | Extract variable    |
+| `<leader>jRc` | Extract constant    |
+| `<leader>jRf` | Extract field       |
+| `<leader>jRi` | Extract interface   |
+| `<leader>jRp` | Introduce parameter |
+| `<leader>jRs` | Change signature    |
+| `<leader>jRm` | Move                |
+| `<leader>jRa` | Assign variable     |
+| `<leader>jRq` | Quick assist        |
 
 ### Java Generate (`<leader>jg`)
 
-| Key           | Action               |
-| ------------- | -------------------- |
-| `<leader>jga` | Accessors (get/set)  |
-| `<leader>jgc` | Constructors         |
-| `<leader>jgd` | Delegate methods     |
-| `<leader>jgf` | Final modifiers      |
-| `<leader>jgh` | hashCode / equals    |
-| `<leader>jgt` | toString             |
-| `<leader>jgo` | Override methods     |
-| `<leader>jgs` | Sort members         |
+| Key           | Action              |
+| ------------- | ------------------- |
+| `<leader>jga` | Accessors (get/set) |
+| `<leader>jgc` | Constructors        |
+| `<leader>jgd` | Delegate methods    |
+| `<leader>jgf` | Final modifiers     |
+| `<leader>jgh` | hashCode / equals   |
+| `<leader>jgt` | toString            |
+| `<leader>jgo` | Override methods    |
+| `<leader>jgs` | Sort members        |
 
 ---
 
