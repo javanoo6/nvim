@@ -92,3 +92,15 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 })
 
 vim.schedule(set_illuminate_hl)
+
+-- Restore normal delete/change keys in oil.nvim (blackhole remaps break move via cut/paste)
+vim.api.nvim_create_autocmd("FileType", {
+	group = augroup("oil_normal_delete"),
+	pattern = "oil",
+	callback = function(event)
+		local buf = event.buf
+		for _, key in ipairs({ "d", "D", "c", "C", "x", "X" }) do
+			vim.keymap.del({ "n", "x" }, key, { buffer = buf })
+		end
+	end,
+})

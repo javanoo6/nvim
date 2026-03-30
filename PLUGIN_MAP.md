@@ -47,7 +47,9 @@ nvim-lspconfig  ─────────────────────�
   ├── nvim-lsp-file-operations ── rename file → updates LSP imports
   │     └── neo-tree.nvim     ── (tree triggers file ops)
   ├── fidget.nvim             ── LSP progress spinner (bottom-right)
-  └── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
+  ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
+  ├── actions-preview.nvim    ── code action picker with diff preview (<leader>ca)
+  └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (off by default, <leader>ud toggle)
 ```
 
 **LSP servers auto-installed:** `lua_ls`, `bashls`, `jsonls`, `yamlls`, `gopls`, `pyright`
@@ -68,7 +70,7 @@ nvim-lspconfig  ─────────────────────�
 | `<leader>cr`       | Rename                    |
 | `<leader>uh`       | Toggle inlay hints        |
 | `<leader>lr/li/ll` | Restart / Info / Log      |
-| `<leader>gd`       | Goto definition in vsplit |
+| `<leader>cd`       | Goto definition in vsplit |
 
 ---
 
@@ -215,9 +217,10 @@ glance.lua
 git.lua
   ├── gitsigns.nvim       ── hunk signs, blame, diff, stage/reset
   │                          Keymaps: ]h/[h, <leader>Gh* (buffer-local)
-  └── diffview.nvim       ── full diff viewer + file history
-                             Keymaps in keymaps.lua: <leader>GD/GF/GH/GL/Gm/GM
-
+  ├── diffview.nvim       ── full diff viewer + file history + 3-way merge view
+  │                          Keymaps in keymaps.lua: <leader>GD/GF/GH/GL/Gm/GM
+  └── git-conflict.nvim   ── inline conflict resolution (auto-activates on conflict markers)
+                             co/ct/cb/c0 pick ours/theirs/both/none, ]x/[x navigate
 ```
 
 **Gitsigns keymaps:**
@@ -326,6 +329,7 @@ Linting:        golangcilint
 ```
 coding.lua
   ├── mini.comment    ── gc / gcc toggle comments
+  │     └── nvim-ts-context-commentstring  ── context-aware commentstring (JSX, HTML embeds, etc.)
   ├── mini.surround   ── gsa/gsd/gsr/gsf add/delete/replace/find surrounding
   ├── mini.ai         ── enhanced text objects (af, if, ac, ic, ao, io, t=tag)
   └── yanky.nvim      ── yank history ring (p/P yanky-aware, <C-p>/<C-n> cycle)
@@ -393,7 +397,8 @@ keymaps.lua (diagnostic):
   [d / ]d  — prev/next diagnostic
   <leader>xd  — line diagnostics float
   <leader>xl  — diagnostics to loclist
-  <leader>ud / <leader>uD  — toggle virtual lines / all diagnostic messages
+  <leader>ud  — toggle tiny-inline-diagnostic on/off
+  <leader>uD  — enable/disable all diagnostics entirely
 ```
 
 ---
@@ -409,8 +414,10 @@ todo-comments.lua
     <leader>st  — search via Telescope
 
 grug-far.lua
-  grug-far.nvim  ── panel-based search & replace (ripgrep)
-    <leader>rg  — open / visual selection
+  grug-far.nvim  ── panel-based search & replace (ripgrep, fixed-strings by default)
+    <leader>rg  — open (current file) / visual selection
+    <leader>rG  — open (all files), fixed-strings mode
+    <leader>rR  — open (all files), regex mode
     <leader>rw  — replace word under cursor
 
 undotree.lua
@@ -443,7 +450,9 @@ lazy.nvim
 │   ├── nvim-lspconfig
 │   │   ├── fidget.nvim
 │   │   └── nvim-lsp-file-operations → neo-tree
-│   └── glance.nvim
+│   ├── glance.nvim
+│   ├── actions-preview.nvim
+│   └── tiny-inline-diagnostic.nvim
 │
 ├── COMPLETION
 │   └── nvim-cmp
@@ -483,7 +492,8 @@ lazy.nvim
 ├── GIT
 │   ├── gitsigns.nvim
 │   ├── diffview.nvim
-│   └── lazygit.nvim
+│   ├── lazygit.nvim
+│   └── git-conflict.nvim
 │
 ├── DEBUGGING
 │   └── nvim-dap
@@ -503,7 +513,7 @@ lazy.nvim
 │   └── gopher.nvim (Go extras)
 │
 ├── CODING HELPERS
-│   ├── mini.comment
+│   ├── mini.comment → nvim-ts-context-commentstring
 │   ├── mini.surround
 │   ├── mini.ai → nvim-treesitter
 │   ├── yanky.nvim

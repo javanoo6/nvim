@@ -32,6 +32,17 @@ return {
 				callback = function(event)
 					local opts = { buffer = event.buf }
 
+					-- Register LSP keymaps in which-key (buffer-local, only shown in LSP buffers)
+					require("which-key").add({
+						{ "gd", desc = "Goto Definitions",     buffer = event.buf },
+						{ "gR", desc = "Goto References",      buffer = event.buf },
+						{ "gy", desc = "Goto Type Definitions", buffer = event.buf },
+						{ "gI", desc = "Goto Implementations", buffer = event.buf },
+						{ "gD", desc = "Goto Declaration",     buffer = event.buf },
+						{ "K",  desc = "Hover",                buffer = event.buf },
+						{ "gK", desc = "Signature Help",       buffer = event.buf },
+					})
+
 					-- Glance
 					map("n", "gd", "<cmd>Glance definitions<cr>", vim.tbl_extend("force", opts, { desc = "Goto Definitions" }))
 					map("n", "gR", "<cmd>Glance references<cr>", vim.tbl_extend("force", opts, { desc = "Goto References" }))

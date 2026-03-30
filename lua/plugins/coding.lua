@@ -2,16 +2,30 @@
 
 -- Coding: Mini.nvim utilities for coding
 return {
+	-- Context-aware comment strings (e.g. JSX, Vue, HTML embedded langs)
+	{
+		"JoosepAlviste/nvim-ts-context-commentstring",
+		lazy = true,
+		opts = { enable_autocmd = false },
+	},
+
 	-- Comments
 	{
 		"echasnovski/mini.comment",
 		event = "VeryLazy",
+		dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
 		opts = {
 			mappings = {
-				comment = "gc",    -- Toggle comment (operator)
-				comment_line = "gcc", -- Toggle comment on current line
-				comment_visual = "gc", -- Toggle comment on selection
-				textobject = "gc", -- Textobject for comments
+				comment = "gc",
+				comment_line = "gcc",
+				comment_visual = "gc",
+				textobject = "gc",
+			},
+			options = {
+				custom_commentstring = function()
+					return require("ts_context_commentstring.internal").calculate_commentstring()
+						or vim.bo.commentstring
+				end,
 			},
 		},
 	},

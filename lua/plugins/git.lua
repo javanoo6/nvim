@@ -20,6 +20,26 @@ return {
 		},
 	},
 
+	-- Merge conflict resolution helpers
+	{
+		"akinsho/git-conflict.nvim",
+		event = "BufReadPre",
+		opts = {
+			default_mappings = {
+				ours = "co",
+				theirs = "ct",
+				none = "c0",
+				both = "cb",
+				next = "]x",
+				prev = "[x",
+			},
+			highlights = {
+				incoming = "DiffAdd",
+				current = "DiffText",
+			},
+		},
+	},
+
 	-- Gitsigns (on_attach keymaps are buffer-local, must stay here)
 	{
 		"lewis6991/gitsigns.nvim",

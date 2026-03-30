@@ -750,33 +750,121 @@ jdtls code actions — open actions-preview picker with diff before applying.
 | `<leader>ca` | Choose all (conflict)    |
 | `dx`         | Delete conflict region   |
 
-### Merge Conflict Resolution (with Diffview)
+### Merge Conflict Resolution
 
-1. In lazygit — conflicts show as `AA` in Files panel
-2. Press `e` on conflicted file → opens in nvim
-3. Run `:DiffviewOpen` → 3-way merge view opens
-4. Use `[x` / `]x` to navigate between conflicts
-5. Use `<leader>co/ct/cb` to pick ours/theirs/base, or edit manually
-6. Save with `<C-s>`, then `:DiffviewClose`
-7. Back in lazygit — stage the file (`<space>`) → commit (`c`)
+#### What a conflict looks like in the file
 
-**Manual resolution (without Diffview):**
-
-Conflict marker anatomy:
+When a merge produces conflicts, Git inserts markers into the file:
 
 ```
 <<<<<<< HEAD
-your changes (current branch)
+your changes  (the branch you are currently on)
 =======
-their changes (incoming branch)
+their changes (the branch you are merging in)
 >>>>>>> feature-branch
 ```
 
-| Goal            | What to do                                                           |
-| --------------- | -------------------------------------------------------------------- |
-| Keep **ours**   | Delete the `=======` → `>>>>>>> ...` block + the `<<<<<<< HEAD` line |
-| Keep **theirs** | Delete the `<<<<<<< HEAD` → `=======` block + the `>>>>>>> ...` line |
-| Keep **both**   | Delete only the three marker lines (`<<<<<<<`, `=======`, `>>>>>>>`) |
+Both sets of changes are present — you must decide which to keep.
+
+---
+
+#### Full workflow: merging a branch and resolving conflicts
+
+**Step 1 — Start the merge**
+
+Option A: in the terminal
+```
+git merge feature-branch
+```
+
+Option B: in lazygit (`<leader>Gg`)
+- Navigate to `Branches` panel (`4`)
+- Highlight the branch you want to merge in
+- Press `M` → confirm
+
+**Step 2 — Git stops with conflicts**
+
+The merge is paused. Conflicted files are not yet staged. You will see them as `AA` (both modified) in lazygit's Files panel, or as `UU` in `git status`.
+
+**Step 3 — Open a conflicted file in nvim**
+
+In lazygit: press `e` on any conflicted file to open it in nvim.
+From terminal: just open the file normally (`nvim path/to/file`).
+
+git-conflict.nvim activates automatically when it detects markers in the file.
+
+**Step 4 — Navigate conflicts**
+
+| Key   | Action               |
+| ----- | -------------------- |
+| `]x`  | Jump to next conflict |
+| `[x`  | Jump to prev conflict |
+
+**Step 5 — Resolve each conflict**
+
+For simple conflicts (pick one side or both):
+
+| Key  | Action                                    |
+| ---- | ----------------------------------------- |
+| `co` | Keep **ours** (current branch, HEAD)      |
+| `ct` | Keep **theirs** (incoming branch)         |
+| `cb` | Keep **both** (ours first, theirs second) |
+| `c0` | Keep **neither** (delete both sides)      |
+
+After pressing one of these, the markers disappear and the chosen content stays. Move to the next conflict with `]x` and repeat.
+
+For complex conflicts (you need to hand-edit the result):
+- Delete the marker lines manually (`<<<<<<< HEAD`, `=======`, `>>>>>>> ...`)
+- Edit the remaining code however you need
+- Save with `<C-s>`
+
+**Step 6 — Need more context? Use Diffview 3-way view**
+
+If a conflict is hard to understand from the inline markers alone, open the full 3-way merge view:
+
+```
+:DiffviewOpen
+```
+
+This shows 4 panels: **OURS** (left) | **BASE** (middle, common ancestor) | **THEIRS** (right) | **RESULT** (bottom).
+
+| Key          | Action in Diffview merge view          |
+| ------------ | -------------------------------------- |
+| `]x` / `[x`  | Next / prev conflict                   |
+| `<leader>co` | Accept ours into result                |
+| `<leader>ct` | Accept theirs into result              |
+| `<leader>cb` | Accept base into result                |
+| `<leader>ca` | Accept all from one side               |
+| `dx`         | Delete conflict region                 |
+| `q`          | Close panel                            |
+
+When done: `:DiffviewClose`
+
+**Step 7 — Stage the resolved file**
+
+In lazygit: press `<space>` on the file to stage it.
+From terminal: `git add path/to/file`
+
+Repeat steps 3–7 for each conflicted file.
+
+**Step 8 — Complete the merge**
+
+In lazygit: press `c` to commit — Git pre-fills the merge commit message, just confirm.
+From terminal: `git commit` (no `-m` needed, Git opens your editor with the message).
+
+---
+
+#### Quick reference cheatsheet
+
+```
+git merge feature-branch   →  conflicts appear
+open file in nvim          →  markers highlighted automatically
+]x / [x                    →  jump between conflicts
+co / ct / cb / c0          →  resolve inline (ours/theirs/both/none)
+:DiffviewOpen              →  3-way view for complex cases
+stage file in lazygit      →  <space>
+git commit                 →  finalize merge
+```
 
 ### Gitsigns (in-buffer)
 
