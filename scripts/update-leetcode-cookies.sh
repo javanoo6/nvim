@@ -1,19 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
-COOKIES_DB=$(find ~/.mozilla/firefox -name "cookies.sqlite" 2>/dev/null | head -1)
-if [ -z "$COOKIES_DB" ]; then
-  echo "ERROR: Firefox cookies.sqlite not found" >&2
-  exit 1
-fi
-
-# Copy DB to temp file — Firefox may have it locked while running
 TMP=$(mktemp /tmp/lc-cookies.XXXXXX.sqlite)
 trap 'rm -f "$TMP"' EXIT
-cp "$COOKIES_DB" "$TMP"
 
-CSRF=$(sqlite3 "$TMP" "SELECT value FROM moz_cookies WHERE host LIKE '%leetcode%' AND name='csrftoken' LIMIT 1;")
-SESSION=$(sqlite3 "$TMP" "SELECT value FROM moz_cookies WHERE host LIKE '%leetcode%' AND name='LEETCODE_SESSION' LIMIT 1;")
+CSRF=""
+SESSION=""
+while IFS= read -r db; do
+  cp "$db" "$TMP"
+  CSRF=$(sqlite3 "$TMP" "SELECT value FROM moz_cookies WHERE host LIKE '%leetcode%' AND name='csrftoken' LIMIT 1;")
+  SESSION=$(sqlite3 "$TMP" "SELECT value FROM moz_cookies WHERE host LIKE '%leetcode%' AND name='LEETCODE_SESSION' LIMIT 1;")
+  [ -n "$CSRF" ] && [ -n "$SESSION" ] && break
+done < <(find ~/.mozilla/firefox ~/snap/firefox/common/.mozilla/firefox -name "cookies.sqlite" 2>/dev/null)
 
 if [ -z "$CSRF" ] || [ -z "$SESSION" ]; then
   echo "ERROR: LeetCode cookies not found. Make sure you are logged into leetcode.com in Firefox." >&2

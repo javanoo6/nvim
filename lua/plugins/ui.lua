@@ -46,6 +46,7 @@ return {
 				{ "<leader>h",     group = "harpoon" },
 				{ "<leader>H",     group = "history" },
 				{ "<leader>l",     group = "lsp" },
+				{ "<leader>L",     group = "leetcode" },
 				{ "<leader>j",     group = "java" },
 				{ "<leader>jR",    group = "refactor",          mode = { "n", "v" } },
 				{ "<leader>jg",    group = "generate" },
