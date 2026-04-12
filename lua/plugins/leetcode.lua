@@ -77,66 +77,99 @@ return {
       -- Step 1: Select topic
       vim.ui.select(roadmap_data, {
         prompt = "Select topic:",
-        format_item = function(t) return t.name end,
+        format_item = function(t)
+          return t.name
+        end,
       }, function(selected_topic)
-        if not selected_topic then return end
+        if not selected_topic then
+          return
+        end
 
         -- Step 2: Select difficulty
         vim.ui.select({ "All", "Easy", "Medium", "Hard" }, {
           prompt = "Select difficulty:",
         }, function(selected_diff)
-          if not selected_diff then return end
-
-          -- Step 3: Load problemlist cache with error handling
-          local ok, problemlist = pcall(function()
-            return require("leetcode.cache.problemlist").get()
-          end)
-          
-          if not ok then
-            vim.notify(
-              "LeetCode cache not initialized. Run ':Leet cache update' first (or open :Leet once)",
-              vim.log.levels.ERROR,
-              { title = "LeetRoadmap Error" }
-            )
+          if not selected_diff then
             return
           end
 
-          -- Step 4: Filter problems by topic and difficulty
-          local filtered = vim.tbl_filter(function(problem)
-            -- Check if problem has the selected topic slug
-            local has_topic = false
-            if problem.topic_tags and #problem.topic_tags > 0 then
-              for _, tag in ipairs(problem.topic_tags) do
-                if tag == selected_topic.slug then
-                  has_topic = true
-                  break
-                end
+          vim.notify("Fetching " .. selected_topic.name .. " problems...", vim.log.levels.INFO)
+
+          -- Step 3: Query LeetCode API (cache has no topic_tags)
+          local gql = [[
+            query questionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
+              questionList(categorySlug: $categorySlug limit: $limit skip: $skip filters: $filters) {
+                questions: data {
+                  acRate
+                  difficulty
+                  frontendQuestionId: questionFrontendId
+                  isPaidOnly
+                  status
+                  title
+                  titleSlug
+                }
+              }
+            }
+          ]]
+
+          local filters = { tags = { selected_topic.slug } }
+          if selected_diff ~= "All" then
+            filters.difficulty = selected_diff:upper()
+          end
+
+          require("leetcode.api.utils").query(gql, {
+            categorySlug = "",
+            skip = 0,
+            limit = 3000,
+            filters = filters,
+          }, {
+            callback = function(res, err)
+              if err then
+                vim.notify("LeetRoadmap failed: " .. (err.msg or "unknown error"), vim.log.levels.ERROR)
+                return
               end
-            end
-            
-            -- Check difficulty
-            local diff_match = (selected_diff == "All") or 
-                             (problem.difficulty and problem.difficulty:lower() == selected_diff:lower())
-            
-            return has_topic and diff_match
-          end, problemlist)
 
-          if #filtered == 0 then
-            vim.notify(
-              "No problems found for " .. selected_topic.name .. " (" .. selected_diff .. ")",
-              vim.log.levels.WARN
-            )
-            return
-          end
+              local ql = res and res.data and res.data.questionList
+              local questions = ql and ql.questions or {}
 
-          vim.notify(
-            "Found " .. #filtered .. " problems for " .. selected_topic.name .. 
-            (selected_diff ~= "All" and (" (" .. selected_diff .. ")") or ""),
-            vim.log.levels.INFO
-          )
+              if #questions == 0 then
+                vim.notify(
+                  "No problems found for " .. selected_topic.name .. " (" .. selected_diff .. ")",
+                  vim.log.levels.WARN
+                )
+                return
+              end
 
-          -- Step 5: Open filtered list in picker
-          require("leetcode.picker").question(filtered, {})
+              local domain = require("leetcode.config").domain
+              local problems = vim.tbl_map(function(q)
+                return {
+                  id = 0,
+                  frontend_id = tostring(q.frontendQuestionId),
+                  title = q.title,
+                  title_cn = "",
+                  title_slug = q.titleSlug,
+                  link = ("https://leetcode.%s/problems/%s/"):format(domain, q.titleSlug),
+                  paid_only = q.isPaidOnly == true,
+                  ac_rate = q.acRate or 0,
+                  difficulty = q.difficulty,
+                  status = (q.status == vim.NIL or not q.status) and "todo" or q.status,
+                  topic_tags = {},
+                }
+              end, questions)
+
+              vim.notify(
+                "Found "
+                  .. #problems
+                  .. " problems for "
+                  .. selected_topic.name
+                  .. (selected_diff ~= "All" and (" (" .. selected_diff .. ")") or ""),
+                vim.log.levels.INFO
+              )
+
+              -- Step 4: Open filtered list in picker
+              require("leetcode.picker").question(problems, {})
+            end,
+          })
         end)
       end)
     end
