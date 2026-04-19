@@ -23,7 +23,8 @@ sudo apt-get install -y \
   fd-find \       # fd — faster file finder for Telescope
   curl \          # used by Mason to download tools
   unzip \         # used by Mason to extract tools
-  xdg-utils       # xdg-open — used by obsidian.nvim to open URLs
+  xdg-utils \     # xdg-open — used by obsidian.nvim to open URLs
+  sqlite3         # used by scripts/update-leetcode-cookies.sh to read Firefox cookies
 ```
 
 ---
@@ -138,7 +139,27 @@ Listed here for reference only.
 
 ---
 
-## 8. Go extras (run once inside Neovim)
+## 8. Java test runner (run once inside Neovim)
+
+Downloads the JUnit Platform Console Standalone jar required by neotest-java.
+
+If on Neovim < 0.12, run manually:
+
+```bash
+mkdir -p ~/.local/share/nvim/neotest-java
+curl -L https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.1/junit-platform-console-standalone-1.10.1.jar \
+  -o ~/.local/share/nvim/neotest-java/junit-platform-console-standalone-1.10.1.jar
+```
+
+On Neovim 0.12+, run inside Neovim instead:
+
+```
+:NeotestJava setup
+```
+
+---
+
+## 9. Go extras (run once inside Neovim)
 
 ```
 :GoInstallDeps
@@ -148,7 +169,7 @@ Installs: `gomodifytags`, `iferr` — used by gopher.nvim for struct tag generat
 
 ---
 
-## 9. MapStruct (Java projects)
+## 10. MapStruct (Java projects)
 
 For MapStruct + Lombok to work correctly, `annotationProcessorPaths` in `pom.xml` must follow this order:
 
@@ -175,7 +196,7 @@ For MapStruct + Lombok to work correctly, `annotationProcessorPaths` in `pom.xml
 
 ---
 
-## 10. Treesitter parsers (auto-compiled on first launch)
+## 11. Treesitter parsers (auto-compiled on first launch)
 
 Installed automatically via `:TSUpdate`. Requires `gcc` or `clang`:
 

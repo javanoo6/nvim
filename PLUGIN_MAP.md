@@ -128,13 +128,13 @@ nvim-treehopper  (motion.lua)
 
 ```
 conform.nvim  (formatting.lua)
-  — format on save (BufWritePre), also <leader>cf
+  — format on save (BufWritePre), also <leader>cf and <leader>cI
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
     python     → black
     json/yaml/markdown → prettier
-  Note: Java and Go skip format-on-save (done via LSP/manual)
+  Note: Java and Go skip format-on-save (done via LSP/manual); <leader>cI runs the IntelliJ formatter JAR directly
 
 nvim-lint  (linting.lua)
   — lints on BufWritePost / BufReadPost
@@ -277,7 +277,7 @@ neotest.lua
     └── neotest-python  ── Python test runner
 ```
 
-**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tl last, ts summary, to output, tO output panel, tS stop, tw watch
+**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tl last, ts summary, to output, tO output panel, tS stop (interactive picker), tw watch
 
 ---
 
@@ -366,7 +366,8 @@ ftplugin/markdown.lua  ── per-buffer markdown settings
 ```
 sessions.lua
   auto-session  ── auto save/restore on open/close
-                   <leader>Ss/Sr/Sd/Sf/Sa
+                   auto-save also when launched with file args
+                   <leader>Ss/Sr/Sd/Sf/Sa (Sa enables auto-save)
 
 projects.lua
   project.nvim  ── project root detection + history
@@ -378,7 +379,25 @@ terminal.lua
 
 ---
 
-### 16. Diagnostics & Quickfix
+### 16. LeetCode
+
+```
+leetcode.lua
+  leetcode.nvim  ── LeetCode integration (lazy, cmd=Leet*)
+    ├── nvim-lua/plenary.nvim
+    ├── nvim-treesitter/nvim-treesitter
+    ├── nvim-telescope/telescope.nvim
+    ├── MunifTanjim/nui.nvim
+    └── nvim-tree/nvim-web-devicons
+    Keymaps: <leader>Ll menu, <leader>Lr run, <leader>Ls submit,
+             <leader>Ld daily, <leader>Ln random, <leader>Lt tabs,
+             <leader>Lp topic picker, <leader>LR DSA roadmap,
+             <leader>LU update cookies
+```
+
+---
+
+### 17. Diagnostics & Quickfix
 
 ```
 trouble.lua
@@ -403,7 +422,7 @@ keymaps.lua (diagnostic):
 
 ---
 
-### 17. Misc utilities
+### 18. Misc utilities
 
 ```
 todo-comments.lua
@@ -508,6 +527,9 @@ lazy.nvim
 │       ├── neotest-go
 │       └── neotest-python
 │
+├── LEETCODE
+│   └── leetcode.nvim → plenary + treesitter + telescope + nui + devicons
+│
 ├── LANGUAGE-SPECIFIC
 │   ├── nvim-java (Java / jdtls)
 │   └── gopher.nvim (Go extras)
@@ -553,6 +575,7 @@ lazy.nvim
 | `<leader>Gh`    | hunks          | gitsigns                                                                  |
 | `<leader>h`     | harpoon        | harpoon                                                                   |
 | `<leader>j`     | java           | nvim-java                                                                 |
+| `<leader>L`     | leetcode       | leetcode.nvim                                                             |
 | `<leader>l`     | lsp            | nvim-lspconfig                                                            |
 | `<leader>o`     | obsidian       | obsidian.nvim                                                             |
 | `<leader>p`     | plugins        | lazy                                                                      |

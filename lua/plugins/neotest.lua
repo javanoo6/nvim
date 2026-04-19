@@ -64,9 +64,9 @@ return {
 			{
 				"<leader>tS",
 				function()
-					require("neotest").run.stop()
+					require("neotest").run.stop({ interactive = true })
 				end,
-				desc = "Stop",
+				desc = "Stop (Interactive)",
 			},
 			{
 				"<leader>tw",

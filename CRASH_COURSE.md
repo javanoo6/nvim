@@ -579,11 +579,12 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 | Key          | Action                  |
 | ------------ | ----------------------- |
-| `<leader>ca` | Code action             |
-| `<leader>cr` | Rename                  |
-| `<leader>ci` | Organize imports        |
-| `<leader>cp` | Fix package declaration |
-| `<leader>cf` | Format                  |
+|| `<leader>ca` | Code action             |
+|| `<leader>cr` | Rename                  |
+|| `<leader>ci` | Organize imports        |
+|| `<leader>cp` | Fix package declaration |
+|| `<leader>cf` | Format                  |
+|| `<leader>cI` | IntelliJ format         |
 
 ### Symbols & Outline
 
@@ -662,7 +663,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 | `<leader>ts` | Toggle summary      |
 | `<leader>to` | Show output         |
 | `<leader>tO` | Toggle output panel |
-| `<leader>tS` | Stop                |
+| `<leader>tS` | Stop (interactive)  |
 | `<leader>tw` | Toggle watch        |
 
 ### Java-specific
@@ -705,6 +706,53 @@ jdtls code actions — open actions-preview picker with diff before applying.
 | `<leader>jgt` | toString            |
 | `<leader>jgo` | Override methods    |
 | `<leader>jgs` | Sort members        |
+
+---
+
+### Java Debugging
+
+**How Java debugging works:** `nvim-java` orchestrates `jdtls` → `java-debug-adapter` → `nvim-dap`. When you start debugging, JDTLS compiles the project, starts a debug server on a port, and nvim-dap connects to it.
+
+#### Starting Debug Sessions
+
+| Command | Action |
+|---------|--------|
+| `:JavaTestDebugCurrentMethod` | Debug test method under cursor |
+| `:JavaTestDebugCurrentClass` | Debug entire test class |
+| `:JavaTestDebugAllTests` | Debug all tests in workspace |
+| `:JavaDebugCurrentFile` | Debug main class/Spring Boot app |
+
+**Via Lua API** (if you want custom keybindings):
+```lua
+require('java').test.debug_current_method()    -- Debug method
+require('java').test.debug_current_class()     -- Debug class
+require('java').debug.debug_current_file()     -- Debug main
+```
+
+#### Workflow Example
+
+1. **Open test file** (e.g., `UserControllerTest.java`) and place cursor on test method
+2. **Set breakpoints** with `<leader>db` on lines where you expect the bug
+3. **Start debugging**: `:JavaTestDebugCurrentMethod`
+4. **Wait 5-10s** for JDTLS to compile and DAP UI to open automatically
+5. **Use DAP controls**:
+   - `<leader>dc` — Continue to breakpoint
+   - `<leader>di` — Step into method
+   - `<leader>dO` — Step over method
+   - `<leader>de` — Select expression and evaluate (e.g., `user.getName()`)
+   - `<leader>du` — Toggle DAP UI (variables, call stack, REPL)
+6. **Fix and re-run** or terminate with `<leader>dt`
+
+#### Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| "No debug session found" | Run `:JavaInfo` or `:LspInfo` — ensure JDTLS is attached |
+| "Failed to start" | Wait for JDTLS to load, or `:Lazy java` to reload |
+| "Port already in use" | Stale session — close nvim or `killall java` |
+| Breakpoints not hitting | Check `:LspInfo` for compilation errors, or check logs: `tail -f ~/.local/state/nvim/nvim-java.log` |
+
+**See also:** `~/.config/nvim/JAVA_DEBUGGING.md` for complete reference.
 
 ---
 
@@ -1085,6 +1133,7 @@ Press `<leader>` and wait to see all groups:
 ## Sessions
 
 Auto-saved per project directory. Restores open files, splits, and cursor positions.
+Auto-save also works when Neovim is launched with file arguments.
 
 | Key          | Action           |
 | ------------ | ---------------- |
@@ -1092,7 +1141,7 @@ Auto-saved per project directory. Restores open files, splits, and cursor positi
 | `<leader>Sr` | Restore session  |
 | `<leader>Sd` | Delete session   |
 | `<leader>Sf` | Find sessions    |
-| `<leader>Sa` | Toggle auto-save |
+| `<leader>Sa` | Enable auto-save |
 
 ---
 

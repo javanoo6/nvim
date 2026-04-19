@@ -7,6 +7,7 @@ return {
 	opts = {
 		-- Enable auto-save and auto-restore
 		auto_save = true,
+		args_allow_files_auto_save = true,
 		auto_restore = true,
 		auto_restore_last_session = false, -- Don't restore last session automatically when starting nvim without args
 
@@ -36,6 +37,6 @@ return {
 		{ "<leader>Sr", "<cmd>AutoSession restore<cr>", desc = "Restore session" },
 		{ "<leader>Sd", "<cmd>SessionDelete<cr>",       desc = "Delete session" },
 		{ "<leader>Sf", "<cmd>AutoSession search<cr>",  desc = "Find sessions" },
-		{ "<leader>Sa", "<cmd>AutoSession toggle<cr>",  desc = "Toggle auto-save" },
+		{ "<leader>Sa", "<cmd>AutoSession enable<cr>",  desc = "Enable auto-save" },
 	},
 }
