@@ -3,14 +3,6 @@ return {
 	{
 		"sindrets/diffview.nvim",
 		cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
-		keys = {
-			"<leader>GD",
-			"<leader>GF",
-			"<leader>GH",
-			"<leader>GL",
-			"<leader>Gm",
-			"<leader>GM",
-		},
 		opts = {
 			hooks = {
 				diff_buf_read = function()

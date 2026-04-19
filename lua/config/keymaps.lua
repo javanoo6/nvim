@@ -25,6 +25,7 @@
 --   <leader>GL     - Line/range history
 --   <leader>Gm     - Diff vs main/master
 --   <leader>GM     - Diff vs origin/main
+--   <leader>Gq     - Close Diffview
 --
 -- NOTE: Gitsigns Keymaps (buffer-local, defined in plugins/git.lua):
 --   ]h / [h          - Next/prev hunk
@@ -250,6 +251,10 @@ map("n", "]'", "`]", { desc = "Next mark" })
 map("n", "['", "`[", { desc = "Prev mark" })
 
 -- Diffview
+-- Keep Diffview lhs definitions only here.
+-- Do not duplicate them in lazy plugin `keys`, or lazy.nvim will treat them
+-- as lazy-load triggers, delete the real mappings on first use, and never
+-- restore them for command-only plugins like Diffview.
 local function default_branch()
 	local res = vim.system({ "git", "rev-parse", "--verify", "main" }, { capture_output = true }):wait()
 	return res.code == 0 and "main" or "master"
@@ -260,6 +265,7 @@ map("n", "<leader>GF", "<cmd>DiffviewFileHistory --follow %<cr>", { desc = "File
 map("n", "<leader>GH", "<cmd>DiffviewFileHistory<cr>", { desc = "Repo history" })
 map("n", "<leader>GL", "<Cmd>.DiffviewFileHistory --follow<CR>", { desc = "Line history" })
 map("v", "<leader>GL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Range history" })
+map("n", "<leader>Gq", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
 map("n", "<leader>Gm", function()
 	vim.cmd("DiffviewOpen " .. default_branch())
 end, { desc = "Diff vs main/master" })
