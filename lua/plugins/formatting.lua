@@ -66,11 +66,21 @@ return {
         if vim.bo[bufnr].filetype == "go" then
           return
         end
+        
+        -- Skip formatting if there are LSP errors
+        local diagnostics = vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR })
+        if #diagnostics > 0 then
+          return
+        end
+        
         return { timeout_ms = 500, lsp_format = "fallback" }
       end,
     },
     config = function(_, opts)
       require("conform").setup(opts)
+      
+      -- Enable auto-formatting by default
+      vim.g.disable_autoformat = false
 
       vim.api.nvim_create_user_command("FormatDisable", function(args)
         if args.bang then

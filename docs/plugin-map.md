@@ -129,13 +129,14 @@ nvim-treehopper  (motion.lua)
 ```
 conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf and <leader>cI
+  — auto-formatting enabled by default (disable with :FormatDisable)
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
     python     → black
     json/yaml/markdown → prettier
     java       → idea_formatter
-  Note: Go skips format-on-save (done via LSP/manual); <leader>cI runs the IntelliJ formatter JAR directly
+  Note: Go skips format-on-save (done via LSP/manual); format-on-save skips files with LSP errors
 
 nvim-lint  (linting.lua)
   — lints on BufWritePost / BufReadPost
