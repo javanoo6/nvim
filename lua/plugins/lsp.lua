@@ -255,10 +255,10 @@ return {
 				},
 			},
 		},
-		config = function(_, opts)
+ 	config = function(_, opts)
 			local tid = require("tiny-inline-diagnostic")
 			tid.setup(opts)
-			tid.disable()
+			tid.enable()
 			vim.diagnostic.config({ virtual_text = false })
 		end,
 	},

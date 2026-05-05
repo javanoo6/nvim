@@ -15,14 +15,6 @@ return {
         mode = { "n", "v" },
         desc = "Format",
       },
-      {
-        "<leader>cI",
-        function()
-          require("conform").format({ formatters = { "idea_formatter" }, async = true, timeout_ms = 30000 })
-        end,
-        mode = { "n", "v" },
-        desc = "Format with IntelliJ formatter",
-      },
     },
     opts = {
       formatters = {
@@ -56,11 +48,13 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         go = { "gofumpt", "goimports-reviser", "golines" },
-        python = { "black" },
+        python = { "idea_formatter" },
         json = { "prettier" },
-        yaml = { "prettier" },
-        markdown = { "prettier" },
+        yaml = { "idea_formatter" },
+        markdown = { "idea_formatter" },
         java = { "idea_formatter" },
+        xml = { "idea_formatter" },
+        sh = { "idea_formatter" },
       },
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
