@@ -583,8 +583,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 || `<leader>cr` | Rename                  |
 || `<leader>ci` | Organize imports        |
 || `<leader>cp` | Fix package declaration |
-|| `<leader>cf` | Format                  |
-|| `<leader>cI` | IntelliJ format         |
+|| `<leader>cf` | Format (Java: IntelliJ formatter) |\n|| `<leader>cI` | IntelliJ format (all filetypes)   |
 
 ### Symbols & Outline
 

@@ -134,7 +134,8 @@ conform.nvim  (formatting.lua)
     go         → gofumpt → goimports-reviser → golines
     python     → black
     json/yaml/markdown → prettier
-  Note: Java and Go skip format-on-save (done via LSP/manual); <leader>cI runs the IntelliJ formatter JAR directly
+    java       → idea_formatter
+  Note: Go skips format-on-save (done via LSP/manual); <leader>cI runs the IntelliJ formatter JAR directly
 
 nvim-lint  (linting.lua)
   — lints on BufWritePost / BufReadPost

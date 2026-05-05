@@ -57,12 +57,13 @@ return {
         json = { "prettier" },
         yaml = { "prettier" },
         markdown = { "prettier" },
+        java = { "idea_formatter" },
       },
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
           return
         end
-        if vim.bo[bufnr].filetype == "java" or vim.bo[bufnr].filetype == "go" then
+        if vim.bo[bufnr].filetype == "go" then
           return
         end
         return { timeout_ms = 500, lsp_format = "fallback" }
