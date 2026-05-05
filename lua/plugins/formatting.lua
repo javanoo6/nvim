@@ -10,7 +10,7 @@ return {
       {
         "<leader>cf",
         function()
-          require("conform").format({ lsp_format = "fallback" })
+          require("conform").format({ timeout_ms = 10000, lsp_format = "fallback" })
         end,
         mode = { "n", "v" },
         desc = "Format",
@@ -20,6 +20,7 @@ return {
       formatters = {
         idea_formatter = {
           command = "java",
+          timeout = 10000,  -- 10 seconds for daemon startup
           args = function()
             local home = vim.env.HOME
             return {
