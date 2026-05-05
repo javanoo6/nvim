@@ -1,0 +1,3 @@
+[submodule "intellij-code-formatter"]
+	path = intellij-code-formatter
+	url = git@github.com:javanoo6/intellij-code-formatter.git
