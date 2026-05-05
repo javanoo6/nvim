@@ -25,19 +25,17 @@ return {
       },
     },
     opts = {
-      --[[			formatters = {
-				prettier_java = {
-					command = "prettier",
-					args = { "--stdin-filepath", "$FILENAME", "--plugin", "prettier-plugin-java" },
-					stdin = true,
-				},
-			},]]
       formatters = {
         idea_formatter = {
-          command = "/home/konkov/.local/bin/idea-format",
+          command = "java",
           args = {
-            "-editorconfig",
-            "/home/konkov/Desktop/RQC/cloud-platform/.editorconfig",
+            "-jar",
+            "~/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar",
+            "--format",
+            "--optimize-imports",
+            "--rearrange",
+            "--editorconfig",
+            "~/.config/nvim/.editorconfig",
             "$FILENAME",
           },
           stdin = false,
