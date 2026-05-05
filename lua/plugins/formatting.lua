@@ -28,16 +28,19 @@ return {
       formatters = {
         idea_formatter = {
           command = "java",
-          args = {
-            "-jar",
-            "~/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar",
-            "--format",
-            "--optimize-imports",
-            "--rearrange",
-            "--editorconfig",
-            "~/.config/nvim/.editorconfig",
-            "$FILENAME",
-          },
+          args = function()
+            local home = vim.env.HOME
+            return {
+              "-jar",
+              home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar",
+              "--format",
+              "--optimize-imports",
+              "--rearrange",
+              "--editorconfig",
+              home .. "/.config/nvim/.editorconfig",
+              "$FILENAME",
+            }
+          end,
           stdin = false,
         },
         ["goimports-reviser"] = {
@@ -66,19 +69,19 @@ return {
         if vim.bo[bufnr].filetype == "go" then
           return
         end
-        
+
         -- Skip formatting if there are LSP errors
         local diagnostics = vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR })
         if #diagnostics > 0 then
           return
         end
-        
+
         return { timeout_ms = 500, lsp_format = "fallback" }
       end,
     },
     config = function(_, opts)
       require("conform").setup(opts)
-      
+
       -- Enable auto-formatting by default
       vim.g.disable_autoformat = false
 
