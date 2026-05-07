@@ -162,11 +162,6 @@ map("n", "<leader>uD", function()
 	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle diagnostics" })
 
--- Code
-map({ "n", "v" }, "<leader>cf", function()
-	util.format()
-end, { desc = "Format" })
-
 -- Go to definition in vertical split (right)
 map("n", "<leader>cd", function()
 	vim.cmd("vsplit")
