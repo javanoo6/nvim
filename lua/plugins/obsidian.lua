@@ -36,25 +36,25 @@ return {
 				end,
 				opts = { noremap = false, expr = true, buffer = true, desc = "Follow link" },
 			},
-			-- Toggle checkbox
-			["<leader>oc"] = {
-				action = function()
-					return require("obsidian").util.toggle_checkbox()
-				end,
-				opts = { buffer = true, desc = "Toggle checkbox" },
-			},
+-- Toggle checkbox
+		["<leader>Oc"] = {
+			action = function()
+				return require("obsidian").util.toggle_checkbox()
+			end,
+			opts = { buffer = true, desc = "Toggle checkbox" },
+		},
 		},
 	},
 	keys = {
-		{ "<leader>on", "<cmd>ObsidianNew<cr>",         desc = "New note" },
-		{ "<leader>oo", "<cmd>ObsidianOpen<cr>",        desc = "Open in Obsidian" },
-		{ "<leader>of", "<cmd>ObsidianQuickSwitch<cr>", desc = "Find note" },
-		{ "<leader>os", "<cmd>ObsidianSearch<cr>",      desc = "Search notes" },
-		{ "<leader>ob", "<cmd>ObsidianBacklinks<cr>",   desc = "Backlinks" },
-		{ "<leader>ol", "<cmd>ObsidianLinks<cr>",       desc = "Links in note" },
-		{ "<leader>ot", "<cmd>ObsidianTags<cr>",        desc = "Tags" },
-		{ "<leader>od", "<cmd>ObsidianDailies<cr>",     desc = "Daily notes" },
-		{ "<leader>or", "<cmd>ObsidianRename<cr>",      desc = "Rename note" },
-		{ "<leader>op", "<cmd>ObsidianPasteImg<cr>",    desc = "Paste image" },
+		{ "<leader>On", "<cmd>ObsidianNew<cr>",         desc = "New note" },
+		{ "<leader>Oo", "<cmd>ObsidianOpen<cr>",        desc = "Open in Obsidian" },
+		{ "<leader>Of", "<cmd>ObsidianQuickSwitch<cr>", desc = "Find note" },
+		{ "<leader>Os", "<cmd>ObsidianSearch<cr>",      desc = "Search notes" },
+		{ "<leader>Ob", "<cmd>ObsidianBacklinks<cr>",   desc = "Backlinks" },
+		{ "<leader>Ol", "<cmd>ObsidianLinks<cr>",       desc = "Links in note" },
+		{ "<leader>Ot", "<cmd>ObsidianTags<cr>",        desc = "Tags" },
+		{ "<leader>Od", "<cmd>ObsidianDailies<cr>",     desc = "Daily notes" },
+		{ "<leader>Or", "<cmd>ObsidianRename<cr>",      desc = "Rename note" },
+		{ "<leader>Op", "<cmd>ObsidianPasteImg<cr>",    desc = "Paste image" },
 	},
 }

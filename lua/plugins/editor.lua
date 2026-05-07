@@ -305,7 +305,7 @@ return {
     keys = {
       { "-", "<cmd>Oil<cr>", desc = "Open Oil (parent dir)" },
       {
-        "<leader>-",
+        "<leader>o",
         function()
           require("oil").open(vim.uv.cwd())
         end,
