@@ -627,7 +627,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 ---
 
-## Debugging (DAP)
+## Debugging
 
 | Key          | Action                     |
 |--------------|----------------------------|
