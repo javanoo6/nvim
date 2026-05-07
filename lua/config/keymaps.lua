@@ -78,8 +78,6 @@ map("v", "<C-S-Up>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
 map("v", "<C-S-Down>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
 
 -- Buffers
-map("n", "[b", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
-map("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate buffer" })
 map("n", "<leader>b-", "<cmd>new<cr>", { desc = "New buffer below" })
