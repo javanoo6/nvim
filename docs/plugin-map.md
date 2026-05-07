@@ -24,7 +24,7 @@ lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
 ### 1. Infrastructure (shared deps, always loaded)
 
 | Plugin                        | Role                               | File                   |
-| ----------------------------- | ---------------------------------- | ---------------------- |
+|-------------------------------|------------------------------------|------------------------|
 | `folke/lazy.nvim`             | Plugin manager                     | config/lazy.lua        |
 | `nvim-lua/plenary.nvim`       | Lua utilities (async, path, …)     | dep of many            |
 | `MunifTanjim/nui.nvim`        | UI component library               | dep of neo-tree, noice |
@@ -58,7 +58,7 @@ nvim-lspconfig  ─────────────────────�
 **Key LSP keymaps** (set on LspAttach in lsp.lua):
 
 | Key                | Action                    |
-| ------------------ | ------------------------- |
+|--------------------|---------------------------|
 | `gd`               | Glance definitions        |
 | `gR`               | Glance references         |
 | `gy`               | Glance type definitions   |
@@ -95,7 +95,7 @@ nvim-autopairs  (coding.lua)
 **Completion keymaps:**
 
 | Key                 | Action                    |
-| ------------------- | ------------------------- |
+|---------------------|---------------------------|
 | `<C-n>` / `<C-p>`   | Next / prev item          |
 | `<Tab>` / `<S-Tab>` | Next item or jump snippet |
 | `<CR>`              | Confirm                   |
@@ -128,7 +128,7 @@ nvim-treehopper  (motion.lua)
 
 ```
 conform.nvim  (formatting.lua)
-  — format on save (BufWritePre), also <leader>cf and <leader>cI
+  — format on save (BufWritePre), also <leader>cf
   — auto-formatting enabled by default (disable with :FormatDisable)
   Formatters by filetype:
     lua        → stylua
@@ -228,7 +228,7 @@ git.lua
 **Gitsigns keymaps:**
 
 | Key                   | Action                                |
-| --------------------- | ------------------------------------- |
+|-----------------------|---------------------------------------|
 | `]h` / `[h`           | Next / prev hunk                      |
 | `<leader>Ghs/Ghr`     | Stage / reset hunk                    |
 | `<leader>GhS/GhR`     | Stage / reset buffer                  |
@@ -241,7 +241,7 @@ git.lua
 **Diffview keymaps** (keymaps.lua):
 
 | Key          | Action                   |
-| ------------ | ------------------------ |
+|--------------|--------------------------|
 | `<leader>GD` | DiffviewOpen (repo diff) |
 | `<leader>GF` | File history             |
 | `<leader>GH` | Repo history             |
@@ -250,7 +250,8 @@ git.lua
 | `<leader>GM` | Diff vs origin/main      |
 | `<leader>Gq` | Close Diffview           |
 
-Keep these mappings only in `lua/config/keymaps.lua`. Duplicating the same lhs in a lazy.nvim plugin `keys` list can make lazy.nvim delete the real mapping on first use.
+Keep these mappings only in `lua/config/keymaps.lua`. Duplicating the same lhs in a lazy.nvim plugin `keys` list can make lazy.nvim delete the real mapping on
+first use.
 
 ---
 
@@ -564,44 +565,45 @@ lazy.nvim
 
 ## Key-group cheat sheet (which-key groups)
 
-| Prefix          | Group          | Main plugins involved                                                     |
-| --------------- | -------------- | ------------------------------------------------------------------------- |
-| `<leader>b`     | buffer         | bufferline                                                                |
-| `<leader>c`     | code           | LSP, conform, trouble                                                     |
-| `<leader>d`     | debug          | nvim-dap                                                                  |
-| `<leader>dg`    | debug go       | nvim-dap-go                                                               |
-| `<leader>e/E`   | explorer       | neo-tree                                                                  |
-| `-` / `<leader>-` | oil          | oil.nvim                                                                  |
-| `<leader>f`     | file/find      | telescope, yanky                                                          |
-| `<leader>g`     | go             | gopls, gopher                                                             |
-| `<leader>gi`    | go insert      | gopher                                                                    |
-| `<leader>gs`    | go struct tags | gopher                                                                    |
-| `<leader>G`     | git            | gitsigns, diffview, lazygit                                               |
-| `<leader>Gh`    | hunks          | gitsigns                                                                  |
-| `<leader>h`     | harpoon        | harpoon                                                                   |
-| `<leader>j`     | java           | nvim-java                                                                 |
-| `<leader>L`     | leetcode       | leetcode.nvim                                                             |
-| `<leader>l`     | lsp            | nvim-lspconfig                                                            |
-| `<leader>o`     | obsidian       | obsidian.nvim                                                             |
-| `<leader>p`     | plugins        | lazy                                                                      |
-| `<leader>q`     | quit/session   | auto-session                                                              |
-| `<leader>r`     | replace        | grug-far                                                                  |
-| `<leader>s`     | search         | telescope, todo-comments                                                  |
-| `<leader>S`     | sessions       | auto-session                                                              |
-| `<leader>t`     | test/theme     | neotest, themery                                                          |
-| `<leader>u`     | ui             | toggles (spell, wrap, numbers, fold, diagnostics, inlay hints, auto-save) |
-| `<leader>w`     | windows        | splits                                                                    |
-| `<leader>x`     | diagnostics/qf | trouble, quicker, todo-comments                                           |
-| `<leader><tab>` | tabs           | vim tabs                                                                  |
-| `g`             | goto/misc      | LSP, glance, splits                                                       |
-| `gc`            | comment        | mini.comment                                                              |
-| `gs`            | surround       | mini.surround                                                             |
+| Prefix            | Group          | Main plugins involved                                                     |
+|-------------------|----------------|---------------------------------------------------------------------------|
+| `<leader>b`       | buffer         | bufferline                                                                |
+| `<leader>c`       | code           | LSP, conform, trouble                                                     |
+| `<leader>d`       | debug          | nvim-dap                                                                  |
+| `<leader>dg`      | debug go       | nvim-dap-go                                                               |
+| `<leader>e/E`     | explorer       | neo-tree                                                                  |
+| `-` / `<leader>-` | oil            | oil.nvim                                                                  |
+| `<leader>f`       | file/find      | telescope, yanky                                                          |
+| `<leader>g`       | go             | gopls, gopher                                                             |
+| `<leader>gi`      | go insert      | gopher                                                                    |
+| `<leader>gs`      | go struct tags | gopher                                                                    |
+| `<leader>G`       | git            | gitsigns, diffview, lazygit                                               |
+| `<leader>Gh`      | hunks          | gitsigns                                                                  |
+| `<leader>h`       | harpoon        | harpoon                                                                   |
+| `<leader>j`       | java           | nvim-java                                                                 |
+| `<leader>L`       | leetcode       | leetcode.nvim                                                             |
+| `<leader>l`       | lsp            | nvim-lspconfig                                                            |
+| `<leader>o`       | obsidian       | obsidian.nvim                                                             |
+| `<leader>p`       | plugins        | lazy                                                                      |
+| `<leader>q`       | quit/session   | auto-session                                                              |
+| `<leader>r`       | replace        | grug-far                                                                  |
+| `<leader>s`       | search         | telescope, todo-comments                                                  |
+| `<leader>S`       | sessions       | auto-session                                                              |
+| `<leader>t`       | test/theme     | neotest, themery                                                          |
+| `<leader>u`       | ui             | toggles (spell, wrap, numbers, fold, diagnostics, inlay hints, auto-save) |
+| `<leader>w`       | windows        | splits                                                                    |
+| `<leader>x`       | diagnostics/qf | trouble, quicker, todo-comments                                           |
+| `<leader><tab>`   | tabs           | vim tabs                                                                  |
+| `g`               | goto/misc      | LSP, glance, splits                                                       |
+| `gc`              | comment        | mini.comment                                                              |
+| `gs`              | surround       | mini.surround                                                             |
 
 ---
 
 ## Notes & known issues
 
-- **Java LSP:** `nvim-java` owns jdtls entirely. `lspconfig` + `mason-lspconfig` are explicitly told to skip it (`server_name ~= "jdtls"`, `vim.g.lspconfig_jdtls_enabled = false`).
+- **Java LSP:** `nvim-java` owns jdtls entirely. `lspconfig` + `mason-lspconfig` are explicitly told to skip it (`server_name ~= "jdtls"`,
+  `vim.g.lspconfig_jdtls_enabled = false`).
 - **Auto-save:** Disabled by default (`enabled = false`). Toggle with `<leader>ua`. Blocked when LSP errors exist. Triggers format after save.
 - **Go format on save:** Skipped in `conform.format_on_save` for Go — formatting is done manually or via gopls.
 - **noice hover/signature:** Disabled to avoid conflicts with inlay hints. Use `K` / `gK` natively.

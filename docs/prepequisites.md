@@ -120,7 +120,7 @@ These are installed automatically by Mason — no manual action needed.
 Listed here for reference only.
 
 | Tool                   | Purpose                  |
-| ---------------------- | ------------------------ |
+|------------------------|--------------------------|
 | `lua-language-server`  | Lua LSP                  |
 | `bash-language-server` | Bash LSP                 |
 | `json-lsp`             | JSON LSP                 |

@@ -47,6 +47,7 @@ end
 ```
 
 **What this does:**
+
 - Calls the original function to get the full argument list (java executable,
   OSGi flags, lombok agent path, etc.)
 - Finds the hardcoded `-Xms1G` entry and replaces it with `-Xms2G`
@@ -62,81 +63,3 @@ disk. It only replaces the in-memory function at runtime. If nvim-java changes
 the function signature or the string `'-Xms1G'`, the patch silently stops
 working (the `break` just never fires and only `-Xmx8G` gets added). Adjust
 the values here to taste.
-
----
-
-## 2. JDTLS settings (formatter + import order)
-
-### Problem
-
-nvim-java's `java.Config` type definition for the `jdtls` key only accepts
-`{ version: string }`. Any other keys — including `settings` or `vmargs` —
-are silently dropped and never forwarded to the LSP client. This was confirmed
-by reading:
-
-- `lua/java/config.lua` — type definition
-- `lua/java/startup/lsp_setup.lua` — where nvim-java calls `vim.lsp.config()`
-- `lua/java-core/ls/servers/jdtls/conf.lua` — base JDTLS config (no `settings` field)
-
-### Fix
-
-Call `vim.lsp.config("jdtls", { settings = { ... } })` directly after
-`require("java").setup()`. Neovim 0.10+ deep-merges multiple calls to
-`vim.lsp.config()` for the same server name, so this safely layers on top of
-whatever nvim-java registered:
-
-```lua
-vim.lsp.config("jdtls", {
-    settings = {
-        java = {
-            format = {
-                settings = {
-                    url = vim.fn.stdpath("config") .. "/Default-for-eclipse.xml",
-                    profile = "Default",
-                },
-            },
-            completion = {
-                importOrder = { "javax", "", "java", "", "#" },
-            },
-            sources = {
-                organizeImports = {
-                    starThreshold = 5,
-                    staticStarThreshold = 3,
-                },
-            },
-        },
-    },
-})
-```
-
-### What each setting does
-
-**`java.format.settings.url`**
-Points JDTLS at an Eclipse JDT formatter XML profile. JDTLS uses the Eclipse
-JDT formatter engine internally; this file contains all the `org.eclipse.jdt.core.formatter.*`
-rules (indentation, wrapping, braces, etc.). Without this, JDTLS falls back to
-Eclipse's built-in defaults (tabs, 80-char line limit).
-
-The file `Default-for-eclipse.xml` lives in the nvim config directory and was
-exported from the project's IntelliJ settings to be Eclipse-compatible.
-
-**`java.format.settings.profile`**
-Selects which named profile inside the XML to use. The XML can contain multiple
-profiles; `"Default"` matches the `name="Default"` attribute in the file.
-
-**`java.completion.importOrder`**
-Controls the section ordering when JDTLS organises imports. Each string is a
-package prefix; `""` is the catch-all group; `"#"` is static imports.
-
-The value `{ "javax", "", "java", "", "#" }` is a starting point — JDTLS's
-handling of the catch-all `""` position is not fully reliable, so a
-post-processing Lua function in `ftplugin/java.lua` enforces the final order
-after JDTLS finishes its cleanup pass.
-
-**`java.sources.organizeImports.starThreshold`**
-Number of classes from the same package that must be imported before JDTLS
-collapses them into a wildcard (`import java.util.*`). Set to `5` to match
-IntelliJ's default.
-
-**`java.sources.organizeImports.staticStarThreshold`**
-Same threshold but for static imports.

@@ -39,31 +39,6 @@ return {
 			return list
 		end
 
-		-- nvim-java's jdtls schema only accepts { version } — vmargs and settings
-		-- are silently ignored there. Use vim.lsp.config directly; nvim-java calls
-		-- the same API internally and Neovim deep-merges multiple calls.
-		vim.lsp.config("jdtls", {
-			settings = {
-				java = {
-					format = {
-						settings = {
-							url = vim.fn.stdpath("config") .. "/Default-for-eclipse.xml",
-							profile = "Default",
-						},
-					},
-					completion = {
-						importOrder = { "javax", "", "java", "", "#" },
-					},
-					sources = {
-						organizeImports = {
-							starThreshold = 5,
-							staticStarThreshold = 3,
-						},
-					},
-				},
-			},
-		})
-
 		vim.lsp.enable("jdtls")
 	end,
 }
