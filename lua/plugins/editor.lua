@@ -271,6 +271,12 @@ return {
             vim.api.nvim_set_current_win(picked_window_id)
             open(state, path)
           end,
+          copy_absolute_path = function(state)
+            local node = state.tree:get_node()
+            local path = node:get_id()
+            vim.fn.setreg("+", path)
+            vim.notify("Copied path: " .. path)
+          end,
         },
         window = {
           mappings = {
@@ -278,6 +284,7 @@ return {
             ["<cr>"] = "expand_single_children",
             ["o"] = "open",
             ["s"] = "open_with_window_picker", -- Open with window picker
+            ["Y"] = "copy_absolute_path",
             ["<C-v>"] = "open_vsplit",
             ["<C-x>"] = "open_split",
             ["<C-t>"] = "open_tabnew",
