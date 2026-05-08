@@ -1,44 +1,78 @@
 -- ./lua/plugins/neotest.lua
 
--- Testing: neotest with Java, Go, Python adapters
+-- Testing: stock neotest setup with Java, Go, and Python adapters
+local function clear_and_run(run_fn)
+	return function(...)
+		require("neotest").summary.open()
+		require("neotest").output_panel.clear()
+		require("neotest").output_panel.open()
+		return run_fn(...)
+	end
+end
+
 return {
+	{
+		"rcasia/neotest-java",
+		ft = "java",
+		cmd = { "NeotestJava" },
+		dependencies = {
+			"nvim-java/nvim-java",
+			"mfussenegger/nvim-dap",
+		},
+	},
+	{
+		"fredrikaverpil/neotest-golang",
+		ft = "go",
+		build = function()
+			vim.system({ "go", "install", "gotest.tools/gotestsum@latest" }):wait()
+		end,
+	},
 	{
 		"nvim-neotest/neotest",
 		dependencies = {
+			"nvim-neotest/nvim-nio",
 			"nvim-lua/plenary.nvim",
-			-- Adapters
-			"rcasia/neotest-java",         -- Java (Maven/Gradle)
-			"nvim-neotest/neotest-go",     -- Go
+			"antoinemadec/FixCursorHold.nvim",
+			"nvim-treesitter/nvim-treesitter",
+			"rcasia/neotest-java",           -- Java (Maven/Gradle)
+			"fredrikaverpil/neotest-golang", -- Go
 			"nvim-neotest/neotest-python", -- Python
 		},
 		keys = {
 			{
 				"<leader>tt",
-				function()
+				clear_and_run(function()
 					require("neotest").run.run(vim.fn.expand("%"))
-				end,
+				end),
 				desc = "Run File",
 			},
 			{
 				"<leader>tT",
-				function()
+				clear_and_run(function()
 					require("neotest").run.run(vim.uv.cwd())
-				end,
+				end),
 				desc = "Run All Test Files",
 			},
 			{
 				"<leader>tr",
-				function()
+				clear_and_run(function()
 					require("neotest").run.run()
-				end,
+				end),
 				desc = "Run Nearest",
 			},
 			{
 				"<leader>tl",
-				function()
+				clear_and_run(function()
 					require("neotest").run.run_last()
-				end,
+				end),
 				desc = "Run Last",
+			},
+			{
+				"<leader>ta",
+				function()
+					require("neotest").run.attach({ interactive = true })
+				end,
+				desc = "Attach to Running Test",
 			},
 			{
 				"<leader>ts",
@@ -62,6 +96,13 @@ return {
 				desc = "Toggle Output Panel",
 			},
 			{
+				"<leader>tc",
+				function()
+					require("neotest").output_panel.clear()
+				end,
+				desc = "Clear Output Panel",
+			},
+			{
 				"<leader>tS",
 				function()
 					require("neotest").run.stop({ interactive = true })
@@ -77,15 +118,22 @@ return {
 			},
 		},
 		config = function()
-			local neotest = require("neotest")
-			neotest.setup({
+			require("neotest").setup({
 				adapters = {
-					require("neotest-java"),
-					require("neotest-go"),
-					require("neotest-python"),
+					require("neotest-java")({
+						incremental_build = true,
+					}),
+					require("neotest-golang")({
+						runner = "gotestsum",
+					}),
+					require("neotest-python")({
+						dap = { justMyCode = false },
+					}),
 				},
 				status = { virtual_text = true },
-				output = { open_on_run = true },
+				output_panel = {
+					open = "botright split | resize 15",
+				},
 				quickfix = {
 					open = function()
 						vim.cmd("copen")
