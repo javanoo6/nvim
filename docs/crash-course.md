@@ -582,7 +582,6 @@ Use this when you need to rename variables or make targeted edits across many fi
 |-----|--------------|
 |     | `<leader>ca` | Code action             |
 |     | `<leader>cr` | Rename                  |
-|     | `<leader>ci` | Organize imports        |
 |     | `<leader>cp` | Fix package declaration |
 |     | `<leader>cf` | Format (Java: IntelliJ formatter) |
 
@@ -675,8 +674,6 @@ Use this when you need to rename variables or make targeted edits across many fi
 | `<leader>jt` | Test Current Class                    |
 | `<leader>jm` | Test Current Method                   |
 | `<leader>jv` | View Test Report                      |
-| `<leader>ci` | Organize imports (silent, auto-apply) |
-
 ### Java Refactor (`<leader>jR`)
 
 jdtls code actions — open actions-preview picker with diff before applying.

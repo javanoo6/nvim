@@ -165,12 +165,6 @@ map("n", "<leader>cd", function()
 	vim.cmd("vsplit")
 	vim.lsp.buf.definition()
 end, { desc = "Goto definition in vsplit" })
-map("n", "<leader>ci", function()
-	vim.lsp.buf.code_action({
-		context = { only = { "source.organizeImports" } },
-		apply = true,
-	})
-end, { desc = "Organize imports" })
 map("n", "<leader>cp", function()
 	vim.lsp.buf.code_action({
 		filter = function(action)
