@@ -18,6 +18,7 @@ return {
 		},
 		config = function()
 			local map = require("util").map
+			local inlay_hints = require("util.inlay_hints")
 
 			local function rename_symbol()
 				local bufnr = vim.api.nvim_get_current_buf()
@@ -77,15 +78,9 @@ return {
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.server_capabilities.inlayHintProvider then
 						vim.defer_fn(function()
-							vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+							inlay_hints.apply_for_buffer(event.buf)
 						end, 100)
 					end
-
-					-- Toggle inlay hints keymap
-					map("n", "<leader>uh", function()
-						local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
-						vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
-					end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
 				end,
 			})
 
@@ -175,6 +170,16 @@ return {
 								Lua = {
 									diagnostics = { globals = { "vim" } },
 									workspace = { checkThirdParty = false },
+									hint = {
+										enable = true,
+										arrayIndex = "Auto",
+										await = true,
+										awaitPropagate = true,
+										paramName = "Literal",
+										paramType = true,
+										setType = true,
+										semicolon = "Disable",
+									},
 								},
 							},
 						})

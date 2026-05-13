@@ -39,6 +39,7 @@
 
 local util = require("util")
 local map = util.map
+local inlay_hints = require("util.inlay_hints")
 
 -- Movement (no leader)
 map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true })
@@ -159,6 +160,9 @@ end, { desc = "Toggle inline diagnostics" })
 map("n", "<leader>uD", function()
 	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle diagnostics" })
+map("n", "<leader>uh", function()
+	inlay_hints.toggle()
+end, { desc = "Toggle inlay hints" })
 
 -- Go to definition in vertical split (right)
 map("n", "<leader>cd", function()

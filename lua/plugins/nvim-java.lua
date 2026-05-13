@@ -56,6 +56,27 @@ return {
 			return list
 		end
 
+		vim.lsp.config("jdtls", {
+			settings = {
+				java = {
+					inlayHints = {
+						parameterNames = {
+							enabled = "literals",
+						},
+						parameterTypes = {
+							enabled = true,
+						},
+						variableTypes = {
+							enabled = true,
+						},
+						formatParameters = {
+							enabled = true,
+						},
+					},
+				},
+			},
+		})
+
 		vim.lsp.enable("jdtls")
 	end,
 }
