@@ -15,6 +15,7 @@ return {
 				"gomod",
 				"gowork",
 				"gotmpl",
+				"helm",
 				"html",
 				"java",
 				"javascript",

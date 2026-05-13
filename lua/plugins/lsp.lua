@@ -104,6 +104,7 @@ return {
 				ensure_installed = {
 					"lua_ls",
 					"bashls",
+					"helm_ls",
 					"jsonls",
 					"yamlls",
 					"gopls",
@@ -157,6 +158,12 @@ return {
 									},
 								},
 							},
+						})
+					end,
+
+					["helm_ls"] = function()
+						require("lspconfig").helm_ls.setup({
+							capabilities = capabilities,
 						})
 					end,
 

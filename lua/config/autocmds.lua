@@ -93,6 +93,33 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 vim.schedule(set_illuminate_hl)
 
+-- Helm chart templates: treat templated YAML as Helm, not plain YAML
+vim.filetype.add({
+	pattern = {
+		[".*/templates/.*%.ya?ml"] = "helm",
+		[".*/templates/.*%.tpl"] = "helm",
+		[".*/templates/.*%.txt"] = "helm",
+		[".*/Chart%.ya?ml"] = "yaml.helm-values",
+		[".*/values%.ya?ml"] = "yaml.helm-values",
+		[".*/values%-[^/]+%.ya?ml"] = "yaml.helm-values",
+	},
+})
+
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+	group = augroup("helm_filetypes"),
+	pattern = { "*.yaml", "*.yml", "*.tpl", "*.txt" },
+	callback = function(event)
+		local path = vim.api.nvim_buf_get_name(event.buf)
+		if path:match("/templates/.*%.ya?ml$") or path:match("/templates/.*%.tpl$") or path:match("/templates/.*%.txt$") then
+			vim.bo[event.buf].filetype = "helm"
+			return
+		end
+		if path:match("/Chart%.ya?ml$") or path:match("/values%.ya?ml$") or path:match("/values%-[^/]+%.ya?ml$") then
+			vim.bo[event.buf].filetype = "yaml.helm-values"
+		end
+	end,
+})
+
 -- In oil buffers, restore normal delete/change behavior so dd+p moves entries
 vim.api.nvim_create_autocmd("FileType", {
 	group = augroup("oil_native_edit_keys"),
