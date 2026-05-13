@@ -7,6 +7,21 @@ return {
     "nvim-telescope/telescope.nvim",
   },
   config = function()
+    local function ensure_leetcode_ready()
+      local lc_config = require("leetcode.config")
+      if lc_config.storage and lc_config.storage.cache and lc_config.storage.home then
+        return true
+      end
+
+      local ok, err = pcall(lc_config.setup)
+      if not ok then
+        vim.notify("LeetCode init failed: " .. tostring(err), vim.log.levels.ERROR)
+        return false
+      end
+
+      return true
+    end
+
     -- Optional: Initialize cookie from private module if available
     local private_ok, private = pcall(require, "private")
     if private_ok and private.leetcode then
@@ -74,6 +89,10 @@ return {
     }
 
     local function pick_by_roadmap()
+      if not ensure_leetcode_ready() then
+        return
+      end
+
       -- Step 1: Select topic
       vim.ui.select(roadmap_data, {
         prompt = "Select topic:",

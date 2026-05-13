@@ -23,6 +23,23 @@ return {
 			},
 		})
 
+		-- Guard nvim-java against malformed/empty choose-imports payloads from JDTLS.
+		do
+			local Action = require("java-refactor.action")
+			local orig_choose_imports = Action.choose_imports
+
+			Action.choose_imports = function(self, selections)
+				if type(selections) ~= "table" then
+					vim.notify("Java import chooser received no candidates", vim.log.levels.WARN, {
+						title = "nvim-java",
+					})
+					return {}
+				end
+
+				return orig_choose_imports(self, selections)
+			end
+		end
+
 		-- Patch nvim-java's hardcoded -Xms1G with custom heap sizes.
 		-- Must happen after setup() so the module is already loaded.
 		local jdtls_cmd = require('java-core.ls.servers.jdtls.cmd')

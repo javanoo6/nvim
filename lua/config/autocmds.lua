@@ -93,14 +93,17 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 vim.schedule(set_illuminate_hl)
 
--- Restore normal delete/change keys in oil.nvim (blackhole remaps break move via cut/paste)
+-- In oil buffers, restore normal delete/change behavior so dd+p moves entries
 vim.api.nvim_create_autocmd("FileType", {
-	group = augroup("oil_normal_delete"),
+	group = augroup("oil_native_edit_keys"),
 	pattern = "oil",
 	callback = function(event)
-		local buf = event.buf
-		for _, key in ipairs({ "d", "D", "c", "C", "x", "X" }) do
-			vim.keymap.del({ "n", "x" }, key, { buffer = buf })
-		end
+		local opts = { buffer = event.buf, remap = false, silent = true }
+		vim.keymap.set({ "n", "x" }, "d", "d", opts)
+		vim.keymap.set({ "n", "x" }, "D", "D", opts)
+		vim.keymap.set({ "n", "x" }, "c", "c", opts)
+		vim.keymap.set({ "n", "x" }, "C", "C", opts)
+		vim.keymap.set({ "n", "x" }, "x", "x", opts)
+		vim.keymap.set({ "n", "x" }, "X", "X", opts)
 	end,
 })

@@ -19,6 +19,19 @@ return {
 		config = function()
 			local map = require("util").map
 
+			local function rename_symbol()
+				local bufnr = vim.api.nvim_get_current_buf()
+				if vim.bo[bufnr].filetype == "java" then
+					vim.lsp.buf.rename(nil, {
+						name = "jdtls",
+						bufnr = bufnr,
+					})
+					return
+				end
+
+				vim.lsp.buf.rename()
+			end
+
 			vim.diagnostic.config({
 				virtual_text = false,
 				signs = true,
@@ -58,7 +71,7 @@ return {
 					map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover" }))
 					map("n", "gK", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
 					-- <leader>ca is handled globally by actions-preview.nvim
-					map("n", "<leader>cr", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
+					map("n", "<leader>cr", rename_symbol, vim.tbl_extend("force", opts, { desc = "Rename" }))
 
 					-- Enable inlay hints if supported
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
