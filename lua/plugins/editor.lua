@@ -220,34 +220,60 @@ return {
         follow_current_file = { enabled = true },
         hijack_netrw_behavior = "open_current",
         commands = {
-          -- Expand node and all single-child descendants
-          expand_single_children = function(state)
+          -- IntelliJ-style package expansion:
+          -- expand through single-child directory chains and stop at the first
+          -- directory that actually branches or contains files.
+          smart_open = function(state)
             local node = state.tree:get_node()
-            if node.type ~= "directory" then
+            if not node then
               return
             end
 
             local fs = require("neo-tree.sources.filesystem")
             local renderer = require("neo-tree.ui.renderer")
+            local open_file = require("neo-tree.utils").open_file
 
-            local function expand_node(n)
+            if node.type ~= "directory" then
+              open_file(state, node:get_id())
+              return
+            end
+
+            state.explicitly_opened_nodes = state.explicitly_opened_nodes or {}
+
+            local function children_of(n)
+              return state.tree:get_nodes(n:get_id()) or {}
+            end
+
+            local function step(n)
               if n.type ~= "directory" then
                 return
               end
+
+              local continue_from = function()
+                local children = children_of(n)
+                if #children == 1 and children[1].type == "directory" then
+                  step(children[1])
+                  return
+                end
+
+                renderer.redraw(state)
+                renderer.focus_node(state, n:get_id())
+              end
+
+              if n.loaded == false then
+                fs.toggle_directory(state, n, nil, true, false, continue_from)
+                return
+              end
+
               if not n:is_expanded() then
                 n:expand()
+                state.explicitly_opened_nodes[n:get_id()] = true
               end
-              fs.navigate(state, state.path, n:get_id(), function()
-                local children = state.tree:get_nodes(n:get_id())
-                -- Single child that's a directory -> keep expanding
-                if #children == 1 and children[1].type == "directory" then
-                  expand_node(children[1])
-                end
-                renderer.redraw(state)
-              end)
+
+              continue_from()
             end
 
-            expand_node(node)
+            step(node)
           end,
           -- Open with window picker
           open_with_window_picker = function(state)
@@ -281,7 +307,7 @@ return {
         window = {
           mappings = {
             -- Override default open behavior
-            ["<cr>"] = "expand_single_children",
+            ["<cr>"] = "smart_open",
             ["o"] = "open",
             ["s"] = "open_with_window_picker", -- Open with window picker
             ["Y"] = "copy_absolute_path",

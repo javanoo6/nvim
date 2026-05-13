@@ -427,23 +427,23 @@ Select code visually first, then:
 
 ### Inside Neo-tree
 
-| Key     | Action                                       |
-|---------|----------------------------------------------|
-| `<CR>`  | Open file / Expand folder (with auto-expand) |
-| `o`     | Open file                                    |
-| `h`     | Collapse folder / Go to parent               |
-| `<bs>`  | Go to parent directory                       |
-| `.`     | Set current folder as root                   |
-| `s`     | **Open with window picker** (pick split)     |
-| `<C-v>` | Open in vertical split                       |
-| `<C-x>` | Open in horizontal split                     |
-| `<C-t>` | Open in new tab                              |
-| `a`     | Add file/folder                              |
-| `d`     | Delete                                       |
-| `r`     | Rename                                       |
-| `c`     | Copy                                         |
-| `m`     | Move                                         |
-| `H`     | Toggle hidden files                          |
+| Key     | Action                                            |
+|---------|---------------------------------------------------|
+| `<CR>`  | Open file / Expand full single-child folder chain |
+| `o`     | Open file                                         |
+| `h`     | Collapse folder / Go to parent                    |
+| `<bs>`  | Go to parent directory                            |
+| `.`     | Set current folder as root                        |
+| `s`     | **Open with window picker** (pick split)          |
+| `<C-v>` | Open in vertical split                            |
+| `<C-x>` | Open in horizontal split                          |
+| `<C-t>` | Open in new tab                                   |
+| `a`     | Add file/folder                                   |
+| `d`     | Delete                                            |
+| `r`     | Rename                                            |
+| `c`     | Copy                                              |
+| `m`     | Move                                              |
+| `H`     | Toggle hidden files                               |
 
 **Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — JDTLS automatically updates all imports and references
 across the project. This may modify many buffers at once. Save them all with `:wall`.
@@ -667,13 +667,14 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 ### Java-specific
 
-| Key          | Action                                |
-|--------------|---------------------------------------|
-| `<leader>jr` | Run Main                              |
-| `<leader>jc` | Stop Main                             |
-| `<leader>jt` | Test Current Class                    |
-| `<leader>jm` | Test Current Method                   |
-| `<leader>jv` | View Test Report                      |
+| Key          | Action              |
+|--------------|---------------------|
+| `<leader>jr` | Run Main            |
+| `<leader>jc` | Stop Main           |
+| `<leader>jt` | Test Current Class  |
+| `<leader>jm` | Test Current Method |
+| `<leader>jv` | View Test Report    |
+
 ### Java Refactor (`<leader>jR`)
 
 jdtls code actions — open actions-preview picker with diff before applying.
