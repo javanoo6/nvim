@@ -61,7 +61,11 @@ return {
 				java = {
 					inlayHints = {
 						parameterNames = {
-							enabled = "literals",
+							-- JDTLS parameter-name hints regularly return invalid or unstable
+							-- positions for chained/generic calls in this setup, which
+							-- causes misplaced labels and Neovim 0.11 inlay-hint extmark
+							-- errors ("Invalid 'col': out of range").
+							enabled = "none",
 						},
 						parameterTypes = {
 							enabled = true,

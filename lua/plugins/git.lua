@@ -16,15 +16,17 @@ return {
 	{
 		"akinsho/git-conflict.nvim",
 		event = "BufReadPre",
+		keys = {
+			{ "<leader>Co", "<cmd>GitConflictChooseOurs<cr>", desc = "Conflict: choose ours", mode = { "n", "v" } },
+			{ "<leader>Ct", "<cmd>GitConflictChooseTheirs<cr>", desc = "Conflict: choose theirs", mode = { "n", "v" } },
+			{ "<leader>Cb", "<cmd>GitConflictChooseBoth<cr>", desc = "Conflict: choose both", mode = { "n", "v" } },
+			{ "<leader>CB", "<cmd>GitConflictChooseBase<cr>", desc = "Conflict: choose base", mode = { "n", "v" } },
+			{ "<leader>C0", "<cmd>GitConflictChooseNone<cr>", desc = "Conflict: choose none", mode = { "n", "v" } },
+			{ "]x", "<cmd>GitConflictNextConflict<cr>", desc = "Next conflict" },
+			{ "[x", "<cmd>GitConflictPrevConflict<cr>", desc = "Prev conflict" },
+		},
 		opts = {
-			default_mappings = {
-				ours = "co",
-				theirs = "ct",
-				none = "c0",
-				both = "cb",
-				next = "]x",
-				prev = "[x",
-			},
+			default_mappings = false,
 			highlights = {
 				incoming = "DiffAdd",
 				current = "DiffText",
@@ -47,6 +49,7 @@ return {
 			},
 			on_attach = function(bufnr)
 				local gs = package.loaded.gitsigns
+				local wk = require("which-key")
 
 				local function map(mode, l, r, opts)
 					opts = opts or {}
@@ -74,6 +77,12 @@ return {
 					end)
 					return "<Ignore>"
 				end, { expr = true, desc = "Prev hunk" })
+
+				wk.add({
+					{ "[h", desc = "Prev hunk", buffer = bufnr },
+					{ "]h", desc = "Next hunk", buffer = bufnr },
+					{ "<leader>Gh", group = "hunks", buffer = bufnr, mode = { "n", "v" } },
+				})
 
 				-- Hunk actions (<leader>Gh* prefix)
 				map("n", "<leader>Ghs", gs.stage_hunk, { desc = "Stage hunk" })

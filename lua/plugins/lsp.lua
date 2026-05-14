@@ -215,6 +215,10 @@ return {
 				group = require("util").augroup("java_keymaps"),
 				callback = function(event)
 					local opts = { buffer = event.buf }
+					require("which-key").add({
+						{ "<leader>jR", group = "refactor", buffer = event.buf },
+						{ "<leader>jg", group = "generate", buffer = event.buf },
+					})
 					-- Refactor
 					map("n", "<leader>jRe", jdtls_action("refactor.extract.function"),    vim.tbl_extend("force", opts, { desc = "Extract function" }))
 					map("n", "<leader>jRv", jdtls_action("refactor.extract.variable"),    vim.tbl_extend("force", opts, { desc = "Extract variable" }))
@@ -227,14 +231,14 @@ return {
 					map("n", "<leader>jRa", jdtls_action("refactor.assign.variable"),     vim.tbl_extend("force", opts, { desc = "Assign variable" }))
 					map("n", "<leader>jRq", jdtls_action("quickassist"),                  vim.tbl_extend("force", opts, { desc = "Quick assist" }))
 					-- Generate
-					map("n", "<leader>jga", jdtls_action("source.generate.accessors"),       vim.tbl_extend("force", opts, { desc = "Accessors" }))
-					map("n", "<leader>jgc", jdtls_action("source.generate.constructors"),     vim.tbl_extend("force", opts, { desc = "Constructors" }))
-					map("n", "<leader>jgd", jdtls_action("source.generate.delegateMethods"),  vim.tbl_extend("force", opts, { desc = "Delegate methods" }))
-					map("n", "<leader>jgf", jdtls_action("source.generate.finalModifiers"),   vim.tbl_extend("force", opts, { desc = "Final modifiers" }))
-					map("n", "<leader>jgh", jdtls_action("source.generate.hashCodeEquals"),   vim.tbl_extend("force", opts, { desc = "hashCode / equals" }))
-					map("n", "<leader>jgt", jdtls_action("source.generate.toString"),         vim.tbl_extend("force", opts, { desc = "toString" }))
-					map("n", "<leader>jgo", jdtls_action("source.overrideMethods"),           vim.tbl_extend("force", opts, { desc = "Override methods" }))
-					map("n", "<leader>jgs", jdtls_action("source.sortMembers"),               vim.tbl_extend("force", opts, { desc = "Sort members" }))
+					map("n", "<leader>jga", jdtls_action("source.generate.accessors"),      vim.tbl_extend("force", opts, { desc = "Accessors" }))
+					map("n", "<leader>jgc", jdtls_action("source.generate.constructors"),    vim.tbl_extend("force", opts, { desc = "Constructors" }))
+					map("n", "<leader>jgd", jdtls_action("source.generate.delegateMethods"), vim.tbl_extend("force", opts, { desc = "Delegate methods" }))
+					map("n", "<leader>jgf", jdtls_action("source.generate.finalModifiers"),  vim.tbl_extend("force", opts, { desc = "Final modifiers" }))
+					map("n", "<leader>jgh", jdtls_action("source.generate.hashCodeEquals"),  vim.tbl_extend("force", opts, { desc = "hashCode / equals" }))
+					map("n", "<leader>jgt", jdtls_action("source.generate.toString"),        vim.tbl_extend("force", opts, { desc = "toString" }))
+					map("n", "<leader>jgo", jdtls_action("source.overrideMethods"),          vim.tbl_extend("force", opts, { desc = "Override methods" }))
+					map("n", "<leader>jgs", jdtls_action("source.sortMembers"),              vim.tbl_extend("force", opts, { desc = "Sort members" }))
 				end,
 			})
 		end,

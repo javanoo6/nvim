@@ -42,8 +42,8 @@ local map = util.map
 local inlay_hints = require("util.inlay_hints")
 
 -- Movement (no leader)
-map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true })
-map({ "n", "x" }, "k", "v:count == 0 ? 'gj' : 'j'", { expr = true })
+map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down (display line)" })
 map({ "n", "x", "o" }, "$", "^", { desc = "First non-blank char" })
 map({ "n", "x", "o" }, "^", "$", { desc = "End of line" })
 
@@ -101,8 +101,8 @@ map("n", "<leader>xl", vim.diagnostic.setloclist, { desc = "Diagnostics to locli
 -- Editing primitives
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Clear hlsearch" })
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save" })
-map("v", "<", "<gv")
-map("v", ">", ">gv")
+map("v", "<", "<gv", { desc = "Indent left and reselect" })
+map("v", ">", ">gv", { desc = "Indent right and reselect" })
 
 -- Delete/change to black hole register (yank is the only way to fill the clipboard)
 map({ "n", "x" }, "d", '"_d', { desc = "Delete (black hole)" })

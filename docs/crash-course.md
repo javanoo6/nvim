@@ -589,8 +589,6 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 | Key          | Action                               |
 |--------------|--------------------------------------|
-| `<leader>co` | Aerial (Symbols outline)             |
-| `<leader>cO` | Aerial Nav                           |
 | `<leader>cs` | Symbols (Trouble)                    |
 | `<leader>cl` | LSP definitions/references (Trouble) |
 
@@ -797,10 +795,11 @@ real mapping on first use and it will not be restored for command-only plugins.
 | `<tab>`      | Next changed file        |
 | `<S-tab>`    | Prev changed file        |
 | `[x` / `]x`  | Prev / Next conflict     |
-| `<leader>co` | Choose ours (conflict)   |
-| `<leader>ct` | Choose theirs (conflict) |
-| `<leader>cb` | Choose base (conflict)   |
-| `<leader>ca` | Choose all (conflict)    |
+| `<leader>Co` | Choose ours (conflict)   |
+| `<leader>Ct` | Choose theirs (conflict) |
+| `<leader>Cb` | Choose both (conflict)   |
+| `<leader>CB` | Choose base (conflict)   |
+| `<leader>C0` | Choose none (conflict)   |
 | `dx`         | Delete conflict region   |
 
 ### Merge Conflict Resolution
@@ -861,10 +860,10 @@ For simple conflicts (pick one side or both):
 
 | Key  | Action                                    |
 |------|-------------------------------------------|
-| `co` | Keep **ours** (current branch, HEAD)      |
-| `ct` | Keep **theirs** (incoming branch)         |
-| `cb` | Keep **both** (ours first, theirs second) |
-| `c0` | Keep **neither** (delete both sides)      |
+| `<leader>Co` | Keep **ours** (current branch, HEAD)      |
+| `<leader>Ct` | Keep **theirs** (incoming branch)         |
+| `<leader>Cb` | Keep **both** (ours first, theirs second) |
+| `<leader>C0` | Keep **neither** (delete both sides)      |
 
 After pressing one of these, the markers disappear and the chosen content stays. Move to the next conflict with `]x` and repeat.
 
@@ -887,10 +886,11 @@ This shows 4 panels: **OURS** (left) | **BASE** (middle, common ancestor) | **TH
 | Key          | Action in Diffview merge view |
 |--------------|-------------------------------|
 | `]x` / `[x`  | Next / prev conflict          |
-| `<leader>co` | Accept ours into result       |
-| `<leader>ct` | Accept theirs into result     |
-| `<leader>cb` | Accept base into result       |
-| `<leader>ca` | Accept all from one side      |
+| `<leader>Co` | Accept ours into result       |
+| `<leader>Ct` | Accept theirs into result     |
+| `<leader>Cb` | Accept both into result       |
+| `<leader>CB` | Accept base into result       |
+| `<leader>C0` | Accept none into result       |
 | `dx`         | Delete conflict region        |
 | `q`          | Close panel                   |
 
@@ -916,7 +916,7 @@ From terminal: `git commit` (no `-m` needed, Git opens your editor with the mess
 git merge feature-branch   →  conflicts appear
 open file in nvim          →  markers highlighted automatically
 ]x / [x                    →  jump between conflicts
-co / ct / cb / c0          →  resolve inline (ours/theirs/both/none)
+<leader>Co / Ct / Cb / C0  →  resolve inline (ours/theirs/both/none)
 :DiffviewOpen              →  3-way view for complex cases
 stage file in lazygit      →  <space>
 git commit                 →  finalize merge
@@ -1094,7 +1094,7 @@ Press `<leader>` and wait to see all groups:
 |-----------------|----------------------|
 | `<leader>b`     | Buffer               |
 | `<leader>c`     | Code                 |
-| `<leader>co`    | Outline              |
+| `<leader>C`     | Conflict             |
 | `<leader>d`     | Debug                |
 | `<leader>dg`    | Debug Go             |
 | `<leader>f`     | File/Find            |

@@ -36,13 +36,13 @@ return {
 				end,
 				opts = { noremap = false, expr = true, buffer = true, desc = "Follow link" },
 			},
--- Toggle checkbox
-		["<leader>Oc"] = {
-			action = function()
-				return require("obsidian").util.toggle_checkbox()
-			end,
-			opts = { buffer = true, desc = "Toggle checkbox" },
-		},
+			-- Toggle checkbox
+			["<leader>Oc"] = {
+				action = function()
+					return require("obsidian").util.toggle_checkbox()
+				end,
+				opts = { buffer = true, desc = "Toggle checkbox" },
+			},
 		},
 	},
 	keys = {
@@ -57,4 +57,17 @@ return {
 		{ "<leader>Or", "<cmd>ObsidianRename<cr>",      desc = "Rename note" },
 		{ "<leader>Op", "<cmd>ObsidianPasteImg<cr>",    desc = "Paste image" },
 	},
+	config = function(_, opts)
+		require("obsidian").setup(opts)
+
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = "markdown",
+			group = vim.api.nvim_create_augroup("custom_obsidian_which_key", { clear = true }),
+			callback = function(event)
+				require("which-key").add({
+					{ "<leader>Oc", desc = "Toggle checkbox", buffer = event.buf },
+				})
+			end,
+		})
+	end,
 }

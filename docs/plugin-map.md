@@ -222,7 +222,8 @@ git.lua
   ├── diffview.nvim       ── full diff viewer + file history + 3-way merge view
   │                          Keymaps in keymaps.lua: <leader>GD/GF/GH/GL/Gm/GM
   └── git-conflict.nvim   ── inline conflict resolution (auto-activates on conflict markers)
-                             co/ct/cb/c0 pick ours/theirs/both/none, ]x/[x navigate
+                             <leader>Co/Ct/Cb/CB/C0 pick ours/theirs/both/base/none,
+                             ]x/[x navigate
 ```
 
 **Gitsigns keymaps:**

@@ -34,7 +34,7 @@ return {
 			wk.add({
 				{ "<leader>b",     group = "buffer" },
 				{ "<leader>c",     group = "code",              mode = { "n", "v" } },
-				{ "<leader>co",    group = "outline" },
+				{ "<leader>C",     group = "conflict",          mode = { "n", "v" } },
 				{ "<leader>d",     group = "debug",              mode = { "n", "v" } },
 				{ "<leader>dg",    group = "debug go" },
 				{ "<leader>f",     group = "file/find" },
