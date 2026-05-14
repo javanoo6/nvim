@@ -847,6 +847,13 @@ From terminal: just open the file normally (`nvim path/to/file`).
 
 git-conflict.nvim activates automatically when it detects markers in the file.
 
+If you launch the external merge tool from lazygit or Git, you get **nvimdiff**
+instead of inline markers. In this setup the windows are:
+
+- `LOCAL` (top-left) = your side
+- `REMOTE` (top-right) = incoming side
+- `MERGED` (bottom) = the result you keep
+
 **Step 4 — Navigate conflicts**
 
 | Key  | Action                |
@@ -858,8 +865,8 @@ git-conflict.nvim activates automatically when it detects markers in the file.
 
 For simple conflicts (pick one side or both):
 
-| Key  | Action                                    |
-|------|-------------------------------------------|
+| Key          | Action                                    |
+|--------------|-------------------------------------------|
 | `<leader>Co` | Keep **ours** (current branch, HEAD)      |
 | `<leader>Ct` | Keep **theirs** (incoming branch)         |
 | `<leader>Cb` | Keep **both** (ours first, theirs second) |
@@ -872,6 +879,26 @@ For complex conflicts (you need to hand-edit the result):
 - Delete the marker lines manually (`<<<<<<< HEAD`, `=======`, `>>>>>>> ...`)
 - Edit the remaining code however you need
 - Save with `<C-s>`
+
+If you are in **nvimdiff mergetool** instead of inline markers:
+
+| Key          | Action                           |
+|--------------|----------------------------------|
+| `]x`         | Jump to next diff conflict       |
+| `[x`         | Jump to prev diff conflict       |
+| `<leader>Co` | Copy `LOCAL` hunk into `MERGED`  |
+| `<leader>Ct` | Copy `REMOTE` hunk into `MERGED` |
+| `<leader>Cl` | Focus `LOCAL` window             |
+| `<leader>Cr` | Focus `REMOTE` window            |
+| `<leader>Cm` | Focus `MERGED` window            |
+| `<leader>Cw` | Write all and quit (`:wqa`)      |
+| `<leader>Ca` | Abort merge tool (`:cq`)         |
+
+Notes:
+
+- `BASE` is not present in this 3-window `nvimdiff` mergetool layout.
+- Use Diffview only when you need common-ancestor context.
+- Do your edits in `MERGED`. `LOCAL` and `REMOTE` are reference panes.
 
 **Step 6 — Need more context? Use Diffview 3-way view**
 
@@ -917,6 +944,9 @@ git merge feature-branch   →  conflicts appear
 open file in nvim          →  markers highlighted automatically
 ]x / [x                    →  jump between conflicts
 <leader>Co / Ct / Cb / C0  →  resolve inline (ours/theirs/both/none)
+nvimdiff mergetool         →  <leader>Co / Ct pull LOCAL/REMOTE into MERGED
+:wqa or <leader>Cw         →  finish mergetool
+:cq or <leader>Ca          →  abort mergetool
 :DiffviewOpen              →  3-way view for complex cases
 stage file in lazygit      →  <space>
 git commit                 →  finalize merge

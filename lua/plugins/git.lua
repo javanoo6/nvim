@@ -17,15 +17,63 @@ return {
 		"akinsho/git-conflict.nvim",
 		event = "BufReadPre",
 		keys = {
-			{ "<leader>Co", "<cmd>GitConflictChooseOurs<cr>", desc = "Conflict: choose ours", mode = { "n", "v" } },
-			{ "<leader>Ct", "<cmd>GitConflictChooseTheirs<cr>", desc = "Conflict: choose theirs", mode = { "n", "v" } },
-			{ "<leader>Cb", "<cmd>GitConflictChooseBoth<cr>", desc = "Conflict: choose both", mode = { "n", "v" } },
-			{ "<leader>CB", "<cmd>GitConflictChooseBase<cr>", desc = "Conflict: choose base", mode = { "n", "v" } },
-			{ "<leader>C0", "<cmd>GitConflictChooseNone<cr>", desc = "Conflict: choose none", mode = { "n", "v" } },
-			{ "]x", "<cmd>GitConflictNextConflict<cr>", desc = "Next conflict" },
-			{ "[x", "<cmd>GitConflictPrevConflict<cr>", desc = "Prev conflict" },
+			{
+				"<leader>Co",
+				function()
+					require("git-conflict").choose("ours")
+				end,
+				desc = "Conflict: choose ours",
+				mode = { "n", "v" },
+			},
+			{
+				"<leader>Ct",
+				function()
+					require("git-conflict").choose("theirs")
+				end,
+				desc = "Conflict: choose theirs",
+				mode = { "n", "v" },
+			},
+			{
+				"<leader>Cb",
+				function()
+					require("git-conflict").choose("both")
+				end,
+				desc = "Conflict: choose both",
+				mode = { "n", "v" },
+			},
+			{
+				"<leader>CB",
+				function()
+					require("git-conflict").choose("base")
+				end,
+				desc = "Conflict: choose base",
+				mode = { "n", "v" },
+			},
+			{
+				"<leader>C0",
+				function()
+					require("git-conflict").choose("none")
+				end,
+				desc = "Conflict: choose none",
+				mode = { "n", "v" },
+			},
+			{
+				"]x",
+				function()
+					require("git-conflict").find_next("ours")
+				end,
+				desc = "Next conflict",
+			},
+			{
+				"[x",
+				function()
+					require("git-conflict").find_prev("ours")
+				end,
+				desc = "Prev conflict",
+			},
 		},
 		opts = {
+			default_commands = false,
 			default_mappings = false,
 			highlights = {
 				incoming = "DiffAdd",

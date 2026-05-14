@@ -27,6 +27,14 @@
 --   <leader>GM     - Diff vs origin/main
 --   <leader>Gq     - Close Diffview
 --
+-- NOTE: Nvimdiff Mergetool Keymaps (buffer-local, only in diff mode):
+--   ]x / [x          - Next/prev diff conflict
+--   <leader>Co/Ct    - Get LOCAL/REMOTE hunk into MERGED
+--   <leader>Cl/Cr/Cm - Focus LOCAL/REMOTE/MERGED window
+--   <leader>CB       - Explain why BASE is unavailable here
+--   <leader>Cw       - Write all and quit
+--   <leader>Ca       - Abort merge tool (:cq)
+--
 -- NOTE: Gitsigns Keymaps (buffer-local, defined in plugins/git.lua):
 --   ]h / [h          - Next/prev hunk
 --   <leader>Ghs/Ghr  - Stage/reset hunk
@@ -90,10 +98,10 @@ map("n", "]l", "<cmd>lnext<cr>", { desc = "Next loclist" })
 
 -- Diagnostics
 map("n", "[d", function()
-	vim.diagnostic.jump({ count = -1 })
+  vim.diagnostic.jump({ count = -1 })
 end, { desc = "Prev diagnostic" })
 map("n", "]d", function()
-	vim.diagnostic.jump({ count = 1 })
+  vim.diagnostic.jump({ count = 1 })
 end, { desc = "Next diagnostic" })
 map("n", "<leader>xd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 map("n", "<leader>xl", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
@@ -140,42 +148,42 @@ map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close" })
 
 -- UI Toggles
 map("n", "<leader>us", function()
-	util.toggle("spell")
+  util.toggle("spell")
 end, { desc = "Spelling" })
 map("n", "<leader>uw", function()
-	util.toggle("wrap")
+  util.toggle("wrap")
 end, { desc = "Wrap" })
 map("n", "<leader>ul", function()
-	util.toggle("relativenumber")
+  util.toggle("relativenumber")
 end, { desc = "Relative numbers" })
 map("n", "<leader>un", function()
-	util.toggle("number")
+  util.toggle("number")
 end, { desc = "Line numbers" })
 map("n", "<leader>uf", function()
-	util.toggle("foldenable")
+  util.toggle("foldenable")
 end, { desc = "Fold" })
 map("n", "<leader>ud", function()
-	require("tiny-inline-diagnostic").toggle()
+  require("tiny-inline-diagnostic").toggle()
 end, { desc = "Toggle inline diagnostics" })
 map("n", "<leader>uD", function()
-	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle diagnostics" })
 map("n", "<leader>uh", function()
-	inlay_hints.toggle()
+  inlay_hints.toggle()
 end, { desc = "Toggle inlay hints" })
 
 -- Go to definition in vertical split (right)
 map("n", "<leader>cd", function()
-	vim.cmd("vsplit")
-	vim.lsp.buf.definition()
+  vim.cmd("vsplit")
+  vim.lsp.buf.definition()
 end, { desc = "Goto definition in vsplit" })
 map("n", "<leader>cp", function()
-	vim.lsp.buf.code_action({
-		filter = function(action)
-			return action.title:match("package")
-		end,
-		apply = true,
-	})
+  vim.lsp.buf.code_action({
+    filter = function(action)
+      return action.title:match("package")
+    end,
+    apply = true,
+  })
 end, { desc = "Fix package declaration" })
 
 -- Replacing
@@ -183,24 +191,24 @@ map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection"
 
 -- Treesitter re-attach
 map("n", "<leader>xh", function()
-	vim.cmd("TSBufDisable highlight")
-	vim.cmd("TSBufEnable highlight")
-	vim.notify("Treesitter rehighlighted")
+  vim.cmd("TSBufDisable highlight")
+  vim.cmd("TSBufEnable highlight")
+  vim.notify("Treesitter rehighlighted")
 end, { desc = "Rehighlight buffer" })
 
 map("n", "<leader>xc", function()
-	local cache_dirs = {
-		vim.fn.expand("~/.cache/jdtls"),
-		vim.fn.expand("~/.cache/nvim/jdtls"),
-		vim.fn.expand("~/.cache/nvim/jdtls-workspace"),
-	}
-	for _, dir in ipairs(cache_dirs) do
-		if vim.fn.isdirectory(dir) == 1 then
-			vim.fn.delete(dir, "rf")
-			vim.notify("Deleted: " .. dir)
-		end
-	end
-	vim.notify("JDTLS cache cleared. Restart Neovim.", vim.log.levels.WARN)
+  local cache_dirs = {
+    vim.fn.expand("~/.cache/jdtls"),
+    vim.fn.expand("~/.cache/nvim/jdtls"),
+    vim.fn.expand("~/.cache/nvim/jdtls-workspace"),
+  }
+  for _, dir in ipairs(cache_dirs) do
+    if vim.fn.isdirectory(dir) == 1 then
+      vim.fn.delete(dir, "rf")
+      vim.notify("Deleted: " .. dir)
+    end
+  end
+  vim.notify("JDTLS cache cleared. Restart Neovim.", vim.log.levels.WARN)
 end, { desc = "Clear JDTLS cache" })
 
 -- Keep cursor centered when scrolling/jumping
@@ -208,18 +216,18 @@ map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 
 -- IntelliJ-style duplicate line/selection
 map("n", "<C-d>", function()
-	local lnum = vim.api.nvim_win_get_cursor(0)[1]
-	local col = vim.api.nvim_win_get_cursor(0)[2]
-	local line = vim.api.nvim_get_current_line()
-	vim.api.nvim_buf_set_lines(0, lnum, lnum, false, { line })
-	vim.api.nvim_win_set_cursor(0, { lnum + 1, col })
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local line = vim.api.nvim_get_current_line()
+  vim.api.nvim_buf_set_lines(0, lnum, lnum, false, { line })
+  vim.api.nvim_win_set_cursor(0, { lnum + 1, col })
 end, { desc = "Duplicate line" })
 map("v", "<C-d>", function()
-	local start_line = vim.fn.line("'<")
-	local end_line = vim.fn.line("'>")
-	local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
-	vim.api.nvim_buf_set_lines(0, end_line, end_line, false, lines)
-	vim.api.nvim_win_set_cursor(0, { end_line + 1, 0 })
+  local start_line = vim.fn.line("'<")
+  local end_line = vim.fn.line("'>")
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+  vim.api.nvim_buf_set_lines(0, end_line, end_line, false, lines)
+  vim.api.nvim_win_set_cursor(0, { end_line + 1, 0 })
 end, { desc = "Duplicate selection" })
 map("n", "n", "nzzzv", { desc = "Next match and center" })
 map("n", "N", "Nzzzv", { desc = "Prev match and center" })
@@ -247,8 +255,8 @@ map("n", "['", "`[", { desc = "Prev mark" })
 -- as lazy-load triggers, delete the real mappings on first use, and never
 -- restore them for command-only plugins like Diffview.
 local function default_branch()
-	local res = vim.system({ "git", "rev-parse", "--verify", "main" }, { capture_output = true }):wait()
-	return res.code == 0 and "main" or "master"
+  local res = vim.system({ "git", "rev-parse", "--verify", "main" }, { capture_output = true }):wait()
+  return res.code == 0 and "main" or "master"
 end
 
 map("n", "<leader>GD", "<cmd>DiffviewOpen<cr>", { desc = "Repo diff" })
@@ -258,11 +266,113 @@ map("n", "<leader>GL", "<Cmd>.DiffviewFileHistory --follow<CR>", { desc = "Line 
 map("v", "<leader>GL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Range history" })
 map("n", "<leader>Gq", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
 map("n", "<leader>Gm", function()
-	vim.cmd("DiffviewOpen " .. default_branch())
+  vim.cmd("DiffviewOpen " .. default_branch())
 end, { desc = "Diff vs main/master" })
 map("n", "<leader>GM", function()
-	vim.cmd("DiffviewOpen HEAD..origin/" .. default_branch())
+  vim.cmd("DiffviewOpen HEAD..origin/" .. default_branch())
 end, { desc = "Diff vs origin/main" })
+
+-- Nvimdiff merge-tool helpers
+local nvimdiff_merge = vim.api.nvim_create_augroup("nvimdiff_merge", { clear = true })
+
+local function argv_bufnr(index)
+  local arg = vim.fn.argv()[index]
+  if not arg or arg == "" then
+    return nil
+  end
+
+  local arg_path = vim.fn.fnamemodify(arg, ":p")
+  local bufnr = vim.fn.bufnr(arg_path)
+  if bufnr ~= -1 then
+    return bufnr
+  end
+
+  for _, info in ipairs(vim.fn.getbufinfo()) do
+    if vim.fn.fnamemodify(info.name, ":p") == arg_path then
+      return info.bufnr
+    end
+  end
+end
+
+local function focus_buffer(bufnr)
+  local winid = vim.fn.bufwinid(bufnr)
+  if winid == -1 then
+    return false
+  end
+  vim.api.nvim_set_current_win(winid)
+  return true
+end
+
+local function diffget_from_arg(index)
+  return function()
+    local target = argv_bufnr(index)
+    if not target then
+      vim.notify("nvimdiff merge source is not available", vim.log.levels.WARN)
+      return
+    end
+    vim.cmd(("diffget %d"):format(target))
+  end
+end
+
+local function focus_arg(index, label)
+  return function()
+    local target = argv_bufnr(index)
+    if not target or not focus_buffer(target) then
+      vim.notify(label .. " window is not available", vim.log.levels.WARN)
+    end
+  end
+end
+
+local function is_nvimdiff_mergetool()
+  if not vim.wo.diff or #vim.fn.argv() ~= 3 then
+    return false
+  end
+
+  return argv_bufnr(1) and argv_bufnr(2) and argv_bufnr(3)
+end
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = nvimdiff_merge,
+  callback = function(args)
+    if not is_nvimdiff_mergetool() or vim.b[args.buf].nvimdiff_merge_maps then
+      return
+    end
+
+    vim.b[args.buf].nvimdiff_merge_maps = true
+    vim.opt_local.wrap = false
+
+    local opts = { buffer = args.buf, silent = true }
+    vim.keymap.set("n", "]x", "]c", vim.tbl_extend("force", opts, { remap = true, desc = "Next conflict" }))
+    vim.keymap.set("n", "[x", "[c", vim.tbl_extend("force", opts, { remap = true, desc = "Prev conflict" }))
+    vim.keymap.set("n", "<leader>Co", diffget_from_arg(1), vim.tbl_extend("force", opts, { desc = "Get LOCAL hunk" }))
+    vim.keymap.set("n", "<leader>Ct", diffget_from_arg(3), vim.tbl_extend("force", opts, { desc = "Get REMOTE hunk" }))
+    vim.keymap.set("n", "<leader>Cl", focus_arg(1, "LOCAL"), vim.tbl_extend("force", opts, { desc = "Focus LOCAL" }))
+    vim.keymap.set("n", "<leader>Cr", focus_arg(3, "REMOTE"), vim.tbl_extend("force", opts, { desc = "Focus REMOTE" }))
+    vim.keymap.set("n", "<leader>Cm", focus_arg(2, "MERGED"), vim.tbl_extend("force", opts, { desc = "Focus MERGED" }))
+    vim.keymap.set("n", "<leader>CB", function()
+      vim.notify("BASE is not present in your nvimdiff mergetool. Use Diffview if you need the common ancestor.")
+    end, vim.tbl_extend("force", opts, { desc = "Why no BASE?" }))
+    vim.keymap.set("n", "<leader>Cw", "<cmd>wqa<cr>", vim.tbl_extend("force", opts, { desc = "Write all and quit" }))
+    vim.keymap.set("n", "<leader>Ca", "<cmd>cq<cr>", vim.tbl_extend("force", opts, { desc = "Abort merge tool" }))
+
+    local ok, wk = pcall(require, "which-key")
+    if ok then
+      wk.add({
+        { "<leader>C",  group = "conflict",          buffer = args.buf },
+        { "<leader>Co", desc = "Get LOCAL hunk",     buffer = args.buf },
+        { "<leader>Ct", desc = "Get REMOTE hunk",    buffer = args.buf },
+        { "<leader>Cl", desc = "Focus LOCAL",        buffer = args.buf },
+        { "<leader>Cr", desc = "Focus REMOTE",       buffer = args.buf },
+        { "<leader>Cm", desc = "Focus MERGED",       buffer = args.buf },
+        { "<leader>CB", desc = "Why no BASE?",       buffer = args.buf },
+        { "<leader>Cw", desc = "Write all and quit", buffer = args.buf },
+        { "<leader>Ca", desc = "Abort merge tool",   buffer = args.buf },
+        { "[x",         desc = "Prev conflict",      buffer = args.buf },
+        { "]x",         desc = "Next conflict",      buffer = args.buf },
+      })
+    end
+  end,
+})
 
 -- Run Go program
 map("n", "<leader>gr", "<cmd>term go run .<cr>", { desc = "Go run (current dir)" })
@@ -274,77 +384,77 @@ map("n", "<leader>gt", "<cmd>term go test ./...<cr>", { desc = "Go test all" })
 -- ga: text right of cursor goes to line above
 -- gA: text right of cursor goes to line below
 map("n", "ga", function()
-	local line = vim.api.nvim_get_current_line()
-	local col = vim.api.nvim_win_get_cursor(0)[2]
-	local left = line:sub(1, col)
-	local right = line:sub(col + 1)
-	local lnum = vim.api.nvim_win_get_cursor(0)[1]
-	vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
-	vim.api.nvim_win_set_cursor(0, { lnum, 0 })
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local left = line:sub(1, col)
+  local right = line:sub(col + 1)
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
+  vim.api.nvim_win_set_cursor(0, { lnum, 0 })
 end, { desc = "Split line up (text right of cursor goes up)" })
 
 map("n", "gA", function()
-	local line = vim.api.nvim_get_current_line()
-	local col = vim.api.nvim_win_get_cursor(0)[2]
-	local left = line:sub(1, col)
-	local right = line:sub(col + 1)
-	local lnum = vim.api.nvim_win_get_cursor(0)[1]
-	vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
-	vim.api.nvim_win_set_cursor(0, { lnum + 1, 0 })
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local left = line:sub(1, col)
+  local right = line:sub(col + 1)
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
+  vim.api.nvim_win_set_cursor(0, { lnum + 1, 0 })
 end, { desc = "Split line down (text right of cursor goes down)" })
 
 -- Treesitter Text Objects (visual and operator-pending modes)
 -- These require nvim-treesitter-textobjects plugin
 -- Select mappings
 map({ "x", "o" }, "af", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@function.outer")
+  require("nvim-treesitter.textobjects.select").select_textobject("@function.outer")
 end, { desc = "Select outer function" })
 map({ "x", "o" }, "if", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@function.inner")
+  require("nvim-treesitter.textobjects.select").select_textobject("@function.inner")
 end, { desc = "Select inner function" })
 map({ "x", "o" }, "ac", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@class.outer")
+  require("nvim-treesitter.textobjects.select").select_textobject("@class.outer")
 end, { desc = "Select outer class" })
 map({ "x", "o" }, "ic", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@class.inner")
+  require("nvim-treesitter.textobjects.select").select_textobject("@class.inner")
 end, { desc = "Select inner class" })
 map({ "x", "o" }, "aa", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@parameter.outer")
+  require("nvim-treesitter.textobjects.select").select_textobject("@parameter.outer")
 end, { desc = "Select outer parameter" })
 map({ "x", "o" }, "ia", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@parameter.inner")
+  require("nvim-treesitter.textobjects.select").select_textobject("@parameter.inner")
 end, { desc = "Select inner parameter" })
 map({ "x", "o" }, "al", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@loop.outer")
+  require("nvim-treesitter.textobjects.select").select_textobject("@loop.outer")
 end, { desc = "Select outer loop" })
 map({ "x", "o" }, "il", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@loop.inner")
+  require("nvim-treesitter.textobjects.select").select_textobject("@loop.inner")
 end, { desc = "Select inner loop" })
 map({ "x", "o" }, "ai", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@conditional.outer")
+  require("nvim-treesitter.textobjects.select").select_textobject("@conditional.outer")
 end, { desc = "Select outer conditional" })
 map({ "x", "o" }, "ii", function()
-	require("nvim-treesitter.textobjects.select").select_textobject("@conditional.inner")
+  require("nvim-treesitter.textobjects.select").select_textobject("@conditional.inner")
 end, { desc = "Select inner conditional" })
 
 -- Move to next text object
 map({ "n", "x", "o" }, "]f", function()
-	require("nvim-treesitter.textobjects.move").goto_next_start("@function.outer")
+  require("nvim-treesitter.textobjects.move").goto_next_start("@function.outer")
 end, { desc = "Next function start" })
 map({ "n", "x", "o" }, "]c", function()
-	require("nvim-treesitter.textobjects.move").goto_next_start("@class.outer")
+  require("nvim-treesitter.textobjects.move").goto_next_start("@class.outer")
 end, { desc = "Next class start" })
 map({ "n", "x", "o" }, "]a", function()
-	require("nvim-treesitter.textobjects.move").goto_next_start("@parameter.inner")
+  require("nvim-treesitter.textobjects.move").goto_next_start("@parameter.inner")
 end, { desc = "Next parameter start" })
 
 -- Move to previous text object
 map({ "n", "x", "o" }, "[f", function()
-	require("nvim-treesitter.textobjects.move").goto_previous_start("@function.outer")
+  require("nvim-treesitter.textobjects.move").goto_previous_start("@function.outer")
 end, { desc = "Previous function start" })
 map({ "n", "x", "o" }, "[c", function()
-	require("nvim-treesitter.textobjects.move").goto_previous_start("@class.outer")
+  require("nvim-treesitter.textobjects.move").goto_previous_start("@class.outer")
 end, { desc = "Previous class start" })
 map({ "n", "x", "o" }, "[a", function()
-	require("nvim-treesitter.textobjects.move").goto_previous_start("@parameter.inner")
+  require("nvim-treesitter.textobjects.move").goto_previous_start("@parameter.inner")
 end, { desc = "Previous parameter start" })
