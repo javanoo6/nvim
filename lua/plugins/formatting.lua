@@ -20,7 +20,7 @@ return {
       formatters = {
         idea_formatter = {
           command = "java",
-          timeout = 10000,  -- 10 seconds for daemon startup
+          timeout = 10000, -- 10 seconds for daemon startup
           args = function()
             local home = vim.env.HOME
             return {
@@ -79,12 +79,18 @@ return {
       conform.setup(opts)
 
       local function format_buffer(bufnr)
-        return conform.format({
+        local format_err
+        local did_edit
+        local attempted = conform.format({
           bufnr = bufnr,
           timeout_ms = 10000,
           lsp_format = "fallback",
           quiet = true,
-        })
+        }, function(err, edited)
+          format_err = err
+          did_edit = edited
+        end)
+        return attempted, format_err, did_edit
       end
 
       local function detect_filetype(bufnr, path)
@@ -119,12 +125,26 @@ return {
           return false, "no formatter"
         end
 
-        local ok, format_err, did_edit = pcall(format_buffer, bufnr)
-        if not ok or format_err then
+        local ok, attempted, format_err, did_edit = pcall(format_buffer, bufnr)
+        if not ok then
           if not had_existing_buffer then
             pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
           end
-          return false, format_err or "format failed"
+          return false, attempted or "format failed"
+        end
+
+        if not attempted then
+          if not had_existing_buffer then
+            pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+          end
+          return false, "no formatter"
+        end
+
+        if format_err then
+          if not had_existing_buffer then
+            pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+          end
+          return false, format_err
         end
 
         local modified = did_edit or vim.bo[bufnr].modified

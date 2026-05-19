@@ -2,121 +2,162 @@
 
 -- Coding: Mini.nvim utilities for coding
 return {
-	-- Context-aware comment strings (e.g. JSX, Vue, HTML embedded langs)
-	{
-		"JoosepAlviste/nvim-ts-context-commentstring",
-		lazy = true,
-		opts = { enable_autocmd = false },
-	},
+  -- Context-aware comment strings (e.g. JSX, Vue, HTML embedded langs)
+  {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    lazy = true,
+    opts = { enable_autocmd = false },
+  },
 
-	-- Comments
-	{
-		"echasnovski/mini.comment",
-		event = "VeryLazy",
-		dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
-		opts = {
-			mappings = {
-				comment = "gc",
-				comment_line = "gcc",
-				comment_visual = "gc",
-				textobject = "gc",
-			},
-			options = {
-				custom_commentstring = function()
-					return require("ts_context_commentstring.internal").calculate_commentstring()
-						or vim.bo.commentstring
-				end,
-			},
-		},
-	},
+  -- Comments
+  {
+    "echasnovski/mini.comment",
+    event = "VeryLazy",
+    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
+    opts = {
+      mappings = {
+        comment = "gc",
+        comment_line = "gcc",
+        comment_visual = "gc",
+        textobject = "gc",
+      },
+      options = {
+        custom_commentstring = function()
+          return require("ts_context_commentstring.internal").calculate_commentstring() or vim.bo.commentstring
+        end,
+      },
+    },
+  },
 
-	-- Surround
-	{
-		"echasnovski/mini.surround",
-		event = "VeryLazy",
-		opts = {
-			mappings = {
-				add = "gsa",
-				delete = "gsd",
-				find = "gsf",
-				find_left = "gsF",
-				highlight = "gsh",
-				replace = "gsr",
-				update_n_lines = "gsn",
-			},
-		},
-	},
+  -- Surround
+  {
+    "echasnovski/mini.surround",
+    event = "VeryLazy",
+    opts = {
+      mappings = {
+        add = "gsa",
+        delete = "gsd",
+        find = "gsf",
+        find_left = "gsF",
+        highlight = "gsh",
+        replace = "gsr",
+        update_n_lines = "gsn",
+      },
+    },
+  },
 
-	-- Better text objects
-	{
-		"echasnovski/mini.ai",
-		event = "VeryLazy",
-		opts = function()
-			local ai = require("mini.ai")
-			return {
-				n_lines = 500,
-				custom_textobjects = {
-					o = ai.gen_spec.treesitter({
-						a = { "@block.outer", "@conditional.outer", "@loop.outer" },
-						i = { "@block.inner", "@conditional.inner", "@loop.inner" },
-					}, {}),
-					f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}),
-					c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),
-					t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },
-				},
-			}
-		end,
-	},
+  -- Better text objects
+  {
+    "echasnovski/mini.ai",
+    event = "VeryLazy",
+    opts = function()
+      local ai = require("mini.ai")
+      return {
+        n_lines = 500,
+        custom_textobjects = {
+          o = ai.gen_spec.treesitter({
+            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
+          }, {}),
+          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}),
+          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),
+          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },
+        },
+      }
+    end,
+  },
 
-	-- Yank history
-	{
-		"gbprod/yanky.nvim",
-		event = "VeryLazy",
-		opts = {
-			ring = { history_length = 50 },
-		},
-		keys = {
-			{ "p",     "<Plug>(YankyPutAfter)",      mode = "n",                  desc = "Put after" },
-			{ "P",     "<Plug>(YankyPutBefore)",     mode = "n",                  desc = "Put before" },
-			{ "p",     '"_dP',                       mode = "x",                  desc = "Put (preserve yank)" },
-			{ "P",     '"_dP',                       mode = "x",                  desc = "Put before (preserve yank)" },
-			{ "<C-p>", "<Plug>(YankyPreviousEntry)", desc = "Cycle yank backward" },
-			{ "<C-n>", "<Plug>(YankyNextEntry)",     desc = "Cycle yank forward" },
-		},
-	},
+  -- Yank history
+  {
+    "gbprod/yanky.nvim",
+    event = "VeryLazy",
+    opts = {
+      ring = { history_length = 50 },
+    },
+    keys = {
+      { "p", "<Plug>(YankyPutAfter)", mode = "n", desc = "Put after" },
+      { "P", "<Plug>(YankyPutBefore)", mode = "n", desc = "Put before" },
+      { "p", '"_dP', mode = "x", desc = "Put (preserve yank)" },
+      { "P", '"_dP', mode = "x", desc = "Put before (preserve yank)" },
+      { "<C-p>", "<Plug>(YankyPreviousEntry)", desc = "Cycle yank backward" },
+      { "<C-n>", "<Plug>(YankyNextEntry)", desc = "Cycle yank forward" },
+    },
+  },
 
-	-- Refactoring (extract function/variable, inline variable)
-	{
-		"ThePrimeagen/refactoring.nvim",
-		dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
-		keys = {
-			{ "<leader>Re", function() require("refactoring").refactor("Extract Function") end,          mode = "x", desc = "Extract function" },
-			{ "<leader>Rf", function() require("refactoring").refactor("Extract Function To File") end,  mode = "x", desc = "Extract function to file" },
-			{ "<leader>Rv", function() require("refactoring").refactor("Extract Variable") end,          mode = "x", desc = "Extract variable" },
-			{ "<leader>Ri", function() require("refactoring").refactor("Inline Variable") end,           mode = { "n", "x" }, desc = "Inline variable" },
-			{ "<leader>Rb", function() require("refactoring").refactor("Extract Block") end,             mode = "n", desc = "Extract block" },
-			{ "<leader>RB", function() require("refactoring").refactor("Extract Block To File") end,     mode = "n", desc = "Extract block to file" },
-		},
-		opts = {},
-	},
+  -- Refactoring (extract function/variable, inline variable)
+  {
+    "ThePrimeagen/refactoring.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
+    keys = {
+      {
+        "<leader>Re",
+        function()
+          require("refactoring").refactor("Extract Function")
+        end,
+        mode = "x",
+        desc = "Extract function",
+      },
+      {
+        "<leader>Rf",
+        function()
+          require("refactoring").refactor("Extract Function To File")
+        end,
+        mode = "x",
+        desc = "Extract function to file",
+      },
+      {
+        "<leader>Rv",
+        function()
+          require("refactoring").refactor("Extract Variable")
+        end,
+        mode = "x",
+        desc = "Extract variable",
+      },
+      {
+        "<leader>Ri",
+        function()
+          require("refactoring").refactor("Inline Variable")
+        end,
+        mode = { "n", "x" },
+        desc = "Inline variable",
+      },
+      {
+        "<leader>Rb",
+        function()
+          require("refactoring").refactor("Extract Block")
+        end,
+        mode = "n",
+        desc = "Extract block",
+      },
+      {
+        "<leader>RB",
+        function()
+          require("refactoring").refactor("Extract Block To File")
+        end,
+        mode = "n",
+        desc = "Extract block to file",
+      },
+    },
+    opts = {},
+  },
 
-	-- Auto pairs
-	{
-		"windwp/nvim-autopairs",
-		event = "InsertEnter",
-		dependencies = "hrsh7th/nvim-cmp",
-		config = function()
-			local npairs = require("nvim-autopairs")
-			npairs.setup({
-				check_ts = true,
-				ts_config = {
-					lua = { "string", "source" },
-					java = { "string" },
-				},
-			})
-			-- Integrate with cmp
-			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-			require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-		end,
-	},
+  -- Auto pairs
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    dependencies = "hrsh7th/nvim-cmp",
+    config = function()
+      local npairs = require("nvim-autopairs")
+      npairs.setup({
+        check_ts = true,
+        ts_config = {
+          lua = { "string", "source" },
+          java = { "string" },
+        },
+      })
+      -- Integrate with cmp
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    end,
+  },
 }

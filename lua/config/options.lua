@@ -41,9 +41,9 @@ opt.fillchars = { eob = " " }
 vim.g.lspconfig_jdtls_enabled = false
 
 -- Better search
-opt.inccommand = "split"  -- Preview substitutions live
+opt.inccommand = "split" -- Preview substitutions live
 opt.virtualedit = "block" -- Allow cursor in virtual space in visual block mode
-opt.smoothscroll = true   -- Smooth scrolling (Neovim 0.10+)
+opt.smoothscroll = true -- Smooth scrolling (Neovim 0.10+)
 
 -- Session options (for auto-session to restore terminals, folds, window positions)
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"

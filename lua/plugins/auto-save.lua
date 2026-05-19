@@ -32,11 +32,7 @@ return {
         local last_notify = vim.b[buf].last_autosave_notify or 0
         local now = vim.uv.now()
         if (now - last_notify) > 5000 then -- Max once per 5 seconds
-          vim.notify(
-            "Auto-save blocked: " .. #diagnostics .. " LSP error(s)",
-            vim.log.levels.WARN,
-            { title = "Auto-save" }
-          )
+          vim.notify("Auto-save blocked: " .. #diagnostics .. " LSP error(s)", vim.log.levels.WARN, { title = "Auto-save" })
           vim.b[buf].last_autosave_notify = now
         end
         return false

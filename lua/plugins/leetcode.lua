@@ -152,10 +152,7 @@ return {
               local questions = ql and ql.questions or {}
 
               if #questions == 0 then
-                vim.notify(
-                  "No problems found for " .. selected_topic.name .. " (" .. selected_diff .. ")",
-                  vim.log.levels.WARN
-                )
+                vim.notify("No problems found for " .. selected_topic.name .. " (" .. selected_diff .. ")", vim.log.levels.WARN)
                 return
               end
 
