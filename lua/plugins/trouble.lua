@@ -29,6 +29,12 @@ return {
     },
   },
   opts = function()
+    local root_markers = { ".git", "pom.xml", "build.gradle", "settings.gradle", "mvnw", "gradlew" }
+
+    local function project_root(filename)
+      return filename and vim.fs.root(filename, root_markers) or nil
+    end
+
     local function is_source_backed_location(item)
       local filename = item.filename or ""
       if filename == "" then
@@ -46,6 +52,37 @@ return {
         source_only = function(item, value)
           return not value or is_source_backed_location(item)
         end,
+        project_only = function(item, value, ctx)
+          if not value then
+            return true
+          end
+
+          local filename = item.filename or ""
+          local main = ctx.main and ctx.main.filename or nil
+          local root = project_root(main)
+          if not root or filename == "" then
+            return true
+          end
+
+          return filename:sub(1, #root) == root
+        end,
+        java_usage_relevant = function(item, value)
+          if not value then
+            return true
+          end
+
+          local filename = item.filename or ""
+          local text = vim.trim(item.text or "")
+          if filename:match("/package%-info%.java$") then
+            return false
+          end
+
+          if text:match("^import%s+") or text:match("^package%s+") then
+            return false
+          end
+
+          return true
+        end,
       },
       modes = {
         lsp_calls = {
@@ -59,19 +96,27 @@ return {
           preview = { type = "main", scratch = true },
           filter = {
             source_only = true,
+            project_only = true,
+            java_usage_relevant = true,
           },
         },
         lsp_usages = {
-          mode = "lsp_references",
           desc = "LSP usages and references",
+          sections = {
+            "lsp_references",
+            "lsp_implementations",
+          },
           focus = false,
           win = { position = "right" },
           preview = { type = "main", scratch = true },
           params = {
             include_declaration = false,
+            include_current = false,
           },
           filter = {
             source_only = true,
+            project_only = true,
+            java_usage_relevant = true,
           },
         },
       },
