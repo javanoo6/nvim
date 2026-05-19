@@ -107,7 +107,11 @@ return {
             "lsp_implementations",
           },
           focus = false,
-          win = { position = "right" },
+          win = {
+            relative = "win",
+            position = "right",
+            size = { width = 0.5 },
+          },
           preview = { type = "main", scratch = true },
           params = {
             include_declaration = false,
