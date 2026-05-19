@@ -119,15 +119,15 @@ return {
           return false, "no formatter"
         end
 
-        local ok, err = pcall(format_buffer, bufnr)
-        if not ok or err then
+        local ok, format_err, did_edit = pcall(format_buffer, bufnr)
+        if not ok or format_err then
           if not had_existing_buffer then
             pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
           end
-          return false, err or "format failed"
+          return false, format_err or "format failed"
         end
 
-        local modified = vim.bo[bufnr].modified
+        local modified = did_edit or vim.bo[bufnr].modified
         if modified then
           vim.api.nvim_buf_call(bufnr, function()
             vim.cmd("silent update")
@@ -182,7 +182,7 @@ return {
             skipped = skipped + 1
           elseif err then
             failed = failed + 1
-            vim.notify("FormatDir failed: " .. path .. "\n" .. err, vim.log.levels.WARN)
+            vim.notify("FormatDir failed: " .. path .. "\n" .. tostring(err), vim.log.levels.WARN)
           elseif did_change then
             changed = changed + 1
           end

@@ -5,132 +5,132 @@ local augroup = util.augroup
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
-	group = augroup("highlight_yank"),
-	callback = function()
-		vim.hl.on_yank()
-	end,
+  group = augroup("highlight_yank"),
+  callback = function()
+    vim.hl.on_yank()
+  end,
 })
 
 -- Resize splits on window resize
 vim.api.nvim_create_autocmd("VimResized", {
-	group = augroup("resize_splits"),
-	callback = function()
-		local current_tab = vim.fn.tabpagenr()
-		vim.cmd("tabdo wincmd =")
-		vim.cmd("tabnext " .. current_tab)
-	end,
+  group = augroup("resize_splits"),
+  callback = function()
+    local current_tab = vim.fn.tabpagenr()
+    vim.cmd("tabdo wincmd =")
+    vim.cmd("tabnext " .. current_tab)
+  end,
 })
 
 -- Close certain filetypes with q
 vim.api.nvim_create_autocmd("FileType", {
-	group = augroup("close_with_q"),
-	pattern = {
-		"help",
-		"lspinfo",
-		"checkhealth",
-		"qf",
-		"notify",
-	},
-	callback = function(event)
-		vim.bo[event.buf].buflisted = false
-		vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
-	end,
+  group = augroup("close_with_q"),
+  pattern = {
+    "help",
+    "lspinfo",
+    "checkhealth",
+    "qf",
+    "notify",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+  end,
 })
 
 -- Go to last location when opening buffer
 vim.api.nvim_create_autocmd("BufReadPost", {
-	group = augroup("last_loc"),
-	callback = function(event)
-		local exclude = { "gitcommit" }
-		local buf = event.buf
-		if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].last_loc then
-			return
-		end
-		vim.b[buf].last_loc = true
-		local mark = vim.api.nvim_buf_get_mark(buf, '"')
-		local lcount = vim.api.nvim_buf_line_count(buf)
-		if mark[1] > 0 and mark[1] <= lcount then
-			pcall(vim.api.nvim_win_set_cursor, 0, mark)
-		end
-	end,
+  group = augroup("last_loc"),
+  callback = function(event)
+    local exclude = { "gitcommit" }
+    local buf = event.buf
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].last_loc then
+      return
+    end
+    vim.b[buf].last_loc = true
+    local mark = vim.api.nvim_buf_get_mark(buf, '"')
+    local lcount = vim.api.nvim_buf_line_count(buf)
+    if mark[1] > 0 and mark[1] <= lcount then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+    end
+  end,
 })
 
 -- Check if file needs reload
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-	group = augroup("checktime"),
-	callback = function()
-		if vim.o.buftype ~= "nofile" then
-			vim.cmd("checktime")
-		end
-	end,
+  group = augroup("checktime"),
+  callback = function()
+    if vim.o.buftype ~= "nofile" then
+      vim.cmd("checktime")
+    end
+  end,
 })
 
 -- Wrap and spell for text files
 vim.api.nvim_create_autocmd("FileType", {
-	group = augroup("wrap_spell"),
-	pattern = { "text", "markdown", "gitcommit" },
-	callback = function()
-		vim.opt_local.wrap = true
-		vim.opt_local.spell = true
-	end,
+  group = augroup("wrap_spell"),
+  pattern = { "text", "markdown", "gitcommit" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+  end,
 })
 
 -- Set up illuminate highlight colors
 local function set_illuminate_hl()
-	local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
-	local hl_bg = bg and (bg + 0x101010) or nil
-	vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = hl_bg, underline = false })
-	vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = hl_bg, underline = false })
-	vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = hl_bg, underline = false, bold = true })
+  local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
+  local hl_bg = bg and (bg + 0x101010) or nil
+  vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = hl_bg, underline = false })
+  vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = hl_bg, underline = false })
+  vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = hl_bg, underline = false, bold = true })
 end
 
 vim.api.nvim_create_autocmd("ColorScheme", {
-	group = augroup("illuminate_colors"),
-	callback = function()
-		vim.schedule(set_illuminate_hl)
-	end,
+  group = augroup("illuminate_colors"),
+  callback = function()
+    vim.schedule(set_illuminate_hl)
+  end,
 })
 
 vim.schedule(set_illuminate_hl)
 
 -- Helm chart templates: treat templated YAML as Helm, not plain YAML
 vim.filetype.add({
-	pattern = {
-		[".*/templates/.*%.ya?ml"] = "helm",
-		[".*/templates/.*%.tpl"] = "helm",
-		[".*/templates/.*%.txt"] = "helm",
-		[".*/Chart%.ya?ml"] = "yaml.helm-values",
-		[".*/values%.ya?ml"] = "yaml.helm-values",
-		[".*/values%-[^/]+%.ya?ml"] = "yaml.helm-values",
-	},
+  pattern = {
+    [".*/templates/.*%.ya?ml"] = "helm",
+    [".*/templates/.*%.tpl"] = "helm",
+    [".*/templates/.*%.txt"] = "helm",
+    [".*/Chart%.ya?ml"] = "yaml.helm-values",
+    [".*/values%.ya?ml"] = "yaml.helm-values",
+    [".*/values%-[^/]+%.ya?ml"] = "yaml.helm-values",
+  },
 })
 
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-	group = augroup("helm_filetypes"),
-	pattern = { "*.yaml", "*.yml", "*.tpl", "*.txt" },
-	callback = function(event)
-		local path = vim.api.nvim_buf_get_name(event.buf)
-		if path:match("/templates/.*%.ya?ml$") or path:match("/templates/.*%.tpl$") or path:match("/templates/.*%.txt$") then
-			vim.bo[event.buf].filetype = "helm"
-			return
-		end
-		if path:match("/Chart%.ya?ml$") or path:match("/values%.ya?ml$") or path:match("/values%-[^/]+%.ya?ml$") then
-			vim.bo[event.buf].filetype = "yaml.helm-values"
-		end
-	end,
+  group = augroup("helm_filetypes"),
+  pattern = { "*.yaml", "*.yml", "*.tpl", "*.txt" },
+  callback = function(event)
+    local path = vim.api.nvim_buf_get_name(event.buf)
+    if path:match("/templates/.*%.ya?ml$") or path:match("/templates/.*%.tpl$") or path:match("/templates/.*%.txt$") then
+      vim.bo[event.buf].filetype = "helm"
+      return
+    end
+    if path:match("/Chart%.ya?ml$") or path:match("/values%.ya?ml$") or path:match("/values%-[^/]+%.ya?ml$") then
+      vim.bo[event.buf].filetype = "yaml.helm-values"
+    end
+  end,
 })
 
 -- In oil buffers, restore normal delete/change behavior so dd+p moves entries
 vim.api.nvim_create_autocmd("FileType", {
-	group = augroup("oil_native_edit_keys"),
-	pattern = "oil",
-	callback = function(event)
-		local opts = { buffer = event.buf, remap = false, silent = true }
-		vim.keymap.set({ "n", "x" }, "d", "d", opts)
-		vim.keymap.set({ "n", "x" }, "D", "D", opts)
-		vim.keymap.set({ "n", "x" }, "c", "c", opts)
-		vim.keymap.set({ "n", "x" }, "C", "C", opts)
-		vim.keymap.set({ "n", "x" }, "x", "x", opts)
-		vim.keymap.set({ "n", "x" }, "X", "X", opts)
-	end,
+  group = augroup("oil_native_edit_keys"),
+  pattern = "oil",
+  callback = function(event)
+    local opts = { buffer = event.buf, remap = false, silent = true }
+    vim.keymap.set({ "n", "x" }, "d", "d", opts)
+    vim.keymap.set({ "n", "x" }, "D", "D", opts)
+    vim.keymap.set({ "n", "x" }, "c", "c", opts)
+    vim.keymap.set({ "n", "x" }, "C", "C", opts)
+    vim.keymap.set({ "n", "x" }, "x", "x", opts)
+    vim.keymap.set({ "n", "x" }, "X", "X", opts)
+  end,
 })
