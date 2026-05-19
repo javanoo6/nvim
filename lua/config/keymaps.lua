@@ -23,6 +23,7 @@
 --   <leader>GF     - File history
 --   <leader>GH     - Repo history
 --   <leader>GL     - Line/range history
+--   <leader>Gb     - Diff vs branch/ref (prompt)
 --   <leader>Gm     - Diff vs main/master
 --   <leader>GM     - Diff vs origin/main
 --   <leader>Gq     - Close Diffview
@@ -256,12 +257,46 @@ local function default_branch()
   return res.code == 0 and "main" or "master"
 end
 
+local function open_diffview_against_ref(ref)
+  if not ref or vim.trim(ref) == "" then
+    return
+  end
+  vim.cmd("DiffviewOpen " .. vim.trim(ref) .. "...HEAD")
+end
+
+local function pick_diffview_ref()
+  local ok_builtin, builtin = pcall(require, "telescope.builtin")
+  if ok_builtin then
+    local actions = require("telescope.actions")
+    local action_state = require("telescope.actions.state")
+    builtin.git_branches({
+      prompt_title = "Diffview Base Branch",
+      show_remote_tracking_branches = true,
+      attach_mappings = function(prompt_bufnr)
+        actions.select_default:replace(function()
+          local selection = action_state.get_selected_entry()
+          actions.close(prompt_bufnr)
+          if not selection then
+            return
+          end
+          open_diffview_against_ref(selection.value or selection[1])
+        end)
+        return true
+      end,
+    })
+    return
+  end
+
+  vim.ui.input({ prompt = "Diffview base branch/ref: " }, open_diffview_against_ref)
+end
+
 map("n", "<leader>GD", "<cmd>DiffviewOpen<cr>", { desc = "Repo diff" })
 map("n", "<leader>GF", "<cmd>DiffviewFileHistory --follow %<cr>", { desc = "File history" })
 map("n", "<leader>GH", "<cmd>DiffviewFileHistory<cr>", { desc = "Repo history" })
 map("n", "<leader>GL", "<Cmd>.DiffviewFileHistory --follow<CR>", { desc = "Line history" })
 map("v", "<leader>GL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Range history" })
 map("n", "<leader>Gq", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
+map("n", "<leader>Gb", pick_diffview_ref, { desc = "Diff vs branch/ref" })
 map("n", "<leader>Gm", function()
   vim.cmd("DiffviewOpen " .. default_branch())
 end, { desc = "Diff vs main/master" })
