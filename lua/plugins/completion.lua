@@ -48,7 +48,7 @@ return {
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+          ["<CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -105,8 +105,7 @@ return {
         },
       })
 
-      -- Command line completion
-      -- Keymaps: <Tab>/<S-Tab> - navigate, <C-y> - confirm (don't execute), <C-e> - cancel
+      -- Command line completion uses nvim-cmp's preset cmdline mappings.
       cmp.setup.cmdline({ "/", "?" }, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = { { name = "buffer" } },

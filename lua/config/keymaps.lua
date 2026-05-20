@@ -6,12 +6,14 @@
 --   <C-n>        - Cycle yank history backward (after paste)
 --   <leader>r    - Open yank history picker
 --
--- NOTE: Command Line (Cmdline) Completion Keymaps (nvim-cmp):
---   <Tab> / <S-Tab>  - Navigate next/previous completion item
---   <C-y>            - Confirm selection (stay in cmdline, DON'T execute)
---   <C-e>            - Cancel completion
---   <CR>             - Confirm and execute immediately
---   Use <C-y> instead of <CR> when you want to chain completions without executing
+-- NOTE: Command Line (Cmdline) Completion:
+--   Uses nvim-cmp preset cmdline mappings.
+--   <Tab> / <C-z>   - Next completion item / open completion
+--   <S-Tab>         - Previous completion item
+--   <C-n> / <C-p>   - Next / previous item when menu is visible
+--   <C-y>           - Confirm selection
+--   <C-e>           - Abort completion
+--   <CR>            - Execute command normally unless you explicitly mapped it
 --
 -- NOTE: LazyGit Keymaps:
 --   <leader>Gg     - Open LazyGit
