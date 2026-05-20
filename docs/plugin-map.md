@@ -80,6 +80,8 @@ nvim-lspconfig  ─────────────────────�
 nvim-cmp  (completion.lua)
   ├── LuaSnip                        ── snippet engine
   │     └── friendly-snippets        ── VSCode-style snippet library
+  │     └── custom language snippets ── IntelliJ-style `main` snippets for
+  │                                     Java, Go, and Python
   ├── cmp_luasnip                    ── LuaSnip → cmp source
   ├── cmp-nvim-lsp                   ── LSP → cmp source
   ├── cmp-nvim-lsp-signature-help    ── signature help source
@@ -102,6 +104,14 @@ nvim-autopairs  (coding.lua)
 | `<C-Space>`         | Trigger completion        |
 | `<C-e>`             | Abort                     |
 | `<C-b>` / `<C-f>`   | Scroll docs               |
+
+**Custom snippet triggers:**
+
+| Filetype | Trigger | Expansion                                                          |
+|----------|---------|--------------------------------------------------------------------|
+| `java`   | `main`  | `class Scratch { public static void main(String[] args) { ... } }` |
+| `go`     | `main`  | `func main() { ... }`                                              |
+| `python` | `main`  | `if __name__ == "__main__": main()`                                |
 
 ---
 
@@ -192,6 +202,10 @@ editor.lua
   │
   ├── telescope.nvim          ── fuzzy finder (root-aware on <leader><space>/<leader>ff/<leader>fg, cwd variants on <leader>fF/<leader>fG)
   │     └── telescope-fzf-native.nvim  ── faster sorter (requires make)
+  │
+  ├── scratch.nvim            ── persistent scratch files under `<leader>f`
+  │     — `<leader>fs` new scratch, `<leader>fS` open scratch list
+  │     — `<leader>fN` create named scratch, files stored in stdpath("state")/scratch
   │
   ├── neo-tree.nvim           ── file explorer (<leader>e cwd, <leader>E root)
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in

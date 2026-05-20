@@ -151,6 +151,9 @@ Until you press `Esc`, it may look like only one line changed.
 | `<C-n>` | Next completion           |
 | `<C-p>` | Previous completion       |
 
+**Snippet tip:** in Java, Go, and Python, typing `main` and expanding it through
+completion/snippets inserts the language-appropriate entry-point template.
+
 ### Operators (wait for motion)
 
 | Key  | Action                          |
@@ -602,6 +605,9 @@ This uses `nvim-cmp` cmdline completion:
 | `<leader>fG`      | Live grep from cwd           |
 | `<leader>fb`      | Buffers                      |
 | `<leader>fR`      | Recent files                 |
+| `<leader>fs`      | New scratch file             |
+| `<leader>fS`      | Open scratch file            |
+| `<leader>fN`      | New named scratch file       |
 | `<leader>Hy`      | Yank history                 |
 | `<leader>Hc`      | Command history              |
 | `<leader>Hs`      | Search history               |
@@ -626,6 +632,17 @@ This uses `nvim-cmp` cmdline completion:
 | `<Tab>`           | Multi-select entry                                           |
 | `<C-q>`           | Send Tab-selected (or all if none selected) to quickfix list |
 | `<Esc>`           | Close                                                        |
+
+### Scratch Files
+
+Scratch files are persistent temporary files managed by `scratch.nvim`.
+
+- They live under `stdpath("state") .. "/scratch"`.
+- Use them for throwaway code, JSON inspection, shell snippets, or notes you
+  may want to reopen later.
+- `<leader>fs` creates a scratch file quickly.
+- `<leader>fS` reopens an existing scratch file through Telescope.
+- `<leader>fN` creates one with an explicit filename.
 
 **Tip:** `<leader>fe` prompts for an extension (e.g. `java`, `go`, `py`) then opens live grep scoped to `*.{ext}` files only.
 
