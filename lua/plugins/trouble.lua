@@ -29,10 +29,8 @@ return {
     },
   },
   opts = function()
-    local root_markers = { ".git", "pom.xml", "build.gradle", "settings.gradle", "mvnw", "gradlew" }
-
     local function project_root(filename)
-      return filename and vim.fs.root(filename, root_markers) or nil
+      return filename and require("util").get_root_from_path(filename) or nil
     end
 
     local function is_source_backed_location(item)

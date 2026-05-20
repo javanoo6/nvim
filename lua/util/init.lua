@@ -107,6 +107,16 @@ function M.get_marker_root(bufnr)
   return root and vim.fs.dirname(root) or nil
 end
 
+function M.get_marker_root_from_path(path)
+  path = normalize(path)
+  if not path then
+    return nil
+  end
+
+  local root = vim.fs.find(M.root_patterns, { path = vim.fs.dirname(path), upward = true })[1]
+  return root and vim.fs.dirname(root) or nil
+end
+
 function M.get_lsp_root(bufnr)
   bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
   local path = get_buf_path(bufnr)
@@ -156,6 +166,11 @@ function M.get_root(bufnr)
   end
 
   return vim.uv.cwd()
+end
+
+function M.get_root_from_path(path)
+  local marker_root = M.get_marker_root_from_path(path)
+  return marker_root or vim.uv.cwd()
 end
 
 -- Picker abstraction (telescope/fzf) - simplified
