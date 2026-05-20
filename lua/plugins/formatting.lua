@@ -18,7 +18,7 @@ return {
       {
         "<leader>cF",
         "<cmd>FormatDirPick<cr>",
-        desc = "Pick Directory To Format",
+        desc = "Format current dir or prompt",
       },
     },
     opts = {

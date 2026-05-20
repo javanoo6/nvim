@@ -534,7 +534,9 @@ across the project. This may modify many buffers at once. Save them all with `:w
 |--------------|-------------------------------------------|
 | `-`          | Open **Oil** (parent dir of current file) |
 | `<leader>-`  | Open **Oil** in cwd                       |
-| `<leader>fp` | Switch project (Telescope)                |
+| `<leader>fp` | Pick frequent root and open files there   |
+| `<leader>fP` | Pin current root                          |
+| `<leader>fR` | Unpin current root                        |
 
 ### Inside Oil (stevearc/oil.nvim)
 
@@ -671,7 +673,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 |     | `<leader>cr` | Rename                  |
 |     | `<leader>cp` | Fix package declaration |
 |     | `<leader>cf` | Format (Java: IntelliJ formatter) |
-|     | `<leader>cF` | Pick root..cwd directory and format recursively |
+|     | `<leader>cF` | Format current file's directory, or prompt for a directory |
 
 ### Symbols & Outline
 

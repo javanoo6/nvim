@@ -129,7 +129,7 @@ nvim-treehopper  (motion.lua)
 ```
 conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
-  — <leader>cF prompts for a directory between project root and cwd, then formats it recursively
+  — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
   — auto-formatting enabled by default (disable with :FormatDisable)
   Formatters by filetype:
     lua        → stylua
@@ -379,8 +379,15 @@ sessions.lua
                    <leader>Ss/Sr/Sd/Sf/Sa (Sa enables auto-save)
 
 projects.lua
-  project.nvim  ── project root detection + history
-    └── telescope.nvim  ── <leader>fp to open project picker
+  project.nvim  ── installed in passive/manual mode for conservative project-history experiments
+                   not on the critical path for current workspace switching
+
+util/frequent_roots.lua
+  frequent roots  ── custom recent + pinned roots store
+                    learns roots from opened files/directories
+                    <leader>fp pick frequent roots
+                    <leader>fP pin current root
+                    <leader>fR unpin current root
 
 terminal.lua
   toggleterm.nvim  ── floating terminal, <A-a> toggle, <A-c> hide

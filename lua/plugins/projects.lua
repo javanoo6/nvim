@@ -1,13 +1,13 @@
 -- ./lua/plugins/projects.lua
 
 return {
-  -- Project management with Telescope integration
+  -- Conservative project.nvim setup kept separate from the custom frequent-roots flow.
   {
     "ahmedkhalf/project.nvim",
     event = "VimEnter",
     opts = function()
       return {
-        -- Manual mode - don't auto-add projects, use patterns below
+        -- Keep project.nvim passive for now; custom <leader>fp uses util.frequent_roots.
         manual_mode = true,
         -- Detection methods: "lsp" (lsp root), "pattern" (git/etc markers)
         detection_methods = { "pattern", "lsp" },
