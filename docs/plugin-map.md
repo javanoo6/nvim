@@ -204,8 +204,10 @@ editor.lua
   │     └── telescope-fzf-native.nvim  ── faster sorter (requires make)
   │
   ├── scratch.nvim            ── persistent scratch files under `<leader>f`
-  │     — `<leader>fs` new scratch, `<leader>fS` open scratch list
+  │     — `<leader>fs` new scratch, `<leader>fS` open scratch
   │     — `<leader>fN` create named scratch, files stored in stdpath("state")/scratch
+  │     — Java is special-cased to open project-local `Scratch.java` inside
+  │       Maven/Gradle source roots when available
   │
   ├── neo-tree.nvim           ── file explorer (<leader>e cwd, <leader>E root)
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in

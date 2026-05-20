@@ -641,8 +641,12 @@ Scratch files are persistent temporary files managed by `scratch.nvim`.
 - Use them for throwaway code, JSON inspection, shell snippets, or notes you
   may want to reopen later.
 - `<leader>fs` creates a scratch file quickly.
-- `<leader>fS` reopens an existing scratch file through Telescope.
+- `<leader>fS` opens an existing scratch file. In non-Java flows this uses the
+  global scratch list through Telescope.
 - `<leader>fN` creates one with an explicit filename.
+- In a Maven/Gradle Java project, choosing `java` opens a project-local
+  `src/test/java/Scratch.java` (or `src/main/java/Scratch.java` fallback) so
+  JDTLS can resolve project dependencies.
 
 **Tip:** `<leader>fe` prompts for an extension (e.g. `java`, `go`, `py`) then opens live grep scoped to `*.{ext}` files only.
 
