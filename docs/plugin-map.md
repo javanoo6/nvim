@@ -189,7 +189,7 @@ editor.lua
   │     — `-` open parent dir, `<leader>-` open cwd
   │     — edit filenames like a buffer, `:w` to apply; `g.` toggle hidden
   │
-  ├── telescope.nvim          ── fuzzy finder (<leader><space>, <leader>f*, <leader>s*)
+  ├── telescope.nvim          ── fuzzy finder (root-aware on <leader><space>/<leader>ff/<leader>fg, cwd variants on <leader>fF/<leader>fG)
   │     └── telescope-fzf-native.nvim  ── faster sorter (requires make)
   │
   ├── neo-tree.nvim           ── file explorer (<leader>e root, <leader>E cwd)

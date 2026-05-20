@@ -513,9 +513,11 @@ When typing commands with `:` and autocomplete menu appears:
 
 | Key               | Action                      |
 |-------------------|-----------------------------|
-| `<leader><space>` | Find files                  |
-| `<leader>ff`      | Find files                  |
-| `<leader>fg`      | Live grep (search in files) |
+| `<leader><space>` | Find files from project root |
+| `<leader>ff`      | Find files from project root |
+| `<leader>fF`      | Find files from cwd          |
+| `<leader>fg`      | Live grep from project root  |
+| `<leader>fG`      | Live grep from cwd           |
 | `<leader>fb`      | Buffers                     |
 | `<leader>fR`      | Recent files                |
 | `<leader>Hy`      | Yank history                |

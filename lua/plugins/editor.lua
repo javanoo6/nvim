@@ -31,9 +31,41 @@ return {
       },
     },
     keys = {
-      { "<leader><space>", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Grep" },
+      {
+        "<leader><space>",
+        function()
+          require("util").pick("files")
+        end,
+        desc = "Find files (root)",
+      },
+      {
+        "<leader>ff",
+        function()
+          require("util").pick("files")
+        end,
+        desc = "Find files (root)",
+      },
+      {
+        "<leader>fF",
+        function()
+          require("telescope.builtin").find_files({ cwd = vim.uv.cwd() })
+        end,
+        desc = "Find files (cwd)",
+      },
+      {
+        "<leader>fg",
+        function()
+          require("util").pick("live_grep")
+        end,
+        desc = "Grep (root)",
+      },
+      {
+        "<leader>fG",
+        function()
+          require("telescope.builtin").live_grep({ cwd = vim.uv.cwd() })
+        end,
+        desc = "Grep (cwd)",
+      },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
       { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
       { "<leader>Hy", "<cmd>YankyRingHistory<cr>", desc = "Yank history" },

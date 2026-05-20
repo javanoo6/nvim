@@ -68,28 +68,14 @@ Edit this list in one place only:
   [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:206)
 - picker helper defaults:
   [lua/util/init.lua](/home/konkov/.config/nvim/lua/util/init.lua:179)
+- primary Telescope file/grep mappings:
+  [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:34)
 - lualine root display:
   [lua/plugins/ui.lua](/home/konkov/.config/nvim/lua/plugins/ui.lua:112)
 - `project.nvim` marker list:
   [lua/plugins/projects.lua](/home/konkov/.config/nvim/lua/plugins/projects.lua:15)
 - Trouble project filtering:
   [lua/plugins/trouble.lua](/home/konkov/.config/nvim/lua/plugins/trouble.lua:31)
-
-## Important Gap
-
-Direct Telescope mappings still bypass the shared helper and therefore still use
-their default picker cwd behavior:
-
-- [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:34)
-
-Examples:
-
-- `<leader>ff` uses `Telescope find_files`
-- `<leader>fg` uses `Telescope live_grep`
-- `<leader><space>` uses `Telescope find_files`
-
-If those mappings should become root-aware, they should call `require("util").pick(...)`
-or pass `cwd = require("util").get_root()` explicitly.
 
 ## When To Reuse Shared Root Logic
 
