@@ -14,6 +14,8 @@ Use these helpers from `require("util")`:
 
 - `get_root(bufnr)`:
   main entry point for buffer-based root detection
+- `get_root_basename(bufnr)`:
+  display helper for statusline/UI root labels
 - `get_marker_root(bufnr)`:
   nearest marker-based root for a buffer
 - `get_lsp_root(bufnr)`:
@@ -72,6 +74,8 @@ Edit this list in one place only:
   [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:34)
 - lualine root display:
   [lua/plugins/ui.lua](/home/konkov/.config/nvim/lua/plugins/ui.lua:112)
+  It now renders only the root basename while preserving the same underlying
+  root resolution.
 - `project.nvim` marker list:
   [lua/plugins/projects.lua](/home/konkov/.config/nvim/lua/plugins/projects.lua:15)
 - Trouble project filtering:

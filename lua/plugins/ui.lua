@@ -109,7 +109,7 @@ return {
           lualine_x = {
             {
               function()
-                return require("util").get_root()
+                return require("util").get_root_basename()
               end,
               icon = " ",
               color = { fg = "#6272a4" },

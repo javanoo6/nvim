@@ -168,6 +168,21 @@ function M.get_root(bufnr)
   return vim.uv.cwd()
 end
 
+function M.get_root_basename(bufnr)
+  local root = M.get_root(bufnr)
+  if not root or root == "" then
+    return nil
+  end
+
+  local name = vim.fs.basename(root)
+  if name and name ~= "" then
+    return name
+  end
+
+  local cwd = vim.uv.cwd()
+  return cwd and vim.fs.basename(cwd) or nil
+end
+
 function M.get_root_from_path(path)
   local marker_root = M.get_marker_root_from_path(path)
   return marker_root or vim.uv.cwd()

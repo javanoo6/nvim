@@ -163,7 +163,7 @@ colorschemes.lua
   └── themery.nvim      ── switcher UI  →  <leader>tc
 
 ui.lua
-  ├── lualine.nvim      ── statusline (mode, branch, diagnostics, root, diff, clock)
+  ├── lualine.nvim      ── statusline (mode, branch, diagnostics, root basename, diff, clock)
   ├── bufferline.nvim   ── buffer tabs, LSP diagnostics badges
   │                        <S-h>/<S-l> cycle buffers, <leader>b* manage buffers
   ├── indent-blankline.nvim  ── │ indent guides
@@ -187,7 +187,7 @@ noice.nvim  (noice.lua)
 ```
 editor.lua
   ├── oil.nvim                ── buffer-based file manager (rename/move/copy by editing text)
-  │     — `-` open parent dir, `<leader>-` open cwd
+  │     — `-` open parent dir, `<leader>o` open cwd
   │     — edit filenames like a buffer, `:w` to apply; `g.` toggle hidden
   │
   ├── telescope.nvim          ── fuzzy finder (root-aware on <leader><space>/<leader>ff/<leader>fg, cwd variants on <leader>fF/<leader>fG)
@@ -460,7 +460,7 @@ marks.lua
   marks.nvim  ── persistent marks with guttersigns, ]' / [' nav
 
 auto-save.lua
-  auto-save.nvim  ── opt-in auto-save (disabled by default, <leader>ua toggle)
+  auto-save.nvim  ── auto-save enabled by default (<leader>ua toggle)
     — blocks save when LSP errors exist
     — triggers conform format after save
 ```
@@ -580,7 +580,7 @@ lazy.nvim
 | `<leader>d`       | debug          | nvim-dap                                                                  |
 | `<leader>dg`      | debug go       | nvim-dap-go                                                               |
 | `<leader>e/E`     | explorer       | neo-tree                                                                  |
-| `-` / `<leader>-` | oil            | oil.nvim                                                                  |
+| `-` / `<leader>o` | oil            | oil.nvim                                                                  |
 | `<leader>f`       | file/find      | telescope, yanky                                                          |
 | `<leader>g`       | go             | gopls, gopher                                                             |
 | `<leader>gi`      | go insert      | gopher                                                                    |
@@ -591,7 +591,7 @@ lazy.nvim
 | `<leader>j`       | java           | nvim-java                                                                 |
 | `<leader>L`       | leetcode       | leetcode.nvim                                                             |
 | `<leader>l`       | lsp            | nvim-lspconfig                                                            |
-| `<leader>o`       | obsidian       | obsidian.nvim                                                             |
+| `<leader>O`       | obsidian       | obsidian.nvim                                                             |
 | `<leader>p`       | plugins        | lazy                                                                      |
 | `<leader>q`       | quit/session   | auto-session                                                              |
 | `<leader>r`       | replace        | grug-far                                                                  |
@@ -612,7 +612,7 @@ lazy.nvim
 
 - **Java LSP:** `nvim-java` owns jdtls entirely. `lspconfig` + `mason-lspconfig` are explicitly told to skip it (`server_name ~= "jdtls"`,
   `vim.g.lspconfig_jdtls_enabled = false`).
-- **Auto-save:** Disabled by default (`enabled = false`). Toggle with `<leader>ua`. Blocked when LSP errors exist. Triggers format after save.
+- **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Blocked when LSP errors exist. Triggers format after save.
 - **Go format on save:** Skipped in `conform.format_on_save` for Go — formatting is done manually or via gopls.
 - **noice hover/signature:** Disabled to avoid conflicts with inlay hints. Use `K` / `gK` natively.
 - **Folding:** Globally disabled (`opt.foldenable = false`). Toggle with `<leader>uf`.

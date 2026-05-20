@@ -533,9 +533,9 @@ across the project. This may modify many buffers at once. Save them all with `:w
 | Key          | Action                                    |
 |--------------|-------------------------------------------|
 | `-`          | Open **Oil** (parent dir of current file) |
-| `<leader>-`  | Open **Oil** in cwd                       |
-| `<leader>fp` | Switch project (stock `project.nvim`)       |
-| `<leader>fP` | Manage manual dirs (add/remove/list)        |
+| `<leader>o`  | Open **Oil** in cwd                       |
+| `<leader>fp` | Switch project (stock `project.nvim`)     |
+| `<leader>fP` | Manage manual dirs (add/remove/list)      |
 
 ### Inside Oil (stevearc/oil.nvim)
 
@@ -1260,6 +1260,8 @@ Press `<leader>` and wait to see all groups:
 
 Auto-saved per project directory. Restores open files, splits, and cursor positions.
 Auto-save also works when Neovim is launched with file arguments.
+Buffer auto-save starts enabled by default and is blocked when the current
+buffer has LSP errors. Toggle it with `<leader>ua`.
 
 | Key          | Action           |
 |--------------|------------------|
