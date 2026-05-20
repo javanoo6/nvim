@@ -45,18 +45,117 @@ function M.toggle(option, values)
 end
 
 -- Root detection (simplified version of LazyVim.root)
-M.root_patterns = { ".git", "lua" }
+M.root_patterns = {
+  ".git",
+  "_darcs",
+  ".hg",
+  ".bzr",
+  ".svn",
+  "lua",
+  "Makefile",
+  "package.json",
+  "go.mod",
+  "pom.xml",
+  "build.gradle",
+  "build.gradle.kts",
+  "settings.gradle",
+  "settings.gradle.kts",
+  "pyproject.toml",
+  "setup.py",
+  "Cargo.toml",
+}
 
-function M.get_root()
-  local path = vim.api.nvim_buf_get_name(0)
-  path = path ~= "" and vim.uv.fs_realpath(path) or nil
+local function normalize(path)
+  if not path or path == "" then
+    return nil
+  end
+  if vim.startswith(path, "file://") then
+    path = vim.uri_to_fname(path)
+  end
+  return vim.uv.fs_realpath(path) or vim.fs.normalize(path)
+end
 
+local function path_has_prefix(path, prefix)
+  path = normalize(path)
+  prefix = normalize(prefix)
+  if not path or not prefix then
+    return false
+  end
+  if path == prefix then
+    return true
+  end
+  local with_sep = prefix:sub(-1) == "/" and prefix or (prefix .. "/")
+  return path:sub(1, #with_sep) == with_sep
+end
+
+local function get_buf_path(bufnr)
+  local name = vim.api.nvim_buf_get_name(bufnr)
+  if name == "" then
+    return nil
+  end
+  return normalize(name)
+end
+
+function M.get_marker_root(bufnr)
+  bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+  local path = get_buf_path(bufnr)
   if not path then
-    return vim.uv.cwd()
+    return nil
   end
 
-  local root = vim.fs.find(M.root_patterns, { path = path, upward = true })[1]
-  return root and vim.fs.dirname(root) or vim.uv.cwd()
+  local root = vim.fs.find(M.root_patterns, { path = vim.fs.dirname(path), upward = true })[1]
+  return root and vim.fs.dirname(root) or nil
+end
+
+function M.get_lsp_root(bufnr)
+  bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+  local path = get_buf_path(bufnr)
+  if not path then
+    return nil
+  end
+
+  local clients = vim.lsp.get_clients({ bufnr = bufnr })
+  local best
+  for _, client in ipairs(clients) do
+    local roots = {}
+
+    if client.config and client.config.root_dir then
+      roots[#roots + 1] = client.config.root_dir
+    end
+    if client.workspace_folders then
+      for _, folder in ipairs(client.workspace_folders) do
+        roots[#roots + 1] = folder.name or folder.uri
+      end
+    end
+
+    for _, root in ipairs(roots) do
+      root = normalize(root)
+      if path_has_prefix(path, root) and (not best or #root > #best) then
+        best = root
+      end
+    end
+  end
+
+  return best
+end
+
+function M.get_root(bufnr)
+  bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+  local marker_root = M.get_marker_root(bufnr)
+  local lsp_root = M.get_lsp_root(bufnr)
+
+  if marker_root then
+    if lsp_root and path_has_prefix(lsp_root, marker_root) then
+      return lsp_root
+    end
+    return marker_root
+  end
+
+  if lsp_root then
+    return lsp_root
+  end
+
+  return vim.uv.cwd()
 end
 
 -- Picker abstraction (telescope/fzf) - simplified
