@@ -112,6 +112,21 @@ local function current_buffer_path(bufnr)
   return normalize(path)
 end
 
+local function get_marker_root_for_path(path)
+  path = normalize(path)
+  if not path then
+    return nil
+  end
+
+  local search_from = path
+  if vim.fn.isdirectory(path) ~= 1 then
+    search_from = vim.fs.dirname(path)
+  end
+
+  local root = vim.fs.find(util.root_patterns, { path = search_from, upward = true })[1]
+  return root and vim.fs.dirname(root) or nil
+end
+
 function M.current_root(bufnr)
   bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
   local path = current_buffer_path(bufnr)
@@ -119,7 +134,7 @@ function M.current_root(bufnr)
     return nil
   end
 
-  local marker_root = util.get_marker_root(bufnr)
+  local marker_root = get_marker_root_for_path(path)
   local lsp_root = util.get_lsp_root(bufnr)
 
   if marker_root then
