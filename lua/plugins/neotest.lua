@@ -130,7 +130,6 @@ local function clear_and_run(run_fn)
     activate_scope()
     require("neotest").summary.open()
     require("neotest").output_panel.clear()
-    require("neotest").output_panel.open()
     return run_fn(...)
   end
 end
