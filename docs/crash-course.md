@@ -51,6 +51,10 @@ nvim setup reference guide.
 | `Esc` or `<C-[>` | Return to normal mode              |
 | `:`              | Command mode                       |
 
+**Visual block tip:** After `<C-v>`, you can edit multiple lines column-wise with `I` or `A`.
+Type your text, then press `Esc` to apply it to every selected line.
+Until you press `Esc`, it may look like only one line changed.
+
 ### Saving & Quitting
 
 | Key           | Action              |
