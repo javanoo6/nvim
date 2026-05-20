@@ -499,18 +499,20 @@ Oil treats the directory as a buffer — **edit filenames directly and `:w` to a
 
 When typing commands with `:` and autocomplete menu appears:
 
-This uses `nvim-cmp` preset cmdline mappings:
+This uses `nvim-cmp` cmdline completion:
 
 | Key       | Action                                              |
 |-----------|-----------------------------------------------------|
 | `<Tab>`   | Next completion item, or open completion            |
 | `<C-z>`   | Next completion item, or open completion            |
 | `<S-Tab>` | Previous completion item                            |
+| `<Down>`  | Next completion item                                |
+| `<Up>`    | Previous completion item                            |
 | `<C-n>`   | Next item when completion menu is visible           |
 | `<C-p>`   | Previous item when completion menu is visible       |
 | `<C-y>`   | Confirm selected completion item                    |
 | `<C-e>`   | Abort completion                                    |
-| `<CR>`    | Execute command normally unless explicitly remapped |
+| `<CR>`    | Confirm selected completion item without executing  |
 
 ---
 

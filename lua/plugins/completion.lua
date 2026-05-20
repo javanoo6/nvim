@@ -4,7 +4,7 @@
 return {
   {
     "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
+    event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
       {
         "L3MON4D3/LuaSnip",
@@ -31,6 +31,17 @@ return {
       local cmp = require("cmp")
       local luasnip = require("luasnip")
       local lspkind = require("lspkind")
+      local cmdline_mapping = cmp.mapping.preset.cmdline({
+        ["<Down>"] = {
+          c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+        },
+        ["<Up>"] = {
+          c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
+        },
+        ["<CR>"] = {
+          c = cmp.mapping.confirm({ select = false }),
+        },
+      })
 
       cmp.setup({
         snippet = {
@@ -107,12 +118,12 @@ return {
 
       -- Command line completion uses nvim-cmp's preset cmdline mappings.
       cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = cmdline_mapping,
         sources = { { name = "buffer" } },
       })
 
       cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = cmdline_mapping,
         sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" } }),
       })
     end,
