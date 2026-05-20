@@ -322,19 +322,24 @@ function M.setup()
 
   load()
 
+  local function record_buffer(bufnr)
+    if type(bufnr) ~= "number" or bufnr <= 0 or not vim.api.nvim_buf_is_valid(bufnr) then
+      bufnr = vim.api.nvim_get_current_buf()
+    end
+    local root = M.current_root(bufnr)
+    if root then
+      M.add_recent(root)
+    end
+  end
+
   vim.api.nvim_create_autocmd({ "BufEnter", "VimEnter" }, {
     group = util.augroup("frequent_roots"),
     callback = function(args)
-      local bufnr = args.buf
-      if type(bufnr) ~= "number" or bufnr <= 0 or not vim.api.nvim_buf_is_valid(bufnr) then
-        bufnr = vim.api.nvim_get_current_buf()
-      end
-      local root = M.current_root(bufnr)
-      if root then
-        M.add_recent(root)
-      end
+      record_buffer(args.buf)
     end,
   })
+
+  record_buffer(vim.api.nvim_get_current_buf())
 end
 
 return M
