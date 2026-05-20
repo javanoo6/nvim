@@ -193,7 +193,7 @@ editor.lua
   ├── telescope.nvim          ── fuzzy finder (root-aware on <leader><space>/<leader>ff/<leader>fg, cwd variants on <leader>fF/<leader>fG)
   │     └── telescope-fzf-native.nvim  ── faster sorter (requires make)
   │
-  ├── neo-tree.nvim           ── file explorer (<leader>e root, <leader>E cwd)
+  ├── neo-tree.nvim           ── file explorer (<leader>e cwd, <leader>E root)
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │

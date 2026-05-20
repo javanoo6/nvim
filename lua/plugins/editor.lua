@@ -235,16 +235,16 @@ return {
       {
         "<leader>e",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_root() })
+          require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() })
         end,
-        desc = "Explorer (root)",
+        desc = "Explorer (cwd)",
       },
       {
         "<leader>E",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() })
+          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_root() })
         end,
-        desc = "Explorer (cwd)",
+        desc = "Explorer (root)",
       },
     },
     opts = {

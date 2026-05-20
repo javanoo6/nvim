@@ -500,8 +500,8 @@ Select code visually first, then:
 
 | Key         | Action                       |
 |-------------|------------------------------|
-| `<leader>e` | Explorer (project root)      |
-| `<leader>E` | Explorer (current directory) |
+| `<leader>e` | Explorer (current directory) |
+| `<leader>E` | Explorer (project root)      |
 
 ### Inside Neo-tree
 
