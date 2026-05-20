@@ -5,7 +5,7 @@ return {
   {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
-    cmd = { "ConformInfo", "FormatEnable", "FormatDisable", "FormatDir" },
+    cmd = { "ConformInfo", "FormatEnable", "FormatDisable", "FormatDir", "FormatDirPick" },
     keys = {
       {
         "<leader>cf",
@@ -14,6 +14,11 @@ return {
         end,
         mode = { "n", "v" },
         desc = "Format",
+      },
+      {
+        "<leader>cF",
+        "<cmd>FormatDirPick<cr>",
+        desc = "Pick Directory To Format",
       },
     },
     opts = {
@@ -77,6 +82,34 @@ return {
     config = function(_, opts)
       local conform = require("conform")
       conform.setup(opts)
+      local formatters_by_ft = opts.formatters_by_ft or {}
+      local skip_dir_names = {
+        [".git"] = true,
+        [".hg"] = true,
+        [".svn"] = true,
+        [".idea"] = true,
+        [".vscode"] = true,
+        ["node_modules"] = true,
+        ["dist"] = true,
+        ["build"] = true,
+        ["target"] = true,
+        ["coverage"] = true,
+        [".next"] = true,
+        [".nuxt"] = true,
+        [".venv"] = true,
+        ["venv"] = true,
+        [".mypy_cache"] = true,
+        [".pytest_cache"] = true,
+        [".ruff_cache"] = true,
+      }
+      local confirm_large_dir_threshold = 200
+
+      local function normalize(path)
+        if not path or path == "" then
+          return nil
+        end
+        return vim.uv.fs_realpath(path) or vim.fs.normalize(path)
+      end
 
       local function format_buffer(bufnr)
         local format_err
@@ -103,6 +136,19 @@ return {
           vim.bo[bufnr].filetype = filetype
         end
         return vim.bo[bufnr].filetype
+      end
+
+      local function supports_formatting(path)
+        if vim.fn.filereadable(path) ~= 1 then
+          return false
+        end
+
+        local filetype = vim.filetype.match({ filename = path })
+        if not filetype or filetype == "" then
+          return false
+        end
+
+        return formatters_by_ft[filetype] ~= nil
       end
 
       local function format_file(path)
@@ -162,10 +208,129 @@ return {
       end
 
       local function collect_files(dir)
-        local files = vim.fn.globpath(dir, "**/*", false, true)
-        return vim.tbl_filter(function(path)
-          return vim.fn.filereadable(path) == 1
-        end, files)
+        local files = {}
+
+        local function walk(current)
+          local fs = vim.uv.fs_scandir(current)
+          if not fs then
+            return
+          end
+
+          while true do
+            local name, entry_type = vim.uv.fs_scandir_next(fs)
+            if not name then
+              break
+            end
+
+            local path = current .. "/" .. name
+            if entry_type == "directory" then
+              if not skip_dir_names[name] then
+                walk(path)
+              end
+            elseif entry_type == "file" and supports_formatting(path) then
+              files[#files + 1] = path
+            end
+          end
+        end
+
+        walk(dir)
+        return files
+      end
+
+      local function get_current_buffer_dir()
+        local path = normalize(vim.api.nvim_buf_get_name(0))
+        if not path or path == "" or vim.fn.filereadable(path) ~= 1 then
+          return nil
+        end
+
+        local dir = normalize(vim.fs.dirname(path))
+        if dir and vim.fn.isdirectory(dir) == 1 then
+          return dir
+        end
+
+        return nil
+      end
+
+      local function prompt_for_dir(callback)
+        vim.ui.input({
+          prompt = "Directory to format: ",
+          default = vim.uv.cwd(),
+          completion = "dir",
+        }, function(input)
+          if not input or input == "" then
+            return
+          end
+
+          callback(vim.fn.fnamemodify(input, ":p"))
+        end)
+      end
+
+      local function format_dir(dir)
+        dir = normalize(dir)
+        if vim.fn.isdirectory(dir) ~= 1 then
+          vim.notify("FormatDir: not a directory: " .. tostring(dir), vim.log.levels.ERROR)
+          return
+        end
+
+        local files = collect_files(dir)
+        if vim.tbl_isempty(files) then
+          vim.notify("FormatDir: no supported files found", vim.log.levels.INFO)
+          return
+        end
+
+        if #files > confirm_large_dir_threshold then
+          local choice = vim.fn.confirm(
+            string.format("Format %d files under %s?", #files, vim.fn.fnamemodify(dir, ":~")),
+            "&Yes\n&No",
+            2
+          )
+          if choice ~= 1 then
+            return
+          end
+        end
+
+        local changed = 0
+        local skipped = 0
+        local failed = 0
+        local index = 1
+
+        local function process_next()
+          if index > #files then
+            vim.notify(
+              string.format("FormatDir complete: %d changed, %d skipped, %d failed", changed, skipped, failed),
+              failed > 0 and vim.log.levels.WARN or vim.log.levels.INFO
+            )
+            return
+          end
+
+          local path = files[index]
+          index = index + 1
+
+          local did_change, err = format_file(path)
+          if err == "no formatter" or err == "unreadable" then
+            skipped = skipped + 1
+          elseif err then
+            failed = failed + 1
+            vim.notify("FormatDir failed: " .. path .. "\n" .. tostring(err), vim.log.levels.WARN)
+          elseif did_change then
+            changed = changed + 1
+          end
+
+          if index % 25 == 0 or index > #files then
+            vim.notify(
+              string.format("FormatDir progress: %d/%d", math.min(index - 1, #files), #files),
+              vim.log.levels.INFO
+            )
+          end
+
+          vim.schedule(process_next)
+        end
+
+        vim.notify(
+          string.format("FormatDir started: %d files under %s", #files, vim.fn.fnamemodify(dir, ":~")),
+          vim.log.levels.INFO
+        )
+        vim.schedule(process_next)
       end
 
       -- Enable auto-formatting by default
@@ -186,36 +351,23 @@ return {
 
       vim.api.nvim_create_user_command("FormatDir", function(command)
         local dir = command.args ~= "" and vim.fn.fnamemodify(command.args, ":p") or vim.uv.cwd()
-        if vim.fn.isdirectory(dir) ~= 1 then
-          vim.notify("FormatDir: not a directory: " .. dir, vim.log.levels.ERROR)
-          return
-        end
-
-        local files = collect_files(dir)
-        local changed = 0
-        local skipped = 0
-        local failed = 0
-
-        for _, path in ipairs(files) do
-          local did_change, err = format_file(path)
-          if err == "no formatter" or err == "unreadable" then
-            skipped = skipped + 1
-          elseif err then
-            failed = failed + 1
-            vim.notify("FormatDir failed: " .. path .. "\n" .. tostring(err), vim.log.levels.WARN)
-          elseif did_change then
-            changed = changed + 1
-          end
-        end
-
-        vim.notify(
-          string.format("FormatDir complete: %d changed, %d skipped, %d failed", changed, skipped, failed),
-          failed > 0 and vim.log.levels.WARN or vim.log.levels.INFO
-        )
+        format_dir(dir)
       end, {
         nargs = "?",
         complete = "dir",
         desc = "Format all files in a directory recursively",
+      })
+
+      vim.api.nvim_create_user_command("FormatDirPick", function()
+        local dir = get_current_buffer_dir()
+        if dir then
+          format_dir(dir)
+          return
+        end
+
+        prompt_for_dir(format_dir)
+      end, {
+        desc = "Format current buffer directory or prompt for one",
       })
     end,
   },
