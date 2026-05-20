@@ -660,6 +660,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 | `<leader>tt` | Run file            |
 | `<leader>tT` | Run all test files  |
 | `<leader>tr` | Run nearest test    |
+| `<leader>tp` | Run package         |
 | `<leader>tl` | Run last            |
 | `<leader>ts` | Toggle summary      |
 | `<leader>to` | Show output         |

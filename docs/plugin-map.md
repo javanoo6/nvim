@@ -284,7 +284,7 @@ neotest.lua
     └── neotest-python  ── Python test runner
 ```
 
-**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tl last, ts summary, to output, tO output panel, tS stop (interactive picker), tw watch
+**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, ts summary, to output, tO output panel, tS stop (interactive picker), tw watch
 
 ---
 
