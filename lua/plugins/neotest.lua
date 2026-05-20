@@ -134,6 +134,15 @@ local function clear_and_run(run_fn)
   end
 end
 
+local function current_package_path()
+  local path = vim.api.nvim_buf_get_name(0)
+  if path == "" then
+    return uv.cwd()
+  end
+
+  return vim.fs.dirname(normalize(path))
+end
+
 return {
   {
     "rcasia/neotest-java",
@@ -184,6 +193,13 @@ return {
           require("neotest").run.run()
         end),
         desc = "Run Nearest",
+      },
+      {
+        "<leader>tp",
+        clear_and_run(function()
+          require("neotest").run.run(current_package_path())
+        end),
+        desc = "Run Package",
       },
       {
         "<leader>tl",
