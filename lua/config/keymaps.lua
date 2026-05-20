@@ -113,14 +113,6 @@ map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save" })
 map("v", "<", "<gv", { desc = "Indent left and reselect" })
 map("v", ">", ">gv", { desc = "Indent right and reselect" })
 
--- Delete/change to black hole register (yank is the only way to fill the clipboard)
-map({ "n", "x" }, "d", '"_d', { desc = "Delete (black hole)" })
-map({ "n", "x" }, "D", '"_D', { desc = "Delete to EOL (black hole)" })
-map({ "n", "x" }, "c", '"_c', { desc = "Change (black hole)" })
-map({ "n", "x" }, "C", '"_C', { desc = "Change to EOL (black hole)" })
-map({ "n", "x" }, "x", '"_x', { desc = "Delete char (black hole)" })
-map({ "n", "x" }, "X", '"_X', { desc = "Delete char before (black hole)" })
-
 -- Files
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New file" })
 
@@ -235,10 +227,6 @@ map("n", "N", "Nzzzv", { desc = "Prev match and center" })
 
 -- Better join (keep cursor position)
 map("n", "J", "mzJ`z", { desc = "Join lines keep cursor" })
-
--- Quick macro recording
-map("n", "Q", "qq", { desc = "Record macro to q" })
-map("n", "q", "@q", { desc = "Play macro q" })
 
 -- Resize with Alt + arrows
 map("n", "<M-Up>", "<cmd>resize +2<cr>", { desc = "Increase height" })

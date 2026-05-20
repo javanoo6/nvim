@@ -129,6 +129,7 @@ nvim-treehopper  (motion.lua)
 ```
 conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
+  — <leader>cF prompts for a directory between project root and cwd, then formats it recursively
   — auto-formatting enabled by default (disable with :FormatDisable)
   Formatters by filetype:
     lua        → stylua
@@ -284,7 +285,8 @@ neotest.lua
     └── neotest-python  ── Python test runner
 ```
 
-**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, ts summary, to output, tO output panel, tS stop (interactive picker), tw watch
+**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, ts summary, to output, tO output panel, tS stop (interactive
+picker), tw watch
 
 ---
 

@@ -184,6 +184,80 @@ Until you press `Esc`, it may look like only one line changed.
 | `u`     | Undo                               |
 | `<C-r>` | Redo                               |
 
+### Standard Delete / Change / Macro Guide
+
+These keys use standard Vim behavior.
+
+#### Delete and Change
+
+| Key | Meaning                              |
+|-----|--------------------------------------|
+| `d` | Delete using a motion or text object |
+| `D` | Delete from cursor to end of line    |
+| `c` | Change using a motion or text object |
+| `C` | Change from cursor to end of line    |
+| `x` | Delete character under cursor        |
+| `X` | Delete character before cursor       |
+
+Core rule:
+
+- deleted or changed text goes into the unnamed register
+- so `p` can usually paste what you just deleted or changed
+
+Examples:
+
+| Keys   | Result                               |
+|--------|--------------------------------------|
+| `dw`   | Delete to the start of the next word |
+| `diw`  | Delete inner word                    |
+| `dd`   | Delete line                          |
+| `D`    | Delete to end of line                |
+| `cw`   | Change word and enter insert mode    |
+| `ci\"` | Change inside quotes                 |
+| `C`    | Change to end of line                |
+| `x`    | Delete char under cursor             |
+| `X`    | Delete char before cursor            |
+
+Mental model:
+
+- `d` removes text and stays in normal mode
+- `c` removes text and enters insert mode
+- uppercase `D` and `C` are fast line-tail variants
+
+#### Macros
+
+| Key | Meaning                                                     |
+|-----|-------------------------------------------------------------|
+| `q` | Start recording into a register, or stop recording          |
+| `Q` | Legacy Ex mode command; usually not part of normal workflow |
+
+Standard macro workflow:
+
+1. `qa` starts recording into register `a`
+2. make edits
+3. `q` stops recording
+4. `@a` plays macro `a`
+5. `@@` repeats the last played macro
+
+Examples:
+
+| Keys  | Result                                |
+|-------|---------------------------------------|
+| `qa`  | Start recording macro in register `a` |
+| `q`   | Stop recording                        |
+| `@a`  | Play macro from register `a`          |
+| `@@`  | Repeat last macro                     |
+| `5@a` | Play macro `a` five times             |
+
+Practical beginner tip:
+
+- use `qq` to record into register `q`
+- use `q` to stop
+- use `@q` to replay
+- use `@@` to repeat
+
+That gives you a simple habit while still staying inside the standard Vim model.
+
 ### Text Objects (Mini.ai)
 
 | Object        | Description                        |
@@ -501,41 +575,41 @@ When typing commands with `:` and autocomplete menu appears:
 
 This uses `nvim-cmp` cmdline completion:
 
-| Key       | Action                                              |
-|-----------|-----------------------------------------------------|
-| `<Tab>`   | Next completion item, or open completion            |
-| `<C-z>`   | Next completion item, or open completion            |
-| `<S-Tab>` | Previous completion item                            |
-| `<Down>`  | Next completion item                                |
-| `<Up>`    | Previous completion item                            |
-| `<C-n>`   | Next item when completion menu is visible           |
-| `<C-p>`   | Previous item when completion menu is visible       |
-| `<C-y>`   | Confirm selected completion item                    |
-| `<C-e>`   | Abort completion                                    |
-| `<CR>`    | Confirm selected completion item without executing  |
+| Key       | Action                                             |
+|-----------|----------------------------------------------------|
+| `<Tab>`   | Next completion item, or open completion           |
+| `<C-z>`   | Next completion item, or open completion           |
+| `<S-Tab>` | Previous completion item                           |
+| `<Down>`  | Next completion item                               |
+| `<Up>`    | Previous completion item                           |
+| `<C-n>`   | Next item when completion menu is visible          |
+| `<C-p>`   | Previous item when completion menu is visible      |
+| `<C-y>`   | Confirm selected completion item                   |
+| `<C-e>`   | Abort completion                                   |
+| `<CR>`    | Confirm selected completion item without executing |
 
 ---
 
 ## Telescope (Fuzzy Finder)
 
-| Key               | Action                      |
-|-------------------|-----------------------------|
+| Key               | Action                       |
+|-------------------|------------------------------|
 | `<leader><space>` | Find files from project root |
 | `<leader>ff`      | Find files from project root |
 | `<leader>fF`      | Find files from cwd          |
 | `<leader>fg`      | Live grep from project root  |
 | `<leader>fG`      | Live grep from cwd           |
-| `<leader>fb`      | Buffers                     |
-| `<leader>fR`      | Recent files                |
-| `<leader>Hy`      | Yank history                |
-| `<leader>Hc`      | Command history             |
-| `<leader>Hs`      | Search history              |
-| `<leader>:`       | Command history             |
-| `<leader>ss`      | Document symbols            |
-| `<leader>sS`      | Workspace symbols           |
-| `<leader>st`      | Search TODOs                |
-| `<leader>fe`      | Grep by file extension      |
-| `<leader>fr`      | Resume last search          |
+| `<leader>fb`      | Buffers                      |
+| `<leader>fR`      | Recent files                 |
+| `<leader>Hy`      | Yank history                 |
+| `<leader>Hc`      | Command history              |
+| `<leader>Hs`      | Search history               |
+| `<leader>:`       | Command history              |
+| `<leader>ss`      | Document symbols             |
+| `<leader>sS`      | Workspace symbols            |
+| `<leader>st`      | Search TODOs                 |
+| `<leader>fe`      | Grep by file extension       |
+| `<leader>fr`      | Resume last search           |
 
 ### Inside Telescope
 
@@ -597,6 +671,7 @@ Use this when you need to rename variables or make targeted edits across many fi
 |     | `<leader>cr` | Rename                  |
 |     | `<leader>cp` | Fix package declaration |
 |     | `<leader>cf` | Format (Java: IntelliJ formatter) |
+|     | `<leader>cF` | Pick root..cwd directory and format recursively |
 
 ### Symbols & Outline
 
@@ -1123,8 +1198,6 @@ git commit                 →  finalize merge
 | `<leader>fn` | New file               |
 | `<leader>U`  | Undotree toggle        |
 | `<leader>pl` | Open Lazy              |
-| `Q`          | Record macro to q      |
-| `q`          | Play macro q           |
 | `<leader>xh` | Rehighlight treesitter |
 | `<leader>xc` | Clear JDTLS cache      |
 
