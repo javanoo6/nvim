@@ -7,7 +7,7 @@ return {
   cmd = "ASToggle",
   event = { "InsertLeave", "TextChanged" },
   opts = {
-    enabled = false, -- Start disabled, toggle with <leader>ua
+    enabled = true, -- Start enabled, toggle with <leader>ua
     trigger_events = {
       immediate_save = { "BufLeave", "FocusLost" },
       defer_save = { "InsertLeave", "TextChanged" },
