@@ -534,9 +534,8 @@ across the project. This may modify many buffers at once. Save them all with `:w
 |--------------|-------------------------------------------|
 | `-`          | Open **Oil** (parent dir of current file) |
 | `<leader>-`  | Open **Oil** in cwd                       |
-| `<leader>fp` | Pick frequent root and open files there   |
-| `<leader>fP` | Pin current root                          |
-| `<leader>fR` | Unpin current root                        |
+| `<leader>fp` | Switch project (stock `project.nvim`)       |
+| `<leader>fP` | Manage manual dirs (add/remove/list)        |
 
 ### Inside Oil (stevearc/oil.nvim)
 

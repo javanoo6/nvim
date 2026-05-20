@@ -51,7 +51,8 @@ local map = util.map
 local inlay_hints = require("util.inlay_hints")
 local frequent_roots = require("util.frequent_roots")
 
-frequent_roots.setup()
+-- Custom project tracking retained in util.frequent_roots, but disabled for now.
+-- frequent_roots.setup()
 
 -- Movement (no leader)
 map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
@@ -120,15 +121,14 @@ map("v", ">", ">gv", { desc = "Indent right and reselect" })
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New file" })
 
 -- Projects
-map("n", "<leader>fp", function()
-  frequent_roots.pick()
-end, { desc = "Frequent roots" })
+map("n", "<leader>fp", "<cmd>Telescope projects<cr>", { desc = "Projects" })
+-- Custom project picker retained, but inactive:
+-- map("n", "<leader>fp", function()
+--   frequent_roots.pick_projects()
+-- end, { desc = "Projects" })
 map("n", "<leader>fP", function()
-  frequent_roots.pin(frequent_roots.current_root(0) or vim.uv.cwd())
-end, { desc = "Pin current root" })
-map("n", "<leader>fR", function()
-  frequent_roots.unpin(frequent_roots.current_root(0) or vim.uv.cwd())
-end, { desc = "Unpin current root" })
+  frequent_roots.manage_manual()
+end, { desc = "Manual dirs" })
 
 -- Quit
 map("n", "<leader>qq", "<cmd>AutoSession save<cr><cmd>qa<cr>", { desc = "Quit all" })

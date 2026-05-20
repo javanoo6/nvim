@@ -4,7 +4,7 @@ local util = require("util")
 
 local state
 local setup_done = false
-local max_recent = 50
+local max_projects = 50
 local store_path = vim.fn.stdpath("data") .. "/frequent-roots.json"
 
 local function normalize(path)
@@ -49,12 +49,32 @@ local function dedupe_dirs(paths)
   return items
 end
 
+local function get_marker_root_for_path(path)
+  path = normalize(path)
+  if not path then
+    return nil
+  end
+
+  local search_from = path
+  if vim.fn.isdirectory(path) ~= 1 then
+    search_from = vim.fs.dirname(path)
+  end
+
+  local root = vim.fs.find(util.root_patterns, { path = search_from, upward = true })[1]
+  return root and vim.fs.dirname(root) or nil
+end
+
+local function is_project_dir(path)
+  path = normalize(path)
+  return is_dir(path) and get_marker_root_for_path(path) == path
+end
+
 local function load()
   if state then
     return state
   end
 
-  state = { pinned = {}, recent = {} }
+  state = { manual = {}, projects = {} }
   if vim.fn.filereadable(store_path) ~= 1 then
     return state
   end
@@ -64,20 +84,21 @@ local function load()
     return state
   end
 
-  local data_ok, decoded = pcall(vim.json.decode, table.concat(lines, "\n"))
-  if not data_ok or type(decoded) ~= "table" then
+  local decode_ok, decoded = pcall(vim.json.decode, table.concat(lines, "\n"))
+  if not decode_ok or type(decoded) ~= "table" then
     return state
   end
 
-  state.pinned = dedupe_dirs(decoded.pinned)
-  state.recent = dedupe_dirs(decoded.recent)
+  -- Migrate older schema: pinned -> manual, recent -> projects.
+  state.manual = dedupe_dirs(decoded.manual or decoded.pinned)
+  state.projects = vim.tbl_filter(is_project_dir, dedupe_dirs(decoded.projects or decoded.recent))
   return state
 end
 
 local function save()
   local current = load()
-  current.pinned = dedupe_dirs(current.pinned)
-  current.recent = dedupe_dirs(current.recent)
+  current.manual = dedupe_dirs(current.manual)
+  current.projects = vim.tbl_filter(is_project_dir, dedupe_dirs(current.projects))
   vim.fn.writefile({ vim.json.encode(current) }, store_path)
 end
 
@@ -112,22 +133,7 @@ local function current_buffer_path(bufnr)
   return normalize(path)
 end
 
-local function get_marker_root_for_path(path)
-  path = normalize(path)
-  if not path then
-    return nil
-  end
-
-  local search_from = path
-  if vim.fn.isdirectory(path) ~= 1 then
-    search_from = vim.fs.dirname(path)
-  end
-
-  local root = vim.fs.find(util.root_patterns, { path = search_from, upward = true })[1]
-  return root and vim.fs.dirname(root) or nil
-end
-
-function M.current_root(bufnr)
+local function current_project_root(bufnr)
   bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
   local path = current_buffer_path(bufnr)
   if not path then
@@ -148,106 +154,28 @@ function M.current_root(bufnr)
     return lsp_root
   end
 
-  if vim.fn.isdirectory(path) == 1 then
-    return path
-  end
-
-  return normalize(vim.fs.dirname(path))
+  return nil
 end
 
-function M.add_recent(path)
-  path = normalize(path)
-  if not is_dir(path) then
-    return
-  end
-
-  local current = load()
-  current.recent = prepend_unique(current.recent, path, max_recent)
-  save()
-end
-
-function M.pin(path)
-  path = normalize(path)
-  if not is_dir(path) then
-    vim.notify("No directory to pin", vim.log.levels.WARN)
-    return
-  end
-
-  local current = load()
-  current.pinned = prepend_unique(current.pinned, path)
-  save()
-  vim.notify("Pinned root: " .. vim.fn.fnamemodify(path, ":~"), vim.log.levels.INFO)
-end
-
-function M.unpin(path)
-  path = normalize(path)
-  if not path then
-    vim.notify("No directory to unpin", vim.log.levels.WARN)
-    return
-  end
-
-  local current = load()
-  local next_pinned = {}
-  local removed = false
-
-  for _, item in ipairs(current.pinned) do
-    if normalize(item) ~= path then
-      next_pinned[#next_pinned + 1] = item
-    else
-      removed = true
+local function current_dir(bufnr)
+  bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+  local path = current_buffer_path(bufnr)
+  if path then
+    if vim.fn.isdirectory(path) == 1 then
+      return path
     end
+    return normalize(vim.fs.dirname(path))
   end
-
-  current.pinned = next_pinned
-  save()
-
-  if removed then
-    vim.notify("Unpinned root: " .. vim.fn.fnamemodify(path, ":~"), vim.log.levels.INFO)
-  else
-    vim.notify("Root is not pinned: " .. vim.fn.fnamemodify(path, ":~"), vim.log.levels.INFO)
-  end
+  return normalize(vim.uv.cwd())
 end
 
-function M.get_items()
-  local current = load()
-  local items = {}
-  local seen = {}
-
-  for _, path in ipairs(current.pinned) do
-    path = normalize(path)
-    if is_dir(path) and not seen[path] then
-      seen[path] = true
-      items[#items + 1] = {
-        path = path,
-        source = "pinned",
-        label = string.format("%s  [pinned]", vim.fn.fnamemodify(path, ":~")),
-      }
-    end
-  end
-
-  for _, path in ipairs(current.recent) do
-    path = normalize(path)
-    if is_dir(path) and not seen[path] then
-      seen[path] = true
-      items[#items + 1] = {
-        path = path,
-        source = "recent",
-        label = string.format("%s  [recent]", vim.fn.fnamemodify(path, ":~")),
-      }
-    end
-  end
-
-  return items
-end
-
-function M.open(path)
+local function open_dir(path)
   path = normalize(path)
   if not is_dir(path) then
     vim.notify("Not a directory: " .. tostring(path), vim.log.levels.ERROR)
     return
   end
 
-  M.add_recent(path)
   vim.api.nvim_set_current_dir(path)
 
   local ok, builtin = pcall(require, "telescope.builtin")
@@ -259,10 +187,13 @@ function M.open(path)
   vim.notify("CWD set to " .. vim.fn.fnamemodify(path, ":~"), vim.log.levels.INFO)
 end
 
-function M.pick()
-  local items = M.get_items()
+local function telescope_pick(opts)
+  opts = opts or {}
+  local items = opts.items or {}
   if vim.tbl_isempty(items) then
-    vim.notify("No frequent roots yet. Open files or pin a directory first.", vim.log.levels.INFO)
+    if opts.empty_message then
+      vim.notify(opts.empty_message, vim.log.levels.INFO)
+    end
     return
   end
 
@@ -272,27 +203,45 @@ function M.pick()
     local conf = require("telescope.config").values
     local actions = require("telescope.actions")
     local action_state = require("telescope.actions.state")
+    local entry_display = require("telescope.pickers.entry_display")
+    local displayer = entry_display.create({
+      separator = " ",
+      items = {
+        { width = 30 },
+        { remaining = true },
+      },
+    })
+
+    local function make_display(entry)
+      return displayer({ entry.name or "", { entry.value.path or entry.value.label, "Comment" } })
+    end
 
     pickers
       .new({}, {
-        prompt_title = "Frequent Roots",
+        prompt_title = opts.title or "Directories",
         finder = finders.new_table({
           results = items,
           entry_maker = function(item)
             return {
               value = item,
-              display = item.label,
-              ordinal = item.path .. " " .. item.source,
+              display = make_display,
+              name = item.name or vim.fn.fnamemodify(item.path or item.label, ":t"),
+              ordinal = (item.name or "") .. " " .. (item.path or item.label or ""),
             }
           end,
         }),
+        previewer = false,
         sorter = conf.generic_sorter({}),
-        attach_mappings = function(prompt_bufnr)
+        attach_mappings = function(prompt_bufnr, map)
+          if opts.attach_mappings then
+            return opts.attach_mappings(prompt_bufnr, map)
+          end
+
           actions.select_default:replace(function()
             local selection = action_state.get_selected_entry()
             actions.close(prompt_bufnr)
             if selection and selection.value then
-              M.open(selection.value.path)
+              open_dir(selection.value.path)
             end
           end)
           return true
@@ -303,15 +252,206 @@ function M.pick()
   end
 
   vim.ui.select(items, {
-    prompt = "Frequent Roots",
+    prompt = opts.title or "Directories",
     format_item = function(item)
-      return item.label
+      return item.label or item.path or item.name
     end,
   }, function(choice)
-    if choice then
-      M.open(choice.path)
+    if choice and choice.path then
+      open_dir(choice.path)
+    elseif choice and opts.on_choice then
+      opts.on_choice(choice)
     end
   end)
+end
+
+function M.pick_projects()
+  local current = load()
+  local items = {}
+  for _, path in ipairs(current.projects) do
+    items[#items + 1] = {
+      path = path,
+      label = path,
+    }
+  end
+
+  telescope_pick({
+    title = "Projects",
+    items = items,
+    empty_message = "No projects yet. Open files inside a detected project first.",
+  })
+end
+
+function M.get_current_project_root(bufnr)
+  return current_project_root(bufnr)
+end
+
+function M.get_current_dir(bufnr)
+  return current_dir(bufnr)
+end
+
+function M.add_project(path)
+  path = normalize(path)
+  if not is_dir(path) then
+    return
+  end
+
+  local current = load()
+  current.projects = prepend_unique(current.projects, path, max_projects)
+  save()
+end
+
+function M.add_manual(path)
+  path = normalize(path)
+  if not is_dir(path) then
+    vim.notify("No directory to add", vim.log.levels.WARN)
+    return
+  end
+
+  local current = load()
+  current.manual = prepend_unique(current.manual, path)
+  save()
+  vim.notify("Added manual dir: " .. vim.fn.fnamemodify(path, ":~"), vim.log.levels.INFO)
+end
+
+function M.remove_manual(path)
+  path = normalize(path)
+  if not path then
+    vim.notify("No directory to remove", vim.log.levels.WARN)
+    return
+  end
+
+  local current = load()
+  local next_manual = {}
+  local removed = false
+
+  for _, item in ipairs(current.manual) do
+    if normalize(item) ~= path then
+      next_manual[#next_manual + 1] = item
+    else
+      removed = true
+    end
+  end
+
+  current.manual = next_manual
+  save()
+
+  if removed then
+    vim.notify("Removed manual dir: " .. vim.fn.fnamemodify(path, ":~"), vim.log.levels.INFO)
+  else
+    vim.notify("Directory is not in manual list: " .. vim.fn.fnamemodify(path, ":~"), vim.log.levels.INFO)
+  end
+end
+
+function M.list_manual()
+  local current = load()
+  local items = {}
+  for _, path in ipairs(current.manual) do
+    items[#items + 1] = {
+      path = path,
+      label = path,
+    }
+  end
+
+  telescope_pick({
+    title = "Manual Dirs",
+    items = items,
+    empty_message = "No manual directories yet.",
+  })
+end
+
+function M.remove_manual_picker()
+  local current = load()
+  local items = {}
+  for _, path in ipairs(current.manual) do
+    items[#items + 1] = {
+      path = path,
+      label = path,
+    }
+  end
+
+  telescope_pick({
+    title = "Remove Manual Dir",
+    items = items,
+    empty_message = "No manual directories to remove.",
+    attach_mappings = function(prompt_bufnr)
+      local actions = require("telescope.actions")
+      local action_state = require("telescope.actions.state")
+
+      actions.select_default:replace(function()
+        local selection = action_state.get_selected_entry()
+        actions.close(prompt_bufnr)
+        if selection and selection.value then
+          M.remove_manual(selection.value.path)
+        end
+      end)
+      return true
+    end,
+    on_choice = function(choice)
+      if choice and choice.path then
+        M.remove_manual(choice.path)
+      end
+    end,
+  })
+end
+
+function M.add_manual_prompt()
+  vim.ui.input({
+    prompt = "Add manual dir: ",
+    default = current_dir(0) or vim.uv.cwd(),
+    completion = "dir",
+  }, function(input)
+    if not input or input == "" then
+      return
+    end
+    M.add_manual(vim.fn.fnamemodify(input, ":p"))
+  end)
+end
+
+function M.manage_manual()
+  local items = {
+    { key = "a", label = "Add dir" },
+    { key = "r", label = "Remove dir" },
+    { key = "l", label = "List dirs" },
+  }
+
+  telescope_pick({
+    title = "Manual Dirs",
+    items = items,
+    attach_mappings = function(prompt_bufnr)
+      local actions = require("telescope.actions")
+      local action_state = require("telescope.actions.state")
+
+      actions.select_default:replace(function()
+        local selection = action_state.get_selected_entry()
+        actions.close(prompt_bufnr)
+        if not selection or not selection.value then
+          return
+        end
+
+        if selection.value.key == "a" then
+          M.add_manual_prompt()
+        elseif selection.value.key == "r" then
+          M.remove_manual_picker()
+        elseif selection.value.key == "l" then
+          M.list_manual()
+        end
+      end)
+      return true
+    end,
+    on_choice = function(choice)
+      if not choice then
+        return
+      end
+      if choice.key == "a" then
+        M.add_manual_prompt()
+      elseif choice.key == "r" then
+        M.remove_manual_picker()
+      elseif choice.key == "l" then
+        M.list_manual()
+      end
+    end,
+  })
 end
 
 function M.setup()
@@ -321,14 +461,15 @@ function M.setup()
   setup_done = true
 
   load()
+  save()
 
   local function record_buffer(bufnr)
     if type(bufnr) ~= "number" or bufnr <= 0 or not vim.api.nvim_buf_is_valid(bufnr) then
       bufnr = vim.api.nvim_get_current_buf()
     end
-    local root = M.current_root(bufnr)
+    local root = current_project_root(bufnr)
     if root then
-      M.add_recent(root)
+      M.add_project(root)
     end
   end
 

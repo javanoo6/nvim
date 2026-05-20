@@ -379,15 +379,13 @@ sessions.lua
                    <leader>Ss/Sr/Sd/Sf/Sa (Sa enables auto-save)
 
 projects.lua
-  project.nvim  ── installed in passive/manual mode for conservative project-history experiments
-                   not on the critical path for current workspace switching
+  project.nvim  ── near-stock project detection + recent-project history
+                   <leader>fp opens Telescope projects
 
 util/frequent_roots.lua
-  frequent roots  ── custom recent + pinned roots store
-                    learns roots from opened files/directories
-                    <leader>fp pick frequent roots
-                    <leader>fP pin current root
-                    <leader>fR unpin current root
+  frequent roots  ── custom helper for manually managed dirs
+                    custom project-tracking code retained but currently inactive
+                    <leader>fP manage manual dirs (add/remove/list)
 
 terminal.lua
   toggleterm.nvim  ── floating terminal, <A-a> toggle, <A-c> hide
