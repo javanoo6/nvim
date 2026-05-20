@@ -51,25 +51,7 @@ return {
   },
   config = function(_, opts)
     require("auto-save").setup(opts)
-
-    -- Auto-format after auto-save
-    local group = vim.api.nvim_create_augroup("AutoSaveFormat", {})
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "AutoSaveWritePost",
-      group = group,
-      callback = function(args)
-        if args.data.saved_buffer then
-          local buf = args.data.saved_buffer
-          local has_lsp = #vim.lsp.get_clients({ bufnr = buf }) > 0
-          if has_lsp then
-            vim.lsp.buf.format({
-              bufnr = buf,
-              async = false,
-              timeout_ms = 2000,
-            })
-          end
-        end
-      end,
-    })
+    -- auto-save uses a normal :write, so conform.nvim's BufWritePre hook remains
+    -- the single formatting path for both manual saves and auto-saves.
   end,
 }
