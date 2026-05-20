@@ -279,11 +279,7 @@ return {
         end
 
         if #files > confirm_large_dir_threshold then
-          local choice = vim.fn.confirm(
-            string.format("Format %d files under %s?", #files, vim.fn.fnamemodify(dir, ":~")),
-            "&Yes\n&No",
-            2
-          )
+          local choice = vim.fn.confirm(string.format("Format %d files under %s?", #files, vim.fn.fnamemodify(dir, ":~")), "&Yes\n&No", 2)
           if choice ~= 1 then
             return
           end
@@ -317,19 +313,13 @@ return {
           end
 
           if index % 25 == 0 or index > #files then
-            vim.notify(
-              string.format("FormatDir progress: %d/%d", math.min(index - 1, #files), #files),
-              vim.log.levels.INFO
-            )
+            vim.notify(string.format("FormatDir progress: %d/%d", math.min(index - 1, #files), #files), vim.log.levels.INFO)
           end
 
           vim.schedule(process_next)
         end
 
-        vim.notify(
-          string.format("FormatDir started: %d files under %s", #files, vim.fn.fnamemodify(dir, ":~")),
-          vim.log.levels.INFO
-        )
+        vim.notify(string.format("FormatDir started: %d files under %s", #files, vim.fn.fnamemodify(dir, ":~")), vim.log.levels.INFO)
         vim.schedule(process_next)
       end
 

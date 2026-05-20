@@ -31,6 +31,43 @@ return {
       local cmp = require("cmp")
       local luasnip = require("luasnip")
       local lspkind = require("lspkind")
+      local snippet = luasnip.snippet
+      local text_node = luasnip.text_node
+      local insert_node = luasnip.insert_node
+
+      luasnip.add_snippets("java", {
+        snippet("main", {
+          text_node({
+            "class Scratch {",
+            "\tpublic static void main(String[] args) {",
+            "\t\t",
+          }),
+          insert_node(1),
+          text_node({ "", "\t}", "}" }),
+        }),
+      })
+
+      luasnip.add_snippets("go", {
+        snippet("main", {
+          text_node({
+            "func main() {",
+            "\t",
+          }),
+          insert_node(1),
+          text_node({ "", "}" }),
+        }),
+      })
+
+      luasnip.add_snippets("python", {
+        snippet("main", {
+          text_node({
+            'if __name__ == "__main__":',
+            "    ",
+          }),
+          insert_node(1, "main()"),
+        }),
+      })
+
       local cmdline_mapping = cmp.mapping.preset.cmdline({
         ["<Down>"] = {
           c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
