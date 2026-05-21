@@ -48,7 +48,7 @@ nvim-lspconfig  ─────────────────────�
   │     └── neo-tree.nvim     ── (tree triggers file ops)
   ├── fidget.nvim             ── LSP progress spinner (bottom-right)
   ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
-  ├── actions-preview.nvim    ── code action picker with diff preview (<leader>ca)
+  ├── actions-preview.nvim    ── code action picker with diff preview (<leader>ca, <A-CR>)
   └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (off by default, <leader>ud toggle)
 ```
 
@@ -57,20 +57,20 @@ nvim-lspconfig  ─────────────────────�
 
 **Key LSP keymaps** (set on LspAttach in lsp.lua):
 
-| Key                | Action                    |
-|--------------------|---------------------------|
-| `gd`               | Glance definitions        |
-| `gR`               | Glance references         |
-| `gy`               | Glance type definitions   |
-| `gI`               | Glance implementations    |
-| `gD`               | Native declaration        |
-| `K`                | Hover                     |
-| `gK`               | Signature help            |
-| `<leader>ca`       | Code action               |
-| `<leader>cr`       | Rename                    |
-| `<leader>uh`       | Toggle inlay hints        |
-| `<leader>lr/li/ll` | Restart / Info / Log      |
-| `<leader>cd`       | Goto definition in vsplit |
+| Key                     | Action                    |
+|-------------------------|---------------------------|
+| `gd`                    | Glance definitions        |
+| `gR`                    | Glance references         |
+| `gy`                    | Glance type definitions   |
+| `gI`                    | Glance implementations    |
+| `gD`                    | Native declaration        |
+| `K`                     | Hover                     |
+| `gK`                    | Signature help            |
+| `<leader>ca` / `<A-CR>` | Code action               |
+| `<leader>cr`            | Rename                    |
+| `<leader>uh`            | Toggle inlay hints        |
+| `<leader>lr/li/ll`      | Restart / Info / Log      |
+| `<leader>cd`            | Goto definition in vsplit |
 
 ---
 

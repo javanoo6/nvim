@@ -687,20 +687,21 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 ### Code Actions
 
-| Key | Action       |
-|-----|--------------|
-|     | `<leader>ca` | Code action             |
-|     | `<leader>cr` | Rename                  |
-|     | `<leader>cp` | Fix package declaration |
-|     | `<leader>cf` | Format (Java: IntelliJ formatter) |
-|     | `<leader>cF` | Format current file's directory, or prompt for a directory |
+| Key                     | Action                                                     |
+|-------------------------|------------------------------------------------------------|
+| `<leader>ca` / `<A-CR>` | Code action                                                |
+| `<leader>cr`            | Rename                                                     |
+| `<leader>cp`            | Fix package declaration                                    |
+| `<leader>cf`            | Format (Java: IntelliJ formatter)                          |
+| `<leader>cF`            | Format current file's directory, or prompt for a directory |
 
 ### Symbols & Outline
 
-| Key          | Action                               |
-|--------------|--------------------------------------|
-| `<leader>cs` | Symbols (Trouble)                    |
-| `<leader>cl` | LSP definitions/references (Trouble) |
+| Key          | Action                        |
+|--------------|-------------------------------|
+| `<leader>cs` | Symbols (Trouble)             |
+| `<leader>cl` | Call hierarchy (Trouble)      |
+| `<leader>cu` | Usages / references (Trouble) |
 
 ### LSP Server Management
 
@@ -786,7 +787,8 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 ### Java Refactor (`<leader>jR`)
 
-jdtls code actions — open actions-preview picker with diff before applying.
+jdtls code actions — open `actions-preview` with diff before applying.
+`<A-CR>` is the global quick-fix / intention shortcut and works here too.
 
 | Key           | Action              |
 |---------------|---------------------|
