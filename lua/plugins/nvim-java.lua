@@ -3,6 +3,9 @@
 return {
   "nvim-java/nvim-java",
   config = function()
+    local capabilities =
+      vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())
+
     require("java").setup({
       checks = {
         nvim_version = true,
@@ -57,6 +60,7 @@ return {
     end
 
     vim.lsp.config("jdtls", {
+      capabilities = capabilities,
       settings = {
         java = {
           inlayHints = {

@@ -201,19 +201,14 @@ map("n", "<leader>xh", function()
 end, { desc = "Rehighlight buffer" })
 
 map("n", "<leader>xc", function()
-  local cache_dirs = {
-    vim.fn.expand("~/.cache/jdtls"),
-    vim.fn.expand("~/.cache/nvim/jdtls"),
-    vim.fn.expand("~/.cache/nvim/jdtls-workspace"),
-  }
-  for _, dir in ipairs(cache_dirs) do
-    if vim.fn.isdirectory(dir) == 1 then
-      vim.fn.delete(dir, "rf")
-      vim.notify("Deleted: " .. dir)
-    end
+  local ok, java = pcall(require, "java")
+  if ok and java.build and java.build.clean_workspace then
+    java.build.clean_workspace()
+    vim.notify("Requested JDTLS workspace clean. Restart Neovim after it completes.", vim.log.levels.WARN)
+    return
   end
-  vim.notify("JDTLS cache cleared. Restart Neovim.", vim.log.levels.WARN)
-end, { desc = "Clear JDTLS cache" })
+  vim.notify("nvim-java workspace clean API is unavailable", vim.log.levels.ERROR)
+end, { desc = "Clean JDTLS workspace" })
 
 -- Keep cursor centered when scrolling/jumping
 map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
