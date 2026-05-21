@@ -284,6 +284,8 @@ return {
     "aznhe21/actions-preview.nvim",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
+      local actions = require("actions-preview")
+
       require("actions-preview").setup({
         telescope = {
           sorting_strategy = "ascending",
@@ -296,7 +298,19 @@ return {
           },
         },
       })
-      vim.keymap.set({ "n", "v" }, "<leader>ca", require("actions-preview").code_actions, { desc = "Code action" })
+
+      local function code_actions_from_any_mode()
+        if vim.fn.mode() == "i" then
+          vim.cmd("stopinsert")
+          vim.schedule(actions.code_actions)
+          return
+        end
+
+        actions.code_actions()
+      end
+
+      vim.keymap.set({ "n", "v" }, "<leader>ca", actions.code_actions, { desc = "Code action" })
+      vim.keymap.set({ "n", "v", "i" }, "<A-CR>", code_actions_from_any_mode, { desc = "Code action" })
     end,
   },
 
