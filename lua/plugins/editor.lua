@@ -34,23 +34,23 @@ return {
       {
         "<leader><space>",
         function()
-          require("util").pick("files")
+          require("telescope.builtin").find_files({ cwd = vim.uv.cwd() })
         end,
-        desc = "Find files (root)",
+        desc = "Find files (cwd)",
       },
       {
         "<leader>ff",
         function()
-          require("util").pick("files")
+          require("telescope.builtin").find_files({ cwd = vim.uv.cwd() })
         end,
-        desc = "Find files (root)",
+        desc = "Find files (cwd)",
       },
       {
         "<leader>fF",
         function()
-          require("telescope.builtin").find_files({ cwd = vim.uv.cwd() })
+          require("util").pick("files")
         end,
-        desc = "Find files (cwd)",
+        desc = "Find files (root)",
       },
       {
         "<leader>fg",
