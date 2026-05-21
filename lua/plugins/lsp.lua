@@ -81,6 +81,24 @@ return {
               inlay_hints.apply_for_buffer(event.buf)
             end, 100)
           end
+
+          if client and client.name == "jdtls" and client.server_capabilities.codeLensProvider then
+            local group = require("util").augroup("java_codelens_" .. event.buf)
+
+            local function refresh_codelens()
+              if vim.api.nvim_buf_is_valid(event.buf) and vim.bo[event.buf].buflisted ~= false then
+                pcall(vim.lsp.codelens.refresh, { bufnr = event.buf })
+              end
+            end
+
+            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+              group = group,
+              buffer = event.buf,
+              callback = refresh_codelens,
+            })
+
+            vim.schedule(refresh_codelens)
+          end
         end,
       })
 
