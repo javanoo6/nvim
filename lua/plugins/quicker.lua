@@ -4,7 +4,7 @@ return {
   event = "FileType qf",
   keys = {
     {
-      "<leader>xq",
+      "<leader>Xq",
       function()
         require("quicker").toggle()
       end,

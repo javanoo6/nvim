@@ -6,13 +6,14 @@ return {
   cmd = { "Trouble" },
   dependencies = "nvim-tree/nvim-web-devicons",
   keys = {
-    { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
-    { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics" },
+    { "<leader>xx", "<cmd>Trouble diagnostics_root toggle<cr>", desc = "Diagnostics (root)" },
+    { "<leader>xc", "<cmd>Trouble diagnostics_cwd toggle<cr>", desc = "Diagnostics (cwd)" },
+    { "<leader>xb", "<cmd>Trouble diagnostics_buffer toggle<cr>", desc = "Diagnostics (buffer)" },
     { "<leader>cs", "<cmd>Trouble symbols toggle<cr>", desc = "Symbols" },
     { "<leader>cl", "<cmd>Trouble lsp_calls toggle<cr>", desc = "Call hierarchy" },
     { "<leader>cu", "<cmd>Trouble lsp_usages toggle<cr>", desc = "Usages / references" },
-    { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List" },
-    { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List" },
+    { "<leader>XL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List" },
+    { "<leader>XQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List" },
     {
       "]q",
       function()
@@ -29,8 +30,47 @@ return {
     },
   },
   opts = function()
+    local util = require("util")
+
+    local function normalize(path)
+      if not path or path == "" then
+        return nil
+      end
+      return vim.uv.fs_realpath(path) or vim.fs.normalize(path)
+    end
+
+    local function path_has_prefix(path, prefix)
+      path = normalize(path)
+      prefix = normalize(prefix)
+      if not path or not prefix then
+        return false
+      end
+      if path == prefix then
+        return true
+      end
+      local with_sep = prefix:sub(-1) == "/" and prefix or (prefix .. "/")
+      return path:sub(1, #with_sep) == with_sep
+    end
+
     local function project_root(filename)
-      return filename and require("util").get_root_from_path(filename) or nil
+      return filename and util.get_root_from_path(filename) or nil
+    end
+
+    local function filter_items_in_path(scope_fn)
+      return function(items)
+        local scope_root = normalize(scope_fn())
+        if not scope_root then
+          return items
+        end
+
+        return vim.tbl_filter(function(item)
+          local filename = item.filename or ""
+          if filename == "" then
+            return true
+          end
+          return path_has_prefix(filename, scope_root)
+        end, items)
+      end
     end
 
     local function is_source_backed_location(item)
@@ -83,6 +123,25 @@ return {
         end,
       },
       modes = {
+        diagnostics_root = {
+          desc = "Diagnostics for the current project root",
+          mode = "diagnostics",
+          filter = filter_items_in_path(function()
+            return util.get_root()
+          end),
+        },
+        diagnostics_cwd = {
+          desc = "Diagnostics for the current working directory",
+          mode = "diagnostics",
+          filter = filter_items_in_path(function()
+            return vim.uv.cwd()
+          end),
+        },
+        diagnostics_buffer = {
+          desc = "Diagnostics for the current buffer",
+          mode = "diagnostics",
+          filter = { buf = 0 },
+        },
         lsp_calls = {
           desc = "LSP incoming and outgoing calls",
           sections = {

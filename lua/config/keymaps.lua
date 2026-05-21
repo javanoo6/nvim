@@ -194,13 +194,13 @@ end, { desc = "Fix package declaration" })
 map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })
 
 -- Treesitter re-attach
-map("n", "<leader>xh", function()
+map("n", "<leader>Xh", function()
   vim.cmd("TSBufDisable highlight")
   vim.cmd("TSBufEnable highlight")
   vim.notify("Treesitter rehighlighted")
 end, { desc = "Rehighlight buffer" })
 
-map("n", "<leader>xc", function()
+map("n", "<leader>XC", function()
   local ok, java = pcall(require, "java")
   if ok and java.build and java.build.clean_workspace then
     java.build.clean_workspace()

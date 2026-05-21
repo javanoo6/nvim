@@ -433,13 +433,14 @@ leetcode.lua
 trouble.lua
   trouble.nvim  ── better diagnostics/qf UI
     └── nvim-web-devicons
-    Keymaps: <leader>xx workspace diag, <leader>xX buffer diag,
-             <leader>cs symbols, <leader>cl LSP defs/refs,
-             <leader>xL loclist, <leader>xQ quickfix
+    Keymaps: <leader>xx root diag, <leader>xc cwd diag,
+             <leader>xb buffer diag, <leader>cs symbols,
+             <leader>cl call hierarchy, <leader>cu usages/refs,
+             <leader>XL loclist, <leader>XQ quickfix
              ]q / [q next/prev trouble item
 
 quicker.lua
-  quicker.nvim  ── editable quickfix list  →  <leader>xq
+  quicker.nvim  ── editable quickfix list  →  <leader>Xq
                    > / < expand/collapse context
 
 keymaps.lua (diagnostic):
@@ -459,7 +460,7 @@ todo-comments.lua
   todo-comments.nvim  ── highlight TODO/FIXME/NOTE/HACK/WARN/PERF/TEST
     └── plenary.nvim
     ]t / [t  — next/prev todo
-    <leader>xt/xT  — open in Trouble
+    <leader>Xt/XT  — open in Trouble
     <leader>st  — search via Telescope
 
 grug-far.lua
@@ -616,7 +617,8 @@ lazy.nvim
 | `<leader>t`       | test/theme     | neotest, themery                                                          |
 | `<leader>u`       | ui             | toggles (spell, wrap, numbers, fold, diagnostics, inlay hints, auto-save) |
 | `<leader>w`       | windows        | splits                                                                    |
-| `<leader>x`       | diagnostics/qf | trouble, quicker, todo-comments                                           |
+| `<leader>x`       | diagnostics    | trouble                                                                   |
+| `<leader>X`       | lists/maint    | trouble, quicker, todo-comments                                           |
 | `<leader><tab>`   | tabs           | vim tabs                                                                  |
 | `g`               | goto/misc      | LSP, glance, splits                                                       |
 | `gc`              | comment        | mini.comment                                                              |

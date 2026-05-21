@@ -659,10 +659,10 @@ Use this when you need to rename variables or make targeted edits across many fi
 1. `<leader>ff` or `<leader>fe` — search for files
 2. `<Tab>` to select specific files, or skip to send all results
 3. `<C-q>` — send to quickfix list
-4. `<leader>xQ` — open quickfix as a persistent Trouble sidebar
+4. `<leader>XQ` — open quickfix as a persistent Trouble sidebar
 5. `<CR>` on a file in the sidebar — jump to it and edit
 6. `]q` / `[q` — jump to next/prev file without leaving the sidebar
-7. Repeat until done, then `<leader>xQ` to close
+7. Repeat until done, then `<leader>XQ` to close
 
 ---
 
@@ -713,16 +713,17 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 ### Diagnostics
 
-| Key          | Action                       |
-|--------------|------------------------------|
-| `[d`         | Prev diagnostic              |
-| `]d`         | Next diagnostic              |
-| `<leader>xd` | Line diagnostics (float)     |
-| `<leader>xl` | Diagnostics to loclist       |
-| `<leader>xx` | Diagnostics (Trouble)        |
-| `<leader>xX` | Buffer diagnostics (Trouble) |
-| `<leader>xL` | Location list (Trouble)      |
-| `<leader>xQ` | Quickfix list (Trouble)      |
+| Key          | Action                                   |
+|--------------|------------------------------------------|
+| `[d`         | Prev diagnostic                          |
+| `]d`         | Next diagnostic                          |
+| `<leader>xd` | Line diagnostics (float)                 |
+| `<leader>xl` | Diagnostics to loclist                   |
+| `<leader>xx` | Diagnostics for project root (Trouble)   |
+| `<leader>xc` | Diagnostics for cwd (Trouble)            |
+| `<leader>xb` | Diagnostics for current buffer (Trouble) |
+| `<leader>XL` | Location list (Trouble)                  |
+| `<leader>XQ` | Quickfix list (Trouble)                  |
 
 ### Todos
 
@@ -730,8 +731,8 @@ Use this when you need to rename variables or make targeted edits across many fi
 |--------------|--------------------------|
 | `]t`         | Next TODO comment        |
 | `[t`         | Previous TODO comment    |
-| `<leader>xt` | TODOs (Trouble)          |
-| `<leader>xT` | TODO/FIX/FIXME (Trouble) |
+| `<leader>Xt` | TODOs (Trouble)          |
+| `<leader>XT` | TODO/FIX/FIXME (Trouble) |
 
 ---
 
@@ -1222,8 +1223,8 @@ git commit                 →  finalize merge
 | `<leader>fn` | New file               |
 | `<leader>U`  | Undotree toggle        |
 | `<leader>pl` | Open Lazy              |
-| `<leader>xh` | Rehighlight treesitter |
-| `<leader>xc` | Clear JDTLS cache      |
+| `<leader>Xh` | Rehighlight treesitter |
+| `<leader>XC` | Clear JDTLS cache      |
 
 ---
 
@@ -1231,39 +1232,40 @@ git commit                 →  finalize merge
 
 Press `<leader>` and wait to see all groups:
 
-| Prefix          | Group                |
-|-----------------|----------------------|
-| `<leader>b`     | Buffer               |
-| `<leader>c`     | Code                 |
-| `<leader>C`     | Conflict             |
-| `<leader>d`     | Debug                |
-| `<leader>dg`    | Debug Go             |
-| `<leader>f`     | File/Find            |
-| `<leader>g`     | Go                   |
-| `<leader>gi`    | Go Insert            |
-| `<leader>gs`    | Go Struct Tags       |
-| `<leader>G`     | Git                  |
-| `<leader>Gh`    | Hunks                |
-| `<leader>h`     | Harpoon              |
-| `<leader>l`     | LSP                  |
-| `<leader>j`     | Java                 |
-| `<leader>o`     | Obsidian             |
-| `<leader>p`     | Plugins              |
-| `<leader>q`     | Quit/Session         |
-| `<leader>r`     | Replace              |
-| `<leader>s`     | Search               |
-| `<leader>S`     | Sessions             |
-| `<leader>t`     | Test/Theme           |
-| `<leader>u`     | UI                   |
-| `<leader>w`     | Windows              |
-| `<leader>x`     | Diagnostics/Quickfix |
-| `<leader><tab>` | Tabs                 |
-| `[`             | Previous             |
-| `]`             | Next                 |
-| `g`             | Goto/Misc            |
-| `gc`            | Comment              |
-| `gs`            | Surround             |
-| `z`             | Fold                 |
+| Prefix          | Group             |
+|-----------------|-------------------|
+| `<leader>b`     | Buffer            |
+| `<leader>c`     | Code              |
+| `<leader>C`     | Conflict          |
+| `<leader>d`     | Debug             |
+| `<leader>dg`    | Debug Go          |
+| `<leader>f`     | File/Find         |
+| `<leader>g`     | Go                |
+| `<leader>gi`    | Go Insert         |
+| `<leader>gs`    | Go Struct Tags    |
+| `<leader>G`     | Git               |
+| `<leader>Gh`    | Hunks             |
+| `<leader>h`     | Harpoon           |
+| `<leader>l`     | LSP               |
+| `<leader>j`     | Java              |
+| `<leader>o`     | Obsidian          |
+| `<leader>p`     | Plugins           |
+| `<leader>q`     | Quit/Session      |
+| `<leader>r`     | Replace           |
+| `<leader>s`     | Search            |
+| `<leader>S`     | Sessions          |
+| `<leader>t`     | Test/Theme        |
+| `<leader>u`     | UI                |
+| `<leader>w`     | Windows           |
+| `<leader>x`     | Diagnostics       |
+| `<leader>X`     | Lists/Maintenance |
+| `<leader><tab>` | Tabs              |
+| `[`             | Previous          |
+| `]`             | Next              |
+| `g`             | Goto/Misc         |
+| `gc`            | Comment           |
+| `gs`            | Surround          |
+| `z`             | Fold              |
 
 ---
 
