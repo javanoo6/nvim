@@ -78,6 +78,20 @@ return {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     opts = function()
+      local function jdtls_status()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local client = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })[1]
+        if not client or client:is_stopped() then
+          return "red"
+        end
+
+        if vim.lsp.status() ~= "" then
+          return "yellow"
+        end
+
+        return "green"
+      end
+
       return {
         options = {
           theme = "auto",
@@ -107,6 +121,25 @@ return {
             { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
           },
           lualine_x = {
+            {
+              function()
+                return "●"
+              end,
+              color = function()
+                local state = jdtls_status()
+                if state == "green" then
+                  return { fg = "#98c379" }
+                end
+                if state == "yellow" then
+                  return { fg = "#e5c07b" }
+                end
+                return { fg = "#e06c75" }
+              end,
+              cond = function()
+                return vim.bo.filetype == "java"
+              end,
+              padding = { left = 1, right = 0 },
+            },
             {
               function()
                 return require("util").get_root_basename()
