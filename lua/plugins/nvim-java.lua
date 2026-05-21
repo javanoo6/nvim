@@ -63,6 +63,12 @@ return {
       capabilities = capabilities,
       settings = {
         java = {
+          referencesCodeLens = {
+            enabled = true,
+          },
+          implementationsCodeLens = {
+            enabled = true,
+          },
           inlayHints = {
             parameterNames = {
               -- JDTLS parameter-name hints regularly return invalid or unstable
