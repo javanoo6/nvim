@@ -210,6 +210,7 @@ editor.lua
   │       Maven/Gradle source roots when available
   │
   ├── neo-tree.nvim           ── file explorer (<leader>e cwd, <leader>E root)
+  │     ├── native preview mode  ── `P` float preview, `l` focus, `<C-f>`/`<C-b>` scroll
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │
@@ -537,7 +538,7 @@ lazy.nvim
 │   ├── telescope.nvim → telescope-fzf-native
 │   │   ├── project.nvim (projects.lua)
 │   │   └── obsidian.nvim (uses telescope as picker)
-│   ├── neo-tree.nvim → nvim-window-picker
+│   ├── neo-tree.nvim → nvim-window-picker + native file preview
 │   ├── harpoon
 │   ├── flash.nvim
 │   └── nvim-spider

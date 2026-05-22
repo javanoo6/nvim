@@ -516,6 +516,10 @@ Select code visually first, then:
 | `<bs>`  | Go to parent directory                            |
 | `.`     | Set current folder as root                        |
 | `s`     | **Open with window picker** (pick split)          |
+| `P`     | Toggle floating file preview                      |
+| `l`     | Focus preview window                              |
+| `<C-f>` | Scroll preview down                               |
+| `<C-b>` | Scroll preview up                                 |
 | `<C-v>` | Open in vertical split                            |
 | `<C-x>` | Open in horizontal split                          |
 | `<C-t>` | Open in new tab                                   |
@@ -528,6 +532,8 @@ Select code visually first, then:
 
 **Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — JDTLS automatically updates all imports and references
 across the project. This may modify many buffers at once. Save them all with `:wall`.
+
+**Preview tip:** `P` uses Neo-tree's native preview mode, so you can scan files without leaving the tree. Press `<Esc>` to close the preview.
 
 ---
 
