@@ -96,6 +96,10 @@ local function get_buf_path(bufnr)
   return normalize(name)
 end
 
+function M.get_cwd()
+  return normalize(vim.fn.getcwd())
+end
+
 function M.get_marker_root(bufnr)
   bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
   local path = get_buf_path(bufnr)
@@ -151,21 +155,34 @@ end
 
 function M.get_root(bufnr)
   bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
+  local path = get_buf_path(bufnr)
   local marker_root = M.get_marker_root(bufnr)
   local lsp_root = M.get_lsp_root(bufnr)
+  local cwd = M.get_cwd()
 
   if marker_root then
+    local root = marker_root
     if lsp_root and path_has_prefix(lsp_root, marker_root) then
-      return lsp_root
+      root = lsp_root
     end
-    return marker_root
+
+    -- If the user narrowed scope with :cd/:lcd/:tcd into a subdirectory of the
+    -- detected project, treat that cwd as the active root for root-aware tools.
+    if cwd and path_has_prefix(cwd, root) and (not path or path_has_prefix(path, cwd)) then
+      return cwd
+    end
+
+    return root
   end
 
   if lsp_root then
+    if cwd and path_has_prefix(cwd, lsp_root) and (not path or path_has_prefix(path, cwd)) then
+      return cwd
+    end
     return lsp_root
   end
 
-  return vim.uv.cwd()
+  return cwd
 end
 
 function M.get_root_basename(bufnr)
@@ -179,13 +196,19 @@ function M.get_root_basename(bufnr)
     return name
   end
 
-  local cwd = vim.uv.cwd()
+  local cwd = M.get_cwd()
   return cwd and vim.fs.basename(cwd) or nil
 end
 
 function M.get_root_from_path(path)
   local marker_root = M.get_marker_root_from_path(path)
-  return marker_root or vim.uv.cwd()
+  local cwd = M.get_cwd()
+
+  if marker_root and cwd and path_has_prefix(cwd, marker_root) and path_has_prefix(path, cwd) then
+    return cwd
+  end
+
+  return marker_root or cwd
 end
 
 -- Picker abstraction (telescope/fzf) - simplified

@@ -43,6 +43,19 @@
 | `'a`     | Jump to mark 'a' (line)           |
 | `` `a `` | Jump to mark 'a' (exact position) |
 | `''`     | Jump back to last position        |
+| `` `< `` | Jump to start of last selection   |
+| `` `> `` | Jump to end of last selection     |
+
+## Visual Selection
+
+| Key       | Action                              |
+|-----------|-------------------------------------|
+| `gv`      | Reselect previous visual selection  |
+| `<` / `>` | Indent and keep selection           |
+| `<CR>`    | Treesitter: start selection         |
+| `<Tab>`   | Treesitter: expand to parent node   |
+| `<S-Tab>` | Treesitter: shrink to previous node |
+| `<BS>`    | Treesitter: expand to next scope    |
 
 ## Jumps
 

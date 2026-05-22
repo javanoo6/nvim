@@ -130,7 +130,7 @@ nvim-treehopper  (motion.lua)
 
 **Installed grammars:** bash, c, go, gomod, gowork, gotmpl, html, java, javascript, json, lua, markdown, python, query, vim, vimdoc, yaml, xml, groovy, kotlin
 
-**Incremental selection** (visual mode only): `<CR>` start, `<Tab>` expand, `<S-Tab>` shrink, `<BS>` scope
+**Incremental selection** (visual mode only): `<CR>` start, `<Tab>` expand node, `<S-Tab>` shrink node, `<BS>` expand scope
 
 ---
 
@@ -170,7 +170,7 @@ colorschemes.lua
   ├── onenord.nvim      ── lazy
   ├── evergarden        ── lazy
   ├── poimandres.nvim   ── lazy
-  └── themery.nvim      ── switcher UI  →  <leader>tc
+  └── themery.nvim      ── switcher UI  →  <leader>ut
 
 ui.lua
   ├── lualine.nvim      ── statusline (mode, branch, diagnostics, root basename, diff, clock)
@@ -200,7 +200,7 @@ editor.lua
   │     — `-` open parent dir, `<leader>o` open cwd
   │     — edit filenames like a buffer, `:w` to apply; `g.` toggle hidden
   │
-  ├── telescope.nvim          ── fuzzy finder (root-aware on <leader><space>/<leader>ff/<leader>fg, cwd variants on <leader>fF/<leader>fG)
+  ├── telescope.nvim          ── fuzzy finder (cwd on <leader><space>/<leader>ff/<leader>fg, root on <leader>fF/<leader>fG)
   │     └── telescope-fzf-native.nvim  ── faster sorter (requires make)
   │
   ├── scratch.nvim            ── persistent scratch files under `<leader>f`
@@ -264,6 +264,9 @@ git.lua
 | `<leader>GF` | File history             |
 | `<leader>GH` | Repo history             |
 | `<leader>GL` | Line/range history       |
+| `<leader>Gt` | Open `git mergetool`     |
+| `<leader>GQ` | Finish `git mergetool`   |
+| `<leader>GA` | Abort `git mergetool`    |
 | `<leader>Gm` | Diff vs main/master      |
 | `<leader>GM` | Diff vs origin/main      |
 | `<leader>Gq` | Close Diffview           |
@@ -373,11 +376,11 @@ obsidian.lua
   obsidian.nvim  ── Obsidian vault integration (lazy, ft=markdown)
     └── plenary.nvim
     Uses Telescope as picker
-    Vault path: ~/Obsidian/personal
-    Keymaps: <leader>on new, <leader>oo open, <leader>of find,
-             <leader>os search, <leader>ob backlinks, <leader>ol links,
-             <leader>ot tags, <leader>od dailies, <leader>or rename,
-             <leader>op paste image, <leader>oc toggle checkbox
+    Vault path: ~/Obsidian
+    Keymaps: <leader>On new, <leader>Oo open, <leader>Of find,
+             <leader>Os search, <leader>Ob backlinks, <leader>Ol links,
+             <leader>Ot tags, <leader>Od dailies, <leader>Or rename,
+             <leader>Op paste image, <leader>Oc toggle checkbox
 
 ftplugin/markdown.lua  ── per-buffer markdown settings
   ── wrap, spell, linebreak, j/k for wrapped lines

@@ -34,14 +34,14 @@ return {
       {
         "<leader><space>",
         function()
-          require("telescope.builtin").find_files({ cwd = vim.uv.cwd() })
+          require("telescope.builtin").find_files({ cwd = require("util").get_cwd() })
         end,
         desc = "Find files (cwd)",
       },
       {
         "<leader>ff",
         function()
-          require("telescope.builtin").find_files({ cwd = vim.uv.cwd() })
+          require("telescope.builtin").find_files({ cwd = require("util").get_cwd() })
         end,
         desc = "Find files (cwd)",
       },
@@ -55,16 +55,16 @@ return {
       {
         "<leader>fg",
         function()
-          require("util").pick("live_grep")
+          require("telescope.builtin").live_grep({ cwd = require("util").get_cwd() })
         end,
-        desc = "Grep (root)",
+        desc = "Grep (cwd)",
       },
       {
         "<leader>fG",
         function()
-          require("telescope.builtin").live_grep({ cwd = vim.uv.cwd() })
+          require("util").pick("live_grep")
         end,
-        desc = "Grep (cwd)",
+        desc = "Grep (root)",
       },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
       { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
@@ -235,7 +235,7 @@ return {
       {
         "<leader>e",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() })
+          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_cwd() })
         end,
         desc = "Explorer (cwd)",
       },
@@ -335,14 +335,60 @@ return {
             vim.fn.setreg("+", path)
             vim.notify("Copied path: " .. path)
           end,
+          set_scope_root = function(state)
+            local node = state.tree:get_node()
+            while node and node.type ~= "directory" do
+              local parent_id = node:get_parent_id()
+              node = parent_id and state.tree:get_node(parent_id) or nil
+            end
+
+            if not node then
+              return
+            end
+
+            local path = node:get_id()
+            local escaped = vim.fn.fnameescape(path)
+            vim.cmd("cd " .. escaped)
+
+            -- Propagate the manual scope choice to every real window in the tab.
+            -- Otherwise an older window-local :lcd can override the new cwd
+            -- when you leave Neo-tree and reopen cwd-based tools.
+            for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+              if vim.api.nvim_win_is_valid(win) then
+                local cfg = vim.api.nvim_win_get_config(win)
+                local buf = vim.api.nvim_win_get_buf(win)
+                local ft = vim.bo[buf].filetype
+                if cfg.relative == "" and ft ~= "neo-tree" and ft ~= "neo-tree-popup" then
+                  vim.api.nvim_win_call(win, function()
+                    vim.cmd("lcd " .. escaped)
+                  end)
+                end
+              end
+            end
+
+            require("neo-tree.sources.filesystem")._navigate_internal(state, path, nil, nil, false)
+            vim.notify("Scope set to " .. vim.fn.fnamemodify(path, ":~"))
+          end,
         },
         window = {
           mappings = {
             -- Override default open behavior
             ["<cr>"] = "smart_open",
+            ["."] = "set_scope_root",
             ["o"] = "open",
+            ["P"] = {
+              "toggle_preview",
+              config = {
+                use_float = true,
+                use_snacks_image = true,
+                use_image_nvim = true,
+              },
+            },
+            ["l"] = "focus_preview",
             ["s"] = "open_with_window_picker", -- Open with window picker
             ["Y"] = "copy_absolute_path",
+            ["<C-f>"] = { "scroll_preview", config = { direction = -10 } },
+            ["<C-b>"] = { "scroll_preview", config = { direction = 10 } },
             ["<C-v>"] = "open_vsplit",
             ["<C-x>"] = "open_split",
             ["<C-t>"] = "open_tabnew",
@@ -372,7 +418,7 @@ return {
       {
         "<leader>o",
         function()
-          require("oil").open(vim.uv.cwd())
+          require("oil").open(require("util").get_cwd())
         end,
         desc = "Open Oil (cwd)",
       },

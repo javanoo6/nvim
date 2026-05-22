@@ -166,7 +166,7 @@ local function current_dir(bufnr)
     end
     return normalize(vim.fs.dirname(path))
   end
-  return normalize(vim.uv.cwd())
+  return util.get_cwd()
 end
 
 local function open_dir(path)
@@ -398,7 +398,7 @@ end
 function M.add_manual_prompt()
   vim.ui.input({
     prompt = "Add manual dir: ",
-    default = current_dir(0) or vim.uv.cwd(),
+    default = current_dir(0) or util.get_cwd(),
     completion = "dir",
   }, function(input)
     if not input or input == "" then

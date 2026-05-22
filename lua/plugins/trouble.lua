@@ -134,7 +134,7 @@ return {
           desc = "Diagnostics for the current working directory",
           mode = "diagnostics",
           filter = filter_items_in_path(function()
-            return vim.uv.cwd()
+            return util.get_cwd()
           end),
         },
         diagnostics_buffer = {

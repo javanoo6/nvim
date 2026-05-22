@@ -254,7 +254,7 @@ return {
       local function prompt_for_dir(callback)
         vim.ui.input({
           prompt = "Directory to format: ",
-          default = vim.uv.cwd(),
+          default = require("util").get_cwd(),
           completion = "dir",
         }, function(input)
           if not input or input == "" then
@@ -340,7 +340,7 @@ return {
       end, { desc = "Enable format on save" })
 
       vim.api.nvim_create_user_command("FormatDir", function(command)
-        local dir = command.args ~= "" and vim.fn.fnamemodify(command.args, ":p") or vim.uv.cwd()
+        local dir = command.args ~= "" and vim.fn.fnamemodify(command.args, ":p") or require("util").get_cwd()
         format_dir(dir)
       end, {
         nargs = "?",

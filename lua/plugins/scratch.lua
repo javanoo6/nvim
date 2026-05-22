@@ -1,4 +1,5 @@
 local scratch_filetypes = { "lua", "js", "py", "sh", "java" }
+local util = require("util")
 -- Toggle these two settings by commenting/uncommenting a single line.
 local global_scratch_dir = vim.fn.stdpath("state") .. "/scratch"
 -- local global_scratch_dir = vim.fn.stdpath("data") .. "/scratch"
@@ -18,7 +19,7 @@ local function current_path()
   if name ~= "" then
     return name
   end
-  return vim.uv.cwd()
+  return util.get_cwd()
 end
 
 local function find_java_project_root()

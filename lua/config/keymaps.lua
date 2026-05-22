@@ -26,6 +26,9 @@
 --   <leader>GF     - File history
 --   <leader>GH     - Repo history
 --   <leader>GL     - Line/range history
+--   <leader>Gt     - Open git mergetool
+--   <leader>GQ     - Finish git mergetool (diff mode only)
+--   <leader>GA     - Abort git mergetool (diff mode only)
 --   <leader>Gb     - Diff vs branch/ref (prompt)
 --   <leader>Gm     - Diff vs main/master
 --   <leader>GM     - Diff vs origin/main
@@ -292,6 +295,7 @@ map("n", "<leader>GF", "<cmd>DiffviewFileHistory --follow %<cr>", { desc = "File
 map("n", "<leader>GH", "<cmd>DiffviewFileHistory<cr>", { desc = "Repo history" })
 map("n", "<leader>GL", "<Cmd>.DiffviewFileHistory --follow<CR>", { desc = "Line history" })
 map("v", "<leader>GL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Range history" })
+map("n", "<leader>Gt", "<cmd>tabnew | terminal git mergetool<cr>", { desc = "Open git mergetool" })
 map("n", "<leader>Gq", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
 map("n", "<leader>Gb", pick_diffview_ref, { desc = "Diff vs branch/ref" })
 map("n", "<leader>Gm", function()

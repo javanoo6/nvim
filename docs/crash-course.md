@@ -295,12 +295,12 @@ That gives you a simple habit while still staying inside the standard Vim model.
 
 ### Treesitter Incremental Selection
 
-| Key       | Action                         |
-|-----------|--------------------------------|
-| `<cr>`    | Initialize/Increment selection |
-| `<tab>`   | Increment node                 |
-| `<S-tab>` | Decrement scope                |
-| `<bs>`    | Scope increment                |
+| Key       | Action                  |
+|-----------|-------------------------|
+| `<cr>`    | Start selection         |
+| `<tab>`   | Expand to parent node   |
+| `<S-tab>` | Shrink to previous node |
+| `<bs>`    | Expand to next scope    |
 
 ### Moving Lines
 
@@ -540,6 +540,8 @@ across the project. This may modify many buffers at once. Save them all with `:w
 | `<leader>fp` | Switch project (stock `project.nvim`)     |
 | `<leader>fP` | Manage manual dirs (add/remove/list)      |
 
+`<leader>fp` uses `project.nvim` history. `<leader>fP` opens your custom persistent manual-dir list.
+
 ### Inside Oil (stevearc/oil.nvim)
 
 Oil treats the directory as a buffer — **edit filenames directly and `:w` to apply**.
@@ -598,11 +600,11 @@ This uses `nvim-cmp` cmdline completion:
 
 | Key               | Action                       |
 |-------------------|------------------------------|
-| `<leader><space>` | Find files from project root |
-| `<leader>ff`      | Find files from project root |
-| `<leader>fF`      | Find files from cwd          |
-| `<leader>fg`      | Live grep from project root  |
-| `<leader>fG`      | Live grep from cwd           |
+| `<leader><space>` | Find files from cwd          |
+| `<leader>ff`      | Find files from cwd          |
+| `<leader>fF`      | Find files from project root |
+| `<leader>fg`      | Live grep from cwd           |
+| `<leader>fG`      | Live grep from project root  |
 | `<leader>fb`      | Buffers                      |
 | `<leader>fR`      | Recent files                 |
 | `<leader>fs`      | New scratch file             |
@@ -893,6 +895,9 @@ require('java').debug.debug_current_file()     -- Debug main
 | `<leader>GH` | Repo history             |
 | `<leader>GL` | Line history (normal)    |
 | `<leader>GL` | Range history (visual)   |
+| `<leader>Gt` | Open `git mergetool`     |
+| `<leader>GQ` | Finish `git mergetool`   |
+| `<leader>GA` | Abort `git mergetool`    |
 | `<leader>Gm` | Diff vs main/master      |
 | `<leader>GM` | Diff vs origin/main      |
 | `<leader>Gq` | Close Diffview           |
@@ -1005,8 +1010,8 @@ If you are in **nvimdiff mergetool** instead of inline markers:
 | `<leader>Cl` | Focus `LOCAL` window             |
 | `<leader>Cr` | Focus `REMOTE` window            |
 | `<leader>Cm` | Focus `MERGED` window            |
-| `<leader>Cw` | Write all and quit (`:wqa`)      |
-| `<leader>Ca` | Abort merge tool (`:cq`)         |
+| `<leader>GQ` | Write all and quit (`:wqa`)      |
+| `<leader>GA` | Abort merge tool (`:cq`)         |
 
 Notes:
 
@@ -1059,8 +1064,8 @@ open file in nvim          →  markers highlighted automatically
 ]x / [x                    →  jump between conflicts
 <leader>Co / Ct / Cb / C0  →  resolve inline (ours/theirs/both/none)
 nvimdiff mergetool         →  <leader>Co / Ct pull LOCAL/REMOTE into MERGED
-:wqa or <leader>Cw         →  finish mergetool
-:cq or <leader>Ca          →  abort mergetool
+:wqa or <leader>GQ         →  finish mergetool
+:cq or <leader>GA          →  abort mergetool
 :DiffviewOpen              →  3-way view for complex cases
 stage file in lazygit      →  <space>
 git commit                 →  finalize merge
@@ -1130,18 +1135,17 @@ git commit                 →  finalize merge
 
 ## UI & Toggles
 
-| Key          | Action                                                      |
-|--------------|-------------------------------------------------------------|
-| `<leader>us` | Toggle spell                                                |
-| `<leader>uw` | Toggle wrap                                                 |
-| `<leader>ul` | Toggle relative numbers                                     |
-| `<leader>un` | Toggle line numbers                                         |
-| `<leader>uf` | Toggle fold                                                 |
-| `<leader>ud` | Toggle diagnostic virtual lines                             |
-| `<leader>uD` | Toggle diagnostic messages (hide all msgs, keep underlines) |
-| `<leader>uh` | Toggle inlay hints                                          |
-| `<leader>ut` | Color schemes                                               |
-| `<leader>un` | Dismiss notifications                                       |
+| Key          | Action                    |
+|--------------|---------------------------|
+| `<leader>us` | Toggle spell              |
+| `<leader>uw` | Toggle wrap               |
+| `<leader>ul` | Toggle relative numbers   |
+| `<leader>un` | Toggle line numbers       |
+| `<leader>uf` | Toggle fold               |
+| `<leader>ud` | Toggle inline diagnostics |
+| `<leader>uD` | Toggle diagnostics        |
+| `<leader>uh` | Toggle inlay hints        |
+| `<leader>ut` | Color schemes             |
 
 ---
 
@@ -1224,7 +1228,7 @@ git commit                 →  finalize merge
 | `<leader>U`  | Undotree toggle        |
 | `<leader>pl` | Open Lazy              |
 | `<leader>Xh` | Rehighlight treesitter |
-| `<leader>XC` | Clear JDTLS cache      |
+| `<leader>XC` | Clean JDTLS workspace  |
 
 ---
 
@@ -1248,7 +1252,7 @@ Press `<leader>` and wait to see all groups:
 | `<leader>h`     | Harpoon           |
 | `<leader>l`     | LSP               |
 | `<leader>j`     | Java              |
-| `<leader>o`     | Obsidian          |
+| `<leader>O`     | Obsidian          |
 | `<leader>p`     | Plugins           |
 | `<leader>q`     | Quit/Session      |
 | `<leader>r`     | Replace           |
@@ -1312,27 +1316,27 @@ Vault: `~/Obsidian`. Active only in `.md` files.
 
 | Key          | Action                                 |
 |--------------|----------------------------------------|
-| `<leader>of` | Quick switch between notes (Telescope) |
-| `<leader>os` | Full-text search across vault          |
-| `<leader>on` | New note                               |
-| `<leader>or` | Rename note (updates all links)        |
-| `<leader>oo` | Open current note in Obsidian app      |
+| `<leader>Of` | Quick switch between notes (Telescope) |
+| `<leader>Os` | Full-text search across vault          |
+| `<leader>On` | New note                               |
+| `<leader>Or` | Rename note (updates all links)        |
+| `<leader>Oo` | Open current note in Obsidian app      |
 
 ### Links & Tags
 
 | Key          | Action                    |
 |--------------|---------------------------|
-| `<leader>ob` | Backlinks to current note |
-| `<leader>ol` | All links in current note |
-| `<leader>ot` | Browse tags               |
+| `<leader>Ob` | Backlinks to current note |
+| `<leader>Ol` | All links in current note |
+| `<leader>Ot` | Browse tags               |
 
 ### Other
 
 | Key          | Action                     |
 |--------------|----------------------------|
-| `<leader>oc` | Toggle `- [ ]` checkbox    |
-| `<leader>od` | Daily notes                |
-| `<leader>op` | Paste image from clipboard |
+| `<leader>Oc` | Toggle `- [ ]` checkbox    |
+| `<leader>Od` | Daily notes                |
+| `<leader>Op` | Paste image from clipboard |
 
 ---
 

@@ -134,3 +134,25 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set({ "n", "x" }, "X", "X", opts)
   end,
 })
+
+-- Git mergetool runs Neovim in diff mode; expose finish/abort only there.
+vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+  group = augroup("git_mergetool_keys"),
+  callback = function(event)
+    if not vim.wo.diff or vim.b[event.buf].git_mergetool_keys then
+      return
+    end
+
+    vim.b[event.buf].git_mergetool_keys = true
+    vim.keymap.set("n", "<leader>GQ", "<cmd>wqa<cr>", {
+      buffer = event.buf,
+      silent = true,
+      desc = "Finish git mergetool",
+    })
+    vim.keymap.set("n", "<leader>GA", "<cmd>cq<cr>", {
+      buffer = event.buf,
+      silent = true,
+      desc = "Abort git mergetool",
+    })
+  end,
+})
