@@ -143,6 +143,41 @@ local function current_package_path()
   return vim.fs.dirname(normalize(path))
 end
 
+local function parent_dir(path)
+  local parent = vim.fs.dirname(path)
+  if not parent or parent == "" or parent == path then
+    return nil
+  end
+  return normalize(parent)
+end
+
+local function current_package_target()
+  local path = vim.api.nvim_buf_get_name(0)
+  if path == "" then
+    return uv.cwd()
+  end
+
+  path = normalize(path)
+  local target_dir = current_package_path()
+  local neotest_state = require("neotest").state
+
+  for _, adapter_id in ipairs(neotest_state.adapter_ids() or {}) do
+    local tree = neotest_state.positions(adapter_id)
+    if tree and path_starts_with(path, tree:data().path) then
+      local dir = target_dir
+      while dir do
+        local node = tree:get_key(dir)
+        if node and node:data().type == "dir" then
+          return node:data().id
+        end
+        dir = parent_dir(dir)
+      end
+    end
+  end
+
+  return target_dir
+end
+
 return {
   {
     "rcasia/neotest-java",
@@ -197,7 +232,7 @@ return {
       {
         "<leader>tp",
         clear_and_run(function()
-          require("neotest").run.run(current_package_path())
+          require("neotest").run.run(current_package_target())
         end),
         desc = "Run Package",
       },
