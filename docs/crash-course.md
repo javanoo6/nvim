@@ -686,6 +686,22 @@ Use this when you need to rename variables or make targeted edits across many fi
 | `gI` | Go to implementation (Glance)  |
 | `gD` | Go to declaration (native LSP) |
 
+### Glance Popup
+
+After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview.
+
+| Key                 | Action                           |
+|---------------------|----------------------------------|
+| `k` / `<Down>`      | Next result                      |
+| `j` / `<Up>`        | Previous result                  |
+| `<Tab>` / `<S-Tab>` | Next / previous location         |
+| `<C-u>` / `<C-d>`   | Scroll preview up / down         |
+| `<CR>`              | Jump to selected result          |
+| `v` / `s` / `t`     | Open in vsplit / split / new tab |
+| `o`                 | Refresh preview                  |
+| `<leader>l`         | Switch between list and preview  |
+| `q` / `Q` / `<Esc>` | Close Glance                     |
+
 ### Documentation
 
 | Key  | Action              |
