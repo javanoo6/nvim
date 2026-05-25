@@ -6,6 +6,7 @@ return {
   version = "^1.0.0",
   cmd = "ASToggle",
   event = { "InsertLeave", "TextChanged" },
+  notify_on_error_block = false,
   opts = {
     enabled = true, -- Start enabled, toggle with <leader>ua
     trigger_events = {
@@ -28,12 +29,14 @@ return {
       -- Check LSP diagnostics for errors
       local diagnostics = vim.diagnostic.get(buf, { severity = vim.diagnostic.severity.ERROR })
       if #diagnostics > 0 then
-        -- Throttle notification
-        local last_notify = vim.b[buf].last_autosave_notify or 0
-        local now = vim.uv.now()
-        if (now - last_notify) > 5000 then -- Max once per 5 seconds
-          vim.notify("Auto-save blocked: " .. #diagnostics .. " LSP error(s)", vim.log.levels.WARN, { title = "Auto-save" })
-          vim.b[buf].last_autosave_notify = now
+        if require("lazy.core.config").plugins["auto-save.nvim"].notify_on_error_block then
+          -- Throttle notification if the user explicitly enables it.
+          local last_notify = vim.b[buf].last_autosave_notify or 0
+          local now = vim.uv.now()
+          if (now - last_notify) > 5000 then -- Max once per 5 seconds
+            vim.notify("Auto-save blocked: " .. #diagnostics .. " LSP error(s)", vim.log.levels.WARN, { title = "Auto-save" })
+            vim.b[buf].last_autosave_notify = now
+          end
         end
         return false
       end
