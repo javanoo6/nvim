@@ -544,9 +544,9 @@ across the project. This may modify many buffers at once. Save them all with `:w
 | `-`          | Open **Oil** (parent dir of current file) |
 | `<leader>o`  | Open **Oil** in cwd                       |
 | `<leader>fp` | Switch project (stock `project.nvim`)     |
-| `<leader>fP` | Manage manual dirs (add/remove/list)      |
+| `<leader>hm` | Manage manual dirs (add/remove/list)      |
 
-`<leader>fp` uses `project.nvim` history. `<leader>fP` opens your custom persistent manual-dir list.
+`<leader>fp` uses `project.nvim` history. `<leader>hm` opens your custom persistent manual-dir list.
 
 ### Inside Oil (stevearc/oil.nvim)
 
@@ -1117,6 +1117,7 @@ git commit                 →  finalize merge
 |--------------|---------------------|
 | `<leader>ha` | Add file to harpoon |
 | `<leader>hh` | Open harpoon menu   |
+| `<leader>hm` | Manage manual dirs  |
 | `<leader>h1` | Go to file 1        |
 | `<leader>h2` | Go to file 2        |
 | `<leader>h3` | Go to file 3        |
@@ -1255,7 +1256,7 @@ Press `<leader>` and wait to see all groups:
 | `<leader>gs`    | Go Struct Tags    |
 | `<leader>G`     | Git               |
 | `<leader>Gh`    | Hunks             |
-| `<leader>h`     | Harpoon           |
+| `<leader>h`     | Harpoon/Dirs      |
 | `<leader>l`     | LSP               |
 | `<leader>j`     | Java              |
 | `<leader>O`     | Obsidian          |

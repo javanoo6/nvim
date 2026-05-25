@@ -43,7 +43,7 @@ return {
         { "<leader>gs", group = "go struct tags" },
         { "<leader>G", group = "git", mode = { "n", "v" } },
         { "<leader>Gh", group = "hunks", mode = { "n", "v" } },
-        { "<leader>h", group = "harpoon" },
+        { "<leader>h", group = "harpoon/dirs" },
         { "<leader>H", group = "history" },
         { "<leader>l", group = "lsp" },
         { "<leader>L", group = "leetcode" },

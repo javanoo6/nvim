@@ -216,8 +216,8 @@ editor.lua
   │
   ├── lazygit.nvim            ── LazyGit TUI  →  <leader>Gg
   │
-  └── harpoon                 ── file bookmarks  →  <leader>ha add, <leader>hh menu
-                                  <leader>h1-4 jump to slot
+  └── harpoon                 ── file/workspace bookmarks  →  <leader>ha add, <leader>hh menu
+                                            <leader>hm manual dirs, <leader>h1-4 jump to slot
 
 motion.lua
   ├── flash.nvim              ── jump by label: s (jump), S (treesitter), r/R (remote)
@@ -405,7 +405,7 @@ projects.lua
 util/frequent_roots.lua
   frequent roots  ── custom helper for manually managed dirs
                     custom project-tracking code retained but currently inactive
-                    <leader>fP manage manual dirs (add/remove/list)
+                    <leader>hm manage manual dirs (add/remove/list)
 
 terminal.lua
   toggleterm.nvim  ── floating terminal, <A-a> toggle, <A-c> hide
@@ -608,7 +608,7 @@ lazy.nvim
 | `<leader>gs`      | go struct tags | gopher                                                                    |
 | `<leader>G`       | git            | gitsigns, diffview, lazygit                                               |
 | `<leader>Gh`      | hunks          | gitsigns                                                                  |
-| `<leader>h`       | harpoon        | harpoon                                                                   |
+| `<leader>h`       | harpoon/dirs   | harpoon                                                                   |
 | `<leader>j`       | java           | nvim-java                                                                 |
 | `<leader>L`       | leetcode       | leetcode.nvim                                                             |
 | `<leader>l`       | lsp            | nvim-lspconfig                                                            |

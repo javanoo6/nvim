@@ -129,7 +129,7 @@ map("n", "<leader>fp", "<cmd>Telescope projects<cr>", { desc = "Projects" })
 -- map("n", "<leader>fp", function()
 --   frequent_roots.pick_projects()
 -- end, { desc = "Projects" })
-map("n", "<leader>fP", function()
+map("n", "<leader>hm", function()
   frequent_roots.manage_manual()
 end, { desc = "Manual dirs" })
 
