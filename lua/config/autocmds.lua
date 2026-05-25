@@ -75,23 +75,31 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Set up illuminate highlight colors
-local function set_illuminate_hl()
-  local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
-  local hl_bg = bg and (bg + 0x101010) or nil
-  vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = hl_bg, underline = false })
-  vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = hl_bg, underline = false })
-  vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = hl_bg, underline = false, bold = true })
+local function refresh_reference_style()
+  vim.defer_fn(function()
+    require("util").apply_reference_style()
+  end, 20)
 end
 
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = augroup("illuminate_colors"),
-  callback = function()
-    vim.schedule(set_illuminate_hl)
-  end,
+  callback = refresh_reference_style,
 })
 
-vim.schedule(set_illuminate_hl)
+vim.api.nvim_create_autocmd({ "VimEnter", "UIEnter" }, {
+  group = augroup("symbol_reference_startup"),
+  callback = refresh_reference_style,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  group = augroup("symbol_reference_verylazy"),
+  pattern = "VeryLazy",
+  callback = refresh_reference_style,
+})
+
+vim.schedule(function()
+  refresh_reference_style()
+end)
 
 -- Helm chart templates: treat templated YAML as Helm, not plain YAML
 vim.filetype.add({

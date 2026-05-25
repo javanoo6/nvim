@@ -2,6 +2,11 @@
 
 local M = {}
 
+M.reference_style_state = {
+  background = false,
+  underline = true,
+}
+
 -- Safe keymap set (replaces LazyVim.safe_keymap_set)
 function M.map(mode, lhs, rhs, opts)
   opts = opts or {}
@@ -42,6 +47,36 @@ function M.toggle(option, values)
     vim.opt_local[option] = not vim.opt_local[option]:get()
     vim.notify(option .. " set to " .. tostring(vim.opt_local[option]:get()))
   end
+end
+
+local function get_reference_background_color()
+  local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
+  return bg and (bg + 0x101010) or nil
+end
+
+function M.apply_reference_style()
+  local state = M.reference_style_state
+  local bg = state.background and get_reference_background_color() or nil
+  local underline = state.underline
+
+  vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = bg, underline = underline })
+  vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = bg, underline = underline })
+  vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = bg, underline = underline, bold = state.background })
+  vim.api.nvim_set_hl(0, "LspReferenceText", { bg = bg, underline = underline })
+  vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = bg, underline = underline })
+  vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = bg, underline = underline, bold = state.background })
+end
+
+function M.toggle_reference_underline()
+  M.reference_style_state.underline = not M.reference_style_state.underline
+  M.apply_reference_style()
+  vim.notify("reference underline " .. (M.reference_style_state.underline and "on" or "off"))
+end
+
+function M.toggle_reference_background()
+  M.reference_style_state.background = not M.reference_style_state.background
+  M.apply_reference_style()
+  vim.notify("reference background " .. (M.reference_style_state.background and "on" or "off"))
 end
 
 -- Root detection (simplified version of LazyVim.root)
