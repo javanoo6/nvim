@@ -163,7 +163,7 @@ return {
             "lsp_references",
             "lsp_implementations",
           },
-          focus = false,
+          focus = true,
           win = {
             relative = "win",
             position = "right",
