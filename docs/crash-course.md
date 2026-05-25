@@ -1142,17 +1142,19 @@ git commit                 →  finalize merge
 
 ## UI & Toggles
 
-| Key          | Action                    |
-|--------------|---------------------------|
-| `<leader>us` | Toggle spell              |
-| `<leader>uw` | Toggle wrap               |
-| `<leader>ul` | Toggle relative numbers   |
-| `<leader>un` | Toggle line numbers       |
-| `<leader>uf` | Toggle fold               |
-| `<leader>ud` | Toggle inline diagnostics |
-| `<leader>uD` | Toggle diagnostics        |
-| `<leader>uh` | Toggle inlay hints        |
-| `<leader>ut` | Color schemes             |
+| Key          | Action                      |
+|--------------|-----------------------------|
+| `<leader>us` | Toggle spell                |
+| `<leader>uw` | Toggle wrap                 |
+| `<leader>ul` | Toggle relative numbers     |
+| `<leader>un` | Toggle line numbers         |
+| `<leader>uf` | Toggle fold                 |
+| `<leader>ud` | Toggle inline diagnostics   |
+| `<leader>uD` | Toggle diagnostics          |
+| `<leader>uh` | Toggle inlay hints          |
+| `<leader>uu` | Toggle reference underline  |
+| `<leader>uH` | Toggle reference background |
+| `<leader>ut` | Color schemes               |
 
 ---
 
