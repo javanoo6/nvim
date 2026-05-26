@@ -1,0 +1,23 @@
+{
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.runtime.path": [
+    "lua/?.lua",
+    "lua/?/init.lua"
+  ],
+  "Lua.diagnostics.globals": [
+    "vim"
+  ],
+  "Lua.workspace.checkThirdParty": false,
+  "Lua.workspace.library": [
+    "${env:VIMRUNTIME}"
+  ],
+  "Lua.telemetry.enable": false,
+  "Lua.hint.enable": true,
+  "Lua.hint.arrayIndex": "Auto",
+  "Lua.hint.await": true,
+  "Lua.hint.awaitPropagate": true,
+  "Lua.hint.paramName": "Literal",
+  "Lua.hint.paramType": true,
+  "Lua.hint.setType": true,
+  "Lua.hint.semicolon": "Disable"
+}
