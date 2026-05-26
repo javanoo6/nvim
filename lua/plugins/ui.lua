@@ -8,9 +8,9 @@ return {
   -- Which-key
   {
     "folke/which-key.nvim",
-    event = "VeryLazy",
     opts = {
       preset = "modern",
+      delay = 0,
       plugins = { spelling = true },
       win = {
         border = "rounded",
