@@ -316,7 +316,7 @@ return {
         },
         quickfix = {
           open = function()
-            vim.cmd("copen")
+            vim.cmd("botright copen 10")
           end,
         },
       })
