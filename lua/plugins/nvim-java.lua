@@ -3,6 +3,8 @@
 return {
   "nvim-java/nvim-java",
   config = function()
+    local java21_home = "/usr/lib/jvm/java-21-openjdk-amd64"
+    local java21_bin = java21_home .. "/bin"
     local capabilities =
       vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())
 
@@ -26,10 +28,22 @@ return {
       },
     })
 
-    -- Guard nvim-java against malformed/empty choose-imports payloads from JDTLS.
+    -- Guard nvim-java against malformed/empty JDTLS payloads.
     do
       local Action = require("java-refactor.action")
+      local orig_rename = Action.rename
       local orig_choose_imports = Action.choose_imports
+
+      Action.rename = function(self, params)
+        if type(params) ~= "table" or vim.tbl_isempty(params) then
+          vim.notify("Java rename command returned no targets", vim.log.levels.WARN, {
+            title = "nvim-java",
+          })
+          return
+        end
+
+        return orig_rename(self, params)
+      end
 
       Action.choose_imports = function(self, selections)
         if type(selections) ~= "table" then
@@ -61,8 +75,21 @@ return {
 
     vim.lsp.config("jdtls", {
       capabilities = capabilities,
+      cmd_env = {
+        JAVA_HOME = java21_home,
+        PATH = java21_bin .. ":" .. vim.env.PATH,
+      },
       settings = {
         java = {
+          configuration = {
+            runtimes = {
+              {
+                name = "JavaSE-21",
+                path = java21_home,
+                default = true,
+              },
+            },
+          },
           referencesCodeLens = {
             enabled = true,
           },
