@@ -1,0 +1,129 @@
+customCommands:
+  - key: "X"
+    context: "localBranches"
+    description: "Delete local branches with gone upstream"
+    prompts:
+      - type: "confirm"
+        title: "Delete gone branches"
+        body: "Fetch with prune, then delete every local branch whose upstream is gone. The checked out branch is preserved."
+    command: >-
+      sh -c '
+      git fetch --prune &&
+      current_branch="$(git branch --show-current)" &&
+      gone_branches="$(
+        git for-each-ref --format="%(refname:short)%09%(upstream:track)" refs/heads |
+        awk -F "\t" '"'"'$2=="[gone]" {print $1}'"'"' |
+        grep -vx "$current_branch" || true
+      )" &&
+      if [ -z "$gone_branches" ]; then
+        echo "No local branches with gone upstream.";
+      else
+        echo "$gone_branches" | xargs -r -n 1 git branch -D;
+      fi
+      '
+    output: "popup"
+    outputTitle: "Deleted gone-upstream branches"
+    loadingText: "Deleting gone-upstream branches"
+
+  - key: "F"
+    context: "global"
+    description: "Fetch with options"
+    prompts:
+      - type: "menu"
+        title: "Fetch mode"
+        key: "FetchMode"
+        options:
+          - value: "all-prune"
+            name: "All remotes + prune"
+            description: "git fetch --all --prune"
+          - value: "all"
+            name: "All remotes"
+            description: "git fetch --all"
+          - value: "remote-prune"
+            name: "One remote + prune"
+            description: "Pick a remote and prune stale refs"
+          - value: "remote"
+            name: "One remote"
+            description: "Pick a single remote"
+      - type: "input"
+        title: "Remote"
+        key: "Remote"
+        condition: '{{ or (eq .Form.FetchMode "remote") (eq .Form.FetchMode "remote-prune") }}'
+        initialValue: "origin"
+        suggestions:
+          preset: "remotes"
+    command: >-
+      sh -c '
+      mode={{.Form.FetchMode | quote}};
+      remote={{.Form.Remote | quote}};
+      case "$mode" in
+        all-prune) git fetch --all --prune ;;
+        all) git fetch --all ;;
+        remote-prune) git fetch --prune "$remote" ;;
+        remote) git fetch "$remote" ;;
+      esac
+      '
+    output: "popup"
+    outputTitle: "Fetch"
+    loadingText: "Fetching"
+
+  - key: "U"
+    context: "global"
+    description: "Pull with options"
+    prompts:
+      - type: "menu"
+        title: "Pull target"
+        key: "PullTarget"
+        options:
+          - value: "upstream"
+            name: "Tracked upstream"
+            description: "Use the current branch's configured upstream"
+          - value: "remote-branch"
+            name: "Choose remote branch"
+            description: "Pick remote and branch explicitly"
+      - type: "menu"
+        title: "Pull mode"
+        key: "PullMode"
+        options:
+          - value: ""
+            name: "Merge"
+            description: "plain git pull"
+          - value: "--rebase"
+            name: "Rebase"
+            description: "git pull --rebase"
+          - value: "--rebase --autostash"
+            name: "Rebase + autostash"
+            description: "rebase and stash dirty worktree automatically"
+          - value: "--ff-only"
+            name: "Fast-forward only"
+            description: "refuse merge commits"
+      - type: "input"
+        title: "Remote"
+        key: "Remote"
+        condition: '{{ eq .Form.PullTarget "remote-branch" }}'
+        initialValue: "origin"
+        suggestions:
+          preset: "remotes"
+      - type: "input"
+        title: "Branch"
+        key: "Branch"
+        condition: '{{ eq .Form.PullTarget "remote-branch" }}'
+        initialValue: "{{.CheckedOutBranch.Name}}"
+        suggestions:
+          command: "git for-each-ref --format='%(refname:short)' refs/remotes/{{.Form.Remote}} | sed 's#^{{.Form.Remote}}/##'"
+    command: >-
+      sh -c '
+      mode={{.Form.PullMode | quote}};
+      target={{.Form.PullTarget | quote}};
+      remote={{.Form.Remote | quote}};
+      branch={{.Form.Branch | quote}};
+      if [ "$target" = "upstream" ]; then
+        git pull $mode;
+      else
+        git pull $mode "$remote" "$branch";
+      fi
+      '
+    output: "terminal"
+    loadingText: "Pulling"
+    after:
+      checkForConflicts: true

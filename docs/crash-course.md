@@ -908,6 +908,20 @@ require('java').debug.debug_current_file()     -- Debug main
 | `q`     | Quit lazygit                      |
 | `<C-q>` | Exit terminal mode (back to nvim) |
 
+**Custom LazyGit commands:**
+
+| Key | Context          | Action                                            |
+|-----|------------------|---------------------------------------------------|
+| `F` | Anywhere         | Fetch menu: all, all + prune, or selected remote  |
+| `U` | Anywhere         | Pull menu: merge, `--rebase`, autostash, ff-only  |
+| `X` | Local branches   | Delete local branches whose upstream is `[gone]`  |
+
+Notes:
+- `X` runs `git fetch --prune` first, then removes local branches whose upstream no longer exists.
+- `X` never deletes the currently checked out branch.
+- `U` can pull from the tracked upstream or an explicitly chosen remote/branch.
+- These commands are loaded by `lazygit.nvim` from `~/.config/nvim/lazygit/config.yml`.
+
 ### Diffview
 
 | Key          | Action                   |

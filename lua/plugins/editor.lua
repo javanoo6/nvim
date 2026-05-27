@@ -459,6 +459,13 @@ return {
       { "<leader>Gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
     },
     config = function()
+      local nvim_config = vim.fn.stdpath("config")
+      vim.g.lazygit_use_custom_config_file_path = 1
+      vim.g.lazygit_config_file_path = {
+        vim.fn.expand("~/.config/lazygit/config.yml"),
+        nvim_config .. "/lazygit/config.yml",
+      }
+
       -- Disable <esc> exiting terminal mode in lazygit
       -- so <esc> works properly in lazygit UI
       vim.api.nvim_create_autocmd("TermOpen", {

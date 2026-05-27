@@ -218,6 +218,10 @@ editor.lua
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │
   ├── lazygit.nvim            ── LazyGit TUI  →  <leader>Gg
+  │     ├── loads `~/.config/lazygit/config.yml` + repo `lazygit/config.yml`
+  │     ├── `F` anywhere      ── fetch menu (all, prune, selected remote)
+  │     ├── `U` anywhere      ── pull menu (`--rebase`, autostash, ff-only)
+  │     └── `X` localBranches ── delete branches with gone upstream
   │
   └── harpoon                 ── file/workspace bookmarks  →  <leader>ha add, <leader>hh menu
                                             <leader>hm manual dirs, <leader>h1-4 jump to slot
