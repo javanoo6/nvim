@@ -418,23 +418,6 @@ Select text first, then press `gsa` + bracket/quote:
 
 **Tip:** After `<leader>rw` in visual mode, type your pattern and replacement: `old/new/g` then `<CR>`.
 
-### Refactoring (refactoring.nvim — treesitter-based)
-
-Select code visually first, then:
-
-| Key          | Mode   | Action                   |
-|--------------|--------|--------------------------|
-| `<leader>Re` | visual | Extract function         |
-| `<leader>Rf` | visual | Extract function to file |
-| `<leader>Rv` | visual | Extract variable         |
-| `<leader>Ri` | n/v    | Inline variable          |
-| `<leader>Rb` | normal | Extract block            |
-| `<leader>RB` | normal | Extract block to file    |
-
-**Tip:** For extract function/variable, visually select the expression or block first, then press the key. Supports Go, Java, Python, Lua, JS/TS.
-
----
-
 ## Window Management
 
 ### Navigation
@@ -812,13 +795,19 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 ### Java Refactor (`<leader>jR`)
 
-jdtls code actions — open `actions-preview` with diff before applying.
-`<A-CR>` is the global quick-fix / intention shortcut and works here too.
+Java semantic refactors powered by `nvim-java` / JDTLS.
+Use these for Java-aware refactors that depend on the language server and
+project model.
+
+`<leader>ca` / `<A-CR>` opens LSP code actions with `actions-preview.nvim`
+diff preview. `jR` mappings call Java refactor actions directly and do not use
+the same preview UI.
 
 | Key           | Action              |
 |---------------|---------------------|
 | `<leader>jRe` | Extract function    |
 | `<leader>jRv` | Extract variable    |
+| `<leader>jRV` | Extract variable (all occurrences) |
 | `<leader>jRc` | Extract constant    |
 | `<leader>jRf` | Extract field       |
 | `<leader>jRi` | Extract interface   |
