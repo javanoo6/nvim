@@ -48,8 +48,6 @@ return {
         { "<leader>l", group = "lsp" },
         { "<leader>L", group = "leetcode" },
         { "<leader>j", group = "java" },
-        { "<leader>jR", group = "refactor (nvim-java)", mode = { "n", "v" } },
-        { "<leader>jg", group = "generate" },
         { "<leader>o", group = "oil" },
         { "<leader>O", group = "obsidian" },
         { "<leader>p", group = "plugins" },

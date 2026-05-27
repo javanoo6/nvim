@@ -112,6 +112,15 @@ sudo apt-get update && sudo apt-get install lazygit
 # Or download binary from https://github.com/jesseduffield/lazygit/releases
 ```
 
+This setup uses two LazyGit config layers:
+- `~/.config/lazygit/config.yml` for user-level LazyGit settings
+- `~/.config/nvim/lazygit/config.yml` for repo-managed commands loaded by `lazygit.nvim`
+
+Repo-managed LazyGit commands:
+- `F` fetch menu
+- `U` pull menu with `--rebase` and related options
+- `X` delete local branches whose upstream is gone
+
 ---
 
 ## 7. Mason-managed tools (auto-installed on first launch)

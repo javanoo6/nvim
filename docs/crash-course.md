@@ -793,42 +793,11 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>jm` | Test Current Method |
 | `<leader>jv` | View Test Report    |
 
-### Java Refactor (`<leader>jR`)
+### Java Code Actions
 
-Java semantic refactors powered by `nvim-java` / JDTLS.
-Use these for Java-aware refactors that depend on the language server and
-project model.
-
-`<leader>ca` / `<A-CR>` opens LSP code actions with `actions-preview.nvim`
-diff preview. `jR` mappings call Java refactor actions directly and do not use
-the same preview UI.
-
-| Key           | Action              |
-|---------------|---------------------|
-| `<leader>jRe` | Extract function    |
-| `<leader>jRv` | Extract variable    |
-| `<leader>jRV` | Extract variable (all occurrences) |
-| `<leader>jRc` | Extract constant    |
-| `<leader>jRf` | Extract field       |
-| `<leader>jRi` | Extract interface   |
-| `<leader>jRp` | Introduce parameter |
-| `<leader>jRs` | Change signature    |
-| `<leader>jRm` | Move                |
-| `<leader>jRa` | Assign variable     |
-| `<leader>jRq` | Quick assist        |
-
-### Java Generate (`<leader>jg`)
-
-| Key           | Action              |
-|---------------|---------------------|
-| `<leader>jga` | Accessors (get/set) |
-| `<leader>jgc` | Constructors        |
-| `<leader>jgd` | Delegate methods    |
-| `<leader>jgf` | Final modifiers     |
-| `<leader>jgh` | hashCode / equals   |
-| `<leader>jgt` | toString            |
-| `<leader>jgo` | Override methods    |
-| `<leader>jgs` | Sort members        |
+Java refactors and generate actions come from JDTLS code actions.
+Use `<leader>ca` or `<A-CR>` to open the code action list with
+`actions-preview.nvim` diff preview before applying.
 
 ---
 
