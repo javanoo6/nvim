@@ -134,6 +134,15 @@ local function clear_and_run(run_fn)
   end
 end
 
+local function clear_and_debug(run_fn)
+  return function(...)
+    activate_scope()
+    require("neotest").summary.open()
+    require("neotest").output_panel.clear()
+    return run_fn(...)
+  end
+end
+
 local function current_package_path()
   local path = vim.api.nvim_buf_get_name(0)
   if path == "" then
@@ -230,6 +239,13 @@ return {
         desc = "Run Nearest",
       },
       {
+        "<leader>td",
+        clear_and_debug(function()
+          require("neotest").run.run({ strategy = "dap" })
+        end),
+        desc = "Debug Nearest",
+      },
+      {
         "<leader>tp",
         clear_and_run(function()
           require("neotest").run.run(current_package_target())
@@ -237,11 +253,40 @@ return {
         desc = "Run Package",
       },
       {
+        "<leader>tP",
+        clear_and_debug(function()
+          require("neotest").run.run({ current_package_target(), strategy = "dap" })
+        end),
+        desc = "Debug Package",
+      },
+      {
         "<leader>tl",
         clear_and_run(function()
           require("neotest").run.run_last()
         end),
         desc = "Run Last",
+      },
+      {
+        "<leader>tL",
+        clear_and_debug(function()
+          require("neotest").run.run_last({ strategy = "dap" })
+        end),
+        desc = "Debug Last",
+      },
+      {
+        "<leader>tf",
+        clear_and_debug(function()
+          require("neotest").run.run({ vim.fn.expand("%"), strategy = "dap" })
+        end),
+        desc = "Debug File",
+      },
+      {
+        "<leader>tD",
+        clear_and_debug(function()
+          local scope = get_scope()
+          require("neotest").run.run({ scope and scope.focus_root or uv.cwd(), strategy = "dap" })
+        end),
+        desc = "Debug All Test Files",
       },
       {
         "<leader>ta",
