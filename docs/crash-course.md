@@ -796,8 +796,16 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 ### Java Code Actions
 
 Java refactors and generate actions come from JDTLS code actions.
-Use `<leader>ca` or `<A-CR>` to open the code action list with
-`actions-preview.nvim` diff preview before applying.
+Use `<leader>ca` or `<A-CR>` to open the code action list in
+`actions-preview.nvim`.
+
+Important limitation:
+
+- edit-backed actions usually show a real diff preview before apply
+- many Java refactors are command-only JDTLS actions, so they cannot be
+  diff-previewed and may show the fallback “Preview is not available” message
+
+This is expected behavior, not a broken Neovim or LSP setup.
 
 ---
 

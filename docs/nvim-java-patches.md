@@ -214,8 +214,8 @@ Consequence:
 Current local workaround:
 
 - `Action.rename` accepts both:
-  - correct colon-call shape
-  - broken dot-call shape
+    - correct colon-call shape
+    - broken dot-call shape
 - `normalize_rename_targets(...)` also wraps single rename targets into the
   list shape expected by upstream `Action:rename`
 
@@ -261,8 +261,8 @@ Reasoning:
 
 - upstream `Action:rename` expects a list and iterates with `ipairs(...)`
 - rename payloads may arrive as:
-  - a single target object
-  - a target list
+    - a single target object
+    - a target list
 - wrapping the single-target case into `{ params }` keeps the upstream method
   happy
 

@@ -48,7 +48,7 @@ nvim-lspconfig  ─────────────────────�
   │     └── neo-tree.nvim     ── (tree triggers file ops)
   ├── fidget.nvim             ── LSP progress spinner (bottom-right)
   ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
-  ├── actions-preview.nvim    ── code action picker with diff preview (<leader>ca, <A-CR>)
+  ├── actions-preview.nvim    ── code action picker; shows diff previews for edit-backed actions (<leader>ca, <A-CR>)
   └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (off by default, <leader>ud toggle)
 ```
 
@@ -643,6 +643,8 @@ lazy.nvim
 
 - **Java LSP:** `nvim-java` owns jdtls entirely. `lspconfig` + `mason-lspconfig` are explicitly told to skip it (`server_name ~= "jdtls"`,
   `vim.g.lspconfig_jdtls_enabled = false`).
+- **Java code actions:** `<leader>ca` / `<A-CR>` still go through `actions-preview.nvim`, but many JDTLS refactors are command-only and cannot show a real diff
+  preview.
 - **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Blocked when LSP errors exist. Triggers format after save.
 - **Reference style:** Underline is enabled by default, reference background is disabled by default. Toggle them with `<leader>uu` and `<leader>uH`.
 - **Go format on save:** Skipped in `conform.format_on_save` for Go — formatting is done manually or via gopls.
