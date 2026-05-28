@@ -10,6 +10,22 @@ local function has_explicit_selection(params)
     and not (params.range.start.line == params.range["end"].line and params.range.start.character == params.range["end"].character)
 end
 
+local function normalize_rename_targets(params)
+  if type(params) ~= "table" then
+    return nil
+  end
+
+  if params.uri and params.offset and params.length then
+    return { params }
+  end
+
+  if not vim.tbl_isempty(params) then
+    return params
+  end
+
+  return nil
+end
+
 local function select_inferred_selection(selection_res, ui, List)
   local selection = selection_res[1]
   if #selection_res > 1 then
@@ -76,10 +92,35 @@ function M.apply_refactor_patches(debug_log)
   local ui = require("java.ui.utils")
   local List = require("java-core.utils.list")
 
+  local orig_rename = Action.rename
   local orig_choose_imports = Action.choose_imports
   local orig_get_selections = Refactor.get_selections
   local orig_java_infer_selection = JdtlsClient.java_infer_selection
   local orig_java_get_refactor_edit = JdtlsClient.java_get_refactor_edit
+  local orig_perform_refactor_edit = Refactor.perform_refactor_edit
+  local orig_run_lsp_client_command = Refactor.run_lsp_client_command
+
+  Action.rename = function(self, params)
+    -- nvim-java dispatches rename with dot-call syntax:
+    --   action.rename(params)
+    -- even though Action:rename is defined with colon syntax.
+    -- In that broken call path, `self` is actually the rename target list and
+    -- `params` is nil. Accept both shapes until upstream fixes the caller.
+    local raw_params = params
+    if raw_params == nil and type(self) == "table" and (self.uri or not vim.tbl_isempty(self)) then
+      raw_params = self
+    end
+
+    local normalized = normalize_rename_targets(raw_params)
+    if not normalized then
+      vim.notify("Java refactor applied, but rename session did not start", vim.log.levels.INFO, {
+        title = "nvim-java",
+      })
+      return
+    end
+
+    return orig_rename(self, normalized)
+  end
 
   Action.choose_imports = function(self, selections)
     if type(selections) ~= "table" then
@@ -115,6 +156,23 @@ function M.apply_refactor_patches(debug_log)
       })
     end
     return result
+  end
+
+  Refactor.perform_refactor_edit = function(self, changes)
+    debug_log("performRefactorEdit", {
+      changes = changes,
+      command = changes and changes.command or nil,
+      command_arguments = changes and changes.command and changes.command.arguments or nil,
+    })
+    return orig_perform_refactor_edit(self, changes)
+  end
+
+  Refactor.run_lsp_client_command = function(self, command_name, arguments)
+    debug_log("runLspClientCommand", {
+      command_name = command_name,
+      arguments = arguments,
+    })
+    return orig_run_lsp_client_command(self, command_name, arguments)
   end
 
   Refactor.get_selections = function(self, refactor_type, params)

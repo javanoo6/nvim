@@ -162,27 +162,67 @@ Current file:
 |--------------------------------------------|----------------------------------------------------------------------------------|----------------------------------------------|
 | `is_extract_variable_refactor`             | identifies the two extract-variable actions                                      | keep while extract-variable patch exists     |
 | `has_explicit_selection`                   | distinguishes true selection from cursor-only zero-width range                   | keep while extract-variable patch exists     |
+| `normalize_rename_targets`                 | normalizes rename payload shape into the list form expected by `nvim-java`       | keep until upstream rename dispatch is fixed |
 | `select_inferred_selection`                | turns JDTLS inferred candidates into the `List` object expected by `nvim-java`   | keep while extract-variable patch exists     |
 | `infer_selection_or_fallback`              | uses original selection flow first, then falls back to inferred JDTLS selections | keep while extract-variable patch exists     |
+| `Action.rename` patch                      | repairs broken rename dispatch in `nvim-java` and accepts both call styles       | keep until upstream rename dispatch is fixed |
 | `Action.choose_imports` patch              | guards against non-table import-candidate payloads                               | keep for now, test later                     |
 | `JdtlsClient.java_infer_selection` patch   | instrumentation only; logs inferred selection flow                               | removable after debugging                    |
 | `JdtlsClient.java_get_refactor_edit` patch | instrumentation only; logs refactor edit flow                                    | removable after debugging                    |
 | `Refactor.get_selections` patch            | real behavioral workaround for cursor-based extract-variable refactors           | keep until upstream client behavior is fixed |
 
-### Removed patch
+### Confirmed rename root cause
 
-The earlier rename normalization patch was removed.
+The rename failure after a successful extract-variable refactor is a client-side
+`nvim-java` bug, not a JDTLS bug.
 
-Old behavior:
+Observed behavior:
 
-- wrapped rename payloads into the shape expected by `nvim-java`
-- logged malformed rename targets
-- tried to compensate for buggy rename payloads
+- JDTLS returns a valid workspace edit
+- `nvim-java` applies the edit successfully
+- the follow-up rename command `java.action.rename` is dispatched with valid
+  rename arguments
+- but the rename session still does not start unless patched locally
 
-Removal reason:
+Confirmed cause:
 
-- the locally built JDTLS already contains the needed fix
-- keeping the extra rename wrapper only increased config complexity
+- `nvim-java` defines the method as:
+
+```lua
+function Action:rename(params)
+```
+
+- but calls it as:
+
+```lua
+action.rename(params)
+```
+
+instead of:
+
+```lua
+action:rename(params)
+```
+
+Consequence:
+
+- Lua passes the rename payload into `self`
+- `params` becomes `nil`
+- upstream code reaches `ipairs(params)` and fails, or cannot start the rename
+  flow
+
+Current local workaround:
+
+- `Action.rename` accepts both:
+  - correct colon-call shape
+  - broken dot-call shape
+- `normalize_rename_targets(...)` also wraps single rename targets into the
+  list shape expected by upstream `Action:rename`
+
+Removal condition:
+
+- remove this patch pair once upstream `nvim-java` fixes the caller to use
+  `action:rename(params)`
 
 ### Detailed reasoning for each remaining helper
 
@@ -211,6 +251,26 @@ Reasoning:
 - explicit selection and cursor inference should not be treated the same way
 - only the cursor-inference case needed heavy patching
 
+#### `normalize_rename_targets(params)`
+
+Purpose:
+
+- makes rename payload shape consistent for upstream `Action:rename`
+
+Reasoning:
+
+- upstream `Action:rename` expects a list and iterates with `ipairs(...)`
+- rename payloads may arrive as:
+  - a single target object
+  - a target list
+- wrapping the single-target case into `{ params }` keeps the upstream method
+  happy
+
+Status detail:
+
+- keep until upstream rename dispatch is fixed
+- remove together with the `Action.rename` patch
+
 #### `select_inferred_selection(selection_res, ui, List)`
 
 Purpose:
@@ -235,6 +295,25 @@ Reasoning:
 
 - this is the conservative patch path
 - it minimizes behavioral drift from upstream `nvim-java`
+
+#### `Action.rename` patch
+
+Purpose:
+
+- works around the broken rename dispatch in `nvim-java`
+
+Reasoning:
+
+- debug tracing proved `runLspClientCommand(...)` receives valid rename
+  arguments
+- the breakage happens after dispatch because `nvim-java` calls a colon-method
+  with dot syntax
+- the patch accepts both calling conventions and recovers locally
+
+Status detail:
+
+- must keep for now
+- remove once upstream `nvim-java` fixes the method call
 
 #### `Action.choose_imports` patch
 
