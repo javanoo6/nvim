@@ -171,12 +171,6 @@ return {
             })
           end,
 
-          ["helm_ls"] = function()
-            require("lspconfig").helm_ls.setup({
-              capabilities = capabilities,
-            })
-          end,
-
           -- Lua specific
           ["lua_ls"] = function()
             vim.lsp.config("lua_ls", {
@@ -184,7 +178,8 @@ return {
               on_init = function(client)
                 if client.workspace_folders then
                   local path = client.workspace_folders[1].name
-                  if path ~= vim.fn.stdpath("config")
+                  if
+                    path ~= vim.fn.stdpath("config")
                     and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
                   then
                     return
@@ -243,7 +238,6 @@ return {
       end
 
       -- Java keymaps (using <leader>j group defined in which-key)
-      local map = require("util").map
       local java_debug = require("util.java_debug")
       local function jdtls_range_from_selection(bufnr, mode)
         local start_pos = vim.fn.getpos("v")
@@ -272,58 +266,6 @@ return {
         }
       end
 
-      local function run_java_refactor(action_name)
-        return function()
-          local ok_factory, factory = pcall(require, "java-refactor.utils.instance-factory")
-          if not ok_factory then
-            vim.notify("nvim-java refactor API is unavailable", vim.log.levels.ERROR, { title = "nvim-java" })
-            return
-          end
-
-          local ok_lsp, lsp_utils = pcall(require, "java-core.utils.lsp")
-          if not ok_lsp then
-            vim.notify("nvim-java LSP helpers are unavailable", vim.log.levels.ERROR, { title = "nvim-java" })
-            return
-          end
-
-          local client = lsp_utils.get_jdtls()
-          local bufnr = vim.api.nvim_get_current_buf()
-          local mode = vim.api.nvim_get_mode().mode
-          local params
-
-          if mode == "v" or mode == "V" then
-            local range = jdtls_range_from_selection(bufnr, mode)
-            params = vim.lsp.util.make_given_range_params(range.start, range["end"], bufnr, client.offset_encoding)
-          else
-            params = vim.lsp.util.make_range_params(0, client.offset_encoding)
-          end
-
-          params.context = {
-            diagnostics = vim.lsp.diagnostic.get_line_diagnostics(0),
-            triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked,
-            only = { "refactor.extract.variable" },
-          }
-
-          local ok_runner, runner = pcall(require, "async.runner")
-          if not ok_runner then
-            vim.notify("nvim-java async runner is unavailable", vim.log.levels.ERROR, { title = "nvim-java" })
-            return
-          end
-
-          local ok_error_handler, get_error_handler = pcall(require, "java-refactor.utils.error_handler")
-          if not ok_error_handler then
-            vim.notify("nvim-java error handler is unavailable", vim.log.levels.ERROR, { title = "nvim-java" })
-            return
-          end
-
-          runner(function()
-            factory.get_action().refactor:refactor(action_name, params, nil)
-          end)
-            .catch(get_error_handler("Failed to apply Java refactoring"))
-            .run()
-        end
-      end
-
       map("n", "<leader>jr", "<cmd>JavaRunnerRunMain<cr>", { desc = "Run Main" })
       map("n", "<leader>jd", java_debug.debug_main, { desc = "Debug Main" })
       map("n", "<leader>jc", "<cmd>JavaRunnerStopMain<cr>", { desc = "Stop Main" })
@@ -334,7 +276,6 @@ return {
       map("n", "<leader>jM", "<cmd>JavaTestDebugCurrentMethod<cr>", { desc = "Debug Current Method" })
       map("n", "<leader>jD", "<cmd>JavaTestDebugAllTests<cr>", { desc = "Debug All Tests" })
       map("n", "<leader>jv", "<cmd>JavaTestViewLastReport<cr>", { desc = "View Test Report" })
-
     end,
   },
 
@@ -344,18 +285,104 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     config = function()
       local actions = require("actions-preview")
+      local hl = require("actions-preview.highlight")
+      local themes = require("telescope.themes")
+      local entry_display = require("telescope.pickers.entry_display")
+
+      local function classify_action(action)
+        local raw = action.action or {}
+        local has_edit = raw.edit ~= nil
+        local has_command = raw.command ~= nil
+        local label
+
+        if has_edit and has_command then
+          label = "edit+cmd"
+        elseif has_edit then
+          label = "diff"
+        elseif has_command then
+          label = "cmd"
+        else
+          label = "plain"
+        end
+
+        return {
+          client = action:client_name(),
+          has_edit = has_edit,
+          has_command = has_command,
+          label = label,
+        }
+      end
+
+      local function make_value(action)
+        local meta = classify_action(action)
+        local title = string.format("[%s] %s", meta.label, action:title())
+
+        return {
+          title = title,
+          client_name = meta.client,
+          meta = meta,
+          -- Keep previewable actions grouped before command-only ones.
+          ordinal = string.format("%d %d %s %s", meta.has_edit and 0 or 1, meta.has_command and 1 or 0, meta.client, action:title()),
+        }
+      end
+
+      local function make_make_display(values)
+        local displayer = entry_display.create({
+          separator = " ",
+          items = {
+            { width = 8 },
+            { width = 12 },
+            { remaining = true },
+          },
+        })
+
+        return function(entry)
+          local value = entry.value
+          local meta = value.meta or {}
+          local kind_hl = meta.has_edit and "DiagnosticOk" or (meta.has_command and "DiagnosticWarn" or "Comment")
+
+          return displayer({
+            { string.format("[%s]", meta.label or "plain"), kind_hl },
+            { value.client_name or "", "Comment" },
+            { value.title or "", "Normal" },
+          })
+        end
+      end
 
       require("actions-preview").setup({
-        telescope = {
-          sorting_strategy = "ascending",
-          layout_strategy = "vertical",
-          layout_config = {
-            width = 0.8,
-            height = 0.9,
-            prompt_position = "bottom",
-            preview_cutoff = 20,
-          },
+        diff = {
+          algorithm = "patience",
+          ignore_whitespace = true,
+          ctxlen = 4,
         },
+        highlight_command = {
+          function()
+            return hl.delta()
+          end,
+        },
+        telescope = vim.tbl_extend(
+          "force",
+          themes.get_dropdown({
+            layout_config = {
+              width = 0.85,
+            },
+          }),
+          {
+            sorting_strategy = "ascending",
+            layout_strategy = "vertical",
+            layout_config = {
+              width = 0.85,
+              height = 0.9,
+              prompt_position = "top",
+              preview_cutoff = 20,
+              preview_height = function(_, _, max_lines)
+                return math.max(15, max_lines - 12)
+              end,
+            },
+            make_value = make_value,
+            make_make_display = make_make_display,
+          }
+        ),
       })
 
       local function code_actions_from_any_mode()

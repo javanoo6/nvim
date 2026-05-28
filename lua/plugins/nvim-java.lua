@@ -2,16 +2,35 @@
 
 return {
   "nvim-java/nvim-java",
+  dependencies = {
+    "JavaHello/spring-boot.nvim",
+  },
   config = function()
     local java21_home = "/usr/lib/jvm/java-21-openjdk-amd64"
     local java21_bin = java21_home .. "/bin"
+    local java_jdtls = require("util.java_jdtls")
+    local java_patches = require("util.java_patches")
+    local jdtls_build = java_jdtls.resolve_local_build()
+    local default_jdtls_version = jdtls_build.default_jdtls_version
+    local jdtls_version = jdtls_build.jdtls_version
+    local jdtls_dir_override = jdtls_build.jdtls_dir_override
     local capabilities =
       vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())
+    local debug_log = java_jdtls.make_debug_log()
+
+    -- Allow pinning a released JDTLS milestone or pointing at a manually
+    -- unpacked custom build without editing the plugin itself. Default to
+    -- the local JDTLS build when it exists so Neovim uses the patched server.
+    java_jdtls.patch_pkgm_install_dir(jdtls_dir_override)
+    java_jdtls.register_info_command(jdtls_dir_override, jdtls_version)
 
     require("java").setup({
       checks = {
         nvim_version = true,
         nvim_jdtls_conflict = true,
+      },
+      jdtls = {
+        version = jdtls_version,
       },
       lombok = { enable = true },
       java_test = { enable = true },
@@ -29,49 +48,15 @@ return {
     })
 
     -- Guard nvim-java against malformed/empty JDTLS payloads.
-    do
-      local Action = require("java-refactor.action")
-      local orig_rename = Action.rename
-      local orig_choose_imports = Action.choose_imports
-
-      Action.rename = function(self, params)
-        if type(params) ~= "table" or vim.tbl_isempty(params) then
-          vim.notify("Java rename command returned no targets", vim.log.levels.WARN, {
-            title = "nvim-java",
-          })
-          return
-        end
-
-        return orig_rename(self, params)
-      end
-
-      Action.choose_imports = function(self, selections)
-        if type(selections) ~= "table" then
-          vim.notify("Java import chooser received no candidates", vim.log.levels.WARN, {
-            title = "nvim-java",
-          })
-          return {}
-        end
-
-        return orig_choose_imports(self, selections)
-      end
-    end
+    java_patches.apply_refactor_patches(debug_log)
 
     -- Patch nvim-java's hardcoded -Xms1G with custom heap sizes.
     -- Must happen after setup() so the module is already loaded.
-    local jdtls_cmd = require("java-core.ls.servers.jdtls.cmd")
-    local orig_get_jvm_args = jdtls_cmd.get_jvm_args
-    jdtls_cmd.get_jvm_args = function(cfg)
-      local list = orig_get_jvm_args(cfg)
-      for i, v in ipairs(list) do
-        if v == "-Xms1G" then
-          list[i] = "-Xms2G"
-          break
-        end
-      end
-      list:push("-Xmx8G")
-      return list
-    end
+    java_jdtls.patch_jdtls_cmd({
+      default_jdtls_version = default_jdtls_version,
+      jdtls_version = jdtls_version,
+      jdtls_dir_override = jdtls_dir_override,
+    })
 
     vim.lsp.config("jdtls", {
       capabilities = capabilities,
