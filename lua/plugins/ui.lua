@@ -238,6 +238,14 @@ return {
         },
       },
     },
+    config = function(_, opts)
+      local hooks = require("ibl.hooks")
+
+      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
+      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_tab_indent_level)
+
+      require("ibl").setup(opts)
+    end,
     main = "ibl",
   },
 
@@ -292,6 +300,9 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     opts = {
       delay = 100,
+      -- Treesitter locals currently crashes with the pinned nvim-treesitter build.
+      -- Keep LSP-based references and fall back to regex matching instead.
+      providers = { "lsp", "regex" },
       large_file_cutoff = 2000,
       large_file_overrides = {
         providers = { "lsp" },
