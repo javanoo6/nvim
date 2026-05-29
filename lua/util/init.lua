@@ -54,6 +54,13 @@ local function get_reference_background_color()
   return bg and (bg + 0x101010) or nil
 end
 
+local function get_hl_attr(name, attr)
+  local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
+  if ok and hl then
+    return hl[attr]
+  end
+end
+
 function M.apply_reference_style()
   local state = M.reference_style_state
   local bg = state.background and get_reference_background_color() or nil
@@ -65,6 +72,15 @@ function M.apply_reference_style()
   vim.api.nvim_set_hl(0, "LspReferenceText", { bg = bg, underline = underline })
   vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = bg, underline = underline })
   vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = bg, underline = underline, bold = state.background })
+end
+
+function M.apply_diagnostic_style()
+  local comment_fg = get_hl_attr("Comment", "fg")
+
+  vim.api.nvim_set_hl(0, "DiagnosticUnnecessary", {
+    fg = comment_fg,
+    strikethrough = true,
+  })
 end
 
 function M.toggle_reference_underline()
