@@ -821,14 +821,14 @@ a debug server on a port, and nvim-dap connects to it.
 | `:JavaTestDebugCurrentMethod` | Debug test method under cursor   |
 | `:JavaTestDebugCurrentClass`  | Debug entire test class          |
 | `:JavaTestDebugAllTests`      | Debug all tests in workspace     |
-| `:JavaDebugCurrentFile`       | Debug main class/Spring Boot app |
+| `<leader>jd`                  | Debug main class/Spring Boot app |
 
 **Via Lua API** (if you want custom keybindings):
 
 ```lua
 require('java').test.debug_current_method()    -- Debug method
 require('java').test.debug_current_class()     -- Debug class
-require('java').debug.debug_current_file()     -- Debug main
+require('util.java_debug').debug_main()        -- Debug main
 ```
 
 #### Workflow Example

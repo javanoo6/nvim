@@ -81,24 +81,40 @@ local function refresh_reference_style()
   end, 20)
 end
 
+local function refresh_diagnostic_style()
+  vim.defer_fn(function()
+    require("util").apply_diagnostic_style()
+  end, 20)
+end
+
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = augroup("illuminate_colors"),
-  callback = refresh_reference_style,
+  callback = function()
+    refresh_reference_style()
+    refresh_diagnostic_style()
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "VimEnter", "UIEnter" }, {
   group = augroup("symbol_reference_startup"),
-  callback = refresh_reference_style,
+  callback = function()
+    refresh_reference_style()
+    refresh_diagnostic_style()
+  end,
 })
 
 vim.api.nvim_create_autocmd("User", {
   group = augroup("symbol_reference_verylazy"),
   pattern = "VeryLazy",
-  callback = refresh_reference_style,
+  callback = function()
+    refresh_reference_style()
+    refresh_diagnostic_style()
+  end,
 })
 
 vim.schedule(function()
   refresh_reference_style()
+  refresh_diagnostic_style()
 end)
 
 -- Helm chart templates: treat templated YAML as Helm, not plain YAML

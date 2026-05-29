@@ -88,16 +88,16 @@ require('java').test.debug_all_tests()         -- <leader>jma
 
 #### Spring Boot / Main Class
 
-Place cursor on a main class (e.g., `@SpringBootApplication`):
+Use the configured Java debug entrypoint:
 
 ```
-:JavaDebugCurrentFile
+<leader>jd
 ```
 
 Or via API:
 
 ```lua
-require('java').debug.debug_current_file()
+require('util.java_debug').debug_main()
 ```
 
 #### Debug Last Run File
@@ -314,7 +314,7 @@ killall java        # If no other java apps running
 |---------------------------|-----------------------------------|
 | Debug current test method | `:JavaTestDebugCurrentMethod`     |
 | Debug current test class  | `:JavaTestDebugCurrentClass`      |
-| Debug main file           | `:JavaDebugCurrentFile`           |
+| Debug main app            | `<leader>jd`                      |
 | Toggle breakpoint         | `<leader>db`                      |
 | Continue                  | `<leader>dc`                      |
 | Step into                 | `<leader>di`                      |

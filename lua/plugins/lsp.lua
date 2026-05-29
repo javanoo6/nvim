@@ -18,6 +18,7 @@ return {
     },
     config = function()
       local map = require("util").map
+      local java_codelens = require("util.java_codelens")
       local inlay_hints = require("util.inlay_hints")
 
       local function rename_symbol()
@@ -44,6 +45,7 @@ return {
           source = true,
         },
       })
+      vim.diagnostic.enable(true)
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = require("util").augroup("lsp_attach"),
@@ -83,21 +85,7 @@ return {
           end
 
           if client and client.name == "jdtls" and client.server_capabilities.codeLensProvider then
-            local group = require("util").augroup("java_codelens_" .. event.buf)
-
-            local function refresh_codelens()
-              if vim.api.nvim_buf_is_valid(event.buf) and vim.bo[event.buf].buflisted ~= false then
-                pcall(vim.lsp.codelens.refresh, { bufnr = event.buf })
-              end
-            end
-
-            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-              group = group,
-              buffer = event.buf,
-              callback = refresh_codelens,
-            })
-
-            vim.schedule(refresh_codelens)
+            java_codelens.attach(event.buf, client)
           end
         end,
       })
@@ -239,43 +227,10 @@ return {
 
       -- Java keymaps (using <leader>j group defined in which-key)
       local java_debug = require("util.java_debug")
-      local function jdtls_range_from_selection(bufnr, mode)
-        local start_pos = vim.fn.getpos("v")
-        local end_pos = vim.fn.getpos(".")
-        local start_row = start_pos[2]
-        local start_col = start_pos[3]
-        local end_row = end_pos[2]
-        local end_col = end_pos[3]
-
-        if start_row == end_row and end_col < start_col then
-          end_col, start_col = start_col, end_col
-        elseif end_row < start_row then
-          start_row, end_row = end_row, start_row
-          start_col, end_col = end_col, start_col
-        end
-
-        if mode == "V" then
-          start_col = 1
-          local lines = vim.api.nvim_buf_get_lines(bufnr, end_row - 1, end_row, true)
-          end_col = #lines[1]
-        end
-
-        return {
-          start = { start_row, start_col - 1 },
-          ["end"] = { end_row, end_col - 1 },
-        }
-      end
-
       map("n", "<leader>jr", "<cmd>JavaRunnerRunMain<cr>", { desc = "Run Main" })
       map("n", "<leader>jd", java_debug.debug_main, { desc = "Debug Main" })
       map("n", "<leader>jc", "<cmd>JavaRunnerStopMain<cr>", { desc = "Stop Main" })
       map("n", "<leader>ja", java_debug.attach_remote, { desc = "Attach Remote JVM" })
-      map("n", "<leader>jt", "<cmd>JavaTestRunCurrentClass<cr>", { desc = "Test Current Class" })
-      map("n", "<leader>jT", "<cmd>JavaTestDebugCurrentClass<cr>", { desc = "Debug Current Class" })
-      map("n", "<leader>jm", "<cmd>JavaTestRunCurrentMethod<cr>", { desc = "Test Current Method" })
-      map("n", "<leader>jM", "<cmd>JavaTestDebugCurrentMethod<cr>", { desc = "Debug Current Method" })
-      map("n", "<leader>jD", "<cmd>JavaTestDebugAllTests<cr>", { desc = "Debug All Tests" })
-      map("n", "<leader>jv", "<cmd>JavaTestViewLastReport<cr>", { desc = "View Test Report" })
     end,
   },
 
@@ -427,6 +382,9 @@ return {
       local tid = require("tiny-inline-diagnostic")
       tid.setup(opts)
       tid.enable()
+      vim.schedule(function()
+        tid.enable()
+      end)
       vim.diagnostic.config({ virtual_text = false })
     end,
   },
