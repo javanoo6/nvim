@@ -4,11 +4,12 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
     lazy = false,
     build = ":TSUpdate",
-    opts = {
-      ensure_installed = {
+    config = function()
+      local treesitter = require("nvim-treesitter")
+      local languages = {
         "bash",
         "c",
         "go",
@@ -31,39 +32,44 @@ return {
         "xml",
         "groovy",
         "kotlin",
-      },
-      auto_install = true,
-      highlight = { enable = true },
-      indent = { enable = true },
-      incremental_selection = {
-        enable = true,
-        -- THIS WORKS ONLY IN V MODE
-        keymaps = {
-          init_selection = "<cr>", -- Start selection
-          node_incremental = "<tab>", -- Move to parent node
-          node_decremental = "<S-tab>", -- Back to previous node
-          scope_incremental = "<bs>", -- Move to next scope
-        },
-      },
-    },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
+      }
+
+      treesitter.setup()
+      local installed = {}
+      for _, lang in ipairs(treesitter.get_installed("parsers")) do
+        installed[lang] = true
+      end
+
+      local missing = vim.tbl_filter(function(lang)
+        return not installed[lang]
+      end, languages)
+      if #missing > 0 then
+        treesitter.install(missing)
+      end
+
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("custom_treesitter", { clear = true }),
+        pattern = languages,
+        callback = function()
+          vim.treesitter.start()
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
+      })
     end,
   },
 
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
+    branch = "main",
     dependencies = "nvim-treesitter/nvim-treesitter",
     config = function()
-      require("nvim-treesitter.configs").setup({
+      require("nvim-treesitter-textobjects").setup({
         textobjects = {
           select = {
-            enable = true,
             lookahead = true,
             -- Keymaps are defined in lua/config/keymaps.lua for Which-key visibility
           },
           move = {
-            enable = true,
             set_jumps = true,
             -- Keymaps are defined in lua/config/keymaps.lua for Which-key visibility
           },
