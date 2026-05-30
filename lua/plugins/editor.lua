@@ -34,14 +34,14 @@ return {
       {
         "<leader><space>",
         function()
-          require("telescope.builtin").find_files({ cwd = require("util").get_cwd() })
+          require("telescope.builtin").find_files({ cwd = require("util").get_explorer_cwd() })
         end,
         desc = "Find files (cwd)",
       },
       {
         "<leader>ff",
         function()
-          require("telescope.builtin").find_files({ cwd = require("util").get_cwd() })
+          require("telescope.builtin").find_files({ cwd = require("util").get_explorer_cwd() })
         end,
         desc = "Find files (cwd)",
       },
@@ -55,7 +55,7 @@ return {
       {
         "<leader>fg",
         function()
-          require("telescope.builtin").live_grep({ cwd = require("util").get_cwd() })
+          require("telescope.builtin").live_grep({ cwd = require("util").get_explorer_cwd() })
         end,
         desc = "Grep (cwd)",
       },
