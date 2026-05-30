@@ -133,6 +133,7 @@ return {
           file_ignore_patterns = {
             "%.git/",
             "%.DS_Store$",
+            "intellij%-code%-formatter/",
             "node_modules/",
             "%.jpg$",
             "%.jpeg$",
