@@ -235,7 +235,7 @@ return {
       {
         "<leader>e",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_cwd() })
+          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_explorer_cwd() })
         end,
         desc = "Explorer (cwd)",
       },
@@ -249,6 +249,14 @@ return {
     },
     opts = {
       filesystem = {
+        bind_to_cwd = false,
+        cwd_target = {
+          -- Keep the sidebar aligned with explicit :cd and with the custom
+          -- scope switch below. The default "tab" target can preserve an old
+          -- tab-local cwd and make <leader>e reopen the previous directory.
+          sidebar = "global",
+          current = "window",
+        },
         follow_current_file = { enabled = true },
         hijack_netrw_behavior = "open_current",
         commands = {
@@ -335,24 +343,14 @@ return {
             vim.fn.setreg("+", path)
             vim.notify("Copied path: " .. path)
           end,
-          set_scope_root = function(state)
-            local node = state.tree:get_node()
-            while node and node.type ~= "directory" do
-              local parent_id = node:get_parent_id()
-              node = parent_id and state.tree:get_node(parent_id) or nil
-            end
-
-            if not node then
-              return
-            end
-
-            local path = node:get_id()
+          apply_scope_root = function(path)
+            local util = require("util")
             local escaped = vim.fn.fnameescape(path)
-            vim.cmd("cd " .. escaped)
 
-            -- Propagate the manual scope choice to every real window in the tab.
-            -- Otherwise an older window-local :lcd can override the new cwd
-            -- when you leave Neo-tree and reopen cwd-based tools.
+            util.pin_explorer_cwd(path)
+            vim.api.nvim_set_current_dir(path)
+            vim.cmd("tcd " .. escaped)
+
             for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
               if vim.api.nvim_win_is_valid(win) then
                 local cfg = vim.api.nvim_win_get_config(win)
@@ -365,9 +363,30 @@ return {
                 end
               end
             end
+          end,
+          close_and_remember_root = function(state)
+            local util = require("util")
+            if state.path then
+              util.pin_explorer_cwd(state.path)
+            end
+            require("neo-tree.sources.common.commands").close_window(state)
+          end,
+          set_scope_root = function(state)
+            local node = state.tree:get_node()
+            while node and node.type ~= "directory" do
+              local parent_id = node:get_parent_id()
+              node = parent_id and state.tree:get_node(parent_id) or nil
+            end
+
+            if not node then
+              return
+            end
+
+            local path = node:get_id()
+            state.commands.apply_scope_root(path)
 
             require("neo-tree.sources.filesystem")._navigate_internal(state, path, nil, nil, false)
-            vim.notify("Scope set to " .. vim.fn.fnamemodify(path, ":~"))
+            require("util").pin_explorer_cwd(path)
           end,
         },
         window = {
@@ -392,6 +411,8 @@ return {
             ["<C-v>"] = "open_vsplit",
             ["<C-x>"] = "open_split",
             ["<C-t>"] = "open_tabnew",
+            ["q"] = "close_and_remember_root",
+            ["<esc>"] = "close_and_remember_root",
           },
         },
       },

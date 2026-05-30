@@ -147,8 +147,112 @@ local function get_buf_path(bufnr)
   return normalize(name)
 end
 
+local explorer_cwd_state = {
+  initialized = false,
+  pinned_path = nil,
+  pinned_until = 0,
+}
+
+local function now_ms()
+  return vim.uv.hrtime() / 1000000
+end
+
+local function is_pinned()
+  return explorer_cwd_state.pinned_path ~= nil and now_ms() < explorer_cwd_state.pinned_until
+end
+
+local function ensure_explorer_cwd_tracking()
+  if explorer_cwd_state.initialized then
+    return
+  end
+  explorer_cwd_state.initialized = true
+
+  vim.api.nvim_create_autocmd("DirChanged", {
+    group = vim.api.nvim_create_augroup("custom_explorer_cwd", { clear = true }),
+    callback = function()
+      local event = vim.v.event or {}
+      local scope = event.scope
+      local cwd = normalize(event.cwd)
+      if scope == "window" then
+        return
+      end
+
+      if is_pinned() and cwd and cwd ~= explorer_cwd_state.pinned_path then
+        return
+      end
+
+      if cwd then
+        vim.g.explorer_cwd = cwd
+      end
+    end,
+  })
+end
+
 function M.get_cwd()
-  return normalize(vim.fn.getcwd())
+  local win_cwd = normalize(vim.fn.getcwd())
+  local tab_cwd = normalize(vim.fn.getcwd(-1, 0))
+  local global_cwd = normalize(vim.fn.getcwd(-1, -1))
+
+  if win_cwd == tab_cwd or win_cwd == global_cwd then
+    return win_cwd
+  end
+
+  local path = get_buf_path(0)
+  if not path then
+    return tab_cwd or global_cwd or win_cwd
+  end
+
+  if tab_cwd and path_has_prefix(path, tab_cwd) and not path_has_prefix(path, win_cwd) then
+    return tab_cwd
+  end
+
+  if global_cwd and path_has_prefix(path, global_cwd) and not path_has_prefix(path, win_cwd) then
+    return global_cwd
+  end
+
+  return win_cwd or tab_cwd or global_cwd
+end
+
+function M.get_global_cwd()
+  return normalize(vim.fn.getcwd(-1, -1)) or M.get_cwd()
+end
+
+function M.set_explorer_cwd(path)
+  ensure_explorer_cwd_tracking()
+  path = normalize(path)
+  if path then
+    vim.g.explorer_cwd = path
+  end
+  return path
+end
+
+function M.pin_explorer_cwd(path, duration_ms)
+  ensure_explorer_cwd_tracking()
+  path = M.set_explorer_cwd(path)
+  if not path then
+    return nil
+  end
+
+  explorer_cwd_state.pinned_path = path
+  explorer_cwd_state.pinned_until = now_ms() + (duration_ms or 1000)
+  return path
+end
+
+function M.get_explorer_cwd()
+  ensure_explorer_cwd_tracking()
+
+  local raw = vim.g.explorer_cwd
+  local path = normalize(raw)
+  if is_pinned() and explorer_cwd_state.pinned_path then
+    return explorer_cwd_state.pinned_path
+  end
+  if path and vim.fn.isdirectory(path) == 1 then
+    return path
+  end
+
+  path = M.get_global_cwd()
+  vim.g.explorer_cwd = path
+  return path
 end
 
 function M.get_marker_root(bufnr)
