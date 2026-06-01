@@ -2,6 +2,9 @@
 
 local util = require("util")
 local augroup = util.augroup
+local java_branch_refresh = require("util.java_branch_refresh")
+
+java_branch_refresh.setup()
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -62,6 +65,29 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
     if vim.o.buftype ~= "nofile" then
       vim.cmd("checktime")
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("java_branch_tracking"),
+  pattern = "java",
+  callback = function(event)
+    java_branch_refresh.track_buffer(event.buf)
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = augroup("java_branch_tracking"),
+  pattern = "*.java",
+  callback = function(event)
+    java_branch_refresh.track_buffer(event.buf)
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave", "DirChanged" }, {
+  group = augroup("java_branch_refresh"),
+  callback = function()
+    java_branch_refresh.refresh_if_branch_changed()
   end,
 })
 
