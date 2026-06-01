@@ -10,6 +10,8 @@ return {
     args_allow_files_auto_save = true,
     auto_restore = true,
     auto_restore_last_session = false, -- Don't restore last session automatically when starting nvim without args
+    git_use_branch_name = true,
+    git_auto_restore_on_branch_change = true,
 
     -- Suppress the "Session saved" message
     suppressed_dirs = { "~/", "~/Downloads", "/", "/tmp" },
