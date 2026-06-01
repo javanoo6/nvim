@@ -89,6 +89,37 @@ Until you press `Esc`, it may look like only one line changed.
 | `M`             | Middle of screen                      |
 | `L`             | Bottom of screen                      |
 
+### Counts
+
+Vim lets you prefix many motions and operators with a number.
+
+Core rule:
+
+- `{count}{command}` repeats the command `count` times
+- `{operator}{count}{motion}` applies the operator across that many motions
+- because this config swaps vertical movement, `j` means up and `k` means down
+
+Examples:
+
+| Keys   | Action                                      |
+|--------|---------------------------------------------|
+| `5j`   | Move up 5 lines                             |
+| `5k`   | Move down 5 lines                           |
+| `3w`   | Move forward 3 words                        |
+| `10dd` | Delete 10 lines                             |
+| `3yy`  | Yank 3 lines                                |
+| `5>>`  | Indent 5 lines right                        |
+| `d3w`  | Delete 3 words forward                      |
+| `c2j`  | Change from cursor through 2 lines upward   |
+| `y4k`  | Yank through 4 lines downward               |
+| `V5j`  | Select 5 lines upward in visual line mode   |
+
+Count behavior for `j` and `k`:
+
+- plain `j` and `k` use display-line movement for wrapped lines
+- counted forms like `5j` and `5k` switch to real-line movement
+- so counts stay predictable even when wrapping is on
+
 ### Scrolling (Centered)
 
 | Key     | Action                         |

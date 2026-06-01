@@ -2,9 +2,15 @@
 
 ## Window Movement
 
+Custom direction model in this config: `j = up`, `k = down`.
+
 | Key            | Action                            |
 |----------------|-----------------------------------|
 | `<C-w>h/j/k/l` | Move to left/down/up/right window |
+| `<C-h>`        | Move to left window               |
+| `<C-j>`        | Move to upper window              |
+| `<C-k>`        | Move to lower window              |
+| `<C-l>`        | Move to right window              |
 | `<C-w>s`       | Split horizontal                  |
 | `<C-w>v`       | Split vertical                    |
 | `<C-w>c`       | Close window                      |
@@ -18,11 +24,33 @@
 | Key                 | Action                  |
 |---------------------|-------------------------|
 | `:bnext` / `:bprev` | Next/prev buffer        |
+| `<S-h>` / `<S-l>`   | Prev/next buffer        |
 | `:b <name>`         | Switch by partial name  |
 | `:ls`               | List buffers            |
 | `<C-^>`             | Toggle last two buffers |
 
 ## In-File Movement
+
+## Navigation Matrix
+
+| Keys                | Action                    |
+|---------------------|---------------------------|
+| `h`                 | Left                      |
+| `j`                 | Up                        |
+| `k`                 | Down                      |
+| `l`                 | Right                     |
+| `<C-h>`             | Left window               |
+| `<C-j>`             | Upper window              |
+| `<C-k>`             | Lower window              |
+| `<C-l>`             | Right window              |
+| `<A-j>`             | Move line/selection up    |
+| `<A-k>`             | Move line/selection down  |
+| `<S-h>`             | Previous buffer           |
+| `<S-l>`             | Next buffer               |
+| `Telescope <C-j>`   | Previous item / move up   |
+| `Telescope <C-k>`   | Next item / move down     |
+| `Glance j`          | Previous item / move up   |
+| `Glance k`          | Next item / move down     |
 
 | Key               | Action                                    |
 |-------------------|-------------------------------------------|
