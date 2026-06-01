@@ -425,8 +425,8 @@ Select text first, then press `gsa` + bracket/quote:
 | Key     | Action             |
 |---------|--------------------|
 | `<C-h>` | Go to left window  |
-| `<C-j>` | Go to down window  |
-| `<C-k>` | Go to up window    |
+| `<C-j>` | Go to up window    |
+| `<C-k>` | Go to down window  |
 | `<C-l>` | Go to right window |
 
 ### Move Buffer to Split
@@ -613,7 +613,7 @@ This uses `nvim-cmp` cmdline completion:
 
 | Key               | Action                                                       |
 |-------------------|--------------------------------------------------------------|
-| `<C-j>` / `<C-k>` | Next / Previous                                              |
+| `<C-j>` / `<C-k>` | Previous / Next                                              |
 | `<C-n>` / `<C-p>` | Next / Previous in history                                   |
 | `<C-d>` / `<C-u>` | Scroll preview down / up                                     |
 | `<CR>`            | Open                                                         |
@@ -675,8 +675,8 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 | Key                 | Action                           |
 |---------------------|----------------------------------|
-| `k` / `<Down>`      | Next result                      |
 | `j` / `<Up>`        | Previous result                  |
+| `k` / `<Down>`      | Next result                      |
 | `<Tab>` / `<S-Tab>` | Next / previous location         |
 | `<C-u>` / `<C-d>`   | Scroll preview up / down         |
 | `<CR>`              | Jump to selected result          |
@@ -1189,8 +1189,8 @@ git commit                 →  finalize merge
 | Key     | Action             |
 |---------|--------------------|
 | `<C-h>` | Go to left window  |
-| `<C-j>` | Go to lower window |
-| `<C-k>` | Go to upper window |
+| `<C-j>` | Go to upper window |
+| `<C-k>` | Go to lower window |
 | `<C-l>` | Go to right window |
 
 ---

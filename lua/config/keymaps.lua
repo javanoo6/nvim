@@ -63,10 +63,13 @@ map({ "n", "x" }, "k", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down 
 map({ "n", "x", "o" }, "$", "^", { desc = "First non-blank char" })
 map({ "n", "x", "o" }, "^", "$", { desc = "End of line" })
 
+-- Direction model in this config:
+--   j = up, k = down
+-- Keep modifier variants aligned with that mental model where possible.
 -- Windows
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
+map("n", "<C-j>", "<C-w>k", { desc = "Go to upper window" })
+map("n", "<C-k>", "<C-w>j", { desc = "Go to lower window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase height" })
 map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease height" })
@@ -78,8 +81,8 @@ map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Terminal window navigation (without leaving terminal mode)
 map("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Go to left window" })
-map("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Go to lower window" })
-map("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Go to upper window" })
+map("t", "<C-j>", "<C-\\><C-n><C-w>k", { desc = "Go to upper window" })
+map("t", "<C-k>", "<C-\\><C-n><C-w>j", { desc = "Go to lower window" })
 map("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Go to right window" })
 
 -- Move lines
