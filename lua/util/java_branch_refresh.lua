@@ -15,6 +15,9 @@ local state = {
   restart_inflight = false,
 }
 
+local restart_wait_interval_ms = 100
+local restart_wait_timeout_ms = 5000
+
 local function normalize(path)
   if not path or path == "" then
     return nil
@@ -121,6 +124,54 @@ local function roots_for_buffers()
   return roots
 end
 
+local function start_jdtls_for_roots(changed_roots)
+  local restarted = false
+  for _, buf in ipairs(iter_java_buffers()) do
+    local root = get_root_for_buf(buf)
+    if root and changed_roots[root] then
+      vim.api.nvim_buf_call(buf, function()
+        pcall(vim.cmd, "silent! LspStart jdtls")
+      end)
+      restarted = true
+    end
+  end
+
+  state.restart_inflight = false
+
+  if restarted then
+    local names = {}
+    for root in pairs(changed_roots) do
+      names[#names + 1] = vim.fs.basename(root)
+    end
+    table.sort(names)
+    vim.notify("JDTLS refreshed after Git branch change: " .. table.concat(names, ", "), vim.log.levels.INFO)
+  end
+end
+
+local function wait_for_clients_to_stop(targets, changed_roots, started_at)
+  local all_stopped = true
+  for _, client in ipairs(targets) do
+    if not client:is_stopped() then
+      all_stopped = false
+      break
+    end
+  end
+
+  if all_stopped then
+    start_jdtls_for_roots(changed_roots)
+    return
+  end
+
+  if (vim.uv.now() - started_at) >= restart_wait_timeout_ms then
+    start_jdtls_for_roots(changed_roots)
+    return
+  end
+
+  vim.defer_fn(function()
+    wait_for_clients_to_stop(targets, changed_roots, started_at)
+  end, restart_wait_interval_ms)
+end
+
 local function restart_jdtls(changed_roots)
   if state.restart_inflight then
     return
@@ -140,32 +191,12 @@ local function restart_jdtls(changed_roots)
   end
 
   if #targets > 0 then
-    vim.lsp.stop_client(targets, true)
+    vim.lsp.stop_client(targets)
+    wait_for_clients_to_stop(targets, changed_roots, vim.uv.now())
+    return
   end
 
-  local restarted = false
-  vim.defer_fn(function()
-    for _, buf in ipairs(iter_java_buffers()) do
-      local root = get_root_for_buf(buf)
-      if root and changed_roots[root] then
-        vim.api.nvim_buf_call(buf, function()
-          pcall(vim.cmd, "silent! LspStart jdtls")
-        end)
-        restarted = true
-      end
-    end
-
-    state.restart_inflight = false
-
-    if restarted then
-      local names = {}
-      for root in pairs(changed_roots) do
-        names[#names + 1] = vim.fs.basename(root)
-      end
-      table.sort(names)
-      vim.notify("JDTLS refreshed after Git branch change: " .. table.concat(names, ", "), vim.log.levels.INFO)
-    end
-  end, 150)
+  start_jdtls_for_roots(changed_roots)
 end
 
 function M.track_buffer(bufnr)
