@@ -102,7 +102,10 @@ return {
         },
 
         winbar = {
-          enable = true,
+          -- Glance renders winbar content via the statusline parser. Decompiled
+          -- Java/JDT URIs can contain percent-encoded segments, which trips
+          -- E539 when Glance forwards them unescaped.
+          enable = false,
         },
 
         use_trouble_qf = true, -- your preference
