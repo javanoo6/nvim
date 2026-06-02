@@ -75,6 +75,11 @@ return {
               },
             },
           },
+          maven = {
+            -- Prefer attached dependency sources over decompiled class files
+            -- when Maven artifacts publish -sources.jar files.
+            downloadSources = true,
+          },
           referencesCodeLens = {
             enabled = true,
           },

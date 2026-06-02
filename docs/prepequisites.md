@@ -55,13 +55,38 @@ pip3 install debugpy
 
 ```bash
 # JDK 21 recommended (LTS)
-sudo apt-get install openjdk-21-jdk
+sudo apt-get install openjdk-21-jdk openjdk-21-source
 
 # Set JAVA_HOME (add to ~/.bashrc or ~/.zshrc):
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 
 # nvim-java handles jdtls, java-debug, and vscode-java-test automatically
 ```
+
+Important notes:
+
+- `openjdk-21-source` is required for JDK source navigation. On Ubuntu,
+  `java --version` can be correct while
+  `/usr/lib/jvm/java-21-openjdk-amd64/lib/src.zip` is still broken because the
+  source archive is packaged separately.
+- If `gd` on JDK methods only opens decompiled content or source navigation
+  fails, verify the source archive:
+
+```bash
+realpath /usr/lib/jvm/java-21-openjdk-amd64/lib/src.zip
+unzip -l /usr/lib/jvm/java-21-openjdk-amd64/lib/src.zip | head
+```
+
+- If needed, install optional local Javadoc too:
+
+```bash
+sudo apt-get install openjdk-21-doc
+```
+
+- Maven dependency navigation is configured to download `-sources.jar` files
+  when available. That means external libraries should usually open as real
+  source; if a dependency publishes no sources, JDTLS falls back to decompiled
+  class content.
 
 ### Node.js / npm
 
@@ -147,6 +172,10 @@ Listed here for reference only.
 | `delve`                | Go debugger (DAP)        |
 
 > `jdtls`, `java-debug`, and `vscode-java-test` are managed by **nvim-java**, not Mason.
+>
+> This repo also disables Glance `winbar` for Java/JDT navigation because
+> decompiled `jdt://...` URIs can trigger `E539` in upstream Glance if rendered
+> through its winbar statusline path.
 
 ---
 
