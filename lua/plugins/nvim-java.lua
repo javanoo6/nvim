@@ -60,6 +60,12 @@ return {
 
     vim.lsp.config("jdtls", {
       capabilities = capabilities,
+      flags = {
+        -- The local JDTLS build can assert while applying incremental
+        -- textDocument/didChange edits, which leaves its in-memory source out
+        -- of sync and produces bogus parse diagnostics around comments.
+        allow_incremental_sync = false,
+      },
       cmd_env = {
         JAVA_HOME = java21_home,
         PATH = java21_bin .. ":" .. vim.env.PATH,
