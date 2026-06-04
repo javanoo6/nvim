@@ -3,6 +3,10 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+-- Define the leader placeholder before plugins load so which-key can replace the
+-- <Space> nop mapping with its trigger mapping instead of being overwritten later.
+vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true, desc = "Leader placeholder" })
+
 local opt = vim.opt
 
 opt.number = true
@@ -27,7 +31,7 @@ opt.cursorline = false
 opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.updatetime = 250
-opt.timeoutlen = 300
+opt.timeoutlen = 500
 opt.undofile = true
 opt.backup = false
 opt.writebackup = false
