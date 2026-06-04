@@ -364,7 +364,7 @@ Linting:        golangcilint
 
 ```
 coding.lua
-  ├── mini.comment    ── gc / gcc toggle comments
+  ├── Comment.nvim    ── gc / gcc line comments, gb / gbc block comments
   │     └── nvim-ts-context-commentstring  ── context-aware commentstring (JSX, HTML embeds, etc.)
   ├── mini.surround   ── gsa/gsd/gsr/gsf add/delete/replace/find surrounding
   ├── mini.ai         ── enhanced text objects (af, if, ac, ic, ao, io, t=tag)
@@ -579,7 +579,7 @@ lazy.nvim
 │   └── gopher.nvim (Go extras)
 │
 ├── CODING HELPERS
-│   ├── mini.comment → nvim-ts-context-commentstring
+│   ├── Comment.nvim → nvim-ts-context-commentstring
 │   ├── mini.surround
 │   ├── mini.ai → nvim-treesitter
 │   ├── yanky.nvim
@@ -634,7 +634,7 @@ lazy.nvim
 | `<leader>X`       | lists/maint    | trouble, quicker, todo-comments                                                            |
 | `<leader><tab>`   | tabs           | vim tabs                                                                                   |
 | `g`               | goto/misc      | LSP, glance, splits                                                                        |
-| `gc`              | comment        | mini.comment                                                                               |
+| `gc`              | comment        | Comment.nvim                                                                              |
 | `gs`              | surround       | mini.surround                                                                              |
 
 ---

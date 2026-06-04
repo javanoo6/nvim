@@ -11,22 +11,14 @@ return {
 
   -- Comments
   {
-    "echasnovski/mini.comment",
+    "numToStr/Comment.nvim",
     event = "VeryLazy",
     dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
-    opts = {
-      mappings = {
-        comment = "gc",
-        comment_line = "gcc",
-        comment_visual = "gc",
-        textobject = "gc",
-      },
-      options = {
-        custom_commentstring = function()
-          return require("ts_context_commentstring.internal").calculate_commentstring() or vim.bo.commentstring
-        end,
-      },
-    },
+    config = function()
+      require("Comment").setup({
+        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+      })
+    end,
   },
 
   -- Surround

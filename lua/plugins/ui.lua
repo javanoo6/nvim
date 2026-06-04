@@ -64,7 +64,10 @@ return {
         { "[", group = "prev" },
         { "]", group = "next" },
         { "g", group = "goto/misc" },
-        { "gc", group = "comment", mode = { "n", "v" } },
+        { "gc", group = "line comment", mode = { "n", "v" } },
+        { "gcc", desc = "Comment line", mode = "n" },
+        { "gb", group = "block comment", mode = { "n", "v" } },
+        { "gbc", desc = "Comment block line", mode = "n" },
         { "gs", group = "surround", mode = { "n", "v" } },
         { "z", group = "fold" },
       })

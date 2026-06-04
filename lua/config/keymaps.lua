@@ -118,7 +118,6 @@ map("n", "<leader>xd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 map("n", "<leader>xl", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 
 -- Editing primitives
-map({ "n", "v" }, "<Space>", "<Nop>", { silent = true, desc = "Leader placeholder" })
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Clear hlsearch" })
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save" })
 map("v", "<", "<gv", { desc = "Indent left and reselect" })
