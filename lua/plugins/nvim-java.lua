@@ -18,6 +18,22 @@ return {
       vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())
     local debug_log = java_jdtls.make_debug_log()
 
+    local function has_root_file(root_dir, name)
+      return root_dir and vim.uv.fs_stat(root_dir .. "/" .. name) ~= nil
+    end
+
+    local function should_prefer_maven(root_dir)
+      if not has_root_file(root_dir, "pom.xml") then
+        return false
+      end
+
+      return has_root_file(root_dir, "build.gradle")
+        or has_root_file(root_dir, "build.gradle.kts")
+        or has_root_file(root_dir, "settings.gradle")
+        or has_root_file(root_dir, "settings.gradle.kts")
+        or has_root_file(root_dir, "gradlew")
+      end
+
     -- Allow pinning a released JDTLS milestone or pointing at a manually
     -- unpacked custom build without editing the plugin itself. Default to
     -- the local JDTLS build when it exists so Neovim uses the patched server.
@@ -60,6 +76,24 @@ return {
 
     vim.lsp.config("jdtls", {
       capabilities = capabilities,
+      before_init = function(params, config)
+        local root_dir = config.root_dir
+        local prefer_maven = should_prefer_maven(root_dir)
+
+        config.settings = config.settings or {}
+        config.settings.java = config.settings.java or {}
+        config.settings.java["import"] = config.settings.java["import"] or {}
+        config.settings.java["import"].maven = config.settings.java["import"].maven or {}
+        config.settings.java["import"].gradle = config.settings.java["import"].gradle or {}
+
+        if prefer_maven then
+          config.settings.java["import"].maven.enabled = true
+          config.settings.java["import"].gradle.enabled = false
+        end
+
+        params.initializationOptions = params.initializationOptions or {}
+        params.initializationOptions.settings = vim.deepcopy(config.settings)
+      end,
       flags = {
         -- The local JDTLS build can assert while applying incremental
         -- textDocument/didChange edits, which leaves its in-memory source out
@@ -79,6 +113,14 @@ return {
                 path = java21_home,
                 default = true,
               },
+            },
+          },
+          ["import"] = {
+            maven = {
+              enabled = true,
+            },
+            gradle = {
+              enabled = true,
             },
           },
           maven = {

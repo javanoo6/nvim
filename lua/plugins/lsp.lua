@@ -21,6 +21,15 @@ return {
       local java_codelens = require("util.java_codelens")
       local inlay_hints = require("util.inlay_hints")
 
+      local function show_lsp_info()
+        if vim.fn.exists(":LspInfo") == 2 then
+          vim.cmd("LspInfo")
+          return
+        end
+
+        vim.cmd("checkhealth vim.lsp")
+      end
+
       local function rename_symbol()
         local bufnr = vim.api.nvim_get_current_buf()
         if vim.bo[bufnr].filetype == "java" then
@@ -92,7 +101,7 @@ return {
 
       -- LSP server management
       map("n", "<leader>lr", "<cmd>LspRestart<cr>", { desc = "Restart LSP" })
-      map("n", "<leader>li", "<cmd>LspInfo<cr>", { desc = "LSP info" })
+      map("n", "<leader>li", show_lsp_info, { desc = "LSP info" })
       map("n", "<leader>ll", "<cmd>LspLog<cr>", { desc = "LSP log" })
 
       local capabilities =
@@ -227,9 +236,11 @@ return {
 
       -- Java keymaps (using <leader>j group defined in which-key)
       local java_debug = require("util.java_debug")
-      map("n", "<leader>jr", "<cmd>JavaRunnerRunMain<cr>", { desc = "Run Main" })
+      local java_runner = require("util.java_runner")
+      map("n", "<leader>jr", java_runner.run_main, { desc = "Run Main" })
       map("n", "<leader>jd", java_debug.debug_main, { desc = "Debug Main" })
-      map("n", "<leader>jc", "<cmd>JavaRunnerStopMain<cr>", { desc = "Stop Main" })
+      map("n", "<leader>jc", java_runner.stop_main, { desc = "Stop Main" })
+      map("n", "<leader>jl", java_runner.toggle_logs, { desc = "Toggle Runner Logs" })
       map("n", "<leader>ja", java_debug.attach_remote, { desc = "Attach Remote JVM" })
     end,
   },

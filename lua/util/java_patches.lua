@@ -1,5 +1,6 @@
 local M = {}
 local spring_boot_execute_client_command_patched = false
+local jdtls_client_lookup_patched = false
 
 local function is_extract_variable_refactor(refactor_type)
   return refactor_type == "extractVariable" or refactor_type == "extractVariableAllOccurrence"
@@ -114,6 +115,37 @@ local function apply_spring_boot_execute_client_command_patch()
   spring_boot_execute_client_command_patched = true
 end
 
+local function apply_jdtls_client_lookup_patch()
+  if jdtls_client_lookup_patched then
+    return
+  end
+
+  local lsp_utils = require("java-core.utils.lsp")
+  local err = require("java-core.utils.errors")
+
+  lsp_utils.get_jdtls = function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local clients = vim.lsp.get_clients({
+      bufnr = bufnr,
+      name = "jdtls",
+    })
+
+    if #clients > 0 then
+      return clients[1]
+    end
+
+    clients = vim.lsp.get_clients({ name = "jdtls" })
+    if #clients == 0 then
+      vim.print(debug.traceback())
+      err.throw("No JDTLS client found")
+    end
+
+    return clients[1]
+  end
+
+  jdtls_client_lookup_patched = true
+end
+
 function M.apply_refactor_patches(debug_log)
   local Action = require("java-refactor.action")
   local Refactor = require("java-refactor.refactor")
@@ -128,6 +160,8 @@ function M.apply_refactor_patches(debug_log)
   local orig_java_get_refactor_edit = JdtlsClient.java_get_refactor_edit
   local orig_perform_refactor_edit = Refactor.perform_refactor_edit
   local orig_run_lsp_client_command = Refactor.run_lsp_client_command
+
+  apply_jdtls_client_lookup_patch()
 
   Action.rename = function(self, params)
     -- nvim-java dispatches rename with dot-call syntax:
