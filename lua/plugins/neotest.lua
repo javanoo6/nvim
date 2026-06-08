@@ -462,6 +462,14 @@ return {
           }),
           require("neotest-python")({
             dap = { justMyCode = false },
+            python = function()
+              local ok, venv_selector = pcall(require, "venv-selector")
+              local python = ok and venv_selector.python() or nil
+              if python and python ~= "" then
+                return python
+              end
+              return "python3"
+            end,
           }),
         },
         status = { virtual_text = true },

@@ -149,6 +149,26 @@ return {
               color = { fg = "#6272a4" },
             },
             {
+              function()
+                local ok, venv_selector = pcall(require, "venv-selector")
+                if not ok then
+                  return nil
+                end
+
+                local venv = venv_selector.venv()
+                if not venv or venv == "" then
+                  return "no venv"
+                end
+
+                return vim.fs.basename(venv)
+              end,
+              icon = "󰌠",
+              cond = function()
+                return vim.bo.filetype == "python"
+              end,
+              color = { fg = "#e5c07b" },
+            },
+            {
               "diff",
               symbols = {
                 added = " ",
