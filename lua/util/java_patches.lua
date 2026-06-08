@@ -1,4 +1,5 @@
 local M = {}
+local spring_boot_execute_client_command_patched = false
 
 local function is_extract_variable_refactor(refactor_type)
   return refactor_type == "extractVariable" or refactor_type == "extractVariableAllOccurrence"
@@ -91,7 +92,7 @@ local function apply_spring_boot_execute_client_command_patch()
     return
   end
 
-  if handler._spring_boot_rename_guard then
+  if spring_boot_execute_client_command_patched then
     return
   end
 
@@ -109,8 +110,8 @@ local function apply_spring_boot_execute_client_command_patch()
     return {}
   end
 
-  wrapped._spring_boot_rename_guard = true
   vim.lsp.handlers["workspace/executeClientCommand"] = wrapped
+  spring_boot_execute_client_command_patched = true
 end
 
 function M.apply_refactor_patches(debug_log)
