@@ -50,6 +50,7 @@ return {
       vim.api.nvim_create_autocmd("LspAttach", {
         group = require("util").augroup("lsp_attach"),
         callback = function(event)
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
           local opts = { buffer = event.buf }
 
           -- Register LSP keymaps in which-key (buffer-local, only shown in LSP buffers)
@@ -77,7 +78,6 @@ return {
           map("n", "<leader>cr", rename_symbol, vim.tbl_extend("force", opts, { desc = "Rename" }))
 
           -- Enable inlay hints if supported
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client.server_capabilities.inlayHintProvider then
             vim.defer_fn(function()
               inlay_hints.apply_for_buffer(event.buf)

@@ -85,6 +85,34 @@ local function infer_selection_or_fallback(self, refactor_type, params, orig_get
   return fallback
 end
 
+local function apply_spring_boot_execute_client_command_patch()
+  local handler = vim.lsp.handlers["workspace/executeClientCommand"]
+  if type(handler) ~= "function" then
+    return
+  end
+
+  if handler._spring_boot_rename_guard then
+    return
+  end
+
+  local wrapped = function(err, params, ctx, config)
+    local client = ctx and ctx.client_id and vim.lsp.get_client_by_id(ctx.client_id) or nil
+    if not client or client.name ~= "spring-boot" then
+      return handler(err, params, ctx, config)
+    end
+
+    local ok, result = pcall(handler, err, params, ctx, config)
+    if ok then
+      return result
+    end
+
+    return {}
+  end
+
+  wrapped._spring_boot_rename_guard = true
+  vim.lsp.handlers["workspace/executeClientCommand"] = wrapped
+end
+
 function M.apply_refactor_patches(debug_log)
   local Action = require("java-refactor.action")
   local Refactor = require("java-refactor.refactor")
@@ -198,6 +226,8 @@ function M.apply_refactor_patches(debug_log)
 
     return infer_selection_or_fallback(self, refactor_type, params, orig_get_selections, ui, List)
   end
+
+  apply_spring_boot_execute_client_command_patch()
 end
 
 return M
