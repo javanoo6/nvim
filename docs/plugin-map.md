@@ -40,7 +40,8 @@ mason.nvim  ──────────────────────�
   └── mason-lspconfig.nvim  ── bridges mason ↔ lspconfig
   └── mason-tool-installer.nvim  ── auto-installs: stylua, gopls,
                                     gofumpt, goimports-reviser, golines,
-                                    golangci-lint, black, delve, LSP servers
+                                    golangci-lint, ruff, prettier, delve,
+                                    LSP servers
 
 nvim-lspconfig  ─────────────────────────────────── LSP config (lsp.lua)
   ├── cmp-nvim-lsp            ── exposes LSP completions to cmp
@@ -59,7 +60,7 @@ Pyright note:
   command override is not bypassed.
 - `:PyrightInfo` prints the exact command path for the current session.
 
-**LSP servers auto-installed:** `lua_ls`, `bashls`, `jsonls`, `yamlls`, `gopls`, `pyright`
+**LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`
 **Java LSP:** handled separately by `nvim-java` (jdtls) — see Java section.
 
 **Key LSP keymaps** (set on LspAttach in lsp.lua):
@@ -153,9 +154,9 @@ conform.nvim  (formatting.lua)
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
-    python     → black
-    json/yaml/markdown → prettier
-    java       → idea_formatter
+    python     → idea_formatter
+    json       → prettier
+    yaml/markdown/java/xml/sh → idea_formatter
   Note: Go skips format-on-save (done via LSP/manual); format-on-save skips files with LSP errors
 
 nvim-lint  (linting.lua)

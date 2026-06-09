@@ -418,15 +418,6 @@ return {
         },
       },
       open_files_do_not_replace_types = { "terminal", "trouble", "qf" },
-      event_handlers = {
-        {
-          event = "file_opened",
-          handler = function(file_path)
-            -- Optional: auto close neo-tree when file opened
-            -- require("neo-tree.command").execute({ action = "close" })
-          end,
-        },
-      },
     },
   },
 

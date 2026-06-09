@@ -148,7 +148,8 @@ return {
           return false
         end
 
-        return formatters_by_ft[filetype] ~= nil
+        local formatters = formatters_by_ft[filetype]
+        return type(formatters) == "table" and not vim.tbl_isempty(formatters)
       end
 
       local function format_file(path)

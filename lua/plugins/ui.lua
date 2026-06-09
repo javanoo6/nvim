@@ -24,9 +24,6 @@ return {
         align = "right",
       },
       sort = { "local", "order", "group", "alphanum" },
-      filter = function(mapping)
-        return true
-      end,
     },
     config = function(_, opts)
       local wk = require("which-key")

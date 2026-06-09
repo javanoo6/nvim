@@ -91,11 +91,9 @@ sudo apt-get install openjdk-21-doc
 ### Node.js / npm
 
 ```bash
-# Required for prettier (JSON/YAML/Markdown formatting)
+# Required by Mason to install npm-backed tools such as prettier
 sudo apt-get install nodejs npm
 # Or use nvm: https://github.com/nvm-sh/nvm
-
-npm install -g prettier prettier-plugin-java
 ```
 
 ---
@@ -159,13 +157,14 @@ Listed here for reference only.
 |------------------------|--------------------------|
 | `lua-language-server`  | Lua LSP                  |
 | `bash-language-server` | Bash LSP                 |
+| `helm-ls`              | Helm LSP                 |
 | `json-lsp`             | JSON LSP                 |
 | `yaml-language-server` | YAML LSP                 |
 | `gopls`                | Go LSP                   |
 | `pyright`              | Python LSP               |
 | `stylua`               | Lua formatter            |
-| `black`                | Python formatter         |
 | `ruff`                 | Python linter            |
+| `prettier`             | JSON formatter           |
 | `gofumpt`              | Go formatter             |
 | `goimports-reviser`    | Go imports organizer     |
 | `golines`              | Go line length formatter |
