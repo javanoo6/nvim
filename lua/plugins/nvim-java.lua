@@ -6,7 +6,10 @@ return {
     "JavaHello/spring-boot.nvim",
   },
   config = function()
-    local java21_home = "/usr/lib/jvm/java-21-openjdk-amd64"
+    local java21_home = vim.env.NVIM_JAVA_HOME or vim.env.JAVA_HOME or "/usr/lib/jvm/java-21-openjdk-amd64"
+    if vim.fn.isdirectory(java21_home) ~= 1 then
+      vim.notify("Java home missing: " .. java21_home, vim.log.levels.WARN, { title = "nvim-java" })
+    end
     local java21_bin = java21_home .. "/bin"
     local java_jdtls = require("util.java_jdtls")
     local java_patches = require("util.java_patches")

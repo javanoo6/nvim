@@ -30,9 +30,14 @@ return {
       end
 
       lint.linters_by_ft = {
-        --java = { "checkstyle" },
+        bash = { "shellcheck" },
         go = { "golangcilint" },
+        lua = { "selene" },
+        markdown = { "markdownlint-cli2" },
         python = { "ruff" },
+        sh = { "shellcheck" },
+        yaml = { "yamllint" },
+        zsh = { "shellcheck" },
       }
 
       -- nvim-lint expects linter.cwd to be a string. Pass cwd per invocation

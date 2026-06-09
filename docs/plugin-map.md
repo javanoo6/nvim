@@ -38,10 +38,10 @@ lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
 ```
 mason.nvim  ─────────────────────────────────────── package manager
   └── mason-lspconfig.nvim  ── bridges mason ↔ lspconfig
-  └── mason-tool-installer.nvim  ── auto-installs: stylua, gopls,
+  └── mason-tool-installer.nvim  ── auto-installs: stylua, selene, gopls,
                                     gofumpt, goimports-reviser, golines,
-                                    golangci-lint, ruff, prettier, delve,
-                                    LSP servers
+                                    golangci-lint, ruff, prettier, shellcheck,
+                                    markdownlint-cli2, yamllint, delve, LSP servers
 
 nvim-lspconfig  ─────────────────────────────────── LSP config (lsp.lua)
   ├── cmp-nvim-lsp            ── exposes LSP completions to cmp
@@ -50,7 +50,7 @@ nvim-lspconfig  ─────────────────────�
   ├── fidget.nvim             ── LSP progress spinner (bottom-right)
   ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
   ├── actions-preview.nvim    ── code action picker; shows diff previews for edit-backed actions (<leader>ca, <A-CR>)
-  └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (off by default, <leader>ud toggle)
+  └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (<leader>ud toggle)
 ```
 
 Pyright note:
@@ -151,6 +151,7 @@ nvim-treehopper  (motion.lua)
 conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
   — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
+  — :FormatterInfo reports formatter executable/jar availability
   — auto-formatting enabled by default (disable with :FormatDisable)
   Formatters by filetype:
     lua        → stylua
@@ -162,8 +163,12 @@ conform.nvim  (formatting.lua)
 
 nvim-lint  (linting.lua)
   — lints on BufWritePost / BufReadPost
-    go     → golangcilint
-    python → ruff
+    bash/zsh/sh → shellcheck
+    go          → golangcilint
+    lua         → selene
+    markdown    → markdownlint-cli2
+    python      → ruff
+    yaml        → yamllint
   — missing linter executables are skipped instead of erroring on buffer open
 ```
 
@@ -492,6 +497,12 @@ keymaps.lua (diagnostic):
   <leader>uu  — toggle reference underline
   <leader>uH  — toggle reference background
 ```
+
+---
+
+Quality gate:
+  Makefile  ── `make check` runs Mason `stylua --check` + `selene`
+  selene.toml / vim.yml  ── local Selene config and minimal Neovim std
 
 ---
 

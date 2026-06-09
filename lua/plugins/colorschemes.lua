@@ -93,8 +93,8 @@ return {
         float = false,
       },
       swap_backgrounds = false,
-      on_palette = function(palette) end,
-      on_highlight = function(highlights, palette) end,
+      on_palette = function() end,
+      on_highlight = function() end,
     },
   },
 

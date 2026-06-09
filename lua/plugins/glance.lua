@@ -75,7 +75,7 @@ return {
         },
 
         hooks = {
-          before_open = function(results, open, jump, method)
+          before_open = function(results, open, jump)
             local uri = vim.uri_from_bufnr(0)
             if #results == 1 then
               local target_uri = results[1].uri or results[1].targetUri

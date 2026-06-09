@@ -13,12 +13,16 @@ return {
     opts = {
       ensure_installed = {
         "stylua",
+        "selene",
         "bash-language-server",
         "json-lsp",
         "yaml-language-server",
         "pyright",
         "ruff",
         "prettier",
+        "shellcheck",
+        "markdownlint-cli2",
+        "yamllint",
         "golangci-lint",
         "gopls",
         "gofumpt",

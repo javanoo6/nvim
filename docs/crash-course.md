@@ -602,18 +602,11 @@ When typing commands with `:` and autocomplete menu appears:
 
 This uses `nvim-cmp` cmdline completion:
 
-| Key       | Action                                             |
-|-----------|----------------------------------------------------|
-| `<Tab>`   | Next completion item, or open completion           |
-| `<C-z>`   | Next completion item, or open completion           |
-| `<S-Tab>` | Previous completion item                           |
-| `<Down>`  | Next completion item                               |
-| `<Up>`    | Previous completion item                           |
-| `<C-n>`   | Next item when completion menu is visible          |
-| `<C-p>`   | Previous item when completion menu is visible      |
-| `<C-y>`   | Confirm selected completion item                   |
-| `<C-e>`   | Abort completion                                   |
-| `<CR>`    | Confirm selected completion item without executing |
+| Key      | Action                                             |
+|----------|----------------------------------------------------|
+| `<Down>` | Next completion item                               |
+| `<Up>`   | Previous completion item                           |
+| `<CR>`   | Confirm selected completion item without executing |
 
 ---
 
@@ -1178,7 +1171,7 @@ git commit                 →  finalize merge
 | `<leader>ul` | Toggle relative numbers     |
 | `<leader>un` | Toggle line numbers         |
 | `<leader>uf` | Toggle fold                 |
-| `<leader>ud` | Toggle inline diagnostics   |
+| `<leader>ud` | Toggle inline diagnostics (enabled on LSP attach) |
 | `<leader>uD` | Toggle diagnostics          |
 | `<leader>uh` | Toggle inlay hints          |
 | `<leader>uu` | Toggle reference underline  |

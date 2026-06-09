@@ -28,16 +28,23 @@ return {
           timeout = 10000, -- 10 seconds for daemon startup
           args = function()
             local home = vim.env.HOME
+            local jar = home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar"
+            local editorconfig = home .. "/.config/nvim/.editorconfig"
             return {
               "-jar",
-              home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar",
+              jar,
               "--format",
               "--optimize-imports",
               "--rearrange",
               "--editorconfig",
-              home .. "/.config/nvim/.editorconfig",
+              editorconfig,
               "$FILENAME",
             }
+          end,
+          condition = function()
+            local home = vim.env.HOME
+            local jar = home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar"
+            return vim.fn.executable("java") == 1 and vim.fn.filereadable(jar) == 1
           end,
           stdin = false,
         },
@@ -83,6 +90,26 @@ return {
       local conform = require("conform")
       conform.setup(opts)
       local formatters_by_ft = opts.formatters_by_ft or {}
+      local function formatter_info()
+        local home = vim.env.HOME
+        local jar = home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar"
+        local editorconfig = home .. "/.config/nvim/.editorconfig"
+        local function executable(name)
+          return vim.fn.executable(name) == 1 and vim.fn.exepath(name) or "<missing>"
+        end
+
+        local lines = {
+          "java: " .. executable("java"),
+          "idea formatter jar: " .. (vim.fn.filereadable(jar) == 1 and jar or "<missing> " .. jar),
+          ".editorconfig: " .. (vim.fn.filereadable(editorconfig) == 1 and editorconfig or "<missing> " .. editorconfig),
+          "stylua: " .. executable("stylua"),
+          "prettier: " .. executable("prettier"),
+          "gofumpt: " .. executable("gofumpt"),
+          "goimports-reviser: " .. executable("goimports-reviser"),
+          "golines: " .. executable("golines"),
+        }
+        vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "FormatterInfo" })
+      end
       local skip_dir_names = {
         [".git"] = true,
         [".hg"] = true,
@@ -339,6 +366,10 @@ return {
         vim.b.disable_autoformat = false
         vim.g.disable_autoformat = false
       end, { desc = "Enable format on save" })
+
+      vim.api.nvim_create_user_command("FormatterInfo", formatter_info, {
+        desc = "Show configured formatter executable status",
+      })
 
       vim.api.nvim_create_user_command("FormatDir", function(command)
         local dir = command.args ~= "" and vim.fn.fnamemodify(command.args, ":p") or require("util").get_cwd()

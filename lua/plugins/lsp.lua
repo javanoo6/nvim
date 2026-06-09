@@ -328,7 +328,7 @@ return {
         }
       end
 
-      local function make_make_display(values)
+      local function make_make_display()
         local displayer = entry_display.create({
           separator = " ",
           items = {

@@ -173,7 +173,7 @@ return {
             "%.lock$",
           },
           preview = {
-            filetype_hook = function(filepath, bufnr, opts)
+            filetype_hook = function(filepath)
               local ext = filepath:match("%.([^%.]+)$")
               if ext and previewable_extensions[ext] then
                 return true

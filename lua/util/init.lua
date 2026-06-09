@@ -378,19 +378,15 @@ function M.pick(picker, opts)
   opts = opts or {}
   opts.cwd = opts.cwd or M.get_root()
 
-  if picker == "files" then
-    M.picker.find_files(opts)
-  elseif picker == "live_grep" then
-    M.picker.live_grep(opts)
-  elseif picker == "buffers" then
-    M.picker.buffers(opts)
-  elseif picker == "oldfiles" then
-    M.picker.oldfiles(opts)
-  elseif picker == "help_tags" then
-    M.picker.help_tags(opts)
-  else
-    M.picker.find_files(opts)
-  end
+  local pickers = {
+    files = M.picker.find_files,
+    live_grep = M.picker.live_grep,
+    buffers = M.picker.buffers,
+    oldfiles = M.picker.oldfiles,
+    help_tags = M.picker.help_tags,
+  }
+  local run = pickers[picker] or M.picker.find_files
+  run(opts)
 end
 
 -- LSP Icons for aerial and other plugins
