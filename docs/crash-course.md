@@ -1176,6 +1176,9 @@ git commit                 →  finalize merge
 | `<leader>uh` | Toggle inlay hints          |
 | `<leader>uu` | Toggle reference underline  |
 | `<leader>uH` | Toggle reference background |
+| `<leader>ui` | Inspect UI/highlights       |
+| `<leader>uT` | Toggle Treesitter buffer    |
+| `<leader>uI` | Toggle references buffer    |
 | `<leader>ut` | Color schemes               |
 
 ---

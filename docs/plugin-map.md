@@ -133,6 +133,7 @@ nvim-treesitter  (treesitter.lua)  — highlight, indent, incremental selection
   ├── nvim-treesitter-textobjects  — af/if (function), ac/ic (class),
   │                                  aa/ia (param), al/il (loop), ai/ii (cond)
   │                                  Keymaps live in config/keymaps.lua
+  │                                  Markdown/YAML keep stock indentexpr
   └── rainbow-delimiters.nvim      — colorized bracket pairs
 
 nvim-treehopper  (motion.lua)
@@ -497,6 +498,9 @@ keymaps.lua (diagnostic):
   <leader>xl  — diagnostics to loclist
   <leader>ud  — toggle tiny-inline-diagnostic on/off
   <leader>uD  — enable/disable all diagnostics entirely
+  <leader>ui  — open UiInspect report for current cursor position
+  <leader>uT  — toggle Treesitter highlighting for current buffer
+  <leader>uI  — toggle vim-illuminate references for current buffer
   <leader>uu  — toggle reference underline
   <leader>uH  — toggle reference background
 ```
@@ -506,6 +510,12 @@ keymaps.lua (diagnostic):
 Quality gate:
   Makefile  ── `make check` runs Mason `stylua --check` + `selene`
   selene.toml / vim.yml  ── local Selene config and minimal Neovim std
+
+UI inspection:
+  util/ui_debug.lua ── :UiInspect, :UiToggleTreesitter, :UiToggleIlluminate
+                       Reports `vim.inspect_pos()`, Treesitter captures,
+                       parser state, diagnostics, conceal, colorscheme, and
+                       related debug commands.
 
 ---
 

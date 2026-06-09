@@ -5,6 +5,7 @@ local augroup = util.augroup
 local java_branch_refresh = require("util.java_branch_refresh")
 
 java_branch_refresh.setup()
+require("util.ui_debug").register_commands()
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {

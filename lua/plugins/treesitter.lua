@@ -33,6 +33,10 @@ return {
         "groovy",
         "kotlin",
       }
+      local disable_indent = {
+        markdown = true,
+        yaml = true,
+      }
 
       treesitter.setup()
       local installed = {}
@@ -52,7 +56,9 @@ return {
         pattern = languages,
         callback = function()
           vim.treesitter.start()
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          if not disable_indent[vim.bo.filetype] then
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
         end,
       })
     end,
