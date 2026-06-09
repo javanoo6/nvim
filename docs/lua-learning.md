@@ -20,16 +20,16 @@ You should be able to:
 This is the intended path from "I do not understand plugin config" to "I can
 write and maintain repo-local plugin support".
 
-| Level | Skill | Proof |
-|-------|-------|-------|
-| 1 | read Lua tables/functions | explain one `setup({ ... })` table |
-| 2 | separate Lua vs lazy.nvim vs plugin config | classify every field in one plugin spec |
-| 3 | trace a setting | find where it is set and who reads it |
-| 4 | debug runtime behavior | add/remove `vim.notify()` and explain output |
-| 5 | write a tiny local plugin | complete `docs/learn-plugin.md` |
-| 6 | use Neovim APIs | add command, keymap, autocmd, user input |
-| 7 | write safe plugin behavior | validate options and protect callbacks with `pcall` |
-| 8 | support this repo | add docs, which-key group, helper module, and verification |
+| Level | Skill                                      | Proof                                                      |
+|-------|--------------------------------------------|------------------------------------------------------------|
+| 1     | read Lua tables/functions                  | explain one `setup({ ... })` table                         |
+| 2     | separate Lua vs lazy.nvim vs plugin config | classify every field in one plugin spec                    |
+| 3     | trace a setting                            | find where it is set and who reads it                      |
+| 4     | debug runtime behavior                     | add/remove `vim.notify()` and explain output               |
+| 5     | write a tiny local plugin                  | complete `docs/learn-plugin.md`                            |
+| 6     | use Neovim APIs                            | add command, keymap, autocmd, user input                   |
+| 7     | write safe plugin behavior                 | validate options and protect callbacks with `pcall`        |
+| 8     | support this repo                          | add docs, which-key group, helper module, and verification |
 
 Do not skip levels. If a level feels boring, prove it quickly and move on.
 
