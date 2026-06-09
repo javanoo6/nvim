@@ -393,22 +393,6 @@ function M.pick(picker, opts)
   end
 end
 
--- Format helper (simplified)
-M.formatters = {}
-
-function M.format()
-  local buf = vim.api.nvim_get_current_buf()
-  local ft = vim.bo[buf].filetype
-
-  -- Try conform.nvim first if available
-  local have_conform, conform = pcall(require, "conform")
-  if have_conform then
-    conform.format({ bufnr = buf, timeout_ms = 10000, lsp_fallback = true })
-  else
-    vim.lsp.buf.format({ async = false })
-  end
-end
-
 -- LSP Icons for aerial and other plugins
 M.icons = {
   kinds = {

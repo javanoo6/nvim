@@ -1,349 +1,210 @@
 # Java Debugging in Neovim
 
-Complete workflow for debugging Java applications using **nvim-java** + **nvim-dap**.
+Current workflow for this config using `nvim-java`, JDTLS, Java debug adapter,
+`nvim-dap`, and `neotest`.
 
----
+## Architecture
 
-## Architecture Overview
-
-```nvim-java (orchestrator)
-    ↓
-jdtls + java-debug-adapter (debug server on localhost:port)
-    ↓
-nvim-dap (debug client + DAP UI)
+```text
+nvim-java
+  -> jdtls + java-debug bundle
+  -> nvim-dap
+  -> dap-ui / virtual text / REPL
 ```
 
-When you start debugging:
+Java LSP and Java DAP are owned by `nvim-java`; do not add
+`mfussenegger/nvim-jdtls` alongside it.
 
-1. `nvim-java` requests `jdtls` for class paths, module paths, JVM executable
-2. `jdtls` starts a debug session and returns a port (e.g., `localhost:5005`)
-3. `nvim-dap` connects to that port via the Debug Adapter Protocol
-4. DAP UI opens automatically (variables, call stack, REPL)
+Relevant files:
 
----
+- [lua/plugins/nvim-java.lua](/home/konkov/.config/nvim/lua/plugins/nvim-java.lua:1)
+- [lua/plugins/lsp.lua](/home/konkov/.config/nvim/lua/plugins/lsp.lua:1)
+- [lua/plugins/dap.lua](/home/konkov/.config/nvim/lua/plugins/dap.lua:1)
+- [lua/util/java_debug.lua](/home/konkov/.config/nvim/lua/util/java_debug.lua:1)
+- [lua/util/java_runner.lua](/home/konkov/.config/nvim/lua/util/java_runner.lua:1)
 
-## Prerequisites
+## Preconditions
 
-### 1. Ensure JDTLS is running
+Open a Java file and wait for JDTLS.
 
-Check with:
+Check attachment:
 
-```
+```vim
 :LspInfo
 ```
 
-You should see `jdtls` attached with status `attached`. If not:
+Useful health/log commands:
 
+```vim
+:JavaInfo
+:checkhealth java
+:LspLog
 ```
-:Lazy java
+
+Log path:
+
+```text
+~/.local/state/nvim/nvim-java.log
 ```
 
-Or wait for JDTLS to start automatically (it may take 2-5 seconds on first open).
+## App Run And Debug
 
-### 2. Verify Java Debug Adapter is enabled
+| Key          | Action                                    |
+|--------------|-------------------------------------------|
+| `<leader>jr` | run current Java main / Spring Boot app   |
+| `<leader>jd` | debug current Java main / Spring Boot app |
+| `<leader>jc` | stop current Java runner app              |
+| `<leader>jl` | toggle Java runner logs                   |
+| `<leader>ja` | attach to remote JVM                      |
 
-Your `lua/plugins/nvim-java.lua` should have:
+`<leader>jd` calls:
 
 ```lua
-java_debug_adapter = { enable = true }
+require("util.java_debug").debug_main()
 ```
 
-### 3. Check logs if things fail
+That helper ensures Java DAP is configured, reads `dap.configurations.java`, and
+either starts the single launch config or prompts when multiple Java launch
+configs exist.
 
-```
-tail -f ~/.local/state/nvim/nvim-java.log
-```
+## Test Run And Debug
 
----
+Use `neotest` for the mapped test workflow:
 
-## Starting Debug Sessions
+| Key          | Action                         |
+|--------------|--------------------------------|
+| `<leader>tr` | run nearest test               |
+| `<leader>td` | debug nearest test             |
+| `<leader>tt` | run current file/package       |
+| `<leader>tf` | debug current file             |
+| `<leader>tp` | run package                    |
+| `<leader>tP` | debug package                  |
+| `<leader>tT` | run all test files in scope    |
+| `<leader>tD` | debug all test files in scope  |
+| `<leader>tl` | run last                       |
+| `<leader>tL` | debug last                     |
+| `<leader>ta` | attach to running test process |
 
-### A. Debugging Tests (Most Common)
+Raw `nvim-java` test commands are still available when needed:
 
-#### Via Command Line
-
-Place cursor on the test method or class:
-
-| Command                       | Action                         |
-|-------------------------------|--------------------------------|
-| `:JavaTestDebugCurrentMethod` | Debug test method under cursor |
-| `:JavaTestDebugCurrentClass`  | Debug entire test class        |
-| `:JavaTestDebugAllTests`      | Debug all tests in workspace   |
-
-#### Via Lua API (keybindings or mappings)
-
-```lua
-require('java').test.debug_current_method()    -- <leader>jmd
-require('java').test.debug_current_class()     -- <leader>jmd
-require('java').test.debug_all_tests()         -- <leader>jma
-```
-
-#### Via Neotest (if configured)
-
-```lua
-<leader>tr    -- Run/Debug nearest test (check your neotest config)
+```vim
+:JavaTestRunCurrentMethod
+:JavaTestRunCurrentClass
+:JavaTestDebugCurrentMethod
+:JavaTestDebugCurrentClass
+:JavaTestDebugAllTests
 ```
 
-### B. Debugging Main Applications
+## DAP Controls
 
-#### Spring Boot / Main Class
+These work once a debug session is active:
 
-Use the configured Java debug entrypoint:
+| Key          | Action                              |
+|--------------|-------------------------------------|
+| `<leader>db` | toggle breakpoint                   |
+| `<leader>dB` | conditional breakpoint              |
+| `<leader>dc` | continue                            |
+| `<leader>dC` | run to cursor                       |
+| `<leader>di` | step into                           |
+| `<leader>dO` | step over                           |
+| `<leader>do` | step out                            |
+| `<leader>dp` | pause                               |
+| `<leader>dt` | terminate                           |
+| `<leader>dl` | run last DAP session                |
+| `<leader>ds` | show current DAP session            |
+| `<leader>dj` | move up stack frame                 |
+| `<leader>dk` | move down stack frame               |
+| `<leader>du` | toggle DAP UI                       |
+| `<leader>de` | eval expression or visual selection |
+| `<leader>dr` | toggle DAP REPL                     |
+| `<leader>dw` | DAP hover widget                    |
 
-```
-<leader>jd
-```
+DAP UI opens automatically when a session starts and closes when the session
+terminates or exits.
 
-Or via API:
+## Remote JVM Attach
 
-```lua
-require('util.java_debug').debug_main()
-```
+Current state:
 
-#### Debug Last Run File
+- `<leader>ja` prompts for JDWP host and port.
+- Defaults are `127.0.0.1` and `5005`.
+- The helper runs a Java DAP `attach` configuration.
 
-```lua
-require('java').debug.debug_last_file()
-```
-
-#### Attach to Remote JVM
-
-If your app is running externally with `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005`:
-
-```lua
-require('dap').continue {
-  type = 'java',
-  request = 'attach',
-  name = 'Attach to Remote',
-  hostName = 'localhost',
-  port = 5005
-}
-```
-
----
-
-## DAP Controls (Once Debugging Started)
-
-| Key                         | Action                 | Context                                        |
-|-----------------------------|------------------------|------------------------------------------------|
-| `<leader>db`                | Toggle breakpoint      | Set breakpoint on current line                 |
-| `<leader>dB`                | Conditional breakpoint | Set breakpoint with condition (e.g., `i == 5`) |
-| `<leader>dc`                | Continue / Resume      | Continue execution to next breakpoint          |
-| `<leader>dC`                | Run to cursor          | Run until current line                         |
-| `<leader>di`                | Step into              | Enter method/function                          |
-| `<leader>dO`                | Step over              | Skip method, stay at same level                |
-| `<leader>do`                | Step out               | Execute remaining and return to caller         |
-| `<leader>dg`                | Go to line             | Jump cursor to line (no execute)               |
-| `<leader>dp`                | Pause                  | Suspend execution                              |
-| `<leader>dt`                | Terminate              | Stop debug session                             |
-| `<leader>ds`                | Session info           | Show current thread, frames                    |
-| `<leader>dk` / `<leader>dj` | Down/Up stack          | Navigate call stack frames                     |
-| `<leader>du`                | Toggle DAP UI          | Show/hide variables, call stack, REPL          |
-| `<leader>de`                | Eval expression        | Select text and eval (e.g., `user.getName()`)  |
-| `<leader>dr`                | Toggle REPL            | Interactive debug console                      |
-| `<leader>dw`                | Hover widgets          | Show variable values inline                    |
-
----
-
-## Complete Workflow Example
-
-### Scenario: Debug a failing test `UserControllerTest.testCreateUser`
-
-**Step 1**: Open the test file and locate the failing test
+Typical JVM flag for the target process:
 
 ```bash
-# Find the file
-:Telescope find_files
-# Or
-:ls
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
 ```
 
-**Step 2**: Place cursor on the test method name
+Future note: this section is intentionally short for now. Add the full remote
+debug recipe here when the project-specific attach workflow is finalized.
 
-```java
+## Example: Debug A Spring Boot App
 
-@Test
-public void testCreateUser() {  // ← Cursor here
-    // ...
-}
-```
+1. Open the app's main class.
+2. Wait for `jdtls` in `:LspInfo`.
+3. Set breakpoints with `<leader>db`.
+4. Press `<leader>jd`.
+5. If prompted, select the intended Java launch config.
+6. Use `<leader>dc`, `<leader>dO`, `<leader>di`, and `<leader>de` to inspect.
+7. Terminate with `<leader>dt`.
 
-**Step 3**: Set breakpoints (optional but recommended)
+If no launch configs appear, wait for JDTLS import/build to finish and retry.
+For mixed Maven/Gradle roots, this config forces Maven import before startup so
+main-class discovery follows the Maven project model.
 
-- Go to `UserController.createUser()` method
-- Press `<leader>db` on the line where you expect the bug
-- Repeat for other suspicious lines
-- Breakpoints appear as red dots (or your highlight color)
+## Example: Debug A Test
 
-**Step 4**: Start debugging
+1. Open the test file.
+2. Put the cursor inside the test method.
+3. Set breakpoints with `<leader>db`.
+4. Press `<leader>td` to debug nearest test.
+5. Use DAP controls once the session starts.
 
-```
-:JavaTestDebugCurrentMethod
-```
-
-Or if you have a keybinding:
-
-```
-<leader>jd   (hypothetical - check your config)
-```
-
-**Step 5**: Wait for startup (5-10 seconds)
-
-- JDTLS compiles the project
-- Debug session starts
-- DAP UI opens automatically (variables, call stack, REPL)
-- Execution pauses at first breakpoint or test start
-
-**Step 6**: Interact with the debugger
-
-```
-<leader>dc    # Continue to first breakpoint
-<leader>di    # Step into a method call
-<leader>dO    # Step over a method call
-<leader>de    # Select "user.getName()" and press to evaluate
-```
-
-**Step 7**: Inspect state
-
-- **DAP UI left panel**: Variables (hover over any to see full value)
-- **Call stack**: Navigate frames with `<leader>dj`/`<leader>dk`
-- **REPL** (`<leader>dr`): Type `System.out.println(x)` to inspect
-
-**Step 8**: Fix and re-run
-
-- Fix the bug
-- Press `<leader>dt` to terminate
-- Re-run test with `<leader>jm` (run mode) or repeat Step 4 (debug mode)
-
----
-
-## Advanced Techniques
-
-### Conditional Breakpoints
-
-```
-<leader>dB    # Prompt: "Breakpoint condition: "
-Type: user != null && user.getId() == 123
-```
-
-### Hot Reloading (Edit While Running)
-
-If using Spring Boot DevTools:
-
-1. Start debug session
-2. Edit Java file (e.g., change logic in service layer)
-3. Save with `<C-s>`
-4. Hot reload may apply changes without restarting (if using Spring Boot DevTools)
-
-### Inspecting Collections
-
-In DAP UI or REPL:
-
-```
-list.stream().map(u -> u.getName()).collect(Collectors.toList())
-```
-
-### Thread Switching
-
-If debugging multi-threaded apps:
-
-```
-<leader>ds    # See all threads
-# Then navigate to specific thread frame in call stack
-```
-
----
+For a whole file or package, use `<leader>tf` or `<leader>tP`.
 
 ## Troubleshooting
 
-### "No debug session found" or "DAP not available"
+### No Java Launch Configs
 
-**Cause**: Debug session hasn't started or crashed.
+Check:
 
-**Fix**:
-
-```
-:JavaInfo           # Check nvim-java status
-:LspInfo            # Check JDTLS attached
-:checkhealth java   # Detailed Java health check
+```vim
+:LspInfo
+:JavaInfo
 ```
 
-### "Failed to start debug session"
+Then wait for project import/build to complete. Java launch configs are created
+after JDTLS and the Java debug bundle have enough project state.
 
-**Cause**: JDTLS not fully loaded, or project not compiled.
+### Debug Session Does Not Start
 
-**Fix**:
+Try:
 
-```
-:Lazy java          # Reload java plugin
-# Or wait 5 seconds and retry
-```
-
-### "Port already in use"
-
-**Cause**: Stale debug session from previous run.
-
-**Fix**:
-
-```
-:q                  # Close nvim
-# Or kill jdtls process
-killall java        # If no other java apps running
+```vim
+:JavaDapConfig
 ```
 
-### Breakpoints not hitting
+Then retry `<leader>jd` or the relevant Neotest debug mapping.
 
-**Check**:
+### Breakpoints Do Not Hit
 
-1. Is JDTLS compiled the latest code? (`:LspInfo` → check for compilation errors)
-2. Are you in the right thread? (`<leader>ds`)
-3. Is the code actually executed? (check call stack `<leader>ds`)
+Check:
 
-### Logs
+- the debug session is active
+- the code path is actually executed
+- the project compiled without JDTLS errors
+- the target JVM is the one you attached to for remote debugging
 
-```
-~/.local/state/nvim/nvim-java.log    # nvim-java logs
-~/.cache/nvim/jdtls/snapshots/*      # JDTLS state
-```
+### Port Already In Use
 
----
+Terminate stale sessions with `<leader>dt`. If an external process still owns
+the JDWP port, stop that process or use a different port.
 
-## Quick Reference
+## Notes
 
-| Task                      | Command                           |
-|---------------------------|-----------------------------------|
-| Debug current test method | `:JavaTestDebugCurrentMethod`     |
-| Debug current test class  | `:JavaTestDebugCurrentClass`      |
-| Debug main app            | `<leader>jd`                      |
-| Toggle breakpoint         | `<leader>db`                      |
-| Continue                  | `<leader>dc`                      |
-| Step into                 | `<leader>di`                      |
-| Step over                 | `<leader>dO`                      |
-| Step out                  | `<leader>do`                      |
-| Eval expression           | `<leader>de` + select text        |
-| Toggle DAP UI             | `<leader>du`                      |
-| Terminate                 | `<leader>dt`                      |
-| Check health              | `:JavaInfo` / `:checkhealth java` |
-
----
-
-## Configuration Details
-
-**nvim-java setup** (`lua/plugins/nvim-java.lua`):
-
-```lua
-require("java").setup({
-    java_debug_adapter = { enable = true },  -- Critical!
-    jdk = { auto_install = false },
-})
-```
-
-**nvim-dap setup** (`lua/plugins/dap.lua`):
-
-- Auto-opens DAP UI on `event_initialized`
-- Auto-closes on `event_terminated`/`event_exited`
-- Virtual text hides secrets (lines 155-165)
-
----
-
-**Last updated**: Based on nvim-java v0.6+ and nvim-dap v0.9+
+- `:JavaDebugCurrentFile` is not part of the current installed `nvim-java`
+  command set; use `<leader>jd` for app/main debugging.
+- LeetCode-style standalone `Solution` files need a `main` harness before they
+  can be debugged as Java applications. See
+  [docs/java-leetcode-debugging.md](/home/konkov/.config/nvim/docs/java-leetcode-debugging.md:1).

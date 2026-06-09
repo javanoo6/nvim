@@ -33,24 +33,24 @@ Custom direction model in this config: `j = up`, `k = down`.
 
 ## Navigation Matrix
 
-| Keys                | Action                    |
-|---------------------|---------------------------|
-| `h`                 | Left                      |
-| `j`                 | Up                        |
-| `k`                 | Down                      |
-| `l`                 | Right                     |
-| `<C-h>`             | Left window               |
-| `<C-j>`             | Upper window              |
-| `<C-k>`             | Lower window              |
-| `<C-l>`             | Right window              |
-| `<A-j>`             | Move line/selection up    |
-| `<A-k>`             | Move line/selection down  |
-| `<S-h>`             | Previous buffer           |
-| `<S-l>`             | Next buffer               |
-| `Telescope <C-j>`   | Previous item / move up   |
-| `Telescope <C-k>`   | Next item / move down     |
-| `Glance j`          | Previous item / move up   |
-| `Glance k`          | Next item / move down     |
+| Keys              | Action                   |
+|-------------------|--------------------------|
+| `h`               | Left                     |
+| `j`               | Up                       |
+| `k`               | Down                     |
+| `l`               | Right                    |
+| `<C-h>`           | Left window              |
+| `<C-j>`           | Upper window             |
+| `<C-k>`           | Lower window             |
+| `<C-l>`           | Right window             |
+| `<A-j>`           | Move line/selection up   |
+| `<A-k>`           | Move line/selection down |
+| `<S-h>`           | Previous buffer          |
+| `<S-l>`           | Next buffer              |
+| `Telescope <C-j>` | Previous item / move up  |
+| `Telescope <C-k>` | Next item / move down    |
+| `Glance j`        | Previous item / move up  |
+| `Glance k`        | Next item / move down    |
 
 | Key               | Action                                    |
 |-------------------|-------------------------------------------|

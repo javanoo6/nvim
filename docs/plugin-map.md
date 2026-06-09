@@ -54,6 +54,7 @@ nvim-lspconfig  ─────────────────────�
 ```
 
 Pyright note:
+
 - `pyright` is configured through `vim.lsp.config("pyright", ...)` with a
   resolved Mason absolute binary path.
 - `mason-lspconfig` automatic-enable excludes `pyright` so that repo-local
@@ -167,23 +168,23 @@ nvim-lint  (linting.lua)
 ```
 
 python-venv.lua
-  venv-selector.nvim
-  — activates Python envs per project and propagates them to terminals/LSP/DAP
-  — loads `${project_root}/.env` into Neovim's environment on venv activation
-  — extra managed-env search under `~/.local/share/nvim/python-venvs`
-  — pins `fd_binary_name` to the resolved `fd`/`fdfind` executable path so
-    discovery does not depend on the shell `PATH` that launched Neovim
-  — user commands:
-    :PythonVenvSelect
-    :PythonVenvCreate [name] [python]
-    :PythonVenvRecreate [name] [python]
-    :PythonVenvInstall [pip args]
-  — keymaps:
-    <leader>ps select env
-    <leader>pc create env
-    <leader>pr recreate env
-    <leader>pi install default deps
-    <leader>pI prompt for custom pip install args
+venv-selector.nvim
+— activates Python envs per project and propagates them to terminals/LSP/DAP
+— loads `${project_root}/.env` into Neovim's environment on venv activation
+— extra managed-env search under `~/.local/share/nvim/python-venvs`
+— pins `fd_binary_name` to the resolved `fd`/`fdfind` executable path so
+discovery does not depend on the shell `PATH` that launched Neovim
+— user commands:
+:PythonVenvSelect
+:PythonVenvCreate [name] [python]
+:PythonVenvRecreate [name] [python]
+:PythonVenvInstall [pip args]
+— keymaps:
+<leader>ps select env
+<leader>pc create env
+<leader>pr recreate env
+<leader>pi install default deps
+<leader>pI prompt for custom pip install args
 
 ---
 
@@ -663,7 +664,7 @@ lazy.nvim
 | `<leader>X`       | lists/maint    | trouble, quicker, todo-comments                                                            |
 | `<leader><tab>`   | tabs           | vim tabs                                                                                   |
 | `g`               | goto/misc      | LSP, glance, splits                                                                        |
-| `gc`              | comment        | Comment.nvim                                                                              |
+| `gc`              | comment        | Comment.nvim                                                                               |
 | `gs`              | surround       | mini.surround                                                                              |
 
 ---

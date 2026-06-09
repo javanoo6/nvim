@@ -102,18 +102,18 @@ Core rule:
 
 Examples:
 
-| Keys   | Action                                      |
-|--------|---------------------------------------------|
-| `5j`   | Move up 5 lines                             |
-| `5k`   | Move down 5 lines                           |
-| `3w`   | Move forward 3 words                        |
-| `10dd` | Delete 10 lines                             |
-| `3yy`  | Yank 3 lines                                |
-| `5>>`  | Indent 5 lines right                        |
-| `d3w`  | Delete 3 words forward                      |
-| `c2j`  | Change from cursor through 2 lines upward   |
-| `y4k`  | Yank through 4 lines downward               |
-| `V5j`  | Select 5 lines upward in visual line mode   |
+| Keys   | Action                                    |
+|--------|-------------------------------------------|
+| `5j`   | Move up 5 lines                           |
+| `5k`   | Move down 5 lines                         |
+| `3w`   | Move forward 3 words                      |
+| `10dd` | Delete 10 lines                           |
+| `3yy`  | Yank 3 lines                              |
+| `5>>`  | Indent 5 lines right                      |
+| `d3w`  | Delete 3 words forward                    |
+| `c2j`  | Change from cursor through 2 lines upward |
+| `y4k`  | Yank through 4 lines downward             |
+| `V5j`  | Select 5 lines upward in visual line mode |
 
 Count behavior for `j` and `k`:
 
@@ -1289,7 +1289,8 @@ Notes:
 - With no args, `:PythonVenvInstall` installs `requirements.txt` if present, otherwise `pip install -e .`.
 - New terminals opened after activation inherit the selected venv automatically.
 - If `${project_root}/.env` exists, it is loaded on Python venv activation and inherited by new terminals and test runs.
-- Project-local envs come from the plugin's default workspace/file discovery; repo-managed envs under `~/.local/share/nvim/python-venvs` are added by local config.
+- Project-local envs come from the plugin's default workspace/file discovery; repo-managed envs under `~/.local/share/nvim/python-venvs` are added by local
+  config.
 - Managed-env discovery is pinned to the resolved `fd`/`fdfind` binary path so `<leader>ps` does not depend on how Neovim's startup `PATH` was built.
 - `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
 

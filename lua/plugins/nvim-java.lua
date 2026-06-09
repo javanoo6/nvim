@@ -32,7 +32,7 @@ return {
         or has_root_file(root_dir, "settings.gradle")
         or has_root_file(root_dir, "settings.gradle.kts")
         or has_root_file(root_dir, "gradlew")
-      end
+    end
 
     -- Allow pinning a released JDTLS milestone or pointing at a manually
     -- unpacked custom build without editing the plugin itself. Default to
