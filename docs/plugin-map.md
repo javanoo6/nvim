@@ -152,6 +152,7 @@ conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
   — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
   — :FormatterInfo reports formatter executable/jar availability
+  — directory formatting implementation lives in util/format_dir.lua
   — auto-formatting enabled by default (disable with :FormatDisable)
   Formatters by filetype:
     lua        → stylua
@@ -344,6 +345,7 @@ neotest.lua
     ├── neotest-java    ── Maven/Gradle test runner
     ├── neotest-go      ── Go test runner
     └── neotest-python  ── Python test runner
+  util/neotest_scope.lua ── scoped discovery + file/package target helpers
 ```
 
 **Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, ts summary, to output, tO output panel, tS stop (interactive
@@ -459,6 +461,7 @@ terminal.lua
 ```
 leetcode.lua
   leetcode.nvim  ── LeetCode integration (lazy, cmd=Leet*)
+  util/leetcode_roadmap.lua ── DSA roadmap topic/difficulty picker
     ├── nvim-lua/plenary.nvim
     ├── nvim-treesitter/nvim-treesitter
     ├── nvim-telescope/telescope.nvim
