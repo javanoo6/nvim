@@ -17,6 +17,7 @@ return {
         "json-lsp",
         "yaml-language-server",
         "black",
+        "ruff",
         "golangci-lint",
         "gopls",
         "gofumpt",

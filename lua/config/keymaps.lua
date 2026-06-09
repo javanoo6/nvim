@@ -157,7 +157,7 @@ end, { desc = "Manual dirs" })
 map("n", "<leader>qq", "<cmd>AutoSession save<cr><cmd>qa<cr>", { desc = "Quit all" })
 
 -- Lazy
-map("n", "<leader>pl", "<cmd>Lazy<cr>", { desc = "Lazy" })
+map("n", "<leader>Pl", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- Splits
 map("n", "<leader>-", "<C-W>s", { desc = "Split below" })

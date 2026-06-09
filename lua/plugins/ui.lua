@@ -50,7 +50,8 @@ return {
         { "<leader>j", group = "java" },
         { "<leader>o", group = "oil" },
         { "<leader>O", group = "obsidian" },
-        { "<leader>p", group = "plugins" },
+        { "<leader>p", group = "python" },
+        { "<leader>P", group = "plugins" },
         { "<leader>q", group = "quit/session" },
         { "<leader>r", group = "replace", mode = { "n", "v" } },
         { "<leader>s", group = "search" },
@@ -294,9 +295,6 @@ return {
         return math.floor(vim.o.columns * 0.75)
       end,
     },
-    init = function()
-      vim.notify = require("notify")
-    end,
   },
 
   -- Better UI

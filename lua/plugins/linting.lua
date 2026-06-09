@@ -8,6 +8,27 @@ return {
     config = function()
       local lint = require("lint")
 
+      local function available_linters(bufnr)
+        local filetype = vim.bo[bufnr].filetype
+        local names = lint.linters_by_ft[filetype] or {}
+        local available = {}
+
+        for _, name in ipairs(names) do
+          local linter = lint.linters[name]
+          local cmd = linter and linter.cmd
+
+          if type(cmd) == "function" then
+            cmd = cmd()
+          end
+
+          if type(cmd) ~= "string" or vim.fn.executable(cmd) == 1 then
+            table.insert(available, name)
+          end
+        end
+
+        return available
+      end
+
       lint.linters_by_ft = {
         --java = { "checkstyle" },
         go = { "golangcilint" },
@@ -27,9 +48,15 @@ return {
       -- https://github.com/mfussenegger/nvim-lint#usage (try_lint opts.cwd)
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
         group = require("util").augroup("lint"),
-        callback = function()
-          local cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
-          lint.try_lint(nil, { cwd = cwd })
+        callback = function(args)
+          local cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(args.buf), ":h")
+          local names = available_linters(args.buf)
+
+          if #names == 0 then
+            return
+          end
+
+          lint.try_lint(names, { cwd = cwd })
         end,
       })
     end,
