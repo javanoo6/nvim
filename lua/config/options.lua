@@ -2,6 +2,10 @@
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
 
 -- Define the leader placeholder before plugins load so which-key can replace the
 -- <Space> nop mapping with its trigger mapping instead of being overwritten later.

@@ -37,6 +37,35 @@ return {
         or has_root_file(root_dir, "gradlew")
     end
 
+    vim.api.nvim_create_user_command("JavaInfo", function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      local client = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })[1] or vim.lsp.get_clients({ name = "jdtls" })[1]
+      local root_dir = client and client.config and client.config.root_dir or require("util").get_root(bufnr)
+      local prefer_maven = should_prefer_maven(root_dir)
+      local lines = {
+        "JAVA_HOME: " .. java21_home,
+        "java: " .. (vim.fn.executable(java21_bin .. "/java") == 1 and (java21_bin .. "/java") or vim.fn.exepath("java")),
+        "JDTLS version: " .. tostring(jdtls_version),
+        "JDTLS dir: " .. (jdtls_dir_override or "package-managed"),
+        "root: " .. tostring(root_dir),
+        "mixed Maven/Gradle root: " .. tostring(prefer_maven),
+        "import.maven.enabled: true",
+        "import.gradle.enabled: " .. tostring(not prefer_maven),
+      }
+
+      if client then
+        lines[#lines + 1] = "client: " .. client.name .. " #" .. client.id
+        local server_info = client.server_info or {}
+        if server_info.version then
+          lines[#lines + 1] = "server version: " .. tostring(server_info.version)
+        end
+      else
+        lines[#lines + 1] = "client: not attached"
+      end
+
+      vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "JavaInfo" })
+    end, { desc = "Show Java/JDTLS configuration for the current buffer" })
+
     -- Allow pinning a released JDTLS milestone or pointing at a manually
     -- unpacked custom build without editing the plugin itself. Default to
     -- the local JDTLS build when it exists so Neovim uses the patched server.

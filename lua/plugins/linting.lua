@@ -40,6 +40,17 @@ return {
         zsh = { "shellcheck" },
       }
 
+      local markdownlint = lint.linters["markdownlint-cli2"]
+      if markdownlint then
+        local mason = vim.fn.stdpath("data") .. "/mason"
+        local node = vim.fn.glob(mason .. "/packages/basedpyright/venv/lib/python*/site-packages/nodejs_wheel/bin/node", false, true)[1]
+        local script = mason .. "/packages/markdownlint-cli2/node_modules/markdownlint-cli2/markdownlint-cli2-bin.mjs"
+        if node and vim.fn.executable(node) == 1 and vim.fn.filereadable(script) == 1 then
+          markdownlint.cmd = node
+          markdownlint.args = { script, "-" }
+        end
+      end
+
       -- nvim-lint expects linter.cwd to be a string. Pass cwd per invocation
       -- instead so each buffer lints from its own directory.
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {

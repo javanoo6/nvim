@@ -182,6 +182,7 @@ nvim-lint  (linting.lua)
     python      → ruff
     yaml        → yamllint
   — missing linter executables are skipped instead of erroring on buffer open
+  — markdownlint-cli2 runs through BasedPyright's bundled Node when available
 ```
 
 python-venv.lua
