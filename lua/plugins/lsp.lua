@@ -5,7 +5,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
-    cmd = { "LspInfo", "PyrightInfo" },
+    cmd = { "LspInfo", "PyrightInfo", "PythonLspUsePyright", "PythonLspUseBasedPyright" },
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
@@ -140,6 +140,33 @@ return {
       })
       vim.lsp.enable("pyright")
 
+      vim.lsp.config("basedpyright", {
+        capabilities = capabilities,
+      })
+
+      local function switch_python_lsp(server_name)
+        local stopped = {}
+        for _, client in ipairs(vim.lsp.get_clients()) do
+          if client.name == "pyright" or client.name == "basedpyright" then
+            stopped[client.name] = true
+            client:stop(true)
+          end
+        end
+
+        vim.defer_fn(function()
+          vim.lsp.enable(server_name)
+          vim.notify("Python LSP enabled: " .. server_name, vim.log.levels.INFO)
+        end, next(stopped) and 100 or 0)
+      end
+
+      vim.api.nvim_create_user_command("PythonLspUsePyright", function()
+        switch_python_lsp("pyright")
+      end, { desc = "Use pyright for Python buffers" })
+
+      vim.api.nvim_create_user_command("PythonLspUseBasedPyright", function()
+        switch_python_lsp("basedpyright")
+      end, { desc = "Use basedpyright for Python buffers" })
+
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -149,9 +176,10 @@ return {
           "yamlls",
           "gopls",
           "pyright",
+          "basedpyright",
         },
         automatic_enable = {
-          exclude = { "pyright" },
+          exclude = { "pyright", "basedpyright" },
         },
         handlers = {
           function(server_name)

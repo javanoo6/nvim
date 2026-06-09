@@ -57,11 +57,14 @@ Pyright note:
 
 - `pyright` is configured through `vim.lsp.config("pyright", ...)` with a
   resolved Mason absolute binary path.
-- `mason-lspconfig` automatic-enable excludes `pyright` so that repo-local
-  command override is not bypassed.
+- `basedpyright` is configured but not enabled by default. Use
+  `:PythonLspUseBasedPyright` to switch the current session to BasedPyright, or
+  `:PythonLspUsePyright` to switch back.
+- `mason-lspconfig` automatic-enable excludes `pyright` and `basedpyright` so
+  repo-local command/switching policy is not bypassed.
 - `:PyrightInfo` prints the exact command path for the current session.
 
-**LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`
+**LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`, `basedpyright`
 **Java LSP:** handled separately by `nvim-java` (jdtls) — see Java section.
 
 **Key LSP keymaps** (set on LspAttach in lsp.lua):
@@ -104,6 +107,13 @@ nvim-cmp  (completion.lua)
 nvim-autopairs  (coding.lua)
   └── nvim-cmp                       ── integrates: auto-closes pairs on confirm
 ```
+
+Filetype source policy:
+
+- Markdown/text/gitcommit: path + snippets first, then buffer words.
+- Shell/YAML: LSP + path + snippets first, then buffer words.
+- Python: LSP + signature help + snippets + path first, then buffer words.
+- `cmp-buffer` ignores buffers larger than 512 KiB and starts at 4 characters.
 
 **Completion keymaps:**
 
@@ -503,6 +513,7 @@ keymaps.lua (diagnostic):
   <leader>uI  — toggle vim-illuminate references for current buffer
   <leader>uu  — toggle reference underline
   <leader>uH  — toggle reference background
+  <leader>cO  — organize imports via LSP source.organizeImports
 ```
 
 ---

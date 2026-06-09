@@ -93,6 +93,7 @@ return {
             end
 
             if next(servers) ~= nil then
+              vim.notify("Restarting Python LSP for selected venv", vim.log.levels.INFO)
               vim.defer_fn(function()
                 for server_name in pairs(servers) do
                   vim.lsp.enable(server_name)

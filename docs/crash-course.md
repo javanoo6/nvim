@@ -1289,6 +1289,10 @@ Notes:
   config.
 - Managed-env discovery is pinned to the resolved `fd`/`fdfind` binary path so `<leader>ps` does not depend on how Neovim's startup `PATH` was built.
 - `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
+- `:PythonLspUseBasedPyright` switches Python buffers to BasedPyright for the current session; `:PythonLspUsePyright` switches back.
+- `<leader>cO` runs LSP organize-imports. In Python projects this usually uses Pyright/BasedPyright or Ruff-provided import organization when available.
+- Use `<leader>tt` to run the current Python test file/package after selecting a venv. `neotest-python` resolves Python from the active venv and `.env`
+  values loaded during venv activation are inherited by test runs.
 
 ---
 

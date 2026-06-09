@@ -222,6 +222,15 @@ map("n", "<leader>cp", function()
     apply = true,
   })
 end, { desc = "Fix package declaration" })
+map("n", "<leader>cO", function()
+  vim.lsp.buf.code_action({
+    context = {
+      only = { "source.organizeImports" },
+      diagnostics = {},
+    },
+    apply = true,
+  })
+end, { desc = "Organize imports" })
 
 -- Replacing
 map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })
