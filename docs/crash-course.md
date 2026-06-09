@@ -25,9 +25,10 @@ nvim setup reference guide.
 17. [Marks](#marks)
 18. [Terminal Mode](#terminal-mode)
 19. [Go Development](#go-development)
-20. [Miscellaneous](#miscellaneous)
-21. [Sessions](#sessions)
-22. [Obsidian (Notes)](#obsidian-notes)
+20. [Python Development](#python-development)
+21. [Miscellaneous](#miscellaneous)
+22. [Sessions](#sessions)
+23. [Obsidian (Notes)](#obsidian-notes)
 
 ---
 
@@ -1257,13 +1258,50 @@ git commit                 →  finalize merge
 
 ---
 
+## Python Development
+
+### Python Virtual Environments
+
+| Key          | Action                               |
+|--------------|--------------------------------------|
+| `<leader>ps` | Select Python venv                   |
+| `<leader>pc` | Create project-local venv            |
+| `<leader>pr` | Recreate project-local venv          |
+| `<leader>pi` | Install default deps into active env |
+| `<leader>pI` | Prompt for custom `pip install` args |
+
+Commands:
+
+```vim
+:PythonVenvSelect
+:PythonVenvCreate .venv
+:PythonVenvCreate .venv-py312 python3.12
+:PythonVenvRecreate .venv
+:PythonVenvInstall
+:PythonVenvInstall pytest ruff
+:PythonVenvInstall -r requirements-dev.txt
+```
+
+Notes:
+
+- `:PythonVenvCreate` and `:PythonVenvRecreate` create envs under the current Python project root.
+- `:PythonVenvInstall` uses the active venv from `venv-selector.nvim`.
+- With no args, `:PythonVenvInstall` installs `requirements.txt` if present, otherwise `pip install -e .`.
+- New terminals opened after activation inherit the selected venv automatically.
+- If `${project_root}/.env` exists, it is loaded on Python venv activation and inherited by new terminals and test runs.
+- Project-local envs come from the plugin's default workspace/file discovery; repo-managed envs under `~/.local/share/nvim/python-venvs` are added by local config.
+- Managed-env discovery is pinned to the resolved `fd`/`fdfind` binary path so `<leader>ps` does not depend on how Neovim's startup `PATH` was built.
+- `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
+
+---
+
 ## Miscellaneous
 
 | Key          | Action                 |
 |--------------|------------------------|
 | `<leader>fn` | New file               |
 | `<leader>U`  | Undotree toggle        |
-| `<leader>pl` | Open Lazy              |
+| `<leader>Pl` | Open Lazy              |
 | `<leader>Xh` | Rehighlight treesitter |
 | `<leader>XC` | Clean JDTLS workspace  |
 
@@ -1290,7 +1328,8 @@ Press `<leader>` and wait to see all groups:
 | `<leader>l`     | LSP               |
 | `<leader>j`     | Java              |
 | `<leader>O`     | Obsidian          |
-| `<leader>p`     | Plugins           |
+| `<leader>p`     | Python            |
+| `<leader>P`     | Plugins           |
 | `<leader>q`     | Quit/Session      |
 | `<leader>r`     | Replace           |
 | `<leader>s`     | Search            |

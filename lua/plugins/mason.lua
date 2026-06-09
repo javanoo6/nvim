@@ -16,6 +16,7 @@ return {
         "bash-language-server",
         "json-lsp",
         "yaml-language-server",
+        "pyright",
         "black",
         "ruff",
         "golangci-lint",

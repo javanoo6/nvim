@@ -53,13 +53,22 @@ return {
       },
     },
     opts = function()
+      local fd_binary = vim.fn.exepath("fd")
+      if fd_binary == "" then
+        fd_binary = vim.fn.exepath("fdfind")
+      end
+      if fd_binary == "" then
+        fd_binary = "fd"
+      end
+
       return {
         search = {
           managed = {
-            command = "fd '/bin/python$' ~/.local/share/nvim/python-venvs --full-path --color never -a -L",
+            command = "$FD '/bin/python$' ~/.local/share/nvim/python-venvs --full-path --color never -a -L",
           },
         },
         options = {
+          fd_binary_name = fd_binary,
           notify_user_on_venv_activation = true,
           cached_venv_automatic_activation = true,
           activate_venv_in_terminal = true,

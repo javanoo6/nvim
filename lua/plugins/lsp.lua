@@ -5,6 +5,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
+    cmd = { "LspInfo", "PyrightInfo" },
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
@@ -20,6 +21,31 @@ return {
       local map = require("util").map
       local java_codelens = require("util.java_codelens")
       local inlay_hints = require("util.inlay_hints")
+      local function resolve_pyright_cmd()
+        local exepath = vim.fn.exepath("pyright-langserver")
+        if exepath ~= "" then
+          return { exepath, "--stdio" }, exepath
+        end
+
+        local mason_bin = vim.fn.stdpath("data") .. "/mason/bin/pyright-langserver"
+        if vim.fn.executable(mason_bin) == 1 then
+          return { mason_bin, "--stdio" }, mason_bin
+        end
+
+        return { "pyright-langserver", "--stdio" }, nil
+      end
+
+      vim.api.nvim_create_user_command("PyrightInfo", function()
+        local cmd, resolved = resolve_pyright_cmd()
+        local lines = {
+          "Pyright command: " .. table.concat(cmd, " "),
+          "Resolved binary: " .. (resolved or "<not found>"),
+          "exepath('pyright-langserver'): " .. vim.fn.exepath("pyright-langserver"),
+          "node: " .. vim.fn.exepath("node"),
+          "PATH: " .. (vim.env.PATH or ""),
+        }
+        vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "PyrightInfo" })
+      end, { desc = "Show resolved Pyright command info" })
 
       local function show_lsp_info()
         if vim.fn.exists(":LspInfo") == 2 then
@@ -107,6 +133,13 @@ return {
       local capabilities =
         vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())
 
+      local pyright_cmd = resolve_pyright_cmd()
+      vim.lsp.config("pyright", {
+        capabilities = capabilities,
+        cmd = pyright_cmd,
+      })
+      vim.lsp.enable("pyright")
+
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -116,6 +149,9 @@ return {
           "yamlls",
           "gopls",
           "pyright",
+        },
+        automatic_enable = {
+          exclude = { "pyright" },
         },
         handlers = {
           function(server_name)

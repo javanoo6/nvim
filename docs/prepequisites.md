@@ -165,6 +165,7 @@ Listed here for reference only.
 | `pyright`              | Python LSP               |
 | `stylua`               | Lua formatter            |
 | `black`                | Python formatter         |
+| `ruff`                 | Python linter            |
 | `gofumpt`              | Go formatter             |
 | `goimports-reviser`    | Go imports organizer     |
 | `golines`              | Go line length formatter |
