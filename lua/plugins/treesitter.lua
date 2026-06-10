@@ -12,6 +12,7 @@ return {
       local languages = {
         "bash",
         "c",
+        "css",
         "go",
         "gomod",
         "gowork",
@@ -26,6 +27,10 @@ return {
         "markdown_inline",
         "python",
         "query",
+        "sql",
+        "toml",
+        "tsx",
+        "typescript",
         "vim",
         "vimdoc",
         "yaml",

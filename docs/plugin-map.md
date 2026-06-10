@@ -150,7 +150,7 @@ nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
 ```
 
-**Installed grammars:** bash, c, go, gomod, gowork, gotmpl, html, java, javascript, json, lua, markdown, python, query, vim, vimdoc, yaml, xml, groovy, kotlin
+**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml, tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
 **Incremental selection** (visual mode only): `<CR>` start, `<Tab>` expand node, `<S-Tab>` shrink node, `<BS>` expand scope
 
