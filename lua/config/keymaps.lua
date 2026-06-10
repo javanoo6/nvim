@@ -310,7 +310,7 @@ local function open_diffview_against_ref(ref)
   if not ref or vim.trim(ref) == "" then
     return
   end
-  vim.cmd("DiffviewOpen " .. vim.trim(ref) .. "...HEAD")
+  vim.cmd.DiffviewOpen({ args = { vim.trim(ref) .. "...HEAD" } })
 end
 
 local function pick_diffview_ref()
@@ -348,10 +348,10 @@ map("n", "<leader>Gt", "<cmd>tabnew | terminal git mergetool<cr>", { desc = "Ope
 map("n", "<leader>Gq", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
 map("n", "<leader>Gb", pick_diffview_ref, { desc = "Diff vs branch/ref" })
 map("n", "<leader>Gm", function()
-  vim.cmd("DiffviewOpen " .. default_branch())
+  vim.cmd.DiffviewOpen({ args = { default_branch() } })
 end, { desc = "Diff vs main/master" })
 map("n", "<leader>GM", function()
-  vim.cmd("DiffviewOpen HEAD..origin/" .. default_branch())
+  vim.cmd.DiffviewOpen({ args = { "HEAD..origin/" .. default_branch() } })
 end, { desc = "Diff vs origin/main" })
 
 -- Run Go program
