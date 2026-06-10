@@ -21,6 +21,7 @@ return {
       local map = require("util").map
       local java_codelens = require("util.java_codelens")
       local inlay_hints = require("util.inlay_hints")
+      inlay_hints.setup()
       local function resolve_pyright_cmd()
         local exepath = vim.fn.exepath("pyright-langserver")
         if exepath ~= "" then
