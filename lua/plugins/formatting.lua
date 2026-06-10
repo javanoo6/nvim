@@ -19,6 +19,23 @@ local function notify_format_skipped_for_errors(bufnr, error_count)
   vim.notify(message, vim.log.levels.WARN, { title = "Conform" })
 end
 
+local idea_formatter_filetypes = {
+  java = true,
+  markdown = true,
+  python = true,
+  sh = true,
+  xml = true,
+  yaml = true,
+}
+
+local function format_on_save_timeout(bufnr)
+  if idea_formatter_filetypes[vim.bo[bufnr].filetype] then
+    return 10000
+  end
+
+  return 500
+end
+
 return {
   {
     "stevearc/conform.nvim",
@@ -103,7 +120,7 @@ return {
         end
 
         format_skip_notices[bufnr] = nil
-        return { timeout_ms = 500, lsp_format = "fallback" }
+        return { timeout_ms = format_on_save_timeout(bufnr), lsp_format = "fallback" }
       end,
     },
     config = function(_, opts)

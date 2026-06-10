@@ -166,6 +166,7 @@ conform.nvim  (formatting.lua)
   — directory formatting implementation lives in util/format_dir.lua
   — auto-formatting enabled by default (disable with :FormatDisable)
   — format-on-save warns once per unchanged error state when skipped due to LSP errors
+  — format-on-save uses 10000ms for IntelliJ-backed filetypes, 500ms otherwise
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
