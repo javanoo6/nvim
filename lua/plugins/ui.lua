@@ -105,10 +105,10 @@ return {
             {
               "diagnostics",
               symbols = {
-                error = " ",
-                warn = " ",
-                info = " ",
-                hint = " ",
+                error = "E:",
+                warn = "W:",
+                info = "I:",
+                hint = "H:",
               },
             },
             {
@@ -169,9 +169,9 @@ return {
             {
               "diff",
               symbols = {
-                added = " ",
-                modified = " ",
-                removed = " ",
+                added = "+",
+                modified = "~",
+                removed = "-",
               },
             },
           },
