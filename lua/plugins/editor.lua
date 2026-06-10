@@ -341,8 +341,15 @@ return {
           copy_absolute_path = function(state)
             local node = state.tree:get_node()
             local path = node:get_id()
-            vim.fn.setreg("+", path)
-            vim.notify("Copied path: " .. path)
+
+            local ok, err = pcall(vim.fn.setreg, "+", path)
+            if ok then
+              vim.notify("Copied path to clipboard: " .. path)
+              return
+            end
+
+            vim.fn.setreg('"', path)
+            vim.notify("Copied path to unnamed register: " .. path .. "\nClipboard unavailable: " .. tostring(err), vim.log.levels.WARN)
           end,
           apply_scope_root = function(path)
             local util = require("util")

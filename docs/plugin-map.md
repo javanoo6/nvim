@@ -264,6 +264,7 @@ editor.lua
   ├── neo-tree.nvim           ── file explorer (<leader>e cwd, <leader>E root)
   │     ├── native preview mode  ── `P` float preview, `l` focus, `<C-f>`/`<C-b>` scroll
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in
+  │     ├── `Y` copies absolute path with unnamed-register fallback when clipboard is unavailable
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │
   ├── lazygit.nvim            ── LazyGit TUI  →  <leader>Gg
