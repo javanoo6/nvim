@@ -342,13 +342,12 @@ return {
             local node = state.tree:get_node()
             local path = node:get_id()
 
-            local ok, err = pcall(vim.fn.setreg, "+", path)
-            if ok then
+            local register, err = require("util.clipboard").set_text(path)
+            if register == "+" then
               vim.notify("Copied path to clipboard: " .. path)
               return
             end
 
-            vim.fn.setreg('"', path)
             vim.notify("Copied path to unnamed register: " .. path .. "\nClipboard unavailable: " .. tostring(err), vim.log.levels.WARN)
           end,
           apply_scope_root = function(path)

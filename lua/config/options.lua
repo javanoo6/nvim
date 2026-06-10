@@ -26,7 +26,7 @@ opt.shiftwidth = 2
 opt.expandtab = true
 opt.autoindent = true
 opt.smartindent = true
-opt.clipboard = "unnamedplus"
+require("util.clipboard").setup()
 opt.splitbelow = true
 opt.splitright = true
 opt.termguicolors = true
