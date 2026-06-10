@@ -165,6 +165,7 @@ conform.nvim  (formatting.lua)
   — :FormatterInfo reports formatter executable/jar availability
   — directory formatting implementation lives in util/format_dir.lua
   — auto-formatting enabled by default (disable with :FormatDisable)
+  — format-on-save warns once per unchanged error state when skipped due to LSP errors
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines

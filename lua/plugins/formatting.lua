@@ -1,6 +1,24 @@
 -- ./lua/plugins/formatting.lua
 
 -- Formatting: conform.nvim configuration
+local format_skip_notices = {}
+
+local function notify_format_skipped_for_errors(bufnr, error_count)
+  local changedtick = vim.b[bufnr].changedtick or 0
+  local last_notice = format_skip_notices[bufnr]
+  if last_notice and last_notice.changedtick == changedtick and last_notice.error_count == error_count then
+    return
+  end
+
+  format_skip_notices[bufnr] = {
+    changedtick = changedtick,
+    error_count = error_count,
+  }
+
+  local message = string.format("Format on save skipped: %d LSP error(s)", error_count)
+  vim.notify(message, vim.log.levels.WARN, { title = "Conform" })
+end
+
 return {
   {
     "stevearc/conform.nvim",
@@ -80,9 +98,11 @@ return {
         -- Skip formatting if there are LSP errors
         local diagnostics = vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR })
         if #diagnostics > 0 then
+          notify_format_skipped_for_errors(bufnr, #diagnostics)
           return
         end
 
+        format_skip_notices[bufnr] = nil
         return { timeout_ms = 500, lsp_format = "fallback" }
       end,
     },
