@@ -8,6 +8,8 @@ Neo-tree and picker cwd behavior is intentionally split from raw Neovim cwd.
 - `<leader>E` opens Neo-tree at project root.
 - Telescope cwd pickers (`<leader><space>`, `<leader>ff`, `<leader>fg`) use the
   remembered explorer cwd.
+- Opening or switching buffers does not auto-reveal them in Neo-tree. Explorer
+  scope stays put unless changed explicitly.
 - `.` inside Neo-tree sets the selected directory as the explorer scope.
 - Closing Neo-tree with `q` or `<Esc>` preserves that explicit scope.
 

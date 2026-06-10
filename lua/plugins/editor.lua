@@ -258,7 +258,10 @@ return {
           sidebar = "global",
           current = "window",
         },
-        follow_current_file = { enabled = true },
+        -- In large repos, automatic reveal on every buffer enter makes the
+        -- sidebar feel like it is changing scope on its own. Keep the root
+        -- stable unless the user explicitly reopens Neo-tree or sets scope.
+        follow_current_file = { enabled = false },
         hijack_netrw_behavior = "open_current",
         commands = {
           -- IntelliJ-style package expansion:
