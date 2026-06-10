@@ -314,10 +314,35 @@ return {
     "aznhe21/actions-preview.nvim",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
-      local actions = require("actions-preview")
-      local hl = require("actions-preview.highlight")
-      local themes = require("telescope.themes")
-      local entry_display = require("telescope.pickers.entry_display")
+      local function native_code_action()
+        vim.lsp.buf.code_action()
+      end
+
+      local function set_code_action_maps(code_action)
+        local function code_actions_from_any_mode()
+          if vim.fn.mode() == "i" then
+            vim.cmd("stopinsert")
+            vim.schedule(code_action)
+            return
+          end
+
+          code_action()
+        end
+
+        vim.keymap.set({ "n", "v" }, "<leader>ca", code_action, { desc = "Code action" })
+        vim.keymap.set({ "n", "v", "i" }, "<A-CR>", code_actions_from_any_mode, { desc = "Code action" })
+      end
+
+      local actions_ok, actions = pcall(require, "actions-preview")
+      local hl_ok, hl = pcall(require, "actions-preview.highlight")
+      local themes_ok, themes = pcall(require, "telescope.themes")
+      local entry_display_ok, entry_display = pcall(require, "telescope.pickers.entry_display")
+
+      if not (actions_ok and hl_ok and themes_ok and entry_display_ok) then
+        vim.notify("actions-preview unavailable; using native LSP code actions", vim.log.levels.WARN)
+        set_code_action_maps(native_code_action)
+        return
+      end
 
       local function classify_action(action)
         local raw = action.action or {}
@@ -379,7 +404,7 @@ return {
         end
       end
 
-      require("actions-preview").setup({
+      local setup_ok = pcall(actions.setup, {
         diff = {
           algorithm = "patience",
           ignore_whitespace = true,
@@ -415,18 +440,23 @@ return {
         ),
       })
 
-      local function code_actions_from_any_mode()
-        if vim.fn.mode() == "i" then
-          vim.cmd("stopinsert")
-          vim.schedule(actions.code_actions)
+      if not setup_ok then
+        vim.notify("actions-preview setup failed; using native LSP code actions", vim.log.levels.WARN)
+        set_code_action_maps(native_code_action)
+        return
+      end
+
+      local function preview_or_native_code_action()
+        local ok = pcall(actions.code_actions)
+        if ok then
           return
         end
 
-        actions.code_actions()
+        vim.notify("actions-preview failed; using native LSP code actions", vim.log.levels.WARN)
+        native_code_action()
       end
 
-      vim.keymap.set({ "n", "v" }, "<leader>ca", actions.code_actions, { desc = "Code action" })
-      vim.keymap.set({ "n", "v", "i" }, "<A-CR>", code_actions_from_any_mode, { desc = "Code action" })
+      set_code_action_maps(preview_or_native_code_action)
     end,
   },
 
