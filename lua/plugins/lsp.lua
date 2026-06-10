@@ -81,6 +81,8 @@ return {
         },
       })
       vim.diagnostic.enable(true)
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = require("util").augroup("lsp_attach"),
@@ -289,14 +291,6 @@ return {
           end,
         },
       })
-
-      -- Rounded borders for floating windows
-      local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-      function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-        opts = opts or {}
-        opts.border = "rounded"
-        return orig_util_open_floating_preview(contents, syntax, opts, ...)
-      end
 
       -- Java keymaps (using <leader>j group defined in which-key)
       local java_debug = require("util.java_debug")
