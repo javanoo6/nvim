@@ -150,7 +150,8 @@ nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
 ```
 
-**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml, tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
+**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml,
+tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
 **Incremental selection** (visual mode only): `<CR>` start, `<Tab>` expand node, `<S-Tab>` shrink node, `<BS>` expand scope
 
@@ -524,14 +525,14 @@ keymaps.lua (diagnostic):
 ---
 
 Quality gate:
-  Makefile  ── `make check` runs Mason `stylua --check` + `selene`
-  selene.toml / vim.yml  ── local Selene config and minimal Neovim std
+Makefile ── `make check` runs Mason `stylua --check` + `selene`
+selene.toml / vim.yml ── local Selene config and minimal Neovim std
 
 UI inspection:
-  util/ui_debug.lua ── :UiInspect, :UiToggleTreesitter, :UiToggleIlluminate
-                       Reports `vim.inspect_pos()`, Treesitter captures,
-                       parser state, diagnostics, conceal, colorscheme, and
-                       related debug commands.
+util/ui_debug.lua ── :UiInspect, :UiToggleTreesitter, :UiToggleIlluminate
+Reports `vim.inspect_pos()`, Treesitter captures,
+parser state, diagnostics, conceal, colorscheme, and
+related debug commands.
 
 ---
 

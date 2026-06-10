@@ -1,16 +1,9 @@
 {
   "Lua.runtime.version": "LuaJIT",
-  "Lua.runtime.path": [
-    "lua/?.lua",
-    "lua/?/init.lua"
-  ],
-  "Lua.diagnostics.globals": [
-    "vim"
-  ],
+  "Lua.runtime.path": ["lua/?.lua", "lua/?/init.lua"],
+  "Lua.diagnostics.globals": ["vim"],
   "Lua.workspace.checkThirdParty": false,
-  "Lua.workspace.library": [
-    "${env:VIMRUNTIME}"
-  ],
+  "Lua.workspace.library": ["${env:VIMRUNTIME}"],
   "Lua.telemetry.enable": false,
   "Lua.hint.enable": true,
   "Lua.hint.arrayIndex": "Auto",

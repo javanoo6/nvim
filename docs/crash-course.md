@@ -1165,22 +1165,22 @@ git commit                 →  finalize merge
 
 ## UI & Toggles
 
-| Key          | Action                      |
-|--------------|-----------------------------|
-| `<leader>us` | Toggle spell                |
-| `<leader>uw` | Toggle wrap                 |
-| `<leader>ul` | Toggle relative numbers     |
-| `<leader>un` | Toggle line numbers         |
-| `<leader>uf` | Toggle fold                 |
+| Key          | Action                                            |
+|--------------|---------------------------------------------------|
+| `<leader>us` | Toggle spell                                      |
+| `<leader>uw` | Toggle wrap                                       |
+| `<leader>ul` | Toggle relative numbers                           |
+| `<leader>un` | Toggle line numbers                               |
+| `<leader>uf` | Toggle fold                                       |
 | `<leader>ud` | Toggle inline diagnostics (enabled on LSP attach) |
-| `<leader>uD` | Toggle diagnostics          |
-| `<leader>uh` | Toggle inlay hints          |
-| `<leader>uu` | Toggle reference underline  |
-| `<leader>uH` | Toggle reference background |
-| `<leader>ui` | Inspect UI/highlights       |
-| `<leader>uT` | Toggle Treesitter buffer    |
-| `<leader>uI` | Toggle references buffer    |
-| `<leader>ut` | Color schemes               |
+| `<leader>uD` | Toggle diagnostics                                |
+| `<leader>uh` | Toggle inlay hints                                |
+| `<leader>uu` | Toggle reference underline                        |
+| `<leader>uH` | Toggle reference background                       |
+| `<leader>ui` | Inspect UI/highlights                             |
+| `<leader>uT` | Toggle Treesitter buffer                          |
+| `<leader>uI` | Toggle references buffer                          |
+| `<leader>ut` | Color schemes                                     |
 
 ---
 
