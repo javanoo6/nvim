@@ -237,9 +237,11 @@ return {
         "<leader>e",
         function()
           local util = require("util")
+          local dir = util.get_explorer_cwd()
+          util.pin_explorer_cwd(dir)
           require("neo-tree.command").execute({
             toggle = true,
-            dir = util.get_explorer_cwd(),
+            dir = dir,
             reveal = util.neotree_reveal_on_open_enabled(),
           })
         end,
@@ -249,9 +251,11 @@ return {
         "<leader>E",
         function()
           local util = require("util")
+          local dir = util.get_root()
+          util.pin_explorer_cwd(dir)
           require("neo-tree.command").execute({
             toggle = true,
-            dir = util.get_root(),
+            dir = dir,
             reveal = util.neotree_reveal_on_open_enabled(),
           })
         end,
