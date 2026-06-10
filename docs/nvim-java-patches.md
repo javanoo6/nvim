@@ -31,9 +31,8 @@ consume unlimited memory on large projects.
 
 ### Fix
 
-After `require("java").setup()` has run (which loads the module into Lua's
-`package.loaded` cache), we monkey-patch `get_jvm_args` on the already-loaded
-module:
+Before `require("java").setup()` runs, we require
+`java-core.ls.servers.jdtls.cmd` and monkey-patch `get_jvm_args`:
 
 ```lua
 local jdtls_cmd = require('java-core.ls.servers.jdtls.cmd')
@@ -58,10 +57,11 @@ end
 - Finds the hardcoded `-Xms1G` entry and replaces it with `-Xms2G`
 - Appends `-Xmx8G` to cap maximum heap at 8 GB
 
-**Why this works:** Lua modules are singletons cached in `package.loaded`. By
-the time `setup()` returns, `java-core.ls.servers.jdtls.cmd` is loaded and its
-table is shared by reference. Replacing the function on that table affects all
-future callers, including nvim-java's internal startup code.
+**Why this works:** Lua modules are singletons cached in `package.loaded`.
+Installing the patch before setup ensures all later callers, including
+nvim-java's internal startup code, see the replacement. This ordering matters
+because auto-session can restore Java buffers during `VimEnter`, causing JDTLS
+startup to happen inside `require("java").setup()`.
 
 **Survival across plugin updates:** The patch does not edit any plugin file on
 disk. It only replaces the in-memory function at runtime. If nvim-java changes

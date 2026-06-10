@@ -71,6 +71,13 @@ return {
     -- the local JDTLS build when it exists so Neovim uses the patched server.
     java_jdtls.patch_pkgm_install_dir(jdtls_dir_override)
     java_jdtls.register_info_command(jdtls_dir_override, jdtls_version)
+    -- Install before java.setup(); session restore can open Java buffers during
+    -- VimEnter and trigger JDTLS startup from inside nvim-java setup.
+    java_jdtls.patch_jdtls_cmd({
+      default_jdtls_version = default_jdtls_version,
+      jdtls_version = jdtls_version,
+      jdtls_dir_override = jdtls_dir_override,
+    })
 
     require("java").setup({
       checks = {
@@ -97,14 +104,6 @@ return {
 
     -- Guard nvim-java against malformed/empty JDTLS payloads.
     java_patches.apply_refactor_patches(debug_log)
-
-    -- Patch nvim-java's hardcoded -Xms1G with custom heap sizes.
-    -- Must happen after setup() so the module is already loaded.
-    java_jdtls.patch_jdtls_cmd({
-      default_jdtls_version = default_jdtls_version,
-      jdtls_version = jdtls_version,
-      jdtls_dir_override = jdtls_dir_override,
-    })
 
     vim.lsp.config("jdtls", {
       capabilities = capabilities,
