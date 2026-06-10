@@ -11,6 +11,7 @@ local skip_dir_names = {
   ["build"] = true,
   ["target"] = true,
   ["coverage"] = true,
+  ["intellij-code-formatter"] = true,
   [".next"] = true,
   [".nuxt"] = true,
   [".venv"] = true,
@@ -33,6 +34,20 @@ local function executable(name)
   return vim.fn.executable(name) == 1 and vim.fn.exepath(name) or "<missing>"
 end
 
+local function fd_executable()
+  local fd = vim.fn.exepath("fd")
+  if fd ~= "" then
+    return fd
+  end
+
+  fd = vim.fn.exepath("fdfind")
+  if fd ~= "" then
+    return fd
+  end
+
+  return nil
+end
+
 function M.formatter_info()
   local home = vim.env.HOME
   local jar = home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar"
@@ -46,6 +61,7 @@ function M.formatter_info()
     "gofumpt: " .. executable("gofumpt"),
     "goimports-reviser: " .. executable("goimports-reviser"),
     "golines: " .. executable("golines"),
+    "fd: " .. (fd_executable() or "<missing>"),
   }
   vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "FormatterInfo" })
 end
@@ -148,32 +164,43 @@ local function format_file(conform, path)
 end
 
 local function collect_files(formatters_by_ft, dir)
+  local fd = fd_executable()
+  if not fd then
+    return nil, "fd/fdfind executable not found"
+  end
+
+  local args = {
+    fd,
+    "--type",
+    "file",
+    "--hidden",
+    "--absolute-path",
+    "--color",
+    "never",
+  }
+
+  for name in pairs(skip_dir_names) do
+    table.insert(args, "--exclude")
+    table.insert(args, name)
+  end
+
+  table.insert(args, ".")
+  table.insert(args, dir)
+
+  local result = vim.system(args, { text = true }):wait()
+  if result.code ~= 0 then
+    return nil, vim.trim(result.stderr or "fd failed")
+  end
+
   local files = {}
-
-  local function walk(current)
-    local fs = vim.uv.fs_scandir(current)
-    if not fs then
-      return
-    end
-
-    while true do
-      local name, entry_type = vim.uv.fs_scandir_next(fs)
-      if not name then
-        break
-      end
-
-      local path = current .. "/" .. name
-      if entry_type == "directory" then
-        if not skip_dir_names[name] then
-          walk(path)
-        end
-      elseif entry_type == "file" and supports_formatting(formatters_by_ft, path) then
-        files[#files + 1] = path
-      end
+  for path in vim.gsplit(result.stdout or "", "\n", { trimempty = true }) do
+    path = normalize(path)
+    if path and supports_formatting(formatters_by_ft, path) then
+      files[#files + 1] = path
     end
   end
 
-  walk(dir)
+  table.sort(files)
   return files
 end
 
@@ -212,7 +239,12 @@ function M.format_dir(conform, formatters_by_ft, dir)
     return
   end
 
-  local files = collect_files(formatters_by_ft, dir)
+  local files, collect_err = collect_files(formatters_by_ft, dir)
+  if collect_err then
+    vim.notify("FormatDir: " .. collect_err, vim.log.levels.ERROR)
+    return
+  end
+
   if vim.tbl_isempty(files) then
     vim.notify("FormatDir: no supported files found", vim.log.levels.INFO)
     return

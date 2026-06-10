@@ -7,6 +7,7 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     config = function()
       local lint = require("lint")
+      local lint_timers = {}
 
       local function available_linters(bufnr)
         local filetype = vim.bo[bufnr].filetype
@@ -51,19 +52,47 @@ return {
         end
       end
 
-      -- nvim-lint expects linter.cwd to be a string. Pass cwd per invocation
-      -- instead so each buffer lints from its own directory.
+      local function lint_buffer(bufnr)
+        if not vim.api.nvim_buf_is_valid(bufnr) then
+          return
+        end
+
+        local cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h")
+        local names = available_linters(bufnr)
+
+        if #names == 0 then
+          return
+        end
+
+        -- nvim-lint expects linter.cwd to be a string. Pass cwd per invocation
+        -- instead so each buffer lints from its own directory.
+        lint.try_lint(names, { cwd = cwd })
+      end
+
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
         group = require("util").augroup("lint"),
         callback = function(args)
-          local cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(args.buf), ":h")
-          local names = available_linters(args.buf)
-
-          if #names == 0 then
+          if args.event == "BufWritePost" then
+            lint_buffer(args.buf)
             return
           end
 
-          lint.try_lint(names, { cwd = cwd })
+          local existing = lint_timers[args.buf]
+          if existing then
+            existing:stop()
+            existing:close()
+          end
+
+          local timer = vim.uv.new_timer()
+          lint_timers[args.buf] = timer
+          timer:start(300, 0, function()
+            timer:stop()
+            timer:close()
+            lint_timers[args.buf] = nil
+            vim.schedule(function()
+              lint_buffer(args.buf)
+            end)
+          end)
         end,
       })
     end,
