@@ -150,18 +150,41 @@ return {
       -- Setup dap-ui
       dapui.setup()
 
+      local sensitive_dap_terms = {
+        "secret",
+        "api_key",
+        "apikey",
+        "token",
+        "password",
+        "passwd",
+        "credential",
+        "authorization",
+      }
+
+      local function is_sensitive_dap_value(variable)
+        local name = string.lower(tostring(variable.name or ""))
+        local value = string.lower(tostring(variable.value or ""))
+
+        for _, term in ipairs(sensitive_dap_terms) do
+          if name:find(term, 1, true) or value:find(term, 1, true) then
+            return true
+          end
+        end
+
+        return false
+      end
+
       -- Setup virtual text
       require("nvim-dap-virtual-text").setup({
         display_callback = function(variable)
-          local name = string.lower(variable.name)
-          local value = string.lower(variable.value)
-          if name:match("secret") or name:match("api_key") or value:match("secret") or value:match("api_key") then
+          if is_sensitive_dap_value(variable) then
             return "***"
           end
-          if #variable.value > 15 then
-            return string.sub(variable.value, 1, 15) .. "... "
+          local value = tostring(variable.value or "")
+          if #value > 15 then
+            return string.sub(value, 1, 15) .. "... "
           end
-          return variable.value
+          return value
         end,
       })
 
