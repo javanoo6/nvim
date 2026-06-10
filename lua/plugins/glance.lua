@@ -1,11 +1,11 @@
 -- ./lua/plugins/glance.lua
 
 -- Glance - beautiful LSP references/definitions preview
--- ./lua/plugins/glance.lua
 
 return {
   {
-    "dnlhc/glance.nvim",
+    "javanoo6/glance.nvim",
+    branch = "fix/fs-read-nil-glance-list",
     cmd = { "Glance" },
     event = "LspAttach",
     config = function()
