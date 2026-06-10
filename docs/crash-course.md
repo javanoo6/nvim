@@ -623,6 +623,7 @@ This uses `nvim-cmp` cmdline completion:
 | `<leader>fR`      | Recent files                 |
 | `<leader>fs`      | New scratch file             |
 | `<leader>fS`      | Open scratch file            |
+| `<leader>fi`      | Scratch path info            |
 | `<leader>fN`      | New named scratch file       |
 | `<leader>Hy`      | Yank history                 |
 | `<leader>Hc`      | Command history              |

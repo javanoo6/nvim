@@ -120,16 +120,36 @@ local function open_scratch()
   require("scratch").scratchOpen()
 end
 
+local function scratch_info()
+  local ft = vim.bo.filetype ~= "" and vim.bo.filetype or "<none>"
+  local java_root = find_java_project_root()
+  local lines = {
+    "Current filetype: " .. ft,
+    "Global scratch dir: " .. global_scratch_dir,
+    "Java project scratch: " .. (java_scratch_in_project and "enabled" or "disabled"),
+    "Java project root: " .. (java_root or "<not found>"),
+    "Java scratch path: " .. java_scratch_path(),
+  }
+
+  if ft ~= "java" then
+    lines[#lines + 1] = "Non-Java scratches use scratch.nvim storage under the global scratch dir."
+  end
+
+  vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "ScratchInfo" })
+end
+
 return {
   {
     "LintaoAmons/scratch.nvim",
     event = "VeryLazy",
+    cmd = { "ScratchInfo" },
     dependencies = {
       "nvim-telescope/telescope.nvim",
     },
     keys = {
       { "<leader>fs", select_scratch_type, desc = "Scratch" },
       { "<leader>fS", open_scratch, desc = "Open scratch" },
+      { "<leader>fi", "<cmd>ScratchInfo<cr>", desc = "Scratch info" },
       { "<leader>fN", "<cmd>ScratchWithName<cr>", desc = "Scratch with name" },
     },
     config = function()
@@ -138,6 +158,10 @@ return {
         scratch_file_dir = global_scratch_dir,
         window_cmd = "edit",
         file_picker = "telescope",
+      })
+
+      vim.api.nvim_create_user_command("ScratchInfo", scratch_info, {
+        desc = "Show resolved scratch paths",
       })
     end,
   },

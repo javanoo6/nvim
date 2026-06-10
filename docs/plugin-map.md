@@ -257,6 +257,7 @@ editor.lua
   │
   ├── scratch.nvim            ── persistent scratch files under `<leader>f`
   │     — `<leader>fs` new scratch, `<leader>fS` open scratch
+  │     — `<leader>fi` / `:ScratchInfo` reports global and Java project-local scratch paths
   │     — `<leader>fN` create named scratch, files stored in stdpath("state")/scratch
   │     — Java is special-cased to open project-local `Scratch.java` inside
   │       Maven/Gradle source roots when available
