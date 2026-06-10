@@ -236,14 +236,24 @@ return {
       {
         "<leader>e",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_explorer_cwd() })
+          local util = require("util")
+          require("neo-tree.command").execute({
+            toggle = true,
+            dir = util.get_explorer_cwd(),
+            reveal = util.neotree_reveal_on_open_enabled(),
+          })
         end,
         desc = "Explorer (cwd)",
       },
       {
         "<leader>E",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_root() })
+          local util = require("util")
+          require("neo-tree.command").execute({
+            toggle = true,
+            dir = util.get_root(),
+            reveal = util.neotree_reveal_on_open_enabled(),
+          })
         end,
         desc = "Explorer (root)",
       },
@@ -258,9 +268,8 @@ return {
           sidebar = "global",
           current = "window",
         },
-        -- In large repos, automatic reveal on every buffer enter makes the
-        -- sidebar feel like it is changing scope on its own. Keep the root
-        -- stable unless the user explicitly reopens Neo-tree or sets scope.
+        -- Keep background buffer switches from moving the tree. Reveal-on-open
+        -- is handled explicitly by the local open mappings instead.
         follow_current_file = { enabled = false },
         hijack_netrw_behavior = "open_current",
         commands = {

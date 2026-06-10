@@ -17,14 +17,28 @@ local function range_contains(outer, inner)
 end
 
 local function visual_range()
-  local start_pos = vim.fn.getpos("'<")
-  local end_pos = vim.fn.getpos("'>")
+  local mode = vim.api.nvim_get_mode().mode
+  local start_pos
+  local end_pos
+
+  if mode:match("[vV\022]") then
+    start_pos = vim.fn.getpos("v")
+    end_pos = vim.fn.getcurpos()
+  else
+    start_pos = vim.fn.getpos("'<")
+    end_pos = vim.fn.getpos("'>")
+  end
+
   local range = {
     start_row = start_pos[2] - 1,
     start_col = start_pos[3] - 1,
     end_row = end_pos[2] - 1,
     end_col = end_pos[3],
   }
+
+  if range.start_row < 0 or range.end_row < 0 then
+    return nil
+  end
 
   if range.start_row > range.end_row or (range.start_row == range.end_row and range.start_col > range.end_col) then
     range.start_row, range.end_row = range.end_row, range.start_row
@@ -98,11 +112,14 @@ end
 
 local function select_node(node)
   local range = node_range(node)
-  local end_col = math.max(range.end_col - 1, 0)
+  local end_col = math.max(range.end_col, 1)
 
-  vim.api.nvim_win_set_cursor(0, { range.start_row + 1, range.start_col })
-  vim.cmd("normal! v")
-  vim.api.nvim_win_set_cursor(0, { range.end_row + 1, end_col })
+  vim.fn.setpos("'<", { 0, range.start_row + 1, range.start_col + 1, 0 })
+  vim.fn.setpos("'>", { 0, range.end_row + 1, end_col, 0 })
+
+  vim.schedule(function()
+    vim.cmd("normal! gv")
+  end)
 end
 
 local function current_node()
@@ -112,7 +129,13 @@ local function current_node()
     return nil
   end
 
-  return smallest_enclosing_node(root, visual_range())
+  local range = visual_range()
+  if not range then
+    vim.notify("No active visual selection found", vim.log.levels.WARN)
+    return nil
+  end
+
+  return smallest_enclosing_node(root, range)
 end
 
 function M.select_parent(count)
@@ -130,6 +153,9 @@ end
 function M.select_child(count)
   local target = visual_range()
   local node = current_node()
+  if not target then
+    return
+  end
   for _ = 1, count or 1 do
     if not node then
       return

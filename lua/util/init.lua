@@ -61,6 +61,15 @@ local function get_hl_attr(name, attr)
   end
 end
 
+local function first_hl_attr(groups, attr)
+  for _, group in ipairs(groups) do
+    local value = get_hl_attr(group, attr)
+    if value ~= nil then
+      return value
+    end
+  end
+end
+
 function M.apply_reference_style()
   local state = M.reference_style_state
   local bg = state.background and get_reference_background_color() or nil
@@ -80,6 +89,16 @@ function M.apply_diagnostic_style()
   vim.api.nvim_set_hl(0, "DiagnosticUnnecessary", {
     fg = comment_fg,
     strikethrough = true,
+  })
+end
+
+function M.apply_notify_style()
+  local bg = first_hl_attr({ "NormalFloat", "FloatBorder", "Normal" }, "bg")
+  local fg = first_hl_attr({ "NormalFloat", "Normal" }, "fg")
+
+  vim.api.nvim_set_hl(0, "NotifyBackground", {
+    bg = bg,
+    fg = fg,
   })
 end
 
@@ -152,6 +171,13 @@ local explorer_cwd_state = {
   pinned_path = nil,
   pinned_until = 0,
 }
+
+local function neotree_reveal_on_open_default()
+  if vim.g.neotree_reveal_on_open == nil then
+    vim.g.neotree_reveal_on_open = true
+  end
+  return vim.g.neotree_reveal_on_open
+end
 
 local function now_ms()
   return vim.uv.hrtime() / 1000000
@@ -253,6 +279,22 @@ function M.get_explorer_cwd()
   path = M.get_global_cwd()
   vim.g.explorer_cwd = path
   return path
+end
+
+function M.neotree_reveal_on_open_enabled()
+  return neotree_reveal_on_open_default() == true
+end
+
+function M.set_neotree_reveal_on_open(enabled)
+  vim.g.neotree_reveal_on_open = enabled == true
+  return vim.g.neotree_reveal_on_open
+end
+
+function M.toggle_neotree_reveal_on_open()
+  local enabled = not M.neotree_reveal_on_open_enabled()
+  M.set_neotree_reveal_on_open(enabled)
+  vim.notify("neo-tree reveal on open " .. (enabled and "on" or "off"))
+  return enabled
 end
 
 function M.get_marker_root(bufnr)

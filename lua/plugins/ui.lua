@@ -207,19 +207,34 @@ return {
     },
     opts = {
       highlights = {
+        fill = {
+          bg = { highlight = "TabLineFill", attribute = "bg" },
+        },
+        background = {
+          fg = { highlight = "TabLine", attribute = "fg" },
+          bg = { highlight = "TabLine", attribute = "bg" },
+        },
+        buffer_visible = {
+          fg = { highlight = "TabLine", attribute = "fg" },
+          bg = { highlight = "TabLine", attribute = "bg" },
+        },
         buffer_selected = {
           italic = true,
           bold = false,
-          fg = { highlight = "Function", attribute = "fg" },
+          fg = { highlight = "TabLineSel", attribute = "fg" },
+          bg = { highlight = "TabLineSel", attribute = "bg" },
         },
         separator = {
-          fg = { highlight = "Normal", attribute = "bg" },
+          fg = { highlight = "TabLineFill", attribute = "bg" },
+          bg = { highlight = "TabLine", attribute = "bg" },
         },
         separator_selected = {
-          fg = { highlight = "Normal", attribute = "bg" },
+          fg = { highlight = "TabLineFill", attribute = "bg" },
+          bg = { highlight = "TabLineSel", attribute = "bg" },
         },
         separator_visible = {
-          fg = { highlight = "Normal", attribute = "bg" },
+          fg = { highlight = "TabLineFill", attribute = "bg" },
+          bg = { highlight = "TabLine", attribute = "bg" },
         },
       },
       options = {
@@ -284,7 +299,7 @@ return {
     },
     opts = {
       timeout = 3000,
-      background_colour = "#1a1b26", -- tokyonight bg color
+      background_colour = "NotifyBackground",
       max_height = function()
         return math.floor(vim.o.lines * 0.75)
       end,

@@ -114,11 +114,18 @@ local function refresh_diagnostic_style()
   end, 20)
 end
 
+local function refresh_notify_style()
+  vim.defer_fn(function()
+    require("util").apply_notify_style()
+  end, 20)
+end
+
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = augroup("illuminate_colors"),
   callback = function()
     refresh_reference_style()
     refresh_diagnostic_style()
+    refresh_notify_style()
   end,
 })
 
@@ -127,6 +134,7 @@ vim.api.nvim_create_autocmd({ "VimEnter", "UIEnter" }, {
   callback = function()
     refresh_reference_style()
     refresh_diagnostic_style()
+    refresh_notify_style()
   end,
 })
 
@@ -136,12 +144,14 @@ vim.api.nvim_create_autocmd("User", {
   callback = function()
     refresh_reference_style()
     refresh_diagnostic_style()
+    refresh_notify_style()
   end,
 })
 
 vim.schedule(function()
   refresh_reference_style()
   refresh_diagnostic_style()
+  refresh_notify_style()
 end)
 
 -- Helm chart templates: treat templated YAML as Helm, not plain YAML
