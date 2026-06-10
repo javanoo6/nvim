@@ -163,7 +163,7 @@ conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
   — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
   — :FormatterInfo reports formatter executable/jar availability
-  — directory formatting implementation lives in util/format_dir.lua
+  — directory formatting implementation lives in util/format_dir.lua and uses fd/fdfind with explicit skip patterns
   — auto-formatting enabled by default (disable with :FormatDisable)
   — format-on-save warns once per unchanged error state when skipped due to LSP errors
   — format-on-save uses 10000ms for IntelliJ-backed filetypes, 500ms otherwise
@@ -176,7 +176,7 @@ conform.nvim  (formatting.lua)
   Note: Go skips format-on-save (done via LSP/manual); format-on-save skips files with LSP errors
 
 nvim-lint  (linting.lua)
-  — lints on BufWritePost / BufReadPost
+  — lints immediately on BufWritePost and debounced on BufReadPost
     bash/zsh/sh → shellcheck
     go          → golangcilint
     lua         → selene
