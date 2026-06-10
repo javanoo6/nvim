@@ -298,6 +298,25 @@ return {
   {
     "stevearc/dressing.nvim",
     lazy = true,
+    opts = {
+      select = {
+        get_config = function(opts)
+          if opts.prompt == "Ring history> " then
+            return {
+              telescope = {
+                layout_strategy = "horizontal",
+                layout_config = {
+                  width = 0.8,
+                  height = 0.7,
+                  preview_width = 0,
+                },
+                sorting_strategy = "ascending",
+              },
+            }
+          end
+        end,
+      },
+    },
     init = function()
       ---@diagnostic disable-next-line: duplicate-set-field
       vim.ui.select = function(...)
