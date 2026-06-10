@@ -81,14 +81,14 @@ return {
         local bufnr = vim.api.nvim_get_current_buf()
         local client = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })[1]
         if not client or client:is_stopped() then
-          return "unavailable"
+          return "red"
         end
 
         if vim.lsp.status() ~= "" then
-          return "busy"
+          return "yellow"
         end
 
-        return "ready"
+        return "green"
       end
 
       return {
@@ -122,21 +122,14 @@ return {
           lualine_x = {
             {
               function()
-                local state = jdtls_status()
-                if state == "busy" then
-                  return "JDTLS*"
-                end
-                if state == "unavailable" then
-                  return "JDTLS!"
-                end
-                return "JDTLS"
+                return "●"
               end,
               color = function()
                 local state = jdtls_status()
-                if state == "ready" then
+                if state == "green" then
                   return { fg = "#98c379" }
                 end
-                if state == "busy" then
+                if state == "yellow" then
                   return { fg = "#e5c07b" }
                 end
                 return { fg = "#e06c75" }
