@@ -149,6 +149,7 @@ return {
 
       -- Setup dap-ui
       dapui.setup()
+      vim.g.dapui_keep_open_on_exit = vim.g.dapui_keep_open_on_exit or false
 
       local sensitive_dap_terms = {
         "secret",
@@ -193,10 +194,14 @@ return {
         dapui.open()
       end
       dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close()
+        if not vim.g.dapui_keep_open_on_exit then
+          dapui.close()
+        end
       end
       dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close()
+        if not vim.g.dapui_keep_open_on_exit then
+          dapui.close()
+        end
       end
 
       -- Setup Go adapter
@@ -218,6 +223,15 @@ return {
           require("dapui").toggle()
         end,
         desc = "Toggle DAP UI",
+      },
+      {
+        "<leader>dU",
+        function()
+          vim.g.dapui_keep_open_on_exit = not vim.g.dapui_keep_open_on_exit
+          local state = vim.g.dapui_keep_open_on_exit and "enabled" or "disabled"
+          vim.notify("DAP UI keep-open-on-exit " .. state, vim.log.levels.INFO, { title = "DAP" })
+        end,
+        desc = "Toggle DAP UI keep-open",
       },
       {
         "<leader>de",

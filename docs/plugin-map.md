@@ -338,7 +338,7 @@ first use.
 ```
 dap.lua
   nvim-dap  ── core debugger
-    ├── nvim-dap-ui           ── debug UI panels  →  <leader>du toggle, <leader>de eval
+    ├── nvim-dap-ui           ── debug UI panels  →  <leader>du toggle, <leader>dU keep open, <leader>de eval
     │     └── nvim-nio        ── async I/O
     ├── nvim-dap-virtual-text ── inline variable values (masks secrets)
     ├── nvim-dap-go           ── Go adapter (delve)  →  <leader>dgt, <leader>dgl
@@ -347,7 +347,7 @@ dap.lua
 Java DAP is provided by nvim-java (java_debug_adapter = true)
 ```
 
-**DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, i step-into, O step-over, o step-out, r REPL, u UI, e eval, t terminate
+**DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, i step-into, O step-over, o step-out, r REPL, u UI, U keep UI open on exit, e eval, t terminate
 
 ---
 
