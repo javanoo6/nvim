@@ -224,7 +224,7 @@ colorschemes.lua
   └── themery.nvim      ── switcher UI  →  <leader>ut
 
 ui.lua
-  ├── lualine.nvim      ── statusline (mode, branch, visible diagnostic/diff labels, root basename, clock)
+  ├── lualine.nvim      ── statusline (mode, branch, visible diagnostic/diff labels, Java status, root basename, clock)
   ├── bufferline.nvim   ── buffer tabs, LSP diagnostics badges
   │                        <S-h>/<S-l> cycle buffers, <leader>b* manage buffers
   ├── indent-blankline.nvim  ── │ indent guides
