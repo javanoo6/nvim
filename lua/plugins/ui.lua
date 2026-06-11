@@ -12,6 +12,10 @@ return {
       preset = "modern",
       delay = 0,
       plugins = { spelling = true },
+      triggers = {
+        { "<auto>", mode = "nxso" },
+        { "<leader>", mode = { "n", "v" } },
+      },
       win = {
         border = "rounded",
         padding = { 1, 2 },
@@ -28,6 +32,21 @@ return {
     config = function(_, opts)
       local wk = require("which-key")
       wk.setup(opts)
+
+      local triggers = require("which-key.triggers")
+      if not triggers._custom_reattach_guard then
+        local suspend = triggers.suspend
+        triggers.suspend = function(mode)
+          suspend(mode)
+          vim.defer_fn(function()
+            if mode and mode.buf:valid() and require("which-key.util").mapmode() == mode.mode then
+              pcall(triggers.attach, mode)
+            end
+          end, vim.o.timeoutlen + 20)
+        end
+        triggers._custom_reattach_guard = true
+      end
+
       wk.add({
         { "<leader>b", group = "buffer" },
         { "<leader>c", group = "code", mode = { "n", "v" } },
