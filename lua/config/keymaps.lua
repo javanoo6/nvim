@@ -245,14 +245,47 @@ map("n", "<leader>Xh", function()
   vim.notify("Treesitter rehighlighted")
 end, { desc = "Rehighlight buffer" })
 
+local function treesitter_select_parent()
+  require("vim.treesitter._select").select_parent(vim.v.count1)
+end
+
+local function treesitter_start_selection(fallback_key)
+  if not vim.treesitter.get_parser(0, nil, { error = false }) then
+    if fallback_key then
+      vim.api.nvim_feedkeys(vim.keycode(fallback_key), "n", false)
+    end
+    return
+  end
+
+  vim.cmd.normal({ "v", bang = true })
+  treesitter_select_parent()
+end
+
+local function treesitter_select_child()
+  require("vim.treesitter._select").select_child(vim.v.count1)
+end
+
+local function treesitter_select_next()
+  require("vim.treesitter._select").select_next(vim.v.count1)
+end
+
+map("n", "<CR>", function()
+  treesitter_start_selection("<CR>")
+end, { desc = "Treesitter start selection" })
+map("n", "<A-o>", function()
+  treesitter_start_selection()
+end, { desc = "Treesitter start selection" })
+map("x", "<CR>", treesitter_select_parent, { desc = "Treesitter select parent" })
+map("x", "<A-o>", treesitter_select_parent, { desc = "Treesitter select parent" })
 map("x", "<Tab>", function()
-  require("util.treesitter_select").select_parent(vim.v.count1)
+  treesitter_select_parent()
 end, { desc = "Treesitter select parent" })
 map("x", "<S-Tab>", function()
-  require("util.treesitter_select").select_child(vim.v.count1)
+  treesitter_select_child()
 end, { desc = "Treesitter select child" })
+map("x", "<A-i>", treesitter_select_child, { desc = "Treesitter select child" })
 map("x", "<BS>", function()
-  require("util.treesitter_select").select_next(vim.v.count1)
+  treesitter_select_next()
 end, { desc = "Treesitter select next" })
 
 map("n", "<leader>XC", function()
