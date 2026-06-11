@@ -153,7 +153,7 @@ nvim-treehopper  (motion.lua)
 **Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml,
 tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
-**Incremental selection** (visual mode only): `<CR>` start, `<Tab>` expand node, `<S-Tab>` shrink node, `<BS>` expand scope
+**Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>` moves to the next sibling node.
 
 ---
 
