@@ -327,8 +327,8 @@ That gives you a simple habit while still staying inside the standard Vim model.
 
 ### Treesitter Incremental Selection
 
-| Key                 | Action                          |
-|---------------------|---------------------------------|
+| Key                 | Action                           |
+|---------------------|----------------------------------|
 | `<CR>`              | Start selection from normal mode |
 | `<A-o>`             | Start / expand selection         |
 | `<Tab>`             | Expand to parent node            |
@@ -726,6 +726,8 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>ca` / `<A-CR>` | Code action                                                |
 | `<leader>cr`            | Rename                                                     |
 | `<leader>cp`            | Fix package declaration                                    |
+| `<leader>ci`            | Java: import class under cursor, prompt if ambiguous       |
+| `<leader>cI`            | Java: import unambiguous classes in buffer                 |
 | `<leader>cf`            | Format (Java: IntelliJ formatter)                          |
 | `<leader>cF`            | Format current file's directory, or prompt for a directory |
 
@@ -1173,6 +1175,7 @@ git commit                 →  finalize merge
 | `<leader>ul` | Toggle relative numbers                           |
 | `<leader>un` | Toggle line numbers                               |
 | `<leader>uf` | Toggle fold                                       |
+| `<leader>um` | Toggle mouse                                      |
 | `<leader>ud` | Toggle inline diagnostics (enabled on LSP attach) |
 | `<leader>uD` | Toggle diagnostics                                |
 | `<leader>uh` | Toggle inlay hints                                |
@@ -1292,7 +1295,9 @@ Notes:
 - Managed-env discovery is pinned to the resolved `fd`/`fdfind` binary path so `<leader>ps` does not depend on how Neovim's startup `PATH` was built.
 - `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
 - `:PythonLspUseBasedPyright` switches Python buffers to BasedPyright for the current session; `:PythonLspUsePyright` switches back.
-- `<leader>cO` runs LSP organize-imports. In Python projects this usually uses Pyright/BasedPyright or Ruff-provided import organization when available.
+- Java class completion items can add imports through JDTLS completion edits. For pasted unresolved class names, use `<leader>ci` for the symbol under the
+  cursor, or `<leader>cI` to walk the current buffer: one-candidate imports are applied automatically, and ambiguous imports are shown in a picker. Bulk Java
+  organize-import cleanup is handled by the IntelliJ formatter bridge.
 - Use `<leader>tt` to run the current Python test file/package after selecting a venv. `neotest-python` resolves Python from the active venv and `.env`
   values loaded during venv activation are inherited by test runs.
 

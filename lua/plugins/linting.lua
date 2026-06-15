@@ -6,6 +6,7 @@ return {
     "mfussenegger/nvim-lint",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
+      local util = require("util")
       local lint = require("lint")
       local lint_timers = {}
 
@@ -57,16 +58,34 @@ return {
           return
         end
 
-        local cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h")
         local names = available_linters(bufnr)
 
         if #names == 0 then
           return
         end
 
-        -- nvim-lint expects linter.cwd to be a string. Pass cwd per invocation
-        -- instead so each buffer lints from its own directory.
-        lint.try_lint(names, { cwd = cwd })
+        local cwd = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h")
+        local root = util.get_root(bufnr) or cwd
+        local selene = {}
+        local others = {}
+
+        for _, name in ipairs(names) do
+          if name == "selene" then
+            selene[#selene + 1] = name
+          else
+            others[#others + 1] = name
+          end
+        end
+
+        -- Selene only sees the repo-local Neovim std/config when it runs from
+        -- the config root. Keep the other linters buffer-relative.
+        if #selene > 0 then
+          lint.try_lint(selene, { cwd = root })
+        end
+
+        if #others > 0 then
+          lint.try_lint(others, { cwd = cwd })
+        end
       end
 
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {

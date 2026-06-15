@@ -153,7 +153,8 @@ nvim-treehopper  (motion.lua)
 **Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml,
 tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
-**Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>` moves to the next sibling node.
+**Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
+moves to the next sibling node.
 
 ---
 
@@ -185,6 +186,7 @@ nvim-lint  (linting.lua)
     python      → ruff
     yaml        → yamllint
   — missing linter executables are skipped instead of erroring on buffer open
+  — Selene runs from the config root so `selene.toml` + `vim.yml` are applied
   — markdownlint-cli2 runs through BasedPyright's bundled Node when available
 ```
 
@@ -520,7 +522,8 @@ keymaps.lua (diagnostic):
   <leader>uI  — toggle vim-illuminate references for current buffer
   <leader>uu  — toggle reference underline
   <leader>uH  — toggle reference background
-  <leader>cO  — organize imports via LSP source.organizeImports
+  <leader>ci  — Java: import symbol at cursor; prompt if ambiguous
+  <leader>cI  — Java: auto-import unambiguous diagnostics; prompt if ambiguous
 ```
 
 ---

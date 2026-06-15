@@ -76,10 +76,10 @@ Custom direction model in this config: `j = up`, `k = down`.
 
 ## Visual Selection
 
-| Key       | Action                              |
-|-----------|-------------------------------------|
-| `gv`      | Reselect previous visual selection  |
-| `<` / `>` | Indent and keep selection           |
+| Key                 | Action                               |
+|---------------------|--------------------------------------|
+| `gv`                | Reselect previous visual selection   |
+| `<` / `>`           | Indent and keep selection            |
 | `<CR>`              | Treesitter: start / expand selection |
 | `<A-o>`             | Treesitter: start / expand selection |
 | `<Tab>`             | Treesitter: expand to parent node    |
