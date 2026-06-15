@@ -184,6 +184,9 @@ end, { desc = "Line numbers" })
 map("n", "<leader>uf", function()
   util.toggle("foldenable")
 end, { desc = "Fold" })
+map("n", "<leader>um", function()
+  util.toggle_mouse()
+end, { desc = "Mouse" })
 map("n", "<leader>ud", function()
   require("tiny-inline-diagnostic").toggle()
 end, { desc = "Toggle inline diagnostics" })
@@ -225,15 +228,12 @@ map("n", "<leader>cp", function()
     apply = true,
   })
 end, { desc = "Fix package declaration" })
-map("n", "<leader>cO", function()
-  vim.lsp.buf.code_action({
-    context = {
-      only = { "source.organizeImports" },
-      diagnostics = {},
-    },
-    apply = true,
-  })
-end, { desc = "Organize imports" })
+map("n", "<leader>ci", function()
+  require("util.java_imports").import_class_at_cursor()
+end, { desc = "Import Java class at cursor" })
+map("n", "<leader>cI", function()
+  require("util.java_imports").import_unambiguous_classes()
+end, { desc = "Import unambiguous Java classes" })
 
 -- Replacing
 map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })

@@ -49,6 +49,12 @@ function M.toggle(option, values)
   end
 end
 
+function M.toggle_mouse()
+  local enabled = vim.o.mouse ~= ""
+  vim.o.mouse = enabled and "" or "a"
+  vim.notify("mouse " .. (enabled and "off" or "on"))
+end
+
 local function get_reference_background_color()
   local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
   return bg and (bg + 0x101010) or nil

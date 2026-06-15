@@ -15,7 +15,7 @@ local opt = vim.opt
 
 opt.number = true
 opt.relativenumber = true
-opt.mouse = "a"
+opt.mouse = ""
 opt.ignorecase = true
 opt.smartcase = true
 opt.hlsearch = true
