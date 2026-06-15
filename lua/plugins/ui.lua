@@ -88,6 +88,12 @@ return {
         { "gs", group = "surround", mode = { "n", "v" } },
         { "z", group = "fold" },
       })
+
+      -- Startup can restore the current buffer before which-key's first
+      -- BufEnter attach runs, so seed the active buffer once after setup.
+      vim.schedule(function()
+        pcall(require("which-key.buf").get)
+      end)
     end,
   },
 
