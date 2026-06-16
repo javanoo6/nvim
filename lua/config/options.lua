@@ -2,6 +2,10 @@
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
 
 -- Define the leader placeholder before plugins load so which-key can replace the
 -- <Space> nop mapping with its trigger mapping instead of being overwritten later.
@@ -11,7 +15,7 @@ local opt = vim.opt
 
 opt.number = true
 opt.relativenumber = true
-opt.mouse = "a"
+opt.mouse = ""
 opt.ignorecase = true
 opt.smartcase = true
 opt.hlsearch = true
@@ -22,7 +26,7 @@ opt.shiftwidth = 2
 opt.expandtab = true
 opt.autoindent = true
 opt.smartindent = true
-opt.clipboard = "unnamedplus"
+require("util.clipboard").setup()
 opt.splitbelow = true
 opt.splitright = true
 opt.termguicolors = true

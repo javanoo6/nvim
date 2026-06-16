@@ -51,8 +51,10 @@ end
 
 function M.patch_jdtls_cmd(opts)
   local jdtls_cmd = require("java-core.ls.servers.jdtls.cmd")
+  local java_version_map = require("java-core.constants.java_version")
   local orig_get_jvm_args = jdtls_cmd.get_jvm_args
   local orig_validate_java_version = jdtls_cmd.validate_java_version
+  local warned_validate_skip = false
 
   jdtls_cmd.get_jvm_args = function(cfg)
     local list = orig_get_jvm_args(cfg)
@@ -68,6 +70,19 @@ function M.patch_jdtls_cmd(opts)
 
   if opts.jdtls_version ~= opts.default_jdtls_version or (opts.jdtls_dir_override and opts.jdtls_dir_override ~= "") then
     jdtls_cmd.validate_java_version = function(cfg, env)
+      local version = cfg.jdtls and cfg.jdtls.version or opts.jdtls_version
+      if not java_version_map[version] then
+        if not warned_validate_skip then
+          warned_validate_skip = true
+          vim.notify(
+            string.format("Skipping nvim-java JDTLS version gate for custom JDTLS %s", version),
+            vim.log.levels.WARN,
+            { title = "nvim-java" }
+          )
+        end
+        return
+      end
+
       local ok, current_version = pcall(orig_validate_java_version, cfg, env)
       if ok then
         return current_version

@@ -11,6 +11,9 @@ return {
     },
     build = ":GoInstallDeps",
     config = function(_, opts)
+      if vim.fn.executable("go") ~= 1 then
+        vim.notify("go executable is missing; gopher.nvim helpers will not work", vim.log.levels.WARN)
+      end
       require("gopher").setup(opts)
     end,
     keys = {

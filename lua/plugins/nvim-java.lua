@@ -6,7 +6,10 @@ return {
     "JavaHello/spring-boot.nvim",
   },
   config = function()
-    local java21_home = "/usr/lib/jvm/java-21-openjdk-amd64"
+    local java21_home = vim.env.NVIM_JAVA_HOME or vim.env.JAVA_HOME or "/usr/lib/jvm/java-21-openjdk-amd64"
+    if vim.fn.isdirectory(java21_home) ~= 1 then
+      vim.notify("Java home missing: " .. java21_home, vim.log.levels.WARN, { title = "nvim-java" })
+    end
     local java21_bin = java21_home .. "/bin"
     local java_jdtls = require("util.java_jdtls")
     local java_patches = require("util.java_patches")
@@ -34,11 +37,47 @@ return {
         or has_root_file(root_dir, "gradlew")
     end
 
+    vim.api.nvim_create_user_command("JavaInfo", function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      local client = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })[1] or vim.lsp.get_clients({ name = "jdtls" })[1]
+      local root_dir = client and client.config and client.config.root_dir or require("util").get_root(bufnr)
+      local prefer_maven = should_prefer_maven(root_dir)
+      local lines = {
+        "JAVA_HOME: " .. java21_home,
+        "java: " .. (vim.fn.executable(java21_bin .. "/java") == 1 and (java21_bin .. "/java") or vim.fn.exepath("java")),
+        "JDTLS version: " .. tostring(jdtls_version),
+        "JDTLS dir: " .. (jdtls_dir_override or "package-managed"),
+        "root: " .. tostring(root_dir),
+        "mixed Maven/Gradle root: " .. tostring(prefer_maven),
+        "import.maven.enabled: true",
+        "import.gradle.enabled: " .. tostring(not prefer_maven),
+      }
+
+      if client then
+        lines[#lines + 1] = "client: " .. client.name .. " #" .. client.id
+        local server_info = client.server_info or {}
+        if server_info.version then
+          lines[#lines + 1] = "server version: " .. tostring(server_info.version)
+        end
+      else
+        lines[#lines + 1] = "client: not attached"
+      end
+
+      vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "JavaInfo" })
+    end, { desc = "Show Java/JDTLS configuration for the current buffer" })
+
     -- Allow pinning a released JDTLS milestone or pointing at a manually
     -- unpacked custom build without editing the plugin itself. Default to
     -- the local JDTLS build when it exists so Neovim uses the patched server.
     java_jdtls.patch_pkgm_install_dir(jdtls_dir_override)
     java_jdtls.register_info_command(jdtls_dir_override, jdtls_version)
+    -- Install before java.setup(); session restore can open Java buffers during
+    -- VimEnter and trigger JDTLS startup from inside nvim-java setup.
+    java_jdtls.patch_jdtls_cmd({
+      default_jdtls_version = default_jdtls_version,
+      jdtls_version = jdtls_version,
+      jdtls_dir_override = jdtls_dir_override,
+    })
 
     require("java").setup({
       checks = {
@@ -65,14 +104,6 @@ return {
 
     -- Guard nvim-java against malformed/empty JDTLS payloads.
     java_patches.apply_refactor_patches(debug_log)
-
-    -- Patch nvim-java's hardcoded -Xms1G with custom heap sizes.
-    -- Must happen after setup() so the module is already loaded.
-    java_jdtls.patch_jdtls_cmd({
-      default_jdtls_version = default_jdtls_version,
-      jdtls_version = jdtls_version,
-      jdtls_dir_override = jdtls_dir_override,
-    })
 
     vim.lsp.config("jdtls", {
       capabilities = capabilities,

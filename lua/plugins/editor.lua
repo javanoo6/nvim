@@ -173,7 +173,7 @@ return {
             "%.lock$",
           },
           preview = {
-            filetype_hook = function(filepath, bufnr, opts)
+            filetype_hook = function(filepath)
               local ext = filepath:match("%.([^%.]+)$")
               if ext and previewable_extensions[ext] then
                 return true
@@ -236,14 +236,28 @@ return {
       {
         "<leader>e",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_explorer_cwd() })
+          local util = require("util")
+          local dir = util.get_explorer_cwd()
+          util.pin_explorer_cwd(dir)
+          require("neo-tree.command").execute({
+            toggle = true,
+            dir = dir,
+            reveal = util.neotree_reveal_on_open_enabled(),
+          })
         end,
         desc = "Explorer (cwd)",
       },
       {
         "<leader>E",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = require("util").get_root() })
+          local util = require("util")
+          local dir = util.get_root()
+          util.pin_explorer_cwd(dir)
+          require("neo-tree.command").execute({
+            toggle = true,
+            dir = dir,
+            reveal = util.neotree_reveal_on_open_enabled(),
+          })
         end,
         desc = "Explorer (root)",
       },
@@ -258,7 +272,9 @@ return {
           sidebar = "global",
           current = "window",
         },
-        follow_current_file = { enabled = true },
+        -- Keep background buffer switches from moving the tree. Reveal-on-open
+        -- is handled explicitly by the local open mappings instead.
+        follow_current_file = { enabled = false },
         hijack_netrw_behavior = "open_current",
         commands = {
           -- IntelliJ-style package expansion:
@@ -341,8 +357,14 @@ return {
           copy_absolute_path = function(state)
             local node = state.tree:get_node()
             local path = node:get_id()
-            vim.fn.setreg("+", path)
-            vim.notify("Copied path: " .. path)
+
+            local register, err = require("util.clipboard").set_text(path)
+            if register == "+" then
+              vim.notify("Copied path to clipboard: " .. path)
+              return
+            end
+
+            vim.notify("Copied path to unnamed register: " .. path .. "\nClipboard unavailable: " .. tostring(err), vim.log.levels.WARN)
           end,
           apply_scope_root = function(path)
             local util = require("util")

@@ -12,6 +12,7 @@ return {
       local languages = {
         "bash",
         "c",
+        "css",
         "go",
         "gomod",
         "gowork",
@@ -26,6 +27,10 @@ return {
         "markdown_inline",
         "python",
         "query",
+        "sql",
+        "toml",
+        "tsx",
+        "typescript",
         "vim",
         "vimdoc",
         "yaml",
@@ -33,6 +38,27 @@ return {
         "groovy",
         "kotlin",
       }
+      local disable_indent = {
+        markdown = true,
+        yaml = true,
+      }
+      local warned_start_failures = {}
+
+      local function start_treesitter()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local filetype = vim.bo[bufnr].filetype
+        local ok, err = pcall(vim.treesitter.start, bufnr)
+        if ok then
+          return true
+        end
+
+        if not warned_start_failures[filetype] then
+          warned_start_failures[filetype] = true
+          vim.notify(string.format("Treesitter disabled for %s: %s", filetype, err), vim.log.levels.WARN, { title = "Treesitter" })
+        end
+
+        return false
+      end
 
       treesitter.setup()
       local installed = {}
@@ -51,8 +77,13 @@ return {
         group = vim.api.nvim_create_augroup("custom_treesitter", { clear = true }),
         pattern = languages,
         callback = function()
-          vim.treesitter.start()
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          if not start_treesitter() then
+            return
+          end
+
+          if not disable_indent[vim.bo.filetype] then
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
         end,
       })
     end,

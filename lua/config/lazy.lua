@@ -29,6 +29,7 @@ require("lazy").setup({
   },
   install = { colorscheme = { "tokyonight" } },
   checker = { enabled = false },
+  rocks = { enabled = false },
   performance = {
     rtp = {
       disabled_plugins = {

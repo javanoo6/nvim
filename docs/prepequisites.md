@@ -27,6 +27,13 @@ sudo apt-get install -y \
   sqlite3         # used by scripts/update-leetcode-cookies.sh to read Firefox cookies
 ```
 
+Optional but recommended for local config checks:
+
+```bash
+sudo apt-get install shellcheck
+python3 -m pip install --user yamllint
+```
+
 ---
 
 ## 3. Language runtimes
@@ -163,8 +170,12 @@ Listed here for reference only.
 | `gopls`                | Go LSP                   |
 | `pyright`              | Python LSP               |
 | `stylua`               | Lua formatter            |
+| `selene`               | Lua linter               |
 | `ruff`                 | Python linter            |
 | `prettier`             | JSON formatter           |
+| `shellcheck`           | Shell linter             |
+| `markdownlint-cli2`    | Markdown linter          |
+| `yamllint`             | YAML linter              |
 | `gofumpt`              | Go formatter             |
 | `goimports-reviser`    | Go imports organizer     |
 | `golines`              | Go line length formatter |
@@ -179,7 +190,21 @@ Listed here for reference only.
 
 ---
 
-## 8. Java test runner (run once inside Neovim)
+## 8. Local config quality checks
+
+Run from `~/.config/nvim`:
+
+```bash
+make check      # stylua --check + selene
+make fmt        # format Lua files with stylua
+```
+
+`stylua` and `selene` are Mason-managed, so launch Neovim once and let Mason
+finish installing tools before running `make check`.
+
+---
+
+## 9. Java test runner (run once inside Neovim)
 
 Downloads the JUnit Platform Console Standalone jar required by neotest-java.
 
@@ -199,7 +224,7 @@ On Neovim 0.12+, run inside Neovim instead:
 
 ---
 
-## 9. Go extras (run once inside Neovim)
+## 10. Go extras (run once inside Neovim)
 
 ```
 :GoInstallDeps
@@ -209,7 +234,7 @@ Installs: `gomodifytags`, `iferr` — used by gopher.nvim for struct tag generat
 
 ---
 
-## 10. MapStruct (Java projects)
+## 11. MapStruct (Java projects)
 
 For MapStruct + Lombok to work correctly, `annotationProcessorPaths` in `pom.xml` must follow this order:
 
@@ -236,7 +261,7 @@ For MapStruct + Lombok to work correctly, `annotationProcessorPaths` in `pom.xml
 
 ---
 
-## 11. Treesitter parsers (auto-compiled on first launch)
+## 12. Treesitter parsers (auto-compiled on first launch)
 
 Installed automatically via `:TSUpdate`. Requires `gcc` or `clang`:
 

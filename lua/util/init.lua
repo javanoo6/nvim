@@ -49,6 +49,12 @@ function M.toggle(option, values)
   end
 end
 
+function M.toggle_mouse()
+  local enabled = vim.o.mouse ~= ""
+  vim.o.mouse = enabled and "" or "a"
+  vim.notify("mouse " .. (enabled and "off" or "on"))
+end
+
 local function get_reference_background_color()
   local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
   return bg and (bg + 0x101010) or nil
@@ -58,6 +64,15 @@ local function get_hl_attr(name, attr)
   local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
   if ok and hl then
     return hl[attr]
+  end
+end
+
+local function first_hl_attr(groups, attr)
+  for _, group in ipairs(groups) do
+    local value = get_hl_attr(group, attr)
+    if value ~= nil then
+      return value
+    end
   end
 end
 
@@ -80,6 +95,16 @@ function M.apply_diagnostic_style()
   vim.api.nvim_set_hl(0, "DiagnosticUnnecessary", {
     fg = comment_fg,
     strikethrough = true,
+  })
+end
+
+function M.apply_notify_style()
+  local bg = first_hl_attr({ "NormalFloat", "FloatBorder", "Normal" }, "bg")
+  local fg = first_hl_attr({ "NormalFloat", "Normal" }, "fg")
+
+  vim.api.nvim_set_hl(0, "NotifyBackground", {
+    bg = bg,
+    fg = fg,
   })
 end
 
@@ -152,6 +177,13 @@ local explorer_cwd_state = {
   pinned_path = nil,
   pinned_until = 0,
 }
+
+local function neotree_reveal_on_open_default()
+  if vim.g.neotree_reveal_on_open == nil then
+    vim.g.neotree_reveal_on_open = true
+  end
+  return vim.g.neotree_reveal_on_open
+end
 
 local function now_ms()
   return vim.uv.hrtime() / 1000000
@@ -253,6 +285,22 @@ function M.get_explorer_cwd()
   path = M.get_global_cwd()
   vim.g.explorer_cwd = path
   return path
+end
+
+function M.neotree_reveal_on_open_enabled()
+  return neotree_reveal_on_open_default() == true
+end
+
+function M.set_neotree_reveal_on_open(enabled)
+  vim.g.neotree_reveal_on_open = enabled == true
+  return vim.g.neotree_reveal_on_open
+end
+
+function M.toggle_neotree_reveal_on_open()
+  local enabled = not M.neotree_reveal_on_open_enabled()
+  M.set_neotree_reveal_on_open(enabled)
+  vim.notify("neo-tree reveal on open " .. (enabled and "on" or "off"))
+  return enabled
 end
 
 function M.get_marker_root(bufnr)
@@ -378,19 +426,15 @@ function M.pick(picker, opts)
   opts = opts or {}
   opts.cwd = opts.cwd or M.get_root()
 
-  if picker == "files" then
-    M.picker.find_files(opts)
-  elseif picker == "live_grep" then
-    M.picker.live_grep(opts)
-  elseif picker == "buffers" then
-    M.picker.buffers(opts)
-  elseif picker == "oldfiles" then
-    M.picker.oldfiles(opts)
-  elseif picker == "help_tags" then
-    M.picker.help_tags(opts)
-  else
-    M.picker.find_files(opts)
-  end
+  local pickers = {
+    files = M.picker.find_files,
+    live_grep = M.picker.live_grep,
+    buffers = M.picker.buffers,
+    oldfiles = M.picker.oldfiles,
+    help_tags = M.picker.help_tags,
+  }
+  local run = pickers[picker] or M.picker.find_files
+  run(opts)
 end
 
 -- LSP Icons for aerial and other plugins

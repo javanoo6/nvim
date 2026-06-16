@@ -7,8 +7,9 @@ return {
     event = "VimEnter",
     opts = function()
       return {
-        -- Keep this close to project.nvim defaults / conservative usage:
-        -- manual_mode = false,
+        -- Root changes are explicit in this repo. Do not auto-cd on BufEnter.
+        manual_mode = true,
+        -- Keep the rest close to project.nvim defaults / conservative usage:
         -- detection_methods = { "lsp", "pattern" },
         -- patterns = require("util").root_patterns,
         -- show_hidden = false,

@@ -8,12 +8,7 @@
 --
 -- NOTE: Command Line (Cmdline) Completion:
 --   Uses nvim-cmp cmdline completion.
---   <Tab> / <C-z>   - Next completion item / open completion
---   <S-Tab>         - Previous completion item
 --   <Down> / <Up>   - Next / previous completion item
---   <C-n> / <C-p>   - Next / previous item when menu is visible
---   <C-y>           - Confirm selection
---   <C-e>           - Abort completion
 --   <CR>            - Confirm selection without executing when menu is visible
 --
 -- NOTE: LazyGit Keymaps:
@@ -52,6 +47,7 @@
 local util = require("util")
 local map = util.map
 local inlay_hints = require("util.inlay_hints")
+local java_field_usages = require("util.java_field_usages")
 local frequent_roots = require("util.frequent_roots")
 
 -- Custom project tracking retained in util.frequent_roots, but disabled for now.
@@ -189,21 +185,39 @@ end, { desc = "Line numbers" })
 map("n", "<leader>uf", function()
   util.toggle("foldenable")
 end, { desc = "Fold" })
+map("n", "<leader>um", function()
+  util.toggle_mouse()
+end, { desc = "Mouse" })
 map("n", "<leader>ud", function()
   require("tiny-inline-diagnostic").toggle()
 end, { desc = "Toggle inline diagnostics" })
+map("n", "<leader>ue", function()
+  util.toggle_neotree_reveal_on_open()
+end, { desc = "Toggle Neo-tree reveal on open" })
 map("n", "<leader>uD", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle diagnostics" })
 map("n", "<leader>uh", function()
   inlay_hints.toggle()
 end, { desc = "Toggle inlay hints" })
+map("n", "<leader>uJ", function()
+  java_field_usages.toggle()
+end, { desc = "Toggle Java field usages" })
 map("n", "<leader>uu", function()
   util.toggle_reference_underline()
 end, { desc = "Toggle reference underline" })
 map("n", "<leader>uH", function()
   util.toggle_reference_background()
 end, { desc = "Toggle reference background" })
+map("n", "<leader>ui", function()
+  require("util.ui_debug").inspect()
+end, { desc = "Inspect UI highlights" })
+map("n", "<leader>uT", function()
+  require("util.ui_debug").toggle_treesitter()
+end, { desc = "Toggle Treesitter buffer" })
+map("n", "<leader>uI", function()
+  require("util.ui_debug").toggle_illuminate()
+end, { desc = "Toggle references buffer" })
 
 -- Go to definition in vertical split (right)
 map("n", "<leader>cd", function()
@@ -218,6 +232,12 @@ map("n", "<leader>cp", function()
     apply = true,
   })
 end, { desc = "Fix package declaration" })
+map("n", "<leader>ci", function()
+  require("util.java_imports").import_class_at_cursor()
+end, { desc = "Import Java class at cursor" })
+map("n", "<leader>cI", function()
+  require("util.java_imports").import_unambiguous_classes()
+end, { desc = "Import unambiguous Java classes" })
 
 -- Replacing
 map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })
@@ -229,14 +249,47 @@ map("n", "<leader>Xh", function()
   vim.notify("Treesitter rehighlighted")
 end, { desc = "Rehighlight buffer" })
 
-map("x", "<Tab>", function()
+local function treesitter_select_parent()
   require("vim.treesitter._select").select_parent(vim.v.count1)
+end
+
+local function treesitter_start_selection(fallback_key)
+  if not vim.treesitter.get_parser(0, nil, { error = false }) then
+    if fallback_key then
+      vim.api.nvim_feedkeys(vim.keycode(fallback_key), "n", false)
+    end
+    return
+  end
+
+  vim.cmd.normal({ "v", bang = true })
+  treesitter_select_parent()
+end
+
+local function treesitter_select_child()
+  require("vim.treesitter._select").select_child(vim.v.count1)
+end
+
+local function treesitter_select_next()
+  require("vim.treesitter._select").select_next(vim.v.count1)
+end
+
+map("n", "<CR>", function()
+  treesitter_start_selection("<CR>")
+end, { desc = "Treesitter start selection" })
+map("n", "<A-o>", function()
+  treesitter_start_selection()
+end, { desc = "Treesitter start selection" })
+map("x", "<CR>", treesitter_select_parent, { desc = "Treesitter select parent" })
+map("x", "<A-o>", treesitter_select_parent, { desc = "Treesitter select parent" })
+map("x", "<Tab>", function()
+  treesitter_select_parent()
 end, { desc = "Treesitter select parent" })
 map("x", "<S-Tab>", function()
-  require("vim.treesitter._select").select_child(vim.v.count1)
+  treesitter_select_child()
 end, { desc = "Treesitter select child" })
+map("x", "<A-i>", treesitter_select_child, { desc = "Treesitter select child" })
 map("x", "<BS>", function()
-  require("vim.treesitter._select").select_next(vim.v.count1)
+  treesitter_select_next()
 end, { desc = "Treesitter select next" })
 
 map("n", "<leader>XC", function()
@@ -297,7 +350,7 @@ local function open_diffview_against_ref(ref)
   if not ref or vim.trim(ref) == "" then
     return
   end
-  vim.cmd("DiffviewOpen " .. vim.trim(ref) .. "...HEAD")
+  vim.cmd.DiffviewOpen({ args = { vim.trim(ref) .. "...HEAD" } })
 end
 
 local function pick_diffview_ref()
@@ -335,10 +388,10 @@ map("n", "<leader>Gt", "<cmd>tabnew | terminal git mergetool<cr>", { desc = "Ope
 map("n", "<leader>Gq", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
 map("n", "<leader>Gb", pick_diffview_ref, { desc = "Diff vs branch/ref" })
 map("n", "<leader>Gm", function()
-  vim.cmd("DiffviewOpen " .. default_branch())
+  vim.cmd.DiffviewOpen({ args = { default_branch() } })
 end, { desc = "Diff vs main/master" })
 map("n", "<leader>GM", function()
-  vim.cmd("DiffviewOpen HEAD..origin/" .. default_branch())
+  vim.cmd.DiffviewOpen({ args = { "HEAD..origin/" .. default_branch() } })
 end, { desc = "Diff vs origin/main" })
 
 -- Run Go program

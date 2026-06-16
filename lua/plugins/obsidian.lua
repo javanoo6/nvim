@@ -19,6 +19,10 @@ return {
     },
     -- Follow links with gf
     follow_url_func = function(url)
+      if vim.fn.executable("xdg-open") ~= 1 then
+        vim.notify("xdg-open is missing; install xdg-utils to open URLs", vim.log.levels.ERROR)
+        return
+      end
       vim.fn.jobstart({ "xdg-open", url })
     end,
     ui = {
@@ -58,6 +62,12 @@ return {
     { "<leader>Op", "<cmd>ObsidianPasteImg<cr>", desc = "Paste image" },
   },
   config = function(_, opts)
+    for _, workspace in ipairs(opts.workspaces or {}) do
+      if workspace.path and vim.fn.isdirectory(vim.fn.expand(workspace.path)) ~= 1 then
+        vim.notify("Obsidian workspace missing: " .. workspace.path, vim.log.levels.WARN)
+      end
+    end
+
     require("obsidian").setup(opts)
 
     vim.api.nvim_create_autocmd("FileType", {

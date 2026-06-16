@@ -35,6 +35,27 @@ return {
       local text_node = luasnip.text_node
       local insert_node = luasnip.insert_node
 
+      local function buffer_source(keyword_length)
+        return {
+          name = "buffer",
+          keyword_length = keyword_length or 4,
+          option = {
+            get_bufnrs = function()
+              local bufs = {}
+              for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.api.nvim_buf_is_loaded(bufnr) then
+                  local byte_size = vim.api.nvim_buf_get_offset(bufnr, vim.api.nvim_buf_line_count(bufnr))
+                  if byte_size <= 512 * 1024 then
+                    bufs[#bufs + 1] = bufnr
+                  end
+                end
+              end
+              return bufs
+            end,
+          },
+        }
+      end
+
       luasnip.add_snippets("java", {
         snippet("main", {
           text_node({
@@ -121,7 +142,7 @@ return {
           { name = "nvim_lsp_signature_help" },
           { name = "luasnip" },
           { name = "path" },
-          { name = "buffer" },
+          buffer_source(),
         },
         window = {
           completion = cmp.config.window.bordered(),
@@ -151,6 +172,36 @@ return {
         experimental = {
           ghost_text = { hl_group = "CmpGhostText" },
         },
+      })
+
+      cmp.setup.filetype({ "markdown", "text", "gitcommit" }, {
+        sources = cmp.config.sources({
+          { name = "path" },
+          { name = "luasnip" },
+        }, {
+          buffer_source(4),
+        }),
+      })
+
+      cmp.setup.filetype({ "sh", "bash", "zsh", "yaml", "yaml.helm-values" }, {
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "path" },
+          { name = "luasnip" },
+        }, {
+          buffer_source(4),
+        }),
+      })
+
+      cmp.setup.filetype("python", {
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "nvim_lsp_signature_help" },
+          { name = "luasnip" },
+          { name = "path" },
+        }, {
+          buffer_source(4),
+        }),
       })
 
       -- Command line completion uses nvim-cmp's preset cmdline mappings.

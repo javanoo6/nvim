@@ -327,12 +327,13 @@ That gives you a simple habit while still staying inside the standard Vim model.
 
 ### Treesitter Incremental Selection
 
-| Key       | Action                  |
-|-----------|-------------------------|
-| `<cr>`    | Start selection         |
-| `<tab>`   | Expand to parent node   |
-| `<S-tab>` | Shrink to previous node |
-| `<bs>`    | Expand to next scope    |
+| Key                 | Action                           |
+|---------------------|----------------------------------|
+| `<CR>`              | Start selection from normal mode |
+| `<A-o>`             | Start / expand selection         |
+| `<Tab>`             | Expand to parent node            |
+| `<S-Tab>` / `<A-i>` | Shrink to previous node          |
+| `<BS>`              | Move to next sibling node        |
 
 ### Moving Lines
 
@@ -602,18 +603,11 @@ When typing commands with `:` and autocomplete menu appears:
 
 This uses `nvim-cmp` cmdline completion:
 
-| Key       | Action                                             |
-|-----------|----------------------------------------------------|
-| `<Tab>`   | Next completion item, or open completion           |
-| `<C-z>`   | Next completion item, or open completion           |
-| `<S-Tab>` | Previous completion item                           |
-| `<Down>`  | Next completion item                               |
-| `<Up>`    | Previous completion item                           |
-| `<C-n>`   | Next item when completion menu is visible          |
-| `<C-p>`   | Previous item when completion menu is visible      |
-| `<C-y>`   | Confirm selected completion item                   |
-| `<C-e>`   | Abort completion                                   |
-| `<CR>`    | Confirm selected completion item without executing |
+| Key      | Action                                             |
+|----------|----------------------------------------------------|
+| `<Down>` | Next completion item                               |
+| `<Up>`   | Previous completion item                           |
+| `<CR>`   | Confirm selected completion item without executing |
 
 ---
 
@@ -630,6 +624,7 @@ This uses `nvim-cmp` cmdline completion:
 | `<leader>fR`      | Recent files                 |
 | `<leader>fs`      | New scratch file             |
 | `<leader>fS`      | Open scratch file            |
+| `<leader>fi`      | Scratch path info            |
 | `<leader>fN`      | New named scratch file       |
 | `<leader>Hy`      | Yank history                 |
 | `<leader>Hc`      | Command history              |
@@ -731,6 +726,8 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>ca` / `<A-CR>` | Code action                                                |
 | `<leader>cr`            | Rename                                                     |
 | `<leader>cp`            | Fix package declaration                                    |
+| `<leader>ci`            | Java: import class under cursor, prompt if ambiguous       |
+| `<leader>cI`            | Java: import unambiguous classes in buffer                 |
 | `<leader>cf`            | Format (Java: IntelliJ formatter)                          |
 | `<leader>cF`            | Format current file's directory, or prompt for a directory |
 
@@ -809,6 +806,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>tr` | Run nearest test    |
 | `<leader>tp` | Run package         |
 | `<leader>tl` | Run last            |
+| `<leader>tF` | Run failed tests    |
 | `<leader>ts` | Toggle summary      |
 | `<leader>to` | Show output         |
 | `<leader>tO` | Toggle output panel |
@@ -1171,19 +1169,23 @@ git commit                 →  finalize merge
 
 ## UI & Toggles
 
-| Key          | Action                      |
-|--------------|-----------------------------|
-| `<leader>us` | Toggle spell                |
-| `<leader>uw` | Toggle wrap                 |
-| `<leader>ul` | Toggle relative numbers     |
-| `<leader>un` | Toggle line numbers         |
-| `<leader>uf` | Toggle fold                 |
-| `<leader>ud` | Toggle inline diagnostics   |
-| `<leader>uD` | Toggle diagnostics          |
-| `<leader>uh` | Toggle inlay hints          |
-| `<leader>uu` | Toggle reference underline  |
-| `<leader>uH` | Toggle reference background |
-| `<leader>ut` | Color schemes               |
+| Key          | Action                                            |
+|--------------|---------------------------------------------------|
+| `<leader>us` | Toggle spell                                      |
+| `<leader>uw` | Toggle wrap                                       |
+| `<leader>ul` | Toggle relative numbers                           |
+| `<leader>un` | Toggle line numbers                               |
+| `<leader>uf` | Toggle fold                                       |
+| `<leader>um` | Toggle mouse                                      |
+| `<leader>ud` | Toggle inline diagnostics (enabled on LSP attach) |
+| `<leader>uD` | Toggle diagnostics                                |
+| `<leader>uh` | Toggle inlay hints                                |
+| `<leader>uu` | Toggle reference underline                        |
+| `<leader>uH` | Toggle reference background                       |
+| `<leader>ui` | Inspect UI/highlights                             |
+| `<leader>uT` | Toggle Treesitter buffer                          |
+| `<leader>uI` | Toggle references buffer                          |
+| `<leader>ut` | Color schemes                                     |
 
 ---
 
@@ -1293,6 +1295,12 @@ Notes:
   config.
 - Managed-env discovery is pinned to the resolved `fd`/`fdfind` binary path so `<leader>ps` does not depend on how Neovim's startup `PATH` was built.
 - `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
+- `:PythonLspUseBasedPyright` switches Python buffers to BasedPyright for the current session; `:PythonLspUsePyright` switches back.
+- Java class completion items can add imports through JDTLS completion edits. For pasted unresolved class names, use `<leader>ci` for the symbol under the
+  cursor, or `<leader>cI` to walk the current buffer: one-candidate imports are applied automatically, and ambiguous imports are shown in a picker. Bulk Java
+  organize-import cleanup is handled by the IntelliJ formatter bridge.
+- Use `<leader>tt` to run the current Python test file/package after selecting a venv. `neotest-python` resolves Python from the active venv and `.env`
+  values loaded during venv activation are inherited by test runs.
 
 ---
 

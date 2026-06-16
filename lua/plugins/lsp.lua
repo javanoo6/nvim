@@ -5,7 +5,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
-    cmd = { "LspInfo", "PyrightInfo" },
+    cmd = { "LspInfo", "PyrightInfo", "PythonLspUsePyright", "PythonLspUseBasedPyright" },
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
@@ -20,7 +20,10 @@ return {
     config = function()
       local map = require("util").map
       local java_codelens = require("util.java_codelens")
+      local java_field_usages = require("util.java_field_usages")
       local inlay_hints = require("util.inlay_hints")
+      java_field_usages.setup()
+      inlay_hints.setup()
       local function resolve_pyright_cmd()
         local exepath = vim.fn.exepath("pyright-langserver")
         if exepath ~= "" then
@@ -81,6 +84,14 @@ return {
         },
       })
       vim.diagnostic.enable(true)
+      vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+        config = vim.tbl_extend("force", config or {}, { border = "rounded" })
+        return vim.lsp.handlers.hover(err, result, ctx, config)
+      end
+      vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
+        config = vim.tbl_extend("force", config or {}, { border = "rounded" })
+        return vim.lsp.handlers.signature_help(err, result, ctx, config)
+      end
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = require("util").augroup("lsp_attach"),
@@ -122,6 +133,10 @@ return {
           if client and client.name == "jdtls" and client.server_capabilities.codeLensProvider then
             java_codelens.attach(event.buf, client)
           end
+
+          if client and client.name == "jdtls" then
+            java_field_usages.attach(event.buf, client)
+          end
         end,
       })
 
@@ -140,6 +155,33 @@ return {
       })
       vim.lsp.enable("pyright")
 
+      vim.lsp.config("basedpyright", {
+        capabilities = capabilities,
+      })
+
+      local function switch_python_lsp(server_name)
+        local stopped = {}
+        for _, client in ipairs(vim.lsp.get_clients()) do
+          if client.name == "pyright" or client.name == "basedpyright" then
+            stopped[client.name] = true
+            client:stop(true)
+          end
+        end
+
+        vim.defer_fn(function()
+          vim.lsp.enable(server_name)
+          vim.notify("Python LSP enabled: " .. server_name, vim.log.levels.INFO)
+        end, next(stopped) and 100 or 0)
+      end
+
+      vim.api.nvim_create_user_command("PythonLspUsePyright", function()
+        switch_python_lsp("pyright")
+      end, { desc = "Use pyright for Python buffers" })
+
+      vim.api.nvim_create_user_command("PythonLspUseBasedPyright", function()
+        switch_python_lsp("basedpyright")
+      end, { desc = "Use basedpyright for Python buffers" })
+
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -149,9 +191,10 @@ return {
           "yamlls",
           "gopls",
           "pyright",
+          "basedpyright",
         },
         automatic_enable = {
-          exclude = { "pyright" },
+          exclude = { "pyright", "basedpyright" },
         },
         handlers = {
           function(server_name)
@@ -262,14 +305,6 @@ return {
         },
       })
 
-      -- Rounded borders for floating windows
-      local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-      function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-        opts = opts or {}
-        opts.border = "rounded"
-        return orig_util_open_floating_preview(contents, syntax, opts, ...)
-      end
-
       -- Java keymaps (using <leader>j group defined in which-key)
       local java_debug = require("util.java_debug")
       local java_runner = require("util.java_runner")
@@ -286,10 +321,35 @@ return {
     "aznhe21/actions-preview.nvim",
     event = { "BufReadPre", "BufNewFile" },
     config = function()
-      local actions = require("actions-preview")
-      local hl = require("actions-preview.highlight")
-      local themes = require("telescope.themes")
-      local entry_display = require("telescope.pickers.entry_display")
+      local function native_code_action()
+        vim.lsp.buf.code_action()
+      end
+
+      local function set_code_action_maps(code_action)
+        local function code_actions_from_any_mode()
+          if vim.fn.mode() == "i" then
+            vim.cmd("stopinsert")
+            vim.schedule(code_action)
+            return
+          end
+
+          code_action()
+        end
+
+        vim.keymap.set({ "n", "v" }, "<leader>ca", code_action, { desc = "Code action" })
+        vim.keymap.set({ "n", "v", "i" }, "<A-CR>", code_actions_from_any_mode, { desc = "Code action" })
+      end
+
+      local actions_ok, actions = pcall(require, "actions-preview")
+      local hl_ok, hl = pcall(require, "actions-preview.highlight")
+      local themes_ok, themes = pcall(require, "telescope.themes")
+      local entry_display_ok, entry_display = pcall(require, "telescope.pickers.entry_display")
+
+      if not (actions_ok and hl_ok and themes_ok and entry_display_ok) then
+        vim.notify("actions-preview unavailable; using native LSP code actions", vim.log.levels.WARN)
+        set_code_action_maps(native_code_action)
+        return
+      end
 
       local function classify_action(action)
         local raw = action.action or {}
@@ -328,7 +388,7 @@ return {
         }
       end
 
-      local function make_make_display(values)
+      local function make_make_display()
         local displayer = entry_display.create({
           separator = " ",
           items = {
@@ -351,7 +411,7 @@ return {
         end
       end
 
-      require("actions-preview").setup({
+      local setup_ok = pcall(actions.setup, {
         diff = {
           algorithm = "patience",
           ignore_whitespace = true,
@@ -387,18 +447,23 @@ return {
         ),
       })
 
-      local function code_actions_from_any_mode()
-        if vim.fn.mode() == "i" then
-          vim.cmd("stopinsert")
-          vim.schedule(actions.code_actions)
+      if not setup_ok then
+        vim.notify("actions-preview setup failed; using native LSP code actions", vim.log.levels.WARN)
+        set_code_action_maps(native_code_action)
+        return
+      end
+
+      local function preview_or_native_code_action()
+        local ok = pcall(actions.code_actions)
+        if ok then
           return
         end
 
-        actions.code_actions()
+        vim.notify("actions-preview failed; using native LSP code actions", vim.log.levels.WARN)
+        native_code_action()
       end
 
-      vim.keymap.set({ "n", "v" }, "<leader>ca", actions.code_actions, { desc = "Code action" })
-      vim.keymap.set({ "n", "v", "i" }, "<A-CR>", code_actions_from_any_mode, { desc = "Code action" })
+      set_code_action_maps(preview_or_native_code_action)
     end,
   },
 

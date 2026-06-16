@@ -38,10 +38,10 @@ lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
 ```
 mason.nvim  ─────────────────────────────────────── package manager
   └── mason-lspconfig.nvim  ── bridges mason ↔ lspconfig
-  └── mason-tool-installer.nvim  ── auto-installs: stylua, gopls,
+  └── mason-tool-installer.nvim  ── auto-installs: stylua, selene, gopls,
                                     gofumpt, goimports-reviser, golines,
-                                    golangci-lint, ruff, prettier, delve,
-                                    LSP servers
+                                    golangci-lint, ruff, prettier, shellcheck,
+                                    markdownlint-cli2, yamllint, delve, LSP servers
 
 nvim-lspconfig  ─────────────────────────────────── LSP config (lsp.lua)
   ├── cmp-nvim-lsp            ── exposes LSP completions to cmp
@@ -50,18 +50,21 @@ nvim-lspconfig  ─────────────────────�
   ├── fidget.nvim             ── LSP progress spinner (bottom-right)
   ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
   ├── actions-preview.nvim    ── code action picker; shows diff previews for edit-backed actions (<leader>ca, <A-CR>)
-  └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (off by default, <leader>ud toggle)
+  └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (<leader>ud toggle)
 ```
 
 Pyright note:
 
 - `pyright` is configured through `vim.lsp.config("pyright", ...)` with a
   resolved Mason absolute binary path.
-- `mason-lspconfig` automatic-enable excludes `pyright` so that repo-local
-  command override is not bypassed.
+- `basedpyright` is configured but not enabled by default. Use
+  `:PythonLspUseBasedPyright` to switch the current session to BasedPyright, or
+  `:PythonLspUsePyright` to switch back.
+- `mason-lspconfig` automatic-enable excludes `pyright` and `basedpyright` so
+  repo-local command/switching policy is not bypassed.
 - `:PyrightInfo` prints the exact command path for the current session.
 
-**LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`
+**LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`, `basedpyright`
 **Java LSP:** handled separately by `nvim-java` (jdtls) — see Java section.
 
 **Key LSP keymaps** (set on LspAttach in lsp.lua):
@@ -105,6 +108,13 @@ nvim-autopairs  (coding.lua)
   └── nvim-cmp                       ── integrates: auto-closes pairs on confirm
 ```
 
+Filetype source policy:
+
+- Markdown/text/gitcommit: path + snippets first, then buffer words.
+- Shell/YAML: LSP + path + snippets first, then buffer words.
+- Python: LSP + signature help + snippets + path first, then buffer words.
+- `cmp-buffer` ignores buffers larger than 512 KiB and starts at 4 characters.
+
 **Completion keymaps:**
 
 | Key                 | Action                    |
@@ -133,15 +143,18 @@ nvim-treesitter  (treesitter.lua)  — highlight, indent, incremental selection
   ├── nvim-treesitter-textobjects  — af/if (function), ac/ic (class),
   │                                  aa/ia (param), al/il (loop), ai/ii (cond)
   │                                  Keymaps live in config/keymaps.lua
+  │                                  Markdown/YAML keep stock indentexpr
   └── rainbow-delimiters.nvim      — colorized bracket pairs
 
 nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
 ```
 
-**Installed grammars:** bash, c, go, gomod, gowork, gotmpl, html, java, javascript, json, lua, markdown, python, query, vim, vimdoc, yaml, xml, groovy, kotlin
+**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml,
+tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
-**Incremental selection** (visual mode only): `<CR>` start, `<Tab>` expand node, `<S-Tab>` shrink node, `<BS>` expand scope
+**Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
+moves to the next sibling node.
 
 ---
 
@@ -151,7 +164,11 @@ nvim-treehopper  (motion.lua)
 conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
   — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
+  — :FormatterInfo reports formatter executable/jar availability
+  — directory formatting implementation lives in util/format_dir.lua and uses fd/fdfind with explicit skip patterns
   — auto-formatting enabled by default (disable with :FormatDisable)
+  — format-on-save warns once per unchanged error state when skipped due to LSP errors
+  — format-on-save uses 10000ms for IntelliJ-backed filetypes, 500ms otherwise
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
@@ -161,10 +178,16 @@ conform.nvim  (formatting.lua)
   Note: Go skips format-on-save (done via LSP/manual); format-on-save skips files with LSP errors
 
 nvim-lint  (linting.lua)
-  — lints on BufWritePost / BufReadPost
-    go     → golangcilint
-    python → ruff
+  — lints immediately on BufWritePost and debounced on BufReadPost
+    bash/zsh/sh → shellcheck
+    go          → golangcilint
+    lua         → selene
+    markdown    → markdownlint-cli2
+    python      → ruff
+    yaml        → yamllint
   — missing linter executables are skipped instead of erroring on buffer open
+  — Selene runs from the config root so `selene.toml` + `vim.yml` are applied
+  — markdownlint-cli2 runs through BasedPyright's bundled Node when available
 ```
 
 python-venv.lua
@@ -204,7 +227,7 @@ colorschemes.lua
   └── themery.nvim      ── switcher UI  →  <leader>ut
 
 ui.lua
-  ├── lualine.nvim      ── statusline (mode, branch, diagnostics, root basename, diff, clock)
+  ├── lualine.nvim      ── statusline (mode, branch, visible diagnostic/diff labels, root basename, clock)
   ├── bufferline.nvim   ── buffer tabs, LSP diagnostics badges
   │                        <S-h>/<S-l> cycle buffers, <leader>b* manage buffers
   ├── indent-blankline.nvim  ── │ indent guides
@@ -237,6 +260,7 @@ editor.lua
   │
   ├── scratch.nvim            ── persistent scratch files under `<leader>f`
   │     — `<leader>fs` new scratch, `<leader>fS` open scratch
+  │     — `<leader>fi` / `:ScratchInfo` reports global and Java project-local scratch paths
   │     — `<leader>fN` create named scratch, files stored in stdpath("state")/scratch
   │     — Java is special-cased to open project-local `Scratch.java` inside
   │       Maven/Gradle source roots when available
@@ -244,6 +268,8 @@ editor.lua
   ├── neo-tree.nvim           ── file explorer (<leader>e cwd, <leader>E root)
   │     ├── native preview mode  ── `P` float preview, `l` focus, `<C-f>`/`<C-b>` scroll
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in
+  │     ├── open mappings reveal current file by default; `<leader>ue` toggles that session-local behavior
+  │     ├── `Y` copies absolute path with unnamed-register fallback when clipboard is unavailable
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │
   ├── lazygit.nvim            ── LazyGit TUI  →  <leader>Gg
@@ -318,7 +344,7 @@ first use.
 ```
 dap.lua
   nvim-dap  ── core debugger
-    ├── nvim-dap-ui           ── debug UI panels  →  <leader>du toggle, <leader>de eval
+    ├── nvim-dap-ui           ── debug UI panels  →  <leader>du toggle, <leader>dU keep open, <leader>de eval
     │     └── nvim-nio        ── async I/O
     ├── nvim-dap-virtual-text ── inline variable values (masks secrets)
     ├── nvim-dap-go           ── Go adapter (delve)  →  <leader>dgt, <leader>dgl
@@ -327,7 +353,7 @@ dap.lua
 Java DAP is provided by nvim-java (java_debug_adapter = true)
 ```
 
-**DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, i step-into, O step-over, o step-out, r REPL, u UI, e eval, t terminate
+**DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, i step-into, O step-over, o step-out, r REPL, u UI, U keep UI open on exit, e eval, t terminate
 
 ---
 
@@ -339,9 +365,10 @@ neotest.lua
     ├── neotest-java    ── Maven/Gradle test runner
     ├── neotest-go      ── Go test runner
     └── neotest-python  ── Python test runner
+  util/neotest_scope.lua ── scoped discovery + file/package target helpers
 ```
 
-**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, ts summary, to output, tO output panel, tS stop (interactive
+**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, tF run failed, ts summary, to output, tO output panel, tS stop (interactive
 picker), tw watch
 
 ---
@@ -454,6 +481,7 @@ terminal.lua
 ```
 leetcode.lua
   leetcode.nvim  ── LeetCode integration (lazy, cmd=Leet*)
+  util/leetcode_roadmap.lua ── DSA roadmap topic/difficulty picker
     ├── nvim-lua/plenary.nvim
     ├── nvim-treesitter/nvim-treesitter
     ├── nvim-telescope/telescope.nvim
@@ -489,9 +517,27 @@ keymaps.lua (diagnostic):
   <leader>xl  — diagnostics to loclist
   <leader>ud  — toggle tiny-inline-diagnostic on/off
   <leader>uD  — enable/disable all diagnostics entirely
+  <leader>ui  — open UiInspect report for current cursor position
+  <leader>uT  — toggle Treesitter highlighting for current buffer
+  <leader>uI  — toggle vim-illuminate references for current buffer
+  <leader>uJ  — toggle Java field usage counters
   <leader>uu  — toggle reference underline
   <leader>uH  — toggle reference background
+  <leader>ci  — Java: import symbol at cursor; prompt if ambiguous
+  <leader>cI  — Java: auto-import unambiguous diagnostics; prompt if ambiguous
 ```
+
+---
+
+Quality gate:
+Makefile ── `make check` runs Mason `stylua --check` + `selene`
+selene.toml / vim.yml ── local Selene config and minimal Neovim std
+
+UI inspection:
+util/ui_debug.lua ── :UiInspect, :UiToggleTreesitter, :UiToggleIlluminate
+Reports `vim.inspect_pos()`, Treesitter captures,
+parser state, diagnostics, conceal, colorscheme, and
+related debug commands.
 
 ---
 

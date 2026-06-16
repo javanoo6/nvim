@@ -12,6 +12,10 @@ return {
       preset = "modern",
       delay = 0,
       plugins = { spelling = true },
+      triggers = {
+        { "<auto>", mode = "nxso" },
+        { "<leader>", mode = { "n", "v" } },
+      },
       win = {
         border = "rounded",
         padding = { 1, 2 },
@@ -28,6 +32,21 @@ return {
     config = function(_, opts)
       local wk = require("which-key")
       wk.setup(opts)
+
+      local triggers = require("which-key.triggers")
+      if not triggers._custom_reattach_guard then
+        local suspend = triggers.suspend
+        triggers.suspend = function(mode)
+          suspend(mode)
+          vim.defer_fn(function()
+            if mode and mode.buf:valid() and require("which-key.util").mapmode() == mode.mode then
+              pcall(triggers.attach, mode)
+            end
+          end, vim.o.timeoutlen + 20)
+        end
+        triggers._custom_reattach_guard = true
+      end
+
       wk.add({
         { "<leader>b", group = "buffer" },
         { "<leader>c", group = "code", mode = { "n", "v" } },
@@ -69,6 +88,12 @@ return {
         { "gs", group = "surround", mode = { "n", "v" } },
         { "z", group = "fold" },
       })
+
+      -- Startup can restore the current buffer before which-key's first
+      -- BufEnter attach runs, so seed the active buffer once after setup.
+      vim.schedule(function()
+        pcall(require("which-key.buf").get)
+      end)
     end,
   },
 
@@ -105,10 +130,10 @@ return {
             {
               "diagnostics",
               symbols = {
-                error = " ",
-                warn = " ",
-                info = " ",
-                hint = " ",
+                error = "E:",
+                warn = "W:",
+                info = "I:",
+                hint = "H:",
               },
             },
             {
@@ -169,9 +194,9 @@ return {
             {
               "diff",
               symbols = {
-                added = " ",
-                modified = " ",
-                removed = " ",
+                added = "+",
+                modified = "~",
+                removed = "-",
               },
             },
           },
@@ -207,19 +232,34 @@ return {
     },
     opts = {
       highlights = {
+        fill = {
+          bg = { highlight = "TabLineFill", attribute = "bg" },
+        },
+        background = {
+          fg = { highlight = "TabLine", attribute = "fg" },
+          bg = { highlight = "TabLine", attribute = "bg" },
+        },
+        buffer_visible = {
+          fg = { highlight = "TabLine", attribute = "fg" },
+          bg = { highlight = "TabLine", attribute = "bg" },
+        },
         buffer_selected = {
           italic = true,
           bold = false,
-          fg = { highlight = "Function", attribute = "fg" },
+          fg = { highlight = "TabLineSel", attribute = "fg" },
+          bg = { highlight = "TabLineSel", attribute = "bg" },
         },
         separator = {
-          fg = { highlight = "Normal", attribute = "bg" },
+          fg = { highlight = "TabLineFill", attribute = "bg" },
+          bg = { highlight = "TabLine", attribute = "bg" },
         },
         separator_selected = {
-          fg = { highlight = "Normal", attribute = "bg" },
+          fg = { highlight = "TabLineFill", attribute = "bg" },
+          bg = { highlight = "TabLineSel", attribute = "bg" },
         },
         separator_visible = {
-          fg = { highlight = "Normal", attribute = "bg" },
+          fg = { highlight = "TabLineFill", attribute = "bg" },
+          bg = { highlight = "TabLine", attribute = "bg" },
         },
       },
       options = {
@@ -284,7 +324,7 @@ return {
     },
     opts = {
       timeout = 3000,
-      background_colour = "#1a1b26", -- tokyonight bg color
+      background_colour = "NotifyBackground",
       max_height = function()
         return math.floor(vim.o.lines * 0.75)
       end,
@@ -298,6 +338,25 @@ return {
   {
     "stevearc/dressing.nvim",
     lazy = true,
+    opts = {
+      select = {
+        get_config = function(opts)
+          if opts.prompt == "Ring history> " then
+            return {
+              telescope = {
+                layout_strategy = "horizontal",
+                layout_config = {
+                  width = 0.8,
+                  height = 0.7,
+                  preview_width = 0,
+                },
+                sorting_strategy = "ascending",
+              },
+            }
+          end
+        end,
+      },
+    },
     init = function()
       ---@diagnostic disable-next-line: duplicate-set-field
       vim.ui.select = function(...)

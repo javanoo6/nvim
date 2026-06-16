@@ -42,6 +42,29 @@ Use this rule of thumb:
 - Breakpoints and stepping after a debug launch: use generic `<leader>d*` DAP
   mappings.
 
+## Testcontainers QoL
+
+Testcontainers support is planned as a manual/project test workflow, not a
+save-time lint workflow.
+
+Target commands:
+
+- `:JavaTestcontainersInfo`: report whether the current project uses
+  `org.testcontainers` dependencies/imports and whether Docker is available.
+- `:JavaTestcontainersRun`: run the appropriate Maven/Gradle test task for
+  Testcontainers-backed integration tests.
+
+Rules:
+
+- Do not run Testcontainers tests automatically on save.
+- Prefer Maven/Gradle or existing Neotest Java flows instead of creating a
+  parallel test runner.
+- Future pre-push hooks may include Testcontainers checks, but only when
+  explicitly enabled for that repository.
+
+Detailed planning lives in
+[docs/java-inspection-lint-roadmap.md](/home/konkov/.config/nvim/docs/java-inspection-lint-roadmap.md:178).
+
 ## Remote JVM Attach
 
 `<leader>ja` prompts for host and port, defaulting to local JDWP-style attach.
