@@ -520,6 +520,7 @@ keymaps.lua (diagnostic):
   <leader>ui  — open UiInspect report for current cursor position
   <leader>uT  — toggle Treesitter highlighting for current buffer
   <leader>uI  — toggle vim-illuminate references for current buffer
+  <leader>uJ  — toggle Java field usage counters
   <leader>uu  — toggle reference underline
   <leader>uH  — toggle reference background
   <leader>ci  — Java: import symbol at cursor; prompt if ambiguous

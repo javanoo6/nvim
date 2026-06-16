@@ -47,6 +47,7 @@
 local util = require("util")
 local map = util.map
 local inlay_hints = require("util.inlay_hints")
+local java_field_usages = require("util.java_field_usages")
 local frequent_roots = require("util.frequent_roots")
 
 -- Custom project tracking retained in util.frequent_roots, but disabled for now.
@@ -199,6 +200,9 @@ end, { desc = "Toggle diagnostics" })
 map("n", "<leader>uh", function()
   inlay_hints.toggle()
 end, { desc = "Toggle inlay hints" })
+map("n", "<leader>uJ", function()
+  java_field_usages.toggle()
+end, { desc = "Toggle Java field usages" })
 map("n", "<leader>uu", function()
   util.toggle_reference_underline()
 end, { desc = "Toggle reference underline" })

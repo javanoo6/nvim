@@ -20,7 +20,9 @@ return {
     config = function()
       local map = require("util").map
       local java_codelens = require("util.java_codelens")
+      local java_field_usages = require("util.java_field_usages")
       local inlay_hints = require("util.inlay_hints")
+      java_field_usages.setup()
       inlay_hints.setup()
       local function resolve_pyright_cmd()
         local exepath = vim.fn.exepath("pyright-langserver")
@@ -130,6 +132,10 @@ return {
 
           if client and client.name == "jdtls" and client.server_capabilities.codeLensProvider then
             java_codelens.attach(event.buf, client)
+          end
+
+          if client and client.name == "jdtls" then
+            java_field_usages.attach(event.buf, client)
           end
         end,
       })
