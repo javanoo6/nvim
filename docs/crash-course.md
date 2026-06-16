@@ -806,6 +806,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>tr` | Run nearest test    |
 | `<leader>tp` | Run package         |
 | `<leader>tl` | Run last            |
+| `<leader>tF` | Run failed tests    |
 | `<leader>ts` | Toggle summary      |
 | `<leader>to` | Show output         |
 | `<leader>tO` | Toggle output panel |

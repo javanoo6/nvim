@@ -80,6 +80,13 @@ return {
         desc = "Run Last",
       },
       {
+        "<leader>tF",
+        function()
+          require("util.neotest_failed").run_failed()
+        end,
+        desc = "Run Failed",
+      },
+      {
         "<leader>tL",
         scope.with_scope(function()
           require("neotest").run.run_last({ strategy = "dap" })

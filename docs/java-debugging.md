@@ -82,6 +82,7 @@ Use `neotest` for the mapped test workflow:
 | `<leader>tT` | run all test files in scope    |
 | `<leader>tD` | debug all test files in scope  |
 | `<leader>tl` | run last                       |
+| `<leader>tF` | run failed tests               |
 | `<leader>tL` | debug last                     |
 | `<leader>ta` | attach to running test process |
 

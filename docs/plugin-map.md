@@ -368,7 +368,7 @@ neotest.lua
   util/neotest_scope.lua ── scoped discovery + file/package target helpers
 ```
 
-**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, ts summary, to output, tO output panel, tS stop (interactive
+**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, tF run failed, ts summary, to output, tO output panel, tS stop (interactive
 picker), tw watch
 
 ---
