@@ -19,7 +19,7 @@ local query = vim.treesitter.query.parse(
 vim.g.java_field_usages_enabled = vim.g.java_field_usages_enabled ~= false
 
 local function is_enabled()
-  return vim.g.java_field_usages_enabled ~= false
+  return vim.g.java_field_usages_enabled ~= true
 end
 
 local function clear(bufnr)
