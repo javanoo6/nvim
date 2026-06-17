@@ -26,7 +26,7 @@ write and maintain repo-local plugin support".
 | 2     | separate Lua vs lazy.nvim vs plugin config | classify every field in one plugin spec                    |
 | 3     | trace a setting                            | find where it is set and who reads it                      |
 | 4     | debug runtime behavior                     | add/remove `vim.notify()` and explain output               |
-| 5     | write a tiny local plugin                  | complete `docs/learn-plugin.md`                            |
+| 5     | write a tiny local plugin                  | complete `docs/learning/learn-plugin.md`                            |
 | 6     | use Neovim APIs                            | add command, keymap, autocmd, user input                   |
 | 7     | write safe plugin behavior                 | validate options and protect callbacks with `pcall`        |
 | 8     | support this repo                          | add docs, which-key group, helper module, and verification |
@@ -39,7 +39,7 @@ Do not begin with abstract Lua study.
 
 Begin with the teaching plugin in this repo:
 
-- [docs/learn-plugin.md](/home/konkov/.config/nvim/docs/learn-plugin.md:1)
+- [docs/learning/learn-plugin.md](/home/konkov/.config/nvim/docs/learning/learn-plugin.md:1)
 
 The fastest path is:
 
@@ -706,11 +706,11 @@ Examples:
 - Python venv support:
   [lua/plugins/python-venv.lua](/home/konkov/.config/nvim/lua/plugins/python-venv.lua:1),
   [lua/util/python_venv.lua](/home/konkov/.config/nvim/lua/util/python_venv.lua:1),
-  [docs/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python-venv-behavior.md:1)
+  [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1)
 - Neo-tree cwd support:
   [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:1),
   [lua/util/init.lua](/home/konkov/.config/nvim/lua/util/init.lua:1),
-  [docs/neo-tree-cwd-behavior.md](/home/konkov/.config/nvim/docs/neo-tree-cwd-behavior.md:1)
+  [docs/core/neo-tree-cwd-behavior.md](/home/konkov/.config/nvim/docs/core/neo-tree-cwd-behavior.md:1)
 
 When adding new support, ask:
 
@@ -1000,7 +1000,7 @@ Pick one Telescope option from [lua/plugins/editor.lua](/home/konkov/.config/nvi
 
 ### Exercise 4
 
-Take one plugin from `docs/plugin-map.md` and answer:
+Take one plugin from `docs/core/plugin-map.md` and answer:
 
 - how it loads
 - where it is configured
@@ -1078,9 +1078,9 @@ For plugin config work, those are low-yield early topics.
 
 ## Good Reference Files In This Repo
 
-- [docs/plugin-map.md](/home/konkov/.config/nvim/docs/plugin-map.md:1)
-- [docs/crash-course.md](/home/konkov/.config/nvim/docs/crash-course.md:1)
-- [docs/root-detection-policy.md](/home/konkov/.config/nvim/docs/root-detection-policy.md:1)
+- [docs/core/plugin-map.md](/home/konkov/.config/nvim/docs/core/plugin-map.md:1)
+- [docs/core/crash-course.md](/home/konkov/.config/nvim/docs/core/crash-course.md:1)
+- [docs/core/root-detection-policy.md](/home/konkov/.config/nvim/docs/core/root-detection-policy.md:1)
 - [lua/util/init.lua](/home/konkov/.config/nvim/lua/util/init.lua:1)
 - [lua/plugins/scratch.lua](/home/konkov/.config/nvim/lua/plugins/scratch.lua:1)
 - [lua/plugins/completion.lua](/home/konkov/.config/nvim/lua/plugins/completion.lua:1)

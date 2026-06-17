@@ -208,4 +208,4 @@ the JDWP port, stop that process or use a different port.
   command set; use `<leader>jd` for app/main debugging.
 - LeetCode-style standalone `Solution` files need a `main` harness before they
   can be debugged as Java applications. See
-  [docs/java-leetcode-debugging.md](/home/konkov/.config/nvim/docs/java-leetcode-debugging.md:1).
+  [docs/java/java-leetcode-debugging.md](/home/konkov/.config/nvim/docs/java/java-leetcode-debugging.md:1).

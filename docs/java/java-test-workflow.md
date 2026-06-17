@@ -85,7 +85,7 @@ Rules:
   explicitly enabled for that repository.
 
 Detailed planning lives in
-[docs/java-inspection-lint-roadmap.md](/home/konkov/.config/nvim/docs/java-inspection-lint-roadmap.md:178).
+[docs/java/java-inspection-lint-roadmap.md](/home/konkov/.config/nvim/docs/java/java-inspection-lint-roadmap.md:178).
 
 ## Remote JVM Attach
 
@@ -99,8 +99,8 @@ Typical JVM flag:
 
 ## Remaining Improvements
 
-- Document one canonical Java workflow in `docs/java-debugging.md`.
-- Keep `docs/crash-course.md` and `docs/plugin-map.md` aligned with the actual
+- Document one canonical Java workflow in `docs/java/java-debugging.md`.
+- Keep `docs/core/crash-course.md` and `docs/core/plugin-map.md` aligned with the actual
   keymaps.
 - Validate the full loop in a real Spring Boot project after any `nvim-java`,
   JDTLS, or Java debug bundle update:
