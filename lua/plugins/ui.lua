@@ -32,6 +32,7 @@ return {
     config = function(_, opts)
       local wk = require("which-key")
       wk.setup(opts)
+      require("util.which_key_refresh").setup()
 
       local triggers = require("which-key.triggers")
       if not triggers._custom_reattach_guard then

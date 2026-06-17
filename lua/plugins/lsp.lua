@@ -60,6 +60,36 @@ return {
       end
 
       local function rename_symbol()
+        local original_handler = vim.lsp.handlers["textDocument/rename"]
+        local restored = false
+
+        local function restore_handler()
+          if restored then
+            return
+          end
+
+          restored = true
+          if vim.lsp.handlers["textDocument/rename"] ~= original_handler then
+            vim.lsp.handlers["textDocument/rename"] = original_handler
+          end
+        end
+
+        vim.lsp.handlers["textDocument/rename"] = function(...)
+          local result = { pcall(original_handler, ...) }
+          local ok = table.remove(result, 1)
+          vim.schedule(function()
+            inlay_hints.refresh_loaded_buffers()
+            restore_handler()
+          end)
+          if not ok then
+            error(result[1])
+          end
+
+          return unpack(result)
+        end
+
+        vim.defer_fn(restore_handler, 120000)
+
         local bufnr = vim.api.nvim_get_current_buf()
         if vim.bo[bufnr].filetype == "java" then
           vim.lsp.buf.rename(nil, {

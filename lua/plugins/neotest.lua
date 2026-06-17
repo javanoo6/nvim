@@ -87,6 +87,13 @@ return {
         desc = "Run Failed",
       },
       {
+        "<leader>tq",
+        function()
+          require("util.neotest_sequential").run_current_file_tests()
+        end,
+        desc = "Run File Tests Sequentially",
+      },
+      {
         "<leader>tL",
         scope.with_scope(function()
           require("neotest").run.run_last({ strategy = "dap" })

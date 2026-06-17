@@ -799,19 +799,20 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 ## Testing (Neotest)
 
-| Key          | Action              |
-|--------------|---------------------|
-| `<leader>tt` | Run file            |
-| `<leader>tT` | Run all test files  |
-| `<leader>tr` | Run nearest test    |
-| `<leader>tp` | Run package         |
-| `<leader>tl` | Run last            |
-| `<leader>tF` | Run failed tests    |
-| `<leader>ts` | Toggle summary      |
-| `<leader>to` | Show output         |
-| `<leader>tO` | Toggle output panel |
-| `<leader>tS` | Stop (interactive)  |
-| `<leader>tw` | Toggle watch        |
+| Key          | Action                      |
+|--------------|-----------------------------|
+| `<leader>tt` | Run file                    |
+| `<leader>tT` | Run all test files          |
+| `<leader>tr` | Run nearest test            |
+| `<leader>tp` | Run package                 |
+| `<leader>tq` | Run file tests sequentially |
+| `<leader>tl` | Run last                    |
+| `<leader>tF` | Run failed tests            |
+| `<leader>ts` | Toggle summary              |
+| `<leader>to` | Show output                 |
+| `<leader>tO` | Toggle output panel         |
+| `<leader>tS` | Stop (interactive)          |
+| `<leader>tw` | Toggle watch                |
 
 ### Java-specific
 
@@ -1132,7 +1133,9 @@ git commit                 →  finalize merge
 | `p` / `P`    | Paste after / before (yanky-aware)  |
 | `<C-p>`      | Cycle forward through yank history  |
 | `<C-n>`      | Cycle backward through yank history |
-| `<leader>Hy` | Open yank history picker            |
+| `<C-CR>`     | Open Telescope yank history picker  |
+| `<C-A-CR>`   | Open built-in yank ring picker      |
+| `<leader>Hy` | Open Telescope yank history picker  |
 
 **Tip:** paste with `p`, then keep pressing `<C-p>` to replace the pasted text with earlier yanks.
 

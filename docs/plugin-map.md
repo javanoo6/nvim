@@ -234,6 +234,7 @@ ui.lua
   ├── nvim-notify       ── notification popups (replaces vim.notify)
   ├── dressing.nvim     ── better vim.ui.select / vim.ui.input
   ├── which-key.nvim    ── key-binding popup (groups defined here)
+  │                        Diffview close refreshes triggers through util/which_key_refresh.lua
   └── vim-illuminate    ── highlights references for symbol under cursor
                            Reference style is managed in util/init.lua and
                            reapplied from autocmds.lua
@@ -368,7 +369,8 @@ neotest.lua
   util/neotest_scope.lua ── scoped discovery + file/package target helpers
 ```
 
-**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tl last, tF run failed, ts summary, to output, tO output panel, tS stop (interactive
+**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tq run file tests sequentially, tl last, tF run failed, ts summary, to
+output, tO output panel, tS stop (interactive
 picker), tw watch
 
 ---
@@ -425,7 +427,8 @@ coding.lua
   ├── mini.surround   ── gsa/gsd/gsr/gsf add/delete/replace/find surrounding
   ├── mini.ai         ── enhanced text objects (af, if, ac, ic, ao, io, t=tag)
   └── yanky.nvim      ── yank history ring (p/P yanky-aware, <C-p>/<C-n> cycle)
-                          <leader>Hy open yank history picker
+                          <C-CR>/<leader>Hy open Telescope yank history
+                          <C-A-CR> opens built-in ring history
 
 editor.lua
   └── better-escape.nvim  ── smarter <Esc> handling in insert mode

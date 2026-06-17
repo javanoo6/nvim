@@ -68,7 +68,13 @@ return {
       },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
       { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
-      { "<leader>Hy", "<cmd>YankyRingHistory<cr>", desc = "Yank history" },
+      {
+        "<leader>Hy",
+        function()
+          require("util.yank_history").open_history()
+        end,
+        desc = "Yank history",
+      },
       { "<leader>Hc", "<cmd>Telescope command_history<cr>", desc = "Command history" },
       { "<leader>Hs", "<cmd>Telescope search_history<cr>", desc = "Search history" },
       { "<leader>fr", "<cmd>Telescope resume<cr>", desc = "Resume last search" },

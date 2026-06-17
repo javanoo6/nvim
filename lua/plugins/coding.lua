@@ -73,6 +73,22 @@ return {
       { "P", '"_dP', mode = "x", desc = "Put before (preserve yank)" },
       { "<C-p>", "<Plug>(YankyPreviousEntry)", desc = "Cycle yank backward" },
       { "<C-n>", "<Plug>(YankyNextEntry)", desc = "Cycle yank forward" },
+      {
+        "<C-CR>",
+        function()
+          require("util.yank_history").open_history()
+        end,
+        mode = { "n", "x" },
+        desc = "Yank history",
+      },
+      {
+        "<C-A-CR>",
+        function()
+          require("util.yank_history").open_ring_history()
+        end,
+        mode = { "n", "x" },
+        desc = "Yank ring history",
+      },
     },
   },
 

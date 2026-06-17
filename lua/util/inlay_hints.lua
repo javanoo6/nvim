@@ -53,6 +53,12 @@ function M.refresh_buffer(bufnr)
   end)
 end
 
+function M.refresh_loaded_buffers()
+  each_loaded_buffer(function(bufnr)
+    M.refresh_buffer(bufnr)
+  end)
+end
+
 function M.is_enabled()
   return vim.g.inlay_hints_enabled ~= false
 end

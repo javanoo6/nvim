@@ -4,7 +4,9 @@
 --   p / P        - Paste after/before (yanky-aware)
 --   <C-p>        - Cycle yank history forward (after paste)
 --   <C-n>        - Cycle yank history backward (after paste)
---   <leader>r    - Open yank history picker
+--   <C-CR>       - Open yank history picker
+--   <C-A-CR>     - Open yank ring history picker
+--   <leader>Hy   - Open yank history picker
 --
 -- NOTE: Command Line (Cmdline) Completion:
 --   Uses nvim-cmp cmdline completion.

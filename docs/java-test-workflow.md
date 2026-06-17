@@ -42,6 +42,28 @@ Use this rule of thumb:
 - Breakpoints and stepping after a debug launch: use generic `<leader>d*` DAP
   mappings.
 
+### Neotest Java Execution Granularity
+
+`<leader>tt` runs the current Java file/class as one Neotest run. In the normal
+Java path, `neotest-java` builds one JUnit Console command for the selected tree
+and adds every selected method/class as selectors inside that command. Neovim
+does not spawn one process per test method.
+
+The methods inside that command usually execute sequentially unless the project
+or JUnit enables parallel execution, but Neotest summary updates are not
+method-by-method for this adapter. `neotest-java` reads the generated JUnit XML
+report files after the JUnit command finishes, then maps those report entries
+back to Neotest method nodes. Because results are produced after the class/file
+command completes, `<leader>ts` can look unchanged until the whole class/file run
+finishes even when the methods themselves ran one by one.
+
+`<leader>tq` is an opt-in workaround for that visibility issue. It collects the
+discovered `test` nodes under the current file and runs each test node as its
+own Neotest run, waiting for one run to finish before starting the next. This can
+make `<leader>ts` update method-by-method, but it is intentionally separate from
+`<leader>tt` because it starts a fresh JUnit command per method and can change
+class-level setup/teardown cost and behavior.
+
 ## Testcontainers QoL
 
 Testcontainers support is planned as a manual/project test workflow, not a
