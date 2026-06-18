@@ -618,8 +618,10 @@ This uses `nvim-cmp` cmdline completion:
 | `<leader><space>` | Find files from cwd          |
 | `<leader>ff`      | Find files from cwd          |
 | `<leader>fF`      | Find files from project root |
-| `<leader>fg`      | Live grep from cwd           |
-| `<leader>fG`      | Live grep from project root  |
+| `<leader>fg`      | Literal grep from cwd        |
+| `<leader>fG`      | Literal grep from root       |
+| `<leader>f/`      | Regex grep from cwd          |
+| `<leader>f?`      | Regex grep from root         |
 | `<leader>fb`      | Buffers                      |
 | `<leader>fR`      | Recent files                 |
 | `<leader>fs`      | New scratch file             |
@@ -633,7 +635,8 @@ This uses `nvim-cmp` cmdline completion:
 | `<leader>ss`      | Document symbols             |
 | `<leader>sS`      | Workspace symbols            |
 | `<leader>st`      | Search TODOs                 |
-| `<leader>fe`      | Grep by file extension       |
+| `<leader>fe`      | Literal grep by extension    |
+| `<leader>fE`      | Regex grep by extension      |
 | `<leader>fr`      | Resume last search           |
 
 ### Inside Telescope
@@ -666,7 +669,8 @@ Scratch files are persistent temporary files managed by `scratch.nvim`.
   `src/test/java/Scratch.java` (or `src/main/java/Scratch.java` fallback) so
   JDTLS can resolve project dependencies.
 
-**Tip:** `<leader>fe` prompts for an extension (e.g. `java`, `go`, `py`) then opens live grep scoped to `*.{ext}` files only.
+**Tip:** `<leader>fg`, `<leader>fG`, and `<leader>fe` search the text you type as-is, so `foo.` matches a literal dot. Use `<leader>f/`,
+`<leader>f?`, or `<leader>fE` when you want ripgrep regex syntax.
 
 **Tip:** `<leader>fr` resumes the last Telescope search exactly where you left off — useful for returning to a search after editing a file.
 
@@ -674,7 +678,7 @@ Scratch files are persistent temporary files managed by `scratch.nvim`.
 
 Use this when you need to rename variables or make targeted edits across many files one by one:
 
-1. `<leader>ff` or `<leader>fe` — search for files
+1. `<leader>ff` searches for files; `<leader>fg` or `<leader>fe` searches file contents
 2. `<Tab>` to select specific files, or skip to send all results
 3. `<C-q>` — send to quickfix list
 4. `<leader>XQ` — open quickfix as a persistent Trouble sidebar

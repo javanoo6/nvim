@@ -257,6 +257,7 @@ editor.lua
   │     — edit filenames like a buffer, `:w` to apply; `g.` toggle hidden
   │
   ├── telescope.nvim          ── fuzzy finder (cwd on <leader><space>/<leader>ff/<leader>fg, root on <leader>fF/<leader>fG)
+  │                              grep defaults to literal matching; regex grep is explicit on <leader>f/ and <leader>f?
   │     └── telescope-fzf-native.nvim  ── faster sorter (requires make)
   │
   ├── scratch.nvim            ── persistent scratch files under `<leader>f`

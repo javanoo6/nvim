@@ -55,16 +55,40 @@ return {
       {
         "<leader>fg",
         function()
-          require("telescope.builtin").live_grep({ cwd = require("util").get_explorer_cwd() })
+          require("telescope.builtin").live_grep({
+            cwd = require("util").get_explorer_cwd(),
+            additional_args = { "--fixed-strings" },
+            prompt_title = "Grep literal (cwd)",
+          })
         end,
-        desc = "Grep (cwd)",
+        desc = "Grep literal (cwd)",
       },
       {
         "<leader>fG",
         function()
-          require("util").pick("live_grep")
+          require("util").pick("live_grep", {
+            additional_args = { "--fixed-strings" },
+            prompt_title = "Grep literal (root)",
+          })
         end,
-        desc = "Grep (root)",
+        desc = "Grep literal (root)",
+      },
+      {
+        "<leader>f/",
+        function()
+          require("telescope.builtin").live_grep({
+            cwd = require("util").get_explorer_cwd(),
+            prompt_title = "Grep regex (cwd)",
+          })
+        end,
+        desc = "Grep regex (cwd)",
+      },
+      {
+        "<leader>f?",
+        function()
+          require("util").pick("live_grep", { prompt_title = "Grep regex (root)" })
+        end,
+        desc = "Grep regex (root)",
       },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
       { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
@@ -85,12 +109,27 @@ return {
             if ext and ext ~= "" then
               require("telescope.builtin").live_grep({
                 glob_pattern = "*." .. ext,
-                prompt_title = "Grep in *." .. ext,
+                additional_args = { "--fixed-strings" },
+                prompt_title = "Grep literal in *." .. ext,
               })
             end
           end)
         end,
-        desc = "Grep by extension",
+        desc = "Grep literal by extension",
+      },
+      {
+        "<leader>fE",
+        function()
+          vim.ui.input({ prompt = "Extension: " }, function(ext)
+            if ext and ext ~= "" then
+              require("telescope.builtin").live_grep({
+                glob_pattern = "*." .. ext,
+                prompt_title = "Grep regex in *." .. ext,
+              })
+            end
+          end)
+        end,
+        desc = "Grep regex by extension",
       },
       { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command history" },
       { "<leader>ss", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document symbols" },

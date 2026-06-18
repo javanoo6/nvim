@@ -92,6 +92,10 @@ Update this file when:
 
 - Neo-tree and file finding are split by scope:
   `<leader>e` uses current explorer cwd, `<leader>E` uses project root.
+- Telescope grep defaults to literal ripgrep matching for the main grep keys:
+  `<leader>fg` cwd, `<leader>fG` root, and `<leader>fe` by extension all pass
+  `--fixed-strings`. Regex grep is explicit on `<leader>f/` cwd,
+  `<leader>f?` root, and `<leader>fE` by extension.
 - Neo-tree sidebar cwd is intentionally tied to global cwd to avoid stale
   tab-local reopen behavior.
 - Neo-tree does not auto-follow the current file on buffer switches. In large
@@ -253,6 +257,11 @@ Update this file when:
 - Neotest scope, discovery filtering, package/file target resolution, and the
   guarded current-file discovery fallback live in
   [lua/util/neotest_scope.lua](/home/konkov/.config/nvim/lua/util/neotest_scope.lua:1).
+- Neotest run wrappers capture the source buffer/path before opening Neotest UI
+  windows, then resolve file/package targets from that captured path. This keeps
+  `<leader>tt`, `<leader>tf`, `<leader>tp`, and `<leader>tP` aimed at the test
+  file that had focus when the key was pressed, even when split/UI window changes
+  leave another buffer visible or current.
 - `<leader>tt` for Java starts one `neotest-java` JUnit Console command for the
   current file/class target, not one Neovim-spawned process per test method.
   Method execution order is controlled by JUnit/project settings, but Neotest
