@@ -220,6 +220,10 @@ Update this file when:
   immediately after opening a Java buffer in a fresh project.
 - `<leader>jl` toggles the Java runner log window without stopping the running
   app. `<leader>jc` stops the app itself.
+- `:JavaInitProject [dir]` / `<leader>ji` creates a small Java 21 Maven or
+  Gradle project from local templates, opens `Main.java`, and changes Neovim's
+  cwd to the new project root. It intentionally does not shell out to
+  `mvn archetype` or `gradle init`.
 - Java patch/workflow details live in the Java deep-dive docs listed below.
 - Scratch-file behavior is customized for Java projects: the scratch flow prefers
   project-local `Scratch.java` under source roots so JDTLS resolves deps.

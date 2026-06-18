@@ -819,10 +819,14 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | Key          | Action              |
 |--------------|---------------------|
 | `<leader>jr` | Run Main            |
+| `<leader>ji` | Init Project        |
 | `<leader>jc` | Stop Main           |
 | `<leader>jt` | Test Current Class  |
 | `<leader>jm` | Test Current Method |
 | `<leader>jv` | View Test Report    |
+
+`:JavaInitProject [dir]` prompts for Maven/Gradle, project directory, artifact,
+group id, and package, then opens the generated `Main.java`.
 
 ### Java Code Actions
 

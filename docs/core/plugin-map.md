@@ -385,12 +385,16 @@ nvim-java.lua
     ├── java_debug_adapter ── DAP adapter for Java
     └── spring_boot_tools  ── Spring Boot tooling
 
+util/java_project_init.lua
+  :JavaInitProject [dir] / <leader>ji
+  └── local Maven/Gradle Java 21 starter templates
+
 lsp.lua excludes jdtls from mason-lspconfig (nvim-java owns it)
 vim.g.lspconfig_jdtls_enabled = false  (options.lua)
 JVM: -Xms1g / -Xmx4g  (prevents OOM on refactoring)
 ```
 
-**Java keymaps** (`<leader>j*`): jr run main, jc stop, jt test class, jm test method, jv view report
+**Java keymaps** (`<leader>j*`): ji init project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jt test class, jm test method, jv view report
 
 ---
 
@@ -696,7 +700,7 @@ lazy.nvim
 | `<leader>G`       | git            | gitsigns, diffview, lazygit                                                                |
 | `<leader>Gh`      | hunks          | gitsigns                                                                                   |
 | `<leader>h`       | harpoon/dirs   | harpoon                                                                                    |
-| `<leader>j`       | java           | nvim-java                                                                                  |
+| `<leader>j`       | java           | nvim-java, local Java helpers                                                              |
 | `<leader>L`       | leetcode       | leetcode.nvim                                                                              |
 | `<leader>l`       | lsp            | nvim-lspconfig                                                                             |
 | `<leader>O`       | obsidian       | obsidian.nvim                                                                              |

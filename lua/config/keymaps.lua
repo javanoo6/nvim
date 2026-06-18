@@ -50,10 +50,12 @@ local util = require("util")
 local map = util.map
 local inlay_hints = require("util.inlay_hints")
 local java_field_usages = require("util.java_field_usages")
+local java_project_init = require("util.java_project_init")
 local frequent_roots = require("util.frequent_roots")
 
 -- Custom project tracking retained in util.frequent_roots, but disabled for now.
 -- frequent_roots.setup()
+java_project_init.register_commands()
 
 -- Movement (no leader)
 map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
@@ -240,6 +242,7 @@ end, { desc = "Import Java class at cursor" })
 map("n", "<leader>cI", function()
   require("util.java_imports").import_unambiguous_classes()
 end, { desc = "Import unambiguous Java classes" })
+map("n", "<leader>ji", java_project_init.create, { desc = "Init Java project" })
 
 -- Replacing
 map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })
