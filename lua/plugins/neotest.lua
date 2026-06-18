@@ -60,15 +60,15 @@ return {
       },
       {
         "<leader>tp",
-        scope.with_scope(function()
-          require("neotest").run.run(scope.current_package_target())
+        scope.with_scope(function(ctx)
+          require("neotest").run.run(scope.current_package_target(ctx))
         end),
         desc = "Run Package",
       },
       {
         "<leader>tP",
-        scope.with_scope(function()
-          require("neotest").run.run({ scope.current_package_target(), strategy = "dap" })
+        scope.with_scope(function(ctx)
+          require("neotest").run.run({ scope.current_package_target(ctx), strategy = "dap" })
         end),
         desc = "Debug Package",
       },
@@ -102,8 +102,8 @@ return {
       },
       {
         "<leader>tf",
-        scope.with_scope(function()
-          require("neotest").run.run({ vim.fn.expand("%"), strategy = "dap" })
+        scope.with_scope(function(ctx)
+          require("neotest").run.run({ ctx.path ~= "" and ctx.path or vim.fn.expand("%"), strategy = "dap" })
         end),
         desc = "Debug File",
       },

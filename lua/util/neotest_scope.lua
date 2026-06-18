@@ -49,14 +49,15 @@ local function find_upwards(start_path, markers)
   return nil
 end
 
-function M.current_scope()
-  local path = vim.api.nvim_buf_get_name(0)
+function M.current_scope(bufnr)
+  bufnr = bufnr or 0
+  local path = vim.api.nvim_buf_get_name(bufnr)
   if path == "" then
     return nil
   end
 
   path = normalize(path)
-  local filetype = vim.bo.filetype
+  local filetype = vim.bo[bufnr].filetype
   local markers_by_ft = {
     go = { "go.mod", "go.work" },
     java = { "pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts" },
@@ -79,8 +80,8 @@ function M.get_scope()
   return active_scope or M.current_scope()
 end
 
-function M.activate_scope()
-  local scope = M.current_scope()
+function M.activate_scope(scope)
+  scope = scope or M.current_scope()
   active_scope = scope
   if not scope then
     return nil
@@ -127,15 +128,22 @@ end
 
 function M.with_scope(run_fn)
   return function(...)
-    M.activate_scope()
+    local source_buf = vim.api.nvim_get_current_buf()
+    local scope = M.activate_scope(M.current_scope(source_buf))
+    local ctx = {
+      bufnr = source_buf,
+      path = scope and scope.path or vim.api.nvim_buf_get_name(source_buf),
+      scope = scope,
+    }
+
     require("neotest").summary.open()
     require("neotest").output_panel.clear()
-    return run_fn(...)
+    return run_fn(ctx, ...)
   end
 end
 
-local function current_package_path()
-  local path = vim.api.nvim_buf_get_name(0)
+local function current_package_path(path)
+  path = path or vim.api.nvim_buf_get_name(0)
   if path == "" then
     return uv.cwd()
   end
@@ -180,7 +188,7 @@ local function candidate_package_dirs(path, scope)
     table.insert(dirs, dir)
   end
 
-  add(current_package_path())
+  add(current_package_path(path))
 
   if scope and scope.filetype == "java" then
     add(java_test_package_path(vim.fs.dirname(path)))
@@ -195,14 +203,14 @@ local function candidate_package_dirs(path, scope)
   return dirs
 end
 
-function M.current_package_target()
-  local path = vim.api.nvim_buf_get_name(0)
+function M.current_package_target(ctx)
+  local path = ctx and ctx.path or vim.api.nvim_buf_get_name(0)
   if path == "" then
     return uv.cwd()
   end
 
   path = normalize(path)
-  local scope = M.get_scope()
+  local scope = ctx and ctx.scope or M.get_scope()
   local target_dirs = candidate_package_dirs(path, scope)
   local neotest_state = require("neotest").state
 
@@ -225,8 +233,8 @@ function M.current_package_target()
   return (scope and scope.focus_root) or uv.cwd()
 end
 
-local function current_file_target()
-  local path = vim.api.nvim_buf_get_name(0)
+local function current_file_target(path)
+  path = path or vim.api.nvim_buf_get_name(0)
   if path == "" then
     return uv.cwd()
   end
@@ -284,8 +292,8 @@ local function ensure_current_file_discovered(path)
   client:_update_positions(path, { adapter = adapter_id })
 end
 
-function M.run_current_file()
-  local path = vim.api.nvim_buf_get_name(0)
+function M.run_current_file(ctx)
+  local path = ctx and ctx.path or vim.api.nvim_buf_get_name(0)
   if path == "" then
     require("neotest").run.run(uv.cwd())
     return
@@ -294,7 +302,7 @@ function M.run_current_file()
   path = normalize(path)
   require("nio").run(function()
     ensure_current_file_discovered(path)
-    require("neotest").run.run(current_file_target())
+    require("neotest").run.run(current_file_target(path))
   end)
 end
 
