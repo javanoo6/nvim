@@ -1,65 +1,79 @@
-# Restore Deleted Code With LazyGit
+# Restore A Deleted File In A New Commit
 
-Use this when code was deleted, the deletion was already pushed, and the fix
-should be a follow-up commit rather than rewriting history.
+Use this when a file was deleted in an older commit, and you want to restore it
+in your next commit without rewriting history.
 
-## Recommended: Restore From An Older Commit
+## Goal
 
-Use this when only specific files or hunks need to come back.
+Create a new commit that adds the deleted file back.
 
-1. Open LazyGit.
-2. Go to the **Commits** panel.
-3. Find the commit before the deletion happened.
-4. Press `Enter` on that commit.
-5. Find the file that still contains the deleted code.
-6. Press `Enter` to view the file from that old commit.
-7. Restore the whole file if needed:
-    - Open the file actions menu, usually `a`.
-    - Choose the checkout/restore-file action.
-8. Restore only selected hunks if needed:
-    - Open the file diff.
-    - Select the needed hunk.
-    - Use the patch/apply action to bring it back.
-9. Return to the files panel.
-10. Review the restored changes.
-11. Stage the restored changes with `Space`.
-12. Commit with `c`, for example:
+Do not use reset, amend, or rebase for this workflow unless you explicitly want
+to rewrite history.
+
+## LazyGit Config Location
+
+This Neovim setup keeps LazyGit config here:
 
 ```text
-Restore accidentally deleted code
+/home/konkov/.config/nvim/lazygit/config.yml
 ```
 
-13. Push with `P`.
+The config may define extra LazyGit commands, but restoring a deleted file can
+be done with LazyGit's built-in commit and file actions.
 
-This creates a new commit that reintroduces the deleted code.
+## Find The Deleted File
 
-## Alternative: Revert The Bad Commit
-
-Use this only when the bad pushed commit should mostly or entirely be undone.
-
-1. Open LazyGit.
+1. Open LazyGit in the target repository.
 2. Go to the **Commits** panel.
-3. Select the bad commit.
-4. Open the commit actions menu, usually `a`.
-5. Choose **Revert commit**.
-6. Resolve conflicts if LazyGit reports any.
-7. Review the resulting changes.
-8. Push with `P`.
+3. Select the commit that deleted the file.
+4. Open the commit and note the deleted file path.
+5. Identify the restore source:
 
-This creates a new commit that undoes the selected commit. Avoid this when the
-bad commit also contains unrelated good changes that should stay.
+```text
+<deleting-commit>^
+```
 
-## Small Fix: Copy From The Old Version
+That means "the parent commit before the deletion".
 
-Use this when only a few lines are missing.
+## Restore With LazyGit
 
-1. Open LazyGit.
-2. Go to the **Commits** panel.
-3. Open an older commit where the code still existed.
-4. Open the file.
-5. Copy the missing code.
-6. Paste it into the current file in the editor.
-7. Back in LazyGit, review the diff.
-8. Stage and commit the restored code.
-9. Push with `P`.
+1. In LazyGit, go to the **Commits** panel.
+2. Select the parent commit before the deletion:
 
+```text
+<deleting-commit>^
+```
+
+3. Press `Enter` to open that commit.
+4. Find the deleted file in that commit's file list.
+5. Select the file.
+6. Open the file actions menu with `a`.
+7. Choose the checkout or restore-file action.
+8. Return to the **Files** panel.
+9. Confirm the file appears in the working tree.
+10. Review the diff.
+11. Stage the restored file with `Space`.
+12. Commit with `c`.
+
+Example commit message:
+
+```text
+Restore accidentally deleted file
+```
+
+## Terminal Equivalent
+
+If LazyGit's menu wording is unclear, run this from the repository root:
+
+```sh
+git restore --source=<deleting-commit>^ -- <path-to-deleted-file>
+```
+
+Then return to LazyGit, review the diff, stage the restored file, and commit it.
+
+## When To Revert Instead
+
+Use **revert commit** only when the whole deleting commit should be undone.
+
+If the deleting commit also contains changes that should stay, restore only the
+deleted file from the parent commit instead of reverting the whole commit.
