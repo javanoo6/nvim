@@ -348,6 +348,12 @@ Update this file when:
   `<leader>Gh*`.
 - Gitsigns uses visible but quiet delete/topdelete signs instead of empty delete
   markers, so removed-line context is visible in the sign column.
+- Live git hunks view is repo-local glue in
+  [lua/util/live_hunks.lua](/home/konkov/.config/nvim/lua/util/live_hunks.lua:1).
+  `<leader>ug` / `:LiveHunksToggle` opens a right-side scratch buffer for the
+  current file's unstaged hunks. It uses Gitsigns `get_hunks()` first, falls
+  back to `git diff --unified=0`, and keeps one scratch row per source line so
+  `WinScrolled` can sync the view topline with the edit window.
 - Diffview branch/ref helpers use structured `vim.cmd.DiffviewOpen(...)` calls
   for dynamic ref arguments.
 - Planned work:

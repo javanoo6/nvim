@@ -301,6 +301,8 @@ glance.lua
 git.lua
   ├── gitsigns.nvim       ── hunk signs, blame, diff, stage/reset
   │                          Keymaps: ]h/[h, <leader>Gh* (buffer-local)
+  ├── util/live_hunks.lua ── right-side live unstaged hunk view
+  │                          Keymaps: <leader>ug, commands: :LiveHunks*
   ├── diffview.nvim       ── full diff viewer + file history + 3-way merge view
   │                          Keymaps in keymaps.lua: <leader>GD/GF/GH/GL/Gm/GM
   └── git-conflict.nvim   ── inline conflict resolution (auto-activates on conflict markers)
@@ -320,6 +322,14 @@ git.lua
 | `<leader>Ghb/GhB`     | Blame line / toggle                   |
 | `<leader>Ghd`         | Diff this                             |
 | `<leader>Ghw/Ghl/Ghv` | Word diff / line hl / deleted toggles |
+
+**Live hunks view:**
+
+| Key                 | Action                              |
+|---------------------|-------------------------------------|
+| `<leader>ug`        | Toggle right-side live hunks view   |
+| `:LiveHunksRefresh` | Refresh the current live hunks view |
+| `:LiveHunksClose`   | Close the current live hunks view   |
 
 **Diffview keymaps** (keymaps.lua):
 
@@ -525,6 +535,7 @@ keymaps.lua (diagnostic):
   <leader>xl  — diagnostics to loclist
   <leader>ud  — toggle tiny-inline-diagnostic on/off
   <leader>uD  — enable/disable all diagnostics entirely
+  <leader>ug  — toggle right-side live hunks view for the current git file
   <leader>ui  — open UiInspect report for current cursor position
   <leader>uT  — toggle Treesitter highlighting for current buffer
   <leader>uI  — toggle vim-illuminate references for current buffer
@@ -686,40 +697,40 @@ lazy.nvim
 
 ## Key-group cheat sheet (which-key groups)
 
-| Prefix            | Group          | Main plugins involved                                                                      |
-|-------------------|----------------|--------------------------------------------------------------------------------------------|
-| `<leader>b`       | buffer         | bufferline                                                                                 |
-| `<leader>c`       | code           | LSP, conform, trouble                                                                      |
-| `<leader>d`       | debug          | nvim-dap                                                                                   |
-| `<leader>dg`      | debug go       | nvim-dap-go                                                                                |
-| `<leader>e/E`     | explorer       | neo-tree                                                                                   |
-| `-` / `<leader>o` | oil            | oil.nvim                                                                                   |
-| `<leader>f`       | file/find      | telescope, yanky                                                                           |
-| `<leader>g`       | go             | gopls, gopher                                                                              |
-| `<leader>gi`      | go insert      | gopher                                                                                     |
-| `<leader>gs`      | go struct tags | gopher                                                                                     |
-| `<leader>G`       | git            | gitsigns, diffview, lazygit                                                                |
-| `<leader>Gh`      | hunks          | gitsigns                                                                                   |
-| `<leader>h`       | harpoon/dirs   | harpoon                                                                                    |
-| `<leader>j`       | java           | nvim-java, local Java helpers                                                              |
-| `<leader>L`       | leetcode       | leetcode.nvim                                                                              |
-| `<leader>l`       | lsp            | nvim-lspconfig                                                                             |
-| `<leader>O`       | obsidian       | obsidian.nvim                                                                              |
-| `<leader>p`       | python         | venv-selector.nvim, repo-local python venv commands                                        |
-| `<leader>P`       | plugins        | lazy                                                                                       |
-| `<leader>q`       | quit/session   | auto-session                                                                               |
-| `<leader>r`       | replace        | grug-far                                                                                   |
-| `<leader>s`       | search         | telescope, todo-comments                                                                   |
-| `<leader>S`       | sessions       | auto-session                                                                               |
-| `<leader>t`       | test/theme     | neotest, themery                                                                           |
-| `<leader>u`       | ui             | toggles (spell, wrap, numbers, fold, diagnostics, inlay hints, reference style, auto-save) |
-| `<leader>w`       | windows        | splits                                                                                     |
-| `<leader>x`       | diagnostics    | trouble                                                                                    |
-| `<leader>X`       | lists/maint    | trouble, quicker, todo-comments                                                            |
-| `<leader><tab>`   | tabs           | vim tabs                                                                                   |
-| `g`               | goto/misc      | LSP, glance, splits                                                                        |
-| `gc`              | comment        | Comment.nvim                                                                               |
-| `gs`              | surround       | mini.surround                                                                              |
+| Prefix            | Group          | Main plugins involved                                                                                  |
+|-------------------|----------------|--------------------------------------------------------------------------------------------------------|
+| `<leader>b`       | buffer         | bufferline                                                                                             |
+| `<leader>c`       | code           | LSP, conform, trouble                                                                                  |
+| `<leader>d`       | debug          | nvim-dap                                                                                               |
+| `<leader>dg`      | debug go       | nvim-dap-go                                                                                            |
+| `<leader>e/E`     | explorer       | neo-tree                                                                                               |
+| `-` / `<leader>o` | oil            | oil.nvim                                                                                               |
+| `<leader>f`       | file/find      | telescope, yanky                                                                                       |
+| `<leader>g`       | go             | gopls, gopher                                                                                          |
+| `<leader>gi`      | go insert      | gopher                                                                                                 |
+| `<leader>gs`      | go struct tags | gopher                                                                                                 |
+| `<leader>G`       | git            | gitsigns, diffview, lazygit                                                                            |
+| `<leader>Gh`      | hunks          | gitsigns                                                                                               |
+| `<leader>h`       | harpoon/dirs   | harpoon                                                                                                |
+| `<leader>j`       | java           | nvim-java, local Java helpers                                                                          |
+| `<leader>L`       | leetcode       | leetcode.nvim                                                                                          |
+| `<leader>l`       | lsp            | nvim-lspconfig                                                                                         |
+| `<leader>O`       | obsidian       | obsidian.nvim                                                                                          |
+| `<leader>p`       | python         | venv-selector.nvim, repo-local python venv commands                                                    |
+| `<leader>P`       | plugins        | lazy                                                                                                   |
+| `<leader>q`       | quit/session   | auto-session                                                                                           |
+| `<leader>r`       | replace        | grug-far                                                                                               |
+| `<leader>s`       | search         | telescope, todo-comments                                                                               |
+| `<leader>S`       | sessions       | auto-session                                                                                           |
+| `<leader>t`       | test/theme     | neotest, themery                                                                                       |
+| `<leader>u`       | ui             | toggles (spell, wrap, numbers, fold, diagnostics, inlay hints, reference style, live hunks, auto-save) |
+| `<leader>w`       | windows        | splits                                                                                                 |
+| `<leader>x`       | diagnostics    | trouble                                                                                                |
+| `<leader>X`       | lists/maint    | trouble, quicker, todo-comments                                                                        |
+| `<leader><tab>`   | tabs           | vim tabs                                                                                               |
+| `g`               | goto/misc      | LSP, glance, splits                                                                                    |
+| `gc`              | comment        | Comment.nvim                                                                                           |
+| `gs`              | surround       | mini.surround                                                                                          |
 
 ---
 

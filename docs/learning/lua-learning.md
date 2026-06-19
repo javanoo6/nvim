@@ -26,7 +26,7 @@ write and maintain repo-local plugin support".
 | 2     | separate Lua vs lazy.nvim vs plugin config | classify every field in one plugin spec                    |
 | 3     | trace a setting                            | find where it is set and who reads it                      |
 | 4     | debug runtime behavior                     | add/remove `vim.notify()` and explain output               |
-| 5     | write a tiny local plugin                  | complete `docs/learning/learn-plugin.md`                            |
+| 5     | write a tiny local plugin                  | complete `docs/learning/learn-plugin.md`                   |
 | 6     | use Neovim APIs                            | add command, keymap, autocmd, user input                   |
 | 7     | write safe plugin behavior                 | validate options and protect callbacks with `pcall`        |
 | 8     | support this repo                          | add docs, which-key group, helper module, and verification |

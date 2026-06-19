@@ -1190,6 +1190,7 @@ git commit                 →  finalize merge
 | `<leader>um` | Toggle mouse                                      |
 | `<leader>ud` | Toggle inline diagnostics (enabled on LSP attach) |
 | `<leader>uD` | Toggle diagnostics                                |
+| `<leader>ug` | Toggle live git hunks view                        |
 | `<leader>uh` | Toggle inlay hints                                |
 | `<leader>uu` | Toggle reference underline                        |
 | `<leader>uH` | Toggle reference background                       |

@@ -141,7 +141,8 @@ Suggested defaults:
 ## Open Questions
 
 - Should `source.organizeImports` count as cleanup? Current assumption: yes.
-- Should command-only JDTLS cleanup actions highlight the whole visible range or only show a sign? Current assumption: weak line highlight for the requested range.
+- Should command-only JDTLS cleanup actions highlight the whole visible range or only show a sign? Current assumption: weak line highlight for the requested
+  range.
 - Should this be Java-only until proven stable? Current assumption: yes.
 
 ## Verification

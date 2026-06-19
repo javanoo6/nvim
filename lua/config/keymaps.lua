@@ -51,11 +51,13 @@ local map = util.map
 local inlay_hints = require("util.inlay_hints")
 local java_field_usages = require("util.java_field_usages")
 local java_project_init = require("util.java_project_init")
+local live_hunks = require("util.live_hunks")
 local frequent_roots = require("util.frequent_roots")
 
 -- Custom project tracking retained in util.frequent_roots, but disabled for now.
 -- frequent_roots.setup()
 java_project_init.register_commands()
+live_hunks.setup()
 
 -- Movement (no leader)
 map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
@@ -198,6 +200,9 @@ end, { desc = "Toggle inline diagnostics" })
 map("n", "<leader>ue", function()
   util.toggle_neotree_reveal_on_open()
 end, { desc = "Toggle Neo-tree reveal on open" })
+map("n", "<leader>ug", function()
+  live_hunks.toggle()
+end, { desc = "Toggle live git hunks" })
 map("n", "<leader>uD", function()
   vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = "Toggle diagnostics" })
