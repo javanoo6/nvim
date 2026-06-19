@@ -54,7 +54,7 @@ return {
       end
 
       local function lint_buffer(bufnr)
-        if not vim.api.nvim_buf_is_valid(bufnr) then
+        if not vim.api.nvim_buf_is_valid(bufnr) or not vim.api.nvim_buf_is_loaded(bufnr) then
           return
         end
 
@@ -77,15 +77,17 @@ return {
           end
         end
 
-        -- Selene only sees the repo-local Neovim std/config when it runs from
-        -- the config root. Keep the other linters buffer-relative.
-        if #selene > 0 then
-          lint.try_lint(selene, { cwd = root })
-        end
+        vim.api.nvim_buf_call(bufnr, function()
+          -- Selene only sees the repo-local Neovim std/config when it runs from
+          -- the config root. Keep the other linters buffer-relative.
+          if #selene > 0 then
+            lint.try_lint(selene, { cwd = root })
+          end
 
-        if #others > 0 then
-          lint.try_lint(others, { cwd = cwd })
-        end
+          if #others > 0 then
+            lint.try_lint(others, { cwd = cwd })
+          end
+        end)
       end
 
       vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
