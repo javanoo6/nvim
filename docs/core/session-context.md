@@ -150,6 +150,10 @@ Update this file when:
 - `nvim-lint` still runs immediately after writes, but `BufReadPost` linting is
   debounced briefly so opening many files does not start expensive linters all at
   once.
+- Debounced linting runs through `nvim_buf_call()` for the original event buffer,
+  because `nvim-lint`'s `try_lint()` targets the current buffer. Without that,
+  delayed Markdown lint jobs can attach markdownlint diagnostics to a newly
+  opened Java buffer.
 - Completion source ordering is filetype-aware: Markdown/text/gitcommit and
   shell/YAML prefer path-aware sources before buffer words, Python keeps LSP and
   signature help first, and buffer completion ignores buffers above 512 KiB.
@@ -161,6 +165,10 @@ Update this file when:
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached
   results, limited to the active test scope/project root.
+- `neotest-java` file detection is locally overridden at
+  [lua/neotest-java/core/file_checker.lua](/home/konkov/.config/nvim/lua/neotest-java/core/file_checker.lua:1)
+  so valid `src/test/java/*Test.java` files are not rejected when the adapter was
+  constructed from a stale cwd outside the Java project.
 - Formatter dependency status is exposed as `:FormatterInfo`. The IntelliJ
   formatter bridge now skips itself when `java` or the formatter jar is missing
   instead of failing late during format.
@@ -262,6 +270,11 @@ Update this file when:
   `<leader>tt`, `<leader>tf`, `<leader>tp`, and `<leader>tP` aimed at the test
   file that had focus when the key was pressed, even when split/UI window changes
   leave another buffer visible or current.
+- The Neotest summary window uses the repo-local opener in
+  [lua/util/neotest_summary.lua](/home/konkov/.config/nvim/lua/util/neotest_summary.lua:1):
+  it opens as a right-side vertical split sized to one third of the screen by
+  default, or one quarter when the current tab already has two or more vertical
+  file-buffer columns.
 - `<leader>tt` for Java starts one `neotest-java` JUnit Console command for the
   current file/class target, not one Neovim-spawned process per test method.
   Method execution order is controlled by JUnit/project settings, but Neotest
@@ -329,6 +342,8 @@ Update this file when:
 - Diffview is the primary repo/file history and merge-view tool.
 - LazyGit is customized via both user config and repo-local
   [lazygit/config.yml](/home/konkov/.config/nvim/lazygit/config.yml:1).
+- LazyGit uses an explicit dark selected-line background in the repo-local
+  config so green diff text remains readable while staging hunks from the TUI.
 - Gitsigns hunk commands are intentionally buffer-local and grouped under
   `<leader>Gh*`.
 - Gitsigns uses visible but quiet delete/topdelete signs instead of empty delete
