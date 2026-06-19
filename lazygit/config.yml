@@ -1,3 +1,10 @@
+gui:
+  theme:
+    selectedLineBgColor:
+      - "#283457"
+    inactiveViewSelectedLineBgColor:
+      - "#1f2335"
+
 customCommands:
   - key: "X"
     context: "localBranches"
