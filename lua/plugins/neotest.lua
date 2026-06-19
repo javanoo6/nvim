@@ -190,6 +190,11 @@ return {
           }),
         },
         status = { virtual_text = true },
+        summary = {
+          open = function()
+            return require("util.neotest_summary").open()
+          end,
+        },
         output_panel = {
           open = "botright split | resize 15",
         },
