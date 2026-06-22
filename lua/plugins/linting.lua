@@ -34,10 +34,14 @@ return {
       lint.linters_by_ft = {
         bash = { "shellcheck" },
         go = { "golangcilint" },
+        javascript = { "eslint_d" },
+        javascriptreact = { "eslint_d" },
         lua = { "selene" },
         markdown = { "markdownlint-cli2" },
         python = { "ruff" },
         sh = { "shellcheck" },
+        typescript = { "eslint_d" },
+        typescriptreact = { "eslint_d" },
         yaml = { "yamllint" },
         zsh = { "shellcheck" },
       }

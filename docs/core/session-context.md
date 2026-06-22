@@ -137,6 +137,9 @@ Update this file when:
   Node binary bundled with Mason `basedpyright` when available because the
   installed `markdownlint-cli2` release requires newer JavaScript regex support
   than the system Node 18 provides.
+- JavaScript and TypeScript support uses Treesitter for syntax, `ts_ls` for
+  LSP, `eslint_d` through `nvim-lint`, and Prettier through Conform for
+  `javascript`, `javascriptreact`, `typescript`, and `typescriptreact`.
 - Python LSP defaults to Pyright. BasedPyright is installed/configured but
   opt-in through `:PythonLspUseBasedPyright`; use `:PythonLspUsePyright` to
   switch back without changing config files.

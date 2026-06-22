@@ -160,27 +160,29 @@ Repo-managed LazyGit commands:
 These are installed automatically by Mason — no manual action needed.
 Listed here for reference only.
 
-| Tool                   | Purpose                  |
-|------------------------|--------------------------|
-| `lua-language-server`  | Lua LSP                  |
-| `bash-language-server` | Bash LSP                 |
-| `helm-ls`              | Helm LSP                 |
-| `json-lsp`             | JSON LSP                 |
-| `yaml-language-server` | YAML LSP                 |
-| `gopls`                | Go LSP                   |
-| `pyright`              | Python LSP               |
-| `stylua`               | Lua formatter            |
-| `selene`               | Lua linter               |
-| `ruff`                 | Python linter            |
-| `prettier`             | JSON formatter           |
-| `shellcheck`           | Shell linter             |
-| `markdownlint-cli2`    | Markdown linter          |
-| `yamllint`             | YAML linter              |
-| `gofumpt`              | Go formatter             |
-| `goimports-reviser`    | Go imports organizer     |
-| `golines`              | Go line length formatter |
-| `golangci-lint`        | Go linter                |
-| `delve`                | Go debugger (DAP)        |
+| Tool                         | Purpose                      |
+|------------------------------|------------------------------|
+| `lua-language-server`        | Lua LSP                      |
+| `bash-language-server`       | Bash LSP                     |
+| `helm-ls`                    | Helm LSP                     |
+| `json-lsp`                   | JSON LSP                     |
+| `yaml-language-server`       | YAML LSP                     |
+| `gopls`                      | Go LSP                       |
+| `pyright`                    | Python LSP                   |
+| `typescript-language-server` | JavaScript/TypeScript LSP    |
+| `stylua`                     | Lua formatter                |
+| `selene`                     | Lua linter                   |
+| `ruff`                       | Python linter                |
+| `prettier`                   | JSON/JS/TS formatter         |
+| `eslint_d`                   | JavaScript/TypeScript linter |
+| `shellcheck`                 | Shell linter                 |
+| `markdownlint-cli2`          | Markdown linter              |
+| `yamllint`                   | YAML linter                  |
+| `gofumpt`                    | Go formatter                 |
+| `goimports-reviser`          | Go imports organizer         |
+| `golines`                    | Go line length formatter     |
+| `golangci-lint`              | Go linter                    |
+| `delve`                      | Go debugger (DAP)            |
 
 > `jdtls`, `java-debug`, and `vscode-java-test` are managed by **nvim-java**, not Mason.
 >

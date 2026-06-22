@@ -222,6 +222,7 @@ return {
           "gopls",
           "pyright",
           "basedpyright",
+          "ts_ls",
         },
         automatic_enable = {
           exclude = { "pyright", "basedpyright" },
