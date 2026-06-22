@@ -354,6 +354,10 @@ Update this file when:
   files, including accidentally committed conflict markers. `:GitConflictMarkers`
   and `<leader>GC` search tracked files for committed marker lines and open the
   results in quickfix.
+- `git-conflict.nvim` diagnostic suppression is handled in
+  [lua/plugins/git.lua](/home/konkov/.config/nvim/lua/plugins/git.lua:1) with
+  `vim.diagnostic.enable(false, { bufnr = ... })`, because plugin release 2.1.0
+  still calls the removed `vim.diagnostic.disable()` API on Neovim 0.12.
 - Gitsigns hunk commands are intentionally buffer-local and grouped under
   `<leader>Gh*`.
 - Gitsigns uses visible but quiet delete/topdelete signs instead of empty delete

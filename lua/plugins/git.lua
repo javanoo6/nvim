@@ -7,10 +7,26 @@ return {
     opts = {
       default_mappings = false,
       default_commands = true,
-      disable_diagnostics = true,
+      disable_diagnostics = false,
     },
     config = function(_, opts)
       require("git-conflict").setup(opts)
+
+      local group = vim.api.nvim_create_augroup("git_conflict_diagnostics_compat", { clear = true })
+      vim.api.nvim_create_autocmd("User", {
+        group = group,
+        pattern = "GitConflictDetected",
+        callback = function()
+          vim.diagnostic.enable(false, { bufnr = vim.api.nvim_get_current_buf() })
+        end,
+      })
+      vim.api.nvim_create_autocmd("User", {
+        group = group,
+        pattern = "GitConflictResolved",
+        callback = function()
+          vim.diagnostic.enable(true, { bufnr = vim.api.nvim_get_current_buf() })
+        end,
+      })
     end,
   },
 
