@@ -14,6 +14,7 @@ Custom direction model in this config: `j = up`, `k = down`.
 | `<C-w>s`       | Split horizontal                  |
 | `<C-w>v`       | Split vertical                    |
 | `<C-w>c`       | Close window                      |
+| `<leader>wq`   | Close window                      |
 | `<C-w>o`       | Close all other windows           |
 | `<C-w>=`       | Equalize window sizes             |
 | `<C-w>_`       | Maximize height                   |

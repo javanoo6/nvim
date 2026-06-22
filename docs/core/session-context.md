@@ -243,6 +243,8 @@ Update this file when:
   cwd to the new project root. It intentionally does not shell out to
   `mvn archetype` or `gradle init`.
 - Java patch/workflow details live in the Java deep-dive docs listed below.
+- Java project initialization workflow and naming guidance is documented in
+  [docs/java/java-project-init.md](/home/konkov/.config/nvim/docs/java/java-project-init.md:1).
 - Scratch-file behavior is customized for Java projects: the scratch flow prefers
   project-local `Scratch.java` under source roots so JDTLS resolves deps.
 - The planned IntelliJ-like Java scratch work is tracked in
@@ -400,6 +402,7 @@ Update this file when:
   [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1)
 - Java-specific custom work:
   [docs/java/java-debugging.md](/home/konkov/.config/nvim/docs/java/java-debugging.md:1)
+  [docs/java/java-project-init.md](/home/konkov/.config/nvim/docs/java/java-project-init.md:1)
   [docs/java/java-leetcode-debugging.md](/home/konkov/.config/nvim/docs/java/java-leetcode-debugging.md:1)
   [docs/java/nvim-java-patches.md](/home/konkov/.config/nvim/docs/java/nvim-java-patches.md:1)
   [docs/java/java-test-workflow.md](/home/konkov/.config/nvim/docs/java/java-test-workflow.md:1)

@@ -477,6 +477,7 @@ Select text first, then press `gsa` + bracket/quote:
 | `<leader>\|` | Split vertically (right)        |
 | `<C-w>s`     | Split horizontal                |
 | `<C-w>v`     | Split vertical                  |
+| `<leader>wq` | Close window                    |
 | `<C-w>c`     | Close window                    |
 | `<C-w>o`     | Only this window (close others) |
 | `<C-w>q`     | Quit window                     |

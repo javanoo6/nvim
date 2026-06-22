@@ -80,6 +80,7 @@ map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase height" })
 map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease height" })
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease width" })
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase width" })
+map("n", "<leader>wq", "<cmd>close<cr>", { desc = "Close window" })
 
 -- Terminal mode
 map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
