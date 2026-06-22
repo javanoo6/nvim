@@ -347,6 +347,9 @@ Update this file when:
   [lazygit/config.yml](/home/konkov/.config/nvim/lazygit/config.yml:1).
 - LazyGit uses an explicit dark selected-line background in the repo-local
   config so green diff text remains readable while staging hunks from the TUI.
+- Git mergetool finish/abort keys are installed for both classic diff-mode
+  Neovim and LazyGit's nested `nvim "$MERGED" -c "DiffviewOpen"` flow:
+  `<leader>GQ` writes all/quits back to LazyGit, and `<leader>GA` aborts.
 - Gitsigns hunk commands are intentionally buffer-local and grouped under
   `<leader>Gh*`.
 - Gitsigns uses visible but quiet delete/topdelete signs instead of empty delete

@@ -196,7 +196,53 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Git mergetool runs Neovim in diff mode; expose finish/abort only there.
+local function set_git_mergetool_keymaps(opts)
+  opts = opts or {}
+  opts.silent = true
+  vim.keymap.set(
+    "n",
+    "<leader>GQ",
+    "<cmd>wqa<cr>",
+    vim.tbl_extend("force", opts, {
+      desc = "Finish git mergetool",
+    })
+  )
+  vim.keymap.set(
+    "n",
+    "<leader>GA",
+    "<cmd>cq<cr>",
+    vim.tbl_extend("force", opts, {
+      desc = "Abort git mergetool",
+    })
+  )
+end
+
+local function launched_with_diffview_open()
+  for _, arg in ipairs(vim.v.argv) do
+    if arg == "DiffviewOpen" or arg:match("^DiffviewOpen%s") then
+      return true
+    end
+  end
+  return false
+end
+
+-- LazyGit's configured mergetool starts a nested Neovim as:
+-- nvim "$MERGED" -c "DiffviewOpen"
+-- Install finish/abort keys globally for that short-lived process, because the
+-- first focused buffer may not be a classic vimdiff buffer.
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = augroup("git_mergetool_keys"),
+  callback = function()
+    if vim.g.git_mergetool_keys or not launched_with_diffview_open() then
+      return
+    end
+
+    vim.g.git_mergetool_keys = true
+    set_git_mergetool_keymaps()
+  end,
+})
+
+-- Git mergetool can also run Neovim in diff mode; expose finish/abort there.
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
   group = augroup("git_mergetool_keys"),
   callback = function(event)
@@ -205,15 +251,8 @@ vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
     end
 
     vim.b[event.buf].git_mergetool_keys = true
-    vim.keymap.set("n", "<leader>GQ", "<cmd>wqa<cr>", {
+    set_git_mergetool_keymaps({
       buffer = event.buf,
-      silent = true,
-      desc = "Finish git mergetool",
-    })
-    vim.keymap.set("n", "<leader>GA", "<cmd>cq<cr>", {
-      buffer = event.buf,
-      silent = true,
-      desc = "Abort git mergetool",
     })
   end,
 })
