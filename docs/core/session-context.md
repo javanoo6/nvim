@@ -350,6 +350,10 @@ Update this file when:
 - Git mergetool finish/abort keys are installed for both classic diff-mode
   Neovim and LazyGit's nested `nvim "$MERGED" -c "DiffviewOpen"` flow:
   `<leader>GQ` writes all/quits back to LazyGit, and `<leader>GA` aborts.
+- `git-conflict.nvim` is installed for inline marker resolution in ordinary
+  files, including accidentally committed conflict markers. `:GitConflictMarkers`
+  and `<leader>GC` search tracked files for committed marker lines and open the
+  results in quickfix.
 - Gitsigns hunk commands are intentionally buffer-local and grouped under
   `<leader>Gh*`.
 - Gitsigns uses visible but quiet delete/topdelete signs instead of empty delete

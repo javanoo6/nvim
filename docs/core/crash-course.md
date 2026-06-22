@@ -930,19 +930,20 @@ Notes:
 
 ### Diffview
 
-| Key          | Action                   |
-|--------------|--------------------------|
-| `<leader>GD` | Repo diff (DiffviewOpen) |
-| `<leader>GF` | File history             |
-| `<leader>GH` | Repo history             |
-| `<leader>GL` | Line history (normal)    |
-| `<leader>GL` | Range history (visual)   |
-| `<leader>Gt` | Open `git mergetool`     |
-| `<leader>GQ` | Finish `git mergetool`   |
-| `<leader>GA` | Abort `git mergetool`    |
-| `<leader>Gm` | Diff vs main/master      |
-| `<leader>GM` | Diff vs origin/main      |
-| `<leader>Gq` | Close Diffview           |
+| Key          | Action                          |
+|--------------|---------------------------------|
+| `<leader>GD` | Repo diff (DiffviewOpen)        |
+| `<leader>GF` | File history                    |
+| `<leader>GH` | Repo history                    |
+| `<leader>GL` | Line history (normal)           |
+| `<leader>GL` | Range history (visual)          |
+| `<leader>Gt` | Open `git mergetool`            |
+| `<leader>GC` | Find committed conflict markers |
+| `<leader>GQ` | Finish `git mergetool`          |
+| `<leader>GA` | Abort `git mergetool`           |
+| `<leader>Gm` | Diff vs main/master             |
+| `<leader>GM` | Diff vs origin/main             |
+| `<leader>Gq` | Close Diffview                  |
 
 Keep the Diffview lhs definitions only in `lua/config/keymaps.lua`. If the same
 lhs is duplicated in a lazy.nvim plugin `keys` list, lazy.nvim can delete the

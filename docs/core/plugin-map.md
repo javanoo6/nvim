@@ -309,8 +309,10 @@ git.lua
   ├── diffview.nvim       ── full diff viewer + file history + 3-way merge view
   │                          Keymaps in keymaps.lua: <leader>GD/GF/GH/GL/Gm/GM
   └── git-conflict.nvim   ── inline conflict resolution (auto-activates on conflict markers)
-                             <leader>Co/Ct/Cb/CB/C0 pick ours/theirs/both/base/none,
+                             <leader>Co/Ct/Cb/C0 pick ours/theirs/both/none,
                              ]x/[x navigate
+     util/conflict_markers.lua ── :GitConflictMarkers / <leader>GC finds
+                                  accidentally committed marker lines
 ```
 
 **Gitsigns keymaps:**
@@ -336,18 +338,19 @@ git.lua
 
 **Diffview keymaps** (keymaps.lua):
 
-| Key          | Action                   |
-|--------------|--------------------------|
-| `<leader>GD` | DiffviewOpen (repo diff) |
-| `<leader>GF` | File history             |
-| `<leader>GH` | Repo history             |
-| `<leader>GL` | Line/range history       |
-| `<leader>Gt` | Open `git mergetool`     |
-| `<leader>GQ` | Finish `git mergetool`   |
-| `<leader>GA` | Abort `git mergetool`    |
-| `<leader>Gm` | Diff vs main/master      |
-| `<leader>GM` | Diff vs origin/main      |
-| `<leader>Gq` | Close Diffview           |
+| Key          | Action                          |
+|--------------|---------------------------------|
+| `<leader>GD` | DiffviewOpen (repo diff)        |
+| `<leader>GF` | File history                    |
+| `<leader>GH` | Repo history                    |
+| `<leader>GL` | Line/range history              |
+| `<leader>Gt` | Open `git mergetool`            |
+| `<leader>GC` | Find committed conflict markers |
+| `<leader>GQ` | Finish `git mergetool`          |
+| `<leader>GA` | Abort `git mergetool`           |
+| `<leader>Gm` | Diff vs main/master             |
+| `<leader>GM` | Diff vs origin/main             |
+| `<leader>Gq` | Close Diffview                  |
 
 Keep these mappings only in `lua/config/keymaps.lua`. Duplicating the same lhs in a lazy.nvim plugin `keys` list can make lazy.nvim delete the real mapping on
 first use.

@@ -24,6 +24,7 @@
 --   <leader>GH     - Repo history
 --   <leader>GL     - Line/range history
 --   <leader>Gt     - Open git mergetool
+--   <leader>GC     - Find committed conflict markers
 --   <leader>GQ     - Finish git mergetool (diff mode only)
 --   <leader>GA     - Abort git mergetool (diff mode only)
 --   <leader>Gb     - Diff vs branch/ref (prompt)
@@ -53,11 +54,13 @@ local java_field_usages = require("util.java_field_usages")
 local java_project_init = require("util.java_project_init")
 local live_hunks = require("util.live_hunks")
 local frequent_roots = require("util.frequent_roots")
+local conflict_markers = require("util.conflict_markers")
 
 -- Custom project tracking retained in util.frequent_roots, but disabled for now.
 -- frequent_roots.setup()
 java_project_init.register_commands()
 live_hunks.setup()
+conflict_markers.setup()
 
 -- Movement (no leader)
 map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
@@ -395,6 +398,7 @@ map("n", "<leader>GH", "<cmd>DiffviewFileHistory<cr>", { desc = "Repo history" }
 map("n", "<leader>GL", "<Cmd>.DiffviewFileHistory --follow<CR>", { desc = "Line history" })
 map("v", "<leader>GL", "<Esc><Cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Range history" })
 map("n", "<leader>Gt", "<cmd>tabnew | terminal git mergetool<cr>", { desc = "Open git mergetool" })
+map("n", "<leader>GC", conflict_markers.find, { desc = "Find conflict markers" })
 map("n", "<leader>Gq", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" })
 map("n", "<leader>Gb", pick_diffview_ref, { desc = "Diff vs branch/ref" })
 map("n", "<leader>Gm", function()
@@ -403,6 +407,21 @@ end, { desc = "Diff vs main/master" })
 map("n", "<leader>GM", function()
   vim.cmd.DiffviewOpen({ args = { "HEAD..origin/" .. default_branch() } })
 end, { desc = "Diff vs origin/main" })
+
+map("n", "]x", conflict_markers.next, { desc = "Next conflict marker" })
+map("n", "[x", conflict_markers.prev, { desc = "Prev conflict marker" })
+map("n", "<leader>Co", function()
+  conflict_markers.choose("ours")
+end, { desc = "Conflict: choose ours" })
+map("n", "<leader>Ct", function()
+  conflict_markers.choose("theirs")
+end, { desc = "Conflict: choose theirs" })
+map("n", "<leader>Cb", function()
+  conflict_markers.choose("both")
+end, { desc = "Conflict: choose both" })
+map("n", "<leader>C0", function()
+  conflict_markers.choose("none")
+end, { desc = "Conflict: choose none" })
 
 -- Run Go program
 map("n", "<leader>gr", "<cmd>term go run .<cr>", { desc = "Go run (current dir)" })

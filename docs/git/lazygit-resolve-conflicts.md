@@ -217,6 +217,53 @@ c
 
 For a merge commit, Git usually pre-fills the merge commit message. Confirm it.
 
+## Fix Conflict Markers Already Committed
+
+If conflict markers were already committed, Git no longer sees an active merge
+conflict. The marker lines are just normal file text. Diffview cannot recreate
+the original merge state unless you still have the real unmerged index entries.
+
+Use the marker finder:
+
+```text
+<Space>GC
+```
+
+Or run the command directly:
+
+```vim
+:GitConflictMarkers
+```
+
+This scans tracked files, ignores marker examples inside fenced Markdown code
+blocks, fills the quickfix list, opens it, and jumps to the first marker. Use
+quickfix navigation to move between hits.
+
+In a file with committed markers, resolve the block like an inline conflict:
+
+```text
+]x           next marker conflict
+[x           previous marker conflict
+<Space>Co    keep ours
+<Space>Ct    keep theirs
+<Space>Cb    keep both
+<Space>C0    keep neither
+```
+
+If the automatic choices are not correct, edit the file manually and delete the
+marker lines. Then save, test, stage, and create a normal fix commit:
+
+```sh
+git add <file>
+git commit -m "Remove committed merge conflict markers"
+```
+
+Use this to only populate quickfix without jumping to the first result:
+
+```vim
+:GitConflictMarkers!
+```
+
 ## Use Diffview For Hard Conflicts
 
 If inline conflict markers are not enough context, open Diffview from Neovim:
@@ -252,6 +299,7 @@ returns to LazyGit.
 4                          branches panel
 M                          merge selected branch
 U                          pull menu
+<Space>GC                  find committed conflict markers
 e                          open selected conflicted file
 ]x / [x                    next / previous conflict
 <Space>Co                  keep ours

@@ -1,4 +1,19 @@
 return {
+  -- Inline conflict marker resolution, including accidentally committed markers.
+  {
+    "akinsho/git-conflict.nvim",
+    version = "*",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      default_mappings = false,
+      default_commands = true,
+      disable_diagnostics = true,
+    },
+    config = function(_, opts)
+      require("git-conflict").setup(opts)
+    end,
+  },
+
   -- Diffview: repo diffs, file history, and merge/rebase conflict resolution
   {
     "sindrets/diffview.nvim",
