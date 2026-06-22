@@ -504,7 +504,7 @@ Select text first, then press `gsa` + bracket/quote:
 | `[b` / `]b`       | Prev / Next buffer          |
 | `<S-h>` / `<S-l>` | Prev / Next buffer (alt)    |
 | `<leader>bb`      | Alternate buffer            |
-| `<leader>bd`      | Delete buffer               |
+| `<leader>bd`      | Delete buffer, keep split   |
 | `<leader>b-`      | Move current buffer below   |
 | `<leader>b\|`     | Move current buffer right   |
 | `<leader>bp`      | Toggle pin                  |

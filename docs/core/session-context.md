@@ -78,6 +78,9 @@ Update this file when:
 - `<C-s>` saves in insert/normal/visual/select modes.
 - `<C-d>` duplicates line or selection instead of default half-page scroll.
 - `J` is remapped to join lines while preserving cursor position.
+- `<leader>bd` deletes the current buffer while preserving the current window
+  layout. This intentionally avoids raw `:bdelete` behavior, which can collapse
+  a split when the deleted buffer is displayed in that window.
 - Visual-mode Treesitter selection on `<Tab>` / `<S-Tab>` uses the live visual
   anchor plus cursor position, not `'<` / `'>` marks, because those marks can
   still be unset while a visual mapping is executing.

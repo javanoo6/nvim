@@ -103,7 +103,43 @@ map("v", "<C-S-Up>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
 map("v", "<C-S-Down>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
 
 -- Buffers
-map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
+local function delete_current_buffer_keep_window()
+  local target_buf = vim.api.nvim_get_current_buf()
+
+  if vim.bo[target_buf].modified then
+    vim.notify("Buffer has unsaved changes", vim.log.levels.WARN)
+    return
+  end
+
+  local replacement_buf = nil
+  local alternate_buf = vim.fn.bufnr("#")
+
+  if alternate_buf > 0 and alternate_buf ~= target_buf and vim.api.nvim_buf_is_valid(alternate_buf) and vim.bo[alternate_buf].buflisted then
+    replacement_buf = alternate_buf
+  else
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+      if bufnr ~= target_buf and vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].buflisted then
+        replacement_buf = bufnr
+        break
+      end
+    end
+  end
+
+  if not replacement_buf then
+    vim.cmd("keepalt enew")
+    replacement_buf = vim.api.nvim_get_current_buf()
+  end
+
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_buf(win) == target_buf then
+      vim.api.nvim_win_set_buf(win, replacement_buf)
+    end
+  end
+
+  vim.cmd("bdelete " .. target_buf)
+end
+
+map("n", "<leader>bd", delete_current_buffer_keep_window, { desc = "Delete buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate buffer" })
 local function move_current_buffer_to_split(split_cmd)
   local source_win = vim.api.nvim_get_current_win()
