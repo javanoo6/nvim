@@ -24,11 +24,9 @@ return {
     -- Similar to 'sessionoptions' in vim
     bypass_save_filetypes = { "alpha", "dashboard" }, -- Don't save session for these filetypes
 
-    -- Hooks for custom behavior
-    pre_save = nil, -- function to run before saving session
-    post_save = nil, -- function to run after saving session
-    pre_restore = nil, -- function to run before restoring session
-    post_restore = nil, -- function to run after restoring session
+    -- Git branch restores swap the buffer/session state; stop attached LSPs so
+    -- restored buffers attach fresh clients for the branch contents.
+    lsp_stop_on_restore = true,
 
     -- Logging
     log_level = "error",

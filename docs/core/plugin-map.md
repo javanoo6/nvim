@@ -483,6 +483,7 @@ ftplugin/markdown.lua  ── per-buffer markdown settings
 sessions.lua
   auto-session  ── auto save/restore on open/close
                    auto-save also when launched with file args
+                   stops LSP clients before non-startup restores
                    <leader>Ss/Sr/Sd/Sf/Sa (Sa enables auto-save)
 
 projects.lua
