@@ -77,7 +77,7 @@ Update this file when:
   counted forms use real-line movement. This keeps `5j`, `10k`, etc. sane.
 - `<C-s>` saves in insert/normal/visual/select modes.
 - `<C-d>` duplicates line or selection instead of default half-page scroll.
-- `J` is remapped to join lines while preserving cursor position.
+- `J` is disabled to avoid accidental joins from `<S-j>`.
 - `<leader>bd` deletes the current buffer while preserving the current window
   layout. This intentionally avoids raw `:bdelete` behavior, which can collapse
   a split when the deleted buffer is displayed in that window.
@@ -205,6 +205,13 @@ Update this file when:
 - Bufferline slant separators are tied to `TabLine` / `TabLineSel` /
   `TabLineFill` highlights rather than ad hoc colors so separators stay readable
   across the installed themes.
+- `<leader>bp` routes through the local
+  [lua/util/bufferline.lua](/home/konkov/.config/nvim/lua/util/bufferline.lua:1)
+  wrapper instead of raw `:BufferLineTogglePin`. Bufferline can restore stale
+  pinned buffer ids from sessions/ShaDa and then crash with `Invalid buffer id`
+  while persisting the next pin; the wrapper removes stale ids, persists the
+  already-applied pin state, and cleans deleted buffers from bufferline's manual
+  groups.
 - Detailed Neo-tree cwd behavior is documented in
   [docs/core/neo-tree-cwd-behavior.md](/home/konkov/.config/nvim/docs/core/neo-tree-cwd-behavior.md:1).
 - Oil is part of the core editing workflow. In oil buffers, delete/change
@@ -352,6 +359,9 @@ Update this file when:
   [lazygit/config.yml](/home/konkov/.config/nvim/lazygit/config.yml:1).
 - LazyGit uses an explicit dark selected-line background in the repo-local
   config so green diff text remains readable while staging hunks from the TUI.
+- Inside LazyGit's terminal buffer, `<A-a>` first sends LazyGit `q` and then
+  opens ToggleTerm after LazyGit exits. This prevents stacking the terminal
+  float over the LazyGit float.
 - Git mergetool finish/abort keys are installed for both classic diff-mode
   Neovim and LazyGit's nested `nvim "$MERGED" -c "DiffviewOpen"` flow:
   `<leader>GQ` writes all/quits back to LazyGit, and `<leader>GA` aborts.

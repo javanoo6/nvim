@@ -373,8 +373,8 @@ end, { desc = "Duplicate selection" })
 map("n", "n", "nzzzv", { desc = "Next match and center" })
 map("n", "N", "Nzzzv", { desc = "Prev match and center" })
 
--- Better join (keep cursor position)
-map("n", "J", "mzJ`z", { desc = "Join lines keep cursor" })
+-- Disable join-line shortcut; accidental Shift+j is too destructive.
+map("n", "J", "<Nop>", { desc = "Disabled join line" })
 
 -- Resize with Alt + arrows
 map("n", "<M-Up>", "<cmd>resize +2<cr>", { desc = "Increase height" })

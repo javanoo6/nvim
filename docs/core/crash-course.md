@@ -213,7 +213,7 @@ completion/snippets inserts the language-appropriate entry-point template.
 | `Y`     | Yank to end of line                |
 | `x`     | Delete character                   |
 | `r`     | Replace character                  |
-| `J`     | Join lines (keeps cursor position) |
+| `J`     | Disabled to avoid accidental joins |
 | `gJ`    | Join without space                 |
 | `.`     | Repeat last change                 |
 | `u`     | Undo                               |
