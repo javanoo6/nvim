@@ -551,9 +551,56 @@ return {
       vim.api.nvim_create_autocmd("TermOpen", {
         pattern = "*lazygit*",
         callback = function()
+          local function open_toggleterm()
+            local ok = pcall(vim.cmd, "ToggleTerm")
+            if ok then
+              return
+            end
+
+            require("lazy").load({ plugins = { "toggleterm.nvim" } })
+            vim.cmd("ToggleTerm")
+          end
+
+          local function quit_lazygit_then_toggleterm()
+            local bufnr = vim.api.nvim_get_current_buf()
+            local job_id = vim.b[bufnr].terminal_job_id
+            local opened = false
+            local close_autocmd
+
+            local function open_once()
+              if opened then
+                return
+              end
+              opened = true
+              vim.schedule(open_toggleterm)
+            end
+
+            if type(job_id) == "number" then
+              close_autocmd = vim.api.nvim_create_autocmd("TermClose", {
+                buffer = bufnr,
+                once = true,
+                callback = open_once,
+              })
+              vim.api.nvim_chan_send(job_id, "q")
+              vim.defer_fn(function()
+                if not vim.api.nvim_buf_is_valid(bufnr) or vim.bo[bufnr].buftype ~= "terminal" then
+                  open_once()
+                end
+              end, 300)
+              vim.defer_fn(function()
+                if not opened and close_autocmd then
+                  pcall(vim.api.nvim_del_autocmd, close_autocmd)
+                end
+              end, 1000)
+            else
+              open_once()
+            end
+          end
+
           vim.keymap.set("t", "<esc>", "<esc>", { buffer = true, remap = false })
           -- Use <C-q> to exit terminal mode instead
           vim.keymap.set("t", "<C-q>", "<C-\\><C-n>", { buffer = true, desc = "Exit terminal mode" })
+          vim.keymap.set("t", "<A-a>", quit_lazygit_then_toggleterm, { buffer = true, desc = "Quit LazyGit, toggle terminal" })
         end,
       })
     end,
