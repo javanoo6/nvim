@@ -112,6 +112,11 @@ Update this file when:
 - `project.nvim` runs in manual mode. Opening files, including Python files in
   nested monorepo packages, must not auto-`cd` the session; use explicit root
   changes instead.
+- `auto-session` treats non-startup restores as LSP workspace boundaries:
+  `lsp_stop_on_restore = true` stops attached LSP clients before restoring a
+  different session, including Git branch auto-restores. Restored buffers then
+  attach fresh clients for the branch contents instead of carrying old workspace
+  state across branches.
 - Neo-tree `Y` copies the selected absolute path to the `+` clipboard register
   when available and falls back to the unnamed register with a warning when the
   system clipboard is unavailable.
