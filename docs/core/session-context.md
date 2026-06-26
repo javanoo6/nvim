@@ -90,6 +90,8 @@ Update this file when:
 - `<leader>b-` and `<leader>b|` do not open a fresh empty split in place.
   They create the split and move the current buffer into the new lower/right
   window, leaving the newly created empty buffer behind in the original window.
+- `[<Tab>` and `]<Tab>` switch to the previous and next tab respectively. This
+  leaves the existing bracket-prefix mappings such as `[b` and `]b` intact.
 
 ## File / Root / Explorer Decisions
 

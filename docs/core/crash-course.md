@@ -1207,6 +1207,8 @@ git commit                 →  finalize merge
 
 | Key                  | Action    |
 |----------------------|-----------|
+| `[<tab>`             | Prev tab  |
+| `]<tab>`             | Next tab  |
 | `<leader><tab>]`     | Next tab  |
 | `<leader><tab>[`     | Prev tab  |
 | `<leader><tab>f`     | First tab |

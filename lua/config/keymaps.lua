@@ -208,6 +208,8 @@ map("n", "<leader>wj", "<C-W>s<C-W>J", { desc = "Move buffer to bottom split" })
 map("n", "<leader>wl", "<C-W>v<C-W>L", { desc = "Move buffer to right split" })
 
 -- Tabs
+map("n", "[<tab>", "<cmd>tabprevious<cr>", { desc = "Prev tab" })
+map("n", "]<tab>", "<cmd>tabnext<cr>", { desc = "Next tab" })
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last" })
 map("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First" })
 map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New" })
