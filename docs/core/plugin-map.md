@@ -277,7 +277,7 @@ editor.lua
   │     ├── `Y` copies absolute path with unnamed-register fallback when clipboard is unavailable
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │
-  ├── lazygit.nvim            ── LazyGit TUI  →  <leader>Gg
+  ├── lazygit.nvim            ── LazyGit TUI  →  <leader>Gg / <A-g>
   │     ├── loads `~/.config/lazygit/config.yml` + repo `lazygit/config.yml`
   │     ├── `F` anywhere      ── fetch menu (all, prune, selected remote)
   │     ├── `U` anywhere      ── pull menu (`--rebase`, autostash, ff-only)

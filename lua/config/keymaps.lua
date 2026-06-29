@@ -15,6 +15,7 @@
 --
 -- NOTE: LazyGit Keymaps:
 --   <leader>Gg     - Open LazyGit
+--   <A-g>          - Open LazyGit
 --   <esc> (in LG)  - Back/Cancel in lazygit UI
 --   <C-q> (in LG)  - Exit terminal mode (back to nvim)
 --

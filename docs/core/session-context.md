@@ -364,6 +364,7 @@ Update this file when:
 - Diffview is the primary repo/file history and merge-view tool.
 - LazyGit is customized via both user config and repo-local
   [lazygit/config.yml](/home/konkov/.config/nvim/lazygit/config.yml:1).
+- LazyGit opens from `<leader>Gg` or the direct alternate shortcut `<A-g>`.
 - LazyGit uses an explicit dark selected-line background in the repo-local
   config so green diff text remains readable while staging hunks from the TUI.
 - Inside LazyGit's terminal buffer, `<A-a>` first sends LazyGit `q` and then

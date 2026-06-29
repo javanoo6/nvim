@@ -537,6 +537,7 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     keys = {
       { "<leader>Gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+      { "<A-g>", "<cmd>LazyGit<cr>", desc = "LazyGit" },
     },
     config = function()
       local nvim_config = vim.fn.stdpath("config")

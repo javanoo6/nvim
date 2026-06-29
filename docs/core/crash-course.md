@@ -905,6 +905,7 @@ require('util.java_debug').debug_main()        -- Debug main
 | Key          | Action       |
 |--------------|--------------|
 | `<leader>Gg` | Open LazyGit |
+| `<A-g>`      | Open LazyGit |
 
 **Inside LazyGit window:**
 
