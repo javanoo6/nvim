@@ -1,5 +1,6 @@
--- Auto-save with LSP diagnostics check
--- Only saves if there are no LSP errors for the current buffer
+-- Auto-save for normal file buffers.
+-- Formatting remains owned by conform.nvim's BufWritePre hook, which skips
+-- formatting when LSP errors are present.
 
 return {
   "okuuva/auto-save.nvim",
@@ -23,21 +24,6 @@ return {
 
       local buftype = vim.fn.getbufvar(buf, "&buftype")
       if buftype ~= "" then
-        return false
-      end
-
-      -- Check LSP diagnostics for errors
-      local diagnostics = vim.diagnostic.get(buf, { severity = vim.diagnostic.severity.ERROR })
-      if #diagnostics > 0 then
-        if require("lazy.core.config").plugins["auto-save.nvim"].notify_on_error_block then
-          -- Throttle notification if the user explicitly enables it.
-          local last_notify = vim.b[buf].last_autosave_notify or 0
-          local now = vim.uv.now()
-          if (now - last_notify) > 5000 then -- Max once per 5 seconds
-            vim.notify("Auto-save blocked: " .. #diagnostics .. " LSP error(s)", vim.log.levels.WARN, { title = "Auto-save" })
-            vim.b[buf].last_autosave_notify = now
-          end
-        end
         return false
       end
 

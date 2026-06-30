@@ -14,6 +14,7 @@ Update this file when:
 - [docs/core/crash-course.md](/home/konkov/.config/nvim/docs/core/crash-course.md:1): practical usage guide
 - [docs/core/plugin-map.md](/home/konkov/.config/nvim/docs/core/plugin-map.md:1): plugin inventory and wiring
 - [docs/core/nvim-nav.md](/home/konkov/.config/nvim/docs/core/nvim-nav.md:1): focused navigation cheat sheet
+- [docs/git/fix-empty-git-object-lazygit-crash.md](/home/konkov/.config/nvim/docs/git/fix-empty-git-object-lazygit-crash.md:1): LazyGit/Git recovery for empty object files
 - [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1): Python venv behavior
 
 ## Input Model
@@ -191,6 +192,9 @@ Update this file when:
   stays focused on Conform configuration.
 - Format-on-save skips buffers with LSP errors and shows a Conform warning once
   per unchanged error state, so repeated saves do not spam notifications.
+- Buffer auto-save writes normal file buffers even when LSP errors exist; in
+  that case the write proceeds without format-on-save because Conform skips
+  formatting on LSP errors.
 - Format-on-save uses a `10000ms` timeout for filetypes routed through the
   IntelliJ formatter bridge and `500ms` for other auto-formatted filetypes.
 - Pyright is configured locally through `vim.lsp.config("pyright", ...)` with

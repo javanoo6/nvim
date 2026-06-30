@@ -1391,8 +1391,9 @@ Press `<leader>` and wait to see all groups:
 
 Auto-saved per project directory. Restores open files, splits, and cursor positions.
 Auto-save also works when Neovim is launched with file arguments.
-Buffer auto-save starts enabled by default and is blocked when the current
-buffer has LSP errors. Toggle it with `<leader>ua`.
+Buffer auto-save starts enabled by default and writes normal file buffers even
+when the current buffer has LSP errors. Conform still skips format-on-save when
+errors exist. Toggle auto-save with `<leader>ua`.
 
 | Key          | Action           |
 |--------------|------------------|

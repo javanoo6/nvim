@@ -592,8 +592,8 @@ marks.lua
 
 auto-save.lua
   auto-save.nvim  ── auto-save enabled by default (<leader>ua toggle)
-    — blocks save when LSP errors exist
-    — triggers conform format after save
+    — writes normal file buffers even when LSP errors exist
+    — triggers conform format before save when format-on-save allows it
 ```
 
 ---
@@ -747,7 +747,7 @@ lazy.nvim
   `vim.g.lspconfig_jdtls_enabled = false`).
 - **Java code actions:** `<leader>ca` / `<A-CR>` still go through `actions-preview.nvim`, but many JDTLS refactors are command-only and cannot show a real diff
   preview.
-- **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Blocked when LSP errors exist. Triggers format after save.
+- **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Writes normal file buffers even when LSP errors exist; Conform still skips format-on-save when errors exist.
 - **Reference style:** Underline is enabled by default, reference background is disabled by default. Toggle them with `<leader>uu` and `<leader>uH`.
 - **Go format on save:** Skipped in `conform.format_on_save` for Go — formatting is done manually or via gopls.
 - **noice hover/signature:** Disabled to avoid conflicts with inlay hints. Use `K` / `gK` natively.
