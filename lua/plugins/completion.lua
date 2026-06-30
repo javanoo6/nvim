@@ -35,6 +35,48 @@ return {
       local text_node = luasnip.text_node
       local insert_node = luasnip.insert_node
 
+      local function patch_cmp_buffer_index_range()
+        local ok, cmp_buffer = pcall(require, "cmp_buffer.buffer")
+        if not ok or cmp_buffer.__custom_index_range_bounds_patch then
+          return
+        end
+
+        cmp_buffer.__custom_index_range_bounds_patch = true
+        cmp_buffer.index_range = function(self, range_start, range_end, skip_already_indexed)
+          if self.closed or not vim.api.nvim_buf_is_valid(self.bufnr) or not vim.api.nvim_buf_is_loaded(self.bufnr) then
+            return
+          end
+
+          self:safe_buf_call(function()
+            if self.closed or not vim.api.nvim_buf_is_valid(self.bufnr) or not vim.api.nvim_buf_is_loaded(self.bufnr) then
+              return
+            end
+
+            local line_count = vim.api.nvim_buf_line_count(self.bufnr)
+            local chunk_size = self.GET_LINES_CHUNK_SIZE
+            local chunk_start = math.max(0, math.min(range_start, line_count))
+            local bounded_end = math.max(chunk_start, math.min(range_end, line_count))
+
+            while chunk_start < bounded_end do
+              local chunk_end = math.min(chunk_start + chunk_size, bounded_end)
+              local lines_ok, chunk_lines = pcall(vim.api.nvim_buf_get_lines, self.bufnr, chunk_start, chunk_end, false)
+              if not lines_ok then
+                return
+              end
+
+              for i, line in ipairs(chunk_lines) do
+                if not skip_already_indexed or not self.lines_words[chunk_start + i] then
+                  self:index_line(chunk_start + i, line)
+                end
+              end
+              chunk_start = chunk_end
+            end
+          end)
+        end
+      end
+
+      patch_cmp_buffer_index_range()
+
       local function buffer_source(keyword_length)
         return {
           name = "buffer",

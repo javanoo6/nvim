@@ -171,6 +171,12 @@ Update this file when:
 - Completion source ordering is filetype-aware: Markdown/text/gitcommit and
   shell/YAML prefer path-aware sources before buffer words, Python keeps LSP and
   signature help first, and buffer completion ignores buffers above 512 KiB.
+- `cmp-buffer` is patched at runtime in
+  [lua/plugins/completion.lua](/home/konkov/.config/nvim/lua/plugins/completion.lua:38)
+  so its async/on-lines indexer clamps requested line ranges to the live buffer
+  line count and uses non-strict line reads. This prevents completion indexing
+  from surfacing `Index out of bounds` errors when a buffer changes while the
+  source is indexing.
 - Local config quality checks are exposed through `make check`, which runs
   Mason-managed `stylua --check` and `selene` against `init.lua`, `lua/`, and
   `ftplugin/`. Selene uses the repo-local [vim.yml](/home/konkov/.config/nvim/vim.yml:1)
