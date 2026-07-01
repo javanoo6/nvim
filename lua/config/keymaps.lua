@@ -64,18 +64,18 @@ live_hunks.setup()
 conflict_markers.setup()
 
 -- Movement (no leader)
-map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
-map({ "n", "x" }, "k", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down (display line)" })
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down (display line)" })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
 map({ "n", "x", "o" }, "$", "^", { desc = "First non-blank char" })
 map({ "n", "x", "o" }, "^", "$", { desc = "End of line" })
 
 -- Direction model in this config:
---   j = up, k = down
+--   j = down, k = up
 -- Keep modifier variants aligned with that mental model where possible.
 -- Windows
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
-map("n", "<C-j>", "<C-w>k", { desc = "Go to upper window" })
-map("n", "<C-k>", "<C-w>j", { desc = "Go to lower window" })
+map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
+map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase height" })
 map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease height" })
@@ -88,17 +88,17 @@ map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Terminal window navigation (without leaving terminal mode)
 map("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Go to left window" })
-map("t", "<C-j>", "<C-\\><C-n><C-w>k", { desc = "Go to upper window" })
-map("t", "<C-k>", "<C-\\><C-n><C-w>j", { desc = "Go to lower window" })
+map("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Go to lower window" })
+map("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Go to upper window" })
 map("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Go to right window" })
 
 -- Move lines
-map("n", "<A-j>", "<cmd>m .-2<cr>==", { desc = "Move up" })
-map("n", "<A-k>", "<cmd>m .+1<cr>==", { desc = "Move down" })
-map("i", "<A-j>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
-map("i", "<A-k>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
-map("v", "<A-j>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
-map("v", "<A-k>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
+map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
+map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
+map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
+map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- IntelliJ-style: Move selected code with Shift+Ctrl+Up/Down
 map("v", "<C-S-Up>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })

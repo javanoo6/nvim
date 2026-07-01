@@ -14,13 +14,14 @@ Update this file when:
 - [docs/core/crash-course.md](/home/konkov/.config/nvim/docs/core/crash-course.md:1): practical usage guide
 - [docs/core/plugin-map.md](/home/konkov/.config/nvim/docs/core/plugin-map.md:1): plugin inventory and wiring
 - [docs/core/nvim-nav.md](/home/konkov/.config/nvim/docs/core/nvim-nav.md:1): focused navigation cheat sheet
-- [docs/git/fix-empty-git-object-lazygit-crash.md](/home/konkov/.config/nvim/docs/git/fix-empty-git-object-lazygit-crash.md:1): LazyGit/Git recovery for empty object files
+- [docs/git/fix-empty-git-object-lazygit-crash.md](/home/konkov/.config/nvim/docs/git/fix-empty-git-object-lazygit-crash.md:1): LazyGit/Git recovery for empty
+  object files
 - [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1): Python venv behavior
 
 ## Input Model
 
-- Direction model is intentionally nonstandard:
-  `h = left`, `j = up`, `k = down`, `l = right`
+- Direction model follows standard Vim movement:
+  `h = left`, `j = down`, `k = up`, `l = right`
 - `<leader>` is space, and the `<Space>` placeholder mapping is defined in
   [lua/config/options.lua](/home/konkov/.config/nvim/lua/config/options.lua:1)
   before plugin setup so `which-key` can install its trigger mapping correctly.
@@ -53,11 +54,11 @@ Update this file when:
   `<leader>um` for temporary GUI/terminal mouse use.
 - Plain `j/k` are remapped in [lua/config/keymaps.lua](/home/konkov/.config/nvim/lua/config/keymaps.lua:61).
 - Modifier variants are aligned to the same model where practical:
-  `<C-j>` upper window, `<C-k>` lower window, `<A-j>` move line/selection up,
-  `<A-k>` move line/selection down.
-- Telescope was patched locally so `<C-j>` means previous/up and `<C-k>` means
-  next/down in pickers. See [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:186).
-- Glance is configured consistently: `j` previous/up, `k` next/down. See
+  `<C-j>` lower window, `<C-k>` upper window, `<A-j>` move line/selection down,
+  `<A-k>` move line/selection up.
+- Telescope is configured so `<C-j>` means next/down and `<C-k>` means
+  previous/up in pickers. See [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:186).
+- Glance is configured consistently: `j` next/down, `k` previous/up. See
   [lua/plugins/glance.lua](/home/konkov/.config/nvim/lua/plugins/glance.lua:48).
 - Glance is pinned to the fork branch `javanoo6/glance.nvim` /
   `fix/fs-read-nil-glance-list` because upstream `list.lua` can crash when
@@ -67,8 +68,8 @@ Update this file when:
   decompiled `jdt://...` Java paths through the statusline parser without
   escaping percent-encoded segments, which breaks JDK/decompiled navigation
   with `E539`. See [lua/plugins/glance.lua](/home/konkov/.config/nvim/lua/plugins/glance.lua:104).
-- There is no global Neovim switch that forces all plugins to reinterpret
-  `j/k`; plugin-local mappings still need explicit overrides when they diverge.
+- Plugin-local mappings still need explicit overrides when their default
+  `j/k` or `<C-j>/<C-k>` behavior diverges from this config's movement model.
 
 ## Core Editing Deviations
 

@@ -2,14 +2,14 @@
 
 ## Window Movement
 
-Custom direction model in this config: `j = up`, `k = down`.
+Direction model in this config follows Vim defaults: `j = down`, `k = up`.
 
 | Key            | Action                            |
 |----------------|-----------------------------------|
 | `<C-w>h/j/k/l` | Move to left/down/up/right window |
 | `<C-h>`        | Move to left window               |
-| `<C-j>`        | Move to upper window              |
-| `<C-k>`        | Move to lower window              |
+| `<C-j>`        | Move to lower window              |
+| `<C-k>`        | Move to upper window              |
 | `<C-l>`        | Move to right window              |
 | `<C-w>s`       | Split horizontal                  |
 | `<C-w>v`       | Split vertical                    |
@@ -37,21 +37,21 @@ Custom direction model in this config: `j = up`, `k = down`.
 | Keys              | Action                   |
 |-------------------|--------------------------|
 | `h`               | Left                     |
-| `j`               | Up                       |
-| `k`               | Down                     |
+| `j`               | Down                     |
+| `k`               | Up                       |
 | `l`               | Right                    |
 | `<C-h>`           | Left window              |
-| `<C-j>`           | Upper window             |
-| `<C-k>`           | Lower window             |
+| `<C-j>`           | Lower window             |
+| `<C-k>`           | Upper window             |
 | `<C-l>`           | Right window             |
-| `<A-j>`           | Move line/selection up   |
-| `<A-k>`           | Move line/selection down |
+| `<A-j>`           | Move line/selection down |
+| `<A-k>`           | Move line/selection up   |
 | `<S-h>`           | Previous buffer          |
 | `<S-l>`           | Next buffer              |
-| `Telescope <C-j>` | Previous item / move up  |
-| `Telescope <C-k>` | Next item / move down    |
-| `Glance j`        | Previous item / move up  |
-| `Glance k`        | Next item / move down    |
+| `Telescope <C-j>` | Next item / move down    |
+| `Telescope <C-k>` | Previous item / move up  |
+| `Glance j`        | Next item / move down    |
+| `Glance k`        | Previous item / move up  |
 
 | Key               | Action                                    |
 |-------------------|-------------------------------------------|

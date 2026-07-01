@@ -45,8 +45,8 @@ return {
 
         mappings = {
           list = {
-            ["j"] = actions.previous,
-            ["k"] = actions.next,
+            ["j"] = actions.next,
+            ["k"] = actions.previous,
             ["<Down>"] = actions.next,
             ["<Up>"] = actions.previous,
             ["<Tab>"] = actions.next_location,
