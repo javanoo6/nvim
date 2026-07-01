@@ -322,6 +322,9 @@ Update this file when:
 ## LSP / UI Decisions
 
 - LSP “go to” flows prefer Glance over raw jumps for defs/refs/types/impls.
+- `<leader>co` opens Aerial as an explicit left-side code outline. It is
+  intentionally not auto-opened and closes after jumping to a symbol, so it acts
+  like a temporary outline picker rather than a persistent sidebar.
 - Glance and Neo-tree preview scrolling both use plugin-local `<C-u>` /
   `<C-d>` for up/down. This differs from normal-buffer `<C-d>`, which
   duplicates lines here.

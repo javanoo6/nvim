@@ -55,13 +55,13 @@ Direction model in this config follows Vim defaults: `j = down`, `k = up`.
 
 ## Preview Scrolling
 
-| Context                    | Key                 | Action                    |
-|----------------------------|---------------------|---------------------------|
-| Glance `gd`/`gR`/`gy`/`gI` | `<C-u>` / `<C-d>`   | Scroll preview up/down    |
-| Glance                     | `<leader>l`         | Switch list/preview focus |
-| Neo-tree file preview     | `P`                 | Toggle floating preview   |
-| Neo-tree file preview     | `<C-u>` / `<C-d>`   | Scroll preview up/down    |
-| Neo-tree file preview     | `l`                 | Focus preview window      |
+| Context                    | Key               | Action                    |
+|----------------------------|-------------------|---------------------------|
+| Glance `gd`/`gR`/`gy`/`gI` | `<C-u>` / `<C-d>` | Scroll preview up/down    |
+| Glance                     | `<leader>l`       | Switch list/preview focus |
+| Neo-tree file preview      | `P`               | Toggle floating preview   |
+| Neo-tree file preview      | `<C-u>` / `<C-d>` | Scroll preview up/down    |
+| Neo-tree file preview      | `l`               | Focus preview window      |
 
 | Key               | Action                                    |
 |-------------------|-------------------------------------------|

@@ -738,11 +738,12 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 ### Symbols & Outline
 
-| Key          | Action                        |
-|--------------|-------------------------------|
-| `<leader>cs` | Symbols (Trouble)             |
-| `<leader>cl` | Call hierarchy (Trouble)      |
-| `<leader>cu` | Usages / references (Trouble) |
+| Key          | Action                                               |
+|--------------|------------------------------------------------------|
+| `<leader>co` | Toggle left code outline (Aerial; closes after jump) |
+| `<leader>cs` | Symbols (Trouble)                                    |
+| `<leader>cl` | Call hierarchy (Trouble)                             |
+| `<leader>cu` | Usages / references (Trouble)                        |
 
 ### LSP Server Management
 

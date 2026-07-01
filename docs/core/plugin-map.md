@@ -51,6 +51,7 @@ nvim-lspconfig  ─────────────────────�
   ├── fidget.nvim             ── LSP progress spinner (bottom-right)
   ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
   ├── actions-preview.nvim    ── code action picker; shows diff previews for edit-backed actions (<leader>ca, <A-CR>)
+  ├── aerial.nvim             ── temporary left code outline (<leader>co)
   └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (<leader>ud toggle)
 ```
 
@@ -80,6 +81,7 @@ Pyright note:
 | `K`                     | Hover                       |
 | `gK`                    | Signature help              |
 | `<leader>ca` / `<A-CR>` | Code action                 |
+| `<leader>co`            | Code outline                |
 | `<leader>cr`            | Rename                      |
 | `<leader>uh`            | Toggle inlay hints          |
 | `<leader>uu`            | Toggle reference underline  |
@@ -294,6 +296,10 @@ motion.lua
 glance.lua
   └── glance.nvim             ── split preview for LSP defs/refs (triggered by gd/gR/gy/gI)
                                   use_trouble_qf = true  →  sends to Trouble
+
+aerial.lua
+  └── aerial.nvim             ── left-side code outline using LSP/Treesitter
+                                  <leader>co toggles, jump closes the outline
 ```
 
 ---
@@ -616,6 +622,7 @@ lazy.nvim
 │   │   └── nvim-lsp-file-operations → neo-tree
 │   ├── glance.nvim
 │   ├── actions-preview.nvim
+│   ├── aerial.nvim
 │   └── tiny-inline-diagnostic.nvim
 │
 ├── COMPLETION
@@ -707,7 +714,7 @@ lazy.nvim
 | Prefix            | Group          | Main plugins involved                                                                                  |
 |-------------------|----------------|--------------------------------------------------------------------------------------------------------|
 | `<leader>b`       | buffer         | bufferline                                                                                             |
-| `<leader>c`       | code           | LSP, conform, trouble                                                                                  |
+| `<leader>c`       | code           | LSP, conform, trouble, aerial                                                                          |
 | `<leader>d`       | debug          | nvim-dap                                                                                               |
 | `<leader>dg`      | debug go       | nvim-dap-go                                                                                            |
 | `<leader>e/E`     | explorer       | neo-tree                                                                                               |
