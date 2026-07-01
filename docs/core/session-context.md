@@ -324,6 +324,9 @@ Update this file when:
 - Code actions use `actions-preview.nvim` for richer UI and diff-backed actions.
   If `actions-preview.nvim` or its Telescope-backed setup fails,
   `<leader>ca`/`<A-CR>` fall back to native `vim.lsp.buf.code_action()`.
+- Java extract-to-local-variable may move focus into the follow-up rename prompt.
+  Use `<C-w>w` to cycle focus back to the hover/floating window, or `<C-w>p` to
+  return to the previously focused window.
 - LSP rename refreshes loaded inlay-hint buffers after the rename response is
   handled, so renamed variables do not leave stale inlay hints behind.
 - Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, enabled on

@@ -844,6 +844,9 @@ Important limitation:
 - edit-backed actions usually show a real diff preview before apply
 - many Java refactors are command-only JDTLS actions, so they cannot be
   diff-previewed and may show the fallback “Preview is not available” message
+- extract-to-local-variable can move focus into the follow-up rename prompt;
+  use `<C-w>w` to cycle focus back to the hover/floating window, or `<C-w>p` to
+  return to the previously focused window.
 
 This is expected behavior, not a broken Neovim or LSP setup.
 
