@@ -142,12 +142,16 @@ Filetype source policy:
 ### 4. Treesitter
 
 ```
-nvim-treesitter  (treesitter.lua)  — highlight, indent, incremental selection
+nvim-treesitter  (treesitter.lua)  — highlight and indent
   ├── nvim-treesitter-textobjects  — af/if (function), ac/ic (class),
   │                                  aa/ia (param), al/il (loop), ai/ii (cond)
   │                                  Keymaps live in config/keymaps.lua
   │                                  Markdown/YAML keep stock indentexpr
   └── rainbow-delimiters.nvim      — colorized bracket pairs
+
+lsp-selection-range.nvim  (lsp-selection-range.lua)
+  └── semantic LSP expand/shrink selection  →  <CR>/<A-o> expand,
+                                               <Tab><CR>/<A-i> shrink
 
 nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
@@ -156,8 +160,7 @@ nvim-treehopper  (motion.lua)
 **Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml,
 tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
-**Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
-moves to the next sibling node.
+**Semantic selection:** `<CR>` or `<A-o>` starts/expands the LSP selection range; visual `<Tab><CR>` or `<A-i>` shrinks back through the current range chain.
 
 ---
 
@@ -623,6 +626,7 @@ lazy.nvim
 │   ├── glance.nvim
 │   ├── actions-preview.nvim
 │   ├── aerial.nvim
+│   ├── lsp-selection-range.nvim
 │   └── tiny-inline-diagnostic.nvim
 │
 ├── COMPLETION

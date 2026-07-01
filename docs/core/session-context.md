@@ -83,12 +83,11 @@ Update this file when:
 - `<leader>bd` deletes the current buffer while preserving the current window
   layout. This intentionally avoids raw `:bdelete` behavior, which can collapse
   a split when the deleted buffer is displayed in that window.
-- Visual-mode Treesitter selection on `<Tab>` / `<S-Tab>` uses the live visual
-  anchor plus cursor position, not `'<` / `'>` marks, because those marks can
-  still be unset while a visual mapping is executing.
-- Treesitter incremental selection starts from normal mode with `<CR>` or
-  `<A-o>`, expands in visual mode with `<CR>`, `<Tab>`, or `<A-o>`, shrinks with
-  `<S-Tab>` or `<A-i>`, and moves to the next sibling with `<BS>`.
+- Semantic selection uses `lsp-selection-range.nvim` instead of private
+  Treesitter selection helpers. `<CR>` and `<A-o>` start/expand the current LSP
+  selection range, while visual `<Tab><CR>` and `<A-i>` shrink back through that
+  range chain. `<S-Tab>` and `<BS>` are no longer mapped for incremental
+  selection.
 - `<leader>b-` and `<leader>b|` do not open a fresh empty split in place.
   They create the split and move the current buffer into the new lower/right
   window, leaving the newly created empty buffer behind in the original window.
@@ -370,8 +369,10 @@ Update this file when:
 - Manual Treesitter startup is guarded with `pcall`; if a parser is broken or
   missing, editing continues and a per-filetype warning is shown instead of
   raising from the `FileType` autocmd.
-- Treesitter incremental selection mappings call Neovim's built-in
-  `vim.treesitter._select` module directly.
+- LSP semantic selection depends on the attached server supporting
+  `textDocument/selectionRange`; use
+  `:lua vim.print(vim.lsp.get_clients()[1].server_capabilities.selectionRangeProvider)`
+  to inspect support in the current buffer.
 - DAP virtual text masks values when the variable name or rendered value
   contains common secret terms: `secret`, `api_key`, `apikey`, `token`,
   `password`, `passwd`, `credential`, or `authorization`.
