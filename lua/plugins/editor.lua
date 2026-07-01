@@ -474,8 +474,8 @@ return {
             ["l"] = "focus_preview",
             ["s"] = "open_with_window_picker", -- Open with window picker
             ["Y"] = "copy_absolute_path",
-            ["<C-f>"] = { "scroll_preview", config = { direction = -10 } },
-            ["<C-b>"] = { "scroll_preview", config = { direction = 10 } },
+            ["<C-u>"] = { "scroll_preview", config = { direction = 10 } },
+            ["<C-d>"] = { "scroll_preview", config = { direction = -10 } },
             ["<C-v>"] = "open_vsplit",
             ["<C-x>"] = "open_split",
             ["<C-t>"] = "open_tabnew",

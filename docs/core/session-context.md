@@ -322,6 +322,9 @@ Update this file when:
 ## LSP / UI Decisions
 
 - LSP “go to” flows prefer Glance over raw jumps for defs/refs/types/impls.
+- Glance and Neo-tree preview scrolling both use plugin-local `<C-u>` /
+  `<C-d>` for up/down. This differs from normal-buffer `<C-d>`, which
+  duplicates lines here.
 - Code actions use `actions-preview.nvim` for richer UI and diff-backed actions.
   If `actions-preview.nvim` or its Telescope-backed setup fails,
   `<leader>ca`/`<A-CR>` fall back to native `vim.lsp.buf.code_action()`.

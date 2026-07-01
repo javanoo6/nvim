@@ -535,8 +535,8 @@ Select text first, then press `gsa` + bracket/quote:
 | `s`     | **Open with window picker** (pick split)          |
 | `P`     | Toggle floating file preview                      |
 | `l`     | Focus preview window                              |
-| `<C-f>` | Scroll preview down                               |
-| `<C-b>` | Scroll preview up                                 |
+| `<C-d>` | Scroll preview down                               |
+| `<C-u>` | Scroll preview up                                 |
 | `<C-v>` | Open in vertical split                            |
 | `<C-x>` | Open in horizontal split                          |
 | `<C-t>` | Open in new tab                                   |
