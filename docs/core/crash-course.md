@@ -325,12 +325,15 @@ That gives you a simple habit while still staying inside the standard Vim model.
 |-----------------------|------------------------|
 | `m` (visual/operator) | Select treesitter node |
 
-### LSP Semantic Selection
+### Treesitter Incremental Selection
 
-| Key                   | Action                                |
-|-----------------------|---------------------------------------|
-| `<CR>` / `<A-o>`      | Start / expand semantic selection     |
-| `<Tab><CR>` / `<A-i>` | Shrink to previous semantic selection |
+| Key                 | Action                           |
+|---------------------|----------------------------------|
+| `<CR>`              | Start selection from normal mode |
+| `<A-o>`             | Start / expand selection         |
+| `<Tab>`             | Expand to parent node            |
+| `<S-Tab>` / `<A-i>` | Shrink to previous node          |
+| `<BS>`              | Move to next sibling node        |
 
 ### Moving Lines
 
