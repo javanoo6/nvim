@@ -282,6 +282,12 @@ Update this file when:
 - JDTLS is configured to download Maven dependency sources when available, so
   external libraries should open as real source before falling back to
   decompiled `jdt://...` class content.
+- JDTLS loads global Eclipse compiler preferences from
+  [jdtls/org.eclipse.jdt.core.prefs](/home/konkov/.config/nvim/jdtls/org.eclipse.jdt.core.prefs:1)
+  through `java.settings.url`. This enables unused method-parameter diagnostics
+  while leaving abstract implementations and concrete overrides quiet. A
+  project-local `.settings/org.eclipse.jdt.core.prefs` can override these
+  preferences.
 - `:JavaProjectUpdate` / `<leader>ju` sends JDTLS
   `java.projectConfiguration.update` for the current Java buffer. Use it after
   changing Maven dependencies in `pom.xml` before reaching for the heavier

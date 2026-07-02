@@ -410,6 +410,8 @@ nvim-java.lua
     ├── java_test          ── JUnit test runner integration
     ├── java_debug_adapter ── DAP adapter for Java
     └── spring_boot_tools  ── Spring Boot tooling
+  jdtls/org.eclipse.jdt.core.prefs
+    └── global Eclipse compiler prefs, including unused method-parameter warnings
 
 util/java_project_init.lua
   :JavaInitProject [dir] / <leader>ji
