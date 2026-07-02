@@ -415,12 +415,16 @@ util/java_project_init.lua
   :JavaInitProject [dir] / <leader>ji
   └── local Maven/Gradle Java 21 starter templates
 
+util/java_project_config.lua
+  :JavaProjectUpdate / <leader>ju
+  └── sends JDTLS java.projectConfiguration.update for the current buffer
+
 lsp.lua excludes jdtls from mason-lspconfig (nvim-java owns it)
 vim.g.lspconfig_jdtls_enabled = false  (options.lua)
 JVM: -Xms1g / -Xmx4g  (prevents OOM on refactoring)
 ```
 
-**Java keymaps** (`<leader>j*`): ji init project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jt test class, jm test method, jv view report
+**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jt test class, jm test method, jv view report
 
 ---
 

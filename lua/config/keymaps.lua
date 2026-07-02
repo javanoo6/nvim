@@ -52,6 +52,7 @@ local util = require("util")
 local map = util.map
 local inlay_hints = require("util.inlay_hints")
 local java_field_usages = require("util.java_field_usages")
+local java_project_config = require("util.java_project_config")
 local java_project_init = require("util.java_project_init")
 local live_hunks = require("util.live_hunks")
 local frequent_roots = require("util.frequent_roots")
@@ -59,6 +60,7 @@ local conflict_markers = require("util.conflict_markers")
 
 -- Custom project tracking retained in util.frequent_roots, but disabled for now.
 -- frequent_roots.setup()
+java_project_config.register_commands()
 java_project_init.register_commands()
 live_hunks.setup()
 conflict_markers.setup()
@@ -291,6 +293,9 @@ map("n", "<leader>cI", function()
   require("util.java_imports").import_unambiguous_classes()
 end, { desc = "Import unambiguous Java classes" })
 map("n", "<leader>ji", java_project_init.create, { desc = "Init Java project" })
+map("n", "<leader>ju", function()
+  java_project_config.update(0)
+end, { desc = "Update Java project config" })
 
 -- Replacing
 map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })

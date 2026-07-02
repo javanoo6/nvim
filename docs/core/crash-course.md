@@ -823,6 +823,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 |--------------|---------------------|
 | `<leader>jr` | Run Main            |
 | `<leader>ji` | Init Project        |
+| `<leader>ju` | Update Project      |
 | `<leader>jc` | Stop Main           |
 | `<leader>jt` | Test Current Class  |
 | `<leader>jm` | Test Current Method |
@@ -830,6 +831,10 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 `:JavaInitProject [dir]` prompts for Maven/Gradle, project directory, artifact,
 group id, and package, then opens the generated `Main.java`.
+
+`:JavaProjectUpdate` / `<leader>ju` asks JDTLS to refresh project configuration
+for the current Java buffer. Use it after editing Maven dependencies in
+`pom.xml`.
 
 ### Java Code Actions
 

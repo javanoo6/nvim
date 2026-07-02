@@ -282,6 +282,10 @@ Update this file when:
 - JDTLS is configured to download Maven dependency sources when available, so
   external libraries should open as real source before falling back to
   decompiled `jdt://...` class content.
+- `:JavaProjectUpdate` / `<leader>ju` sends JDTLS
+  `java.projectConfiguration.update` for the current Java buffer. Use it after
+  changing Maven dependencies in `pom.xml` before reaching for the heavier
+  workspace clean path.
 - JDTLS runs with full-document sync (`allow_incremental_sync = false`) because
   the local custom JDTLS build can assert on incremental `didChange` edits and
   then report bogus parse errors around otherwise valid Java comments.
