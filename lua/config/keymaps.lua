@@ -52,6 +52,7 @@ local util = require("util")
 local map = util.map
 local inlay_hints = require("util.inlay_hints")
 local java_field_usages = require("util.java_field_usages")
+local java_project_config = require("util.java_project_config")
 local java_project_init = require("util.java_project_init")
 local live_hunks = require("util.live_hunks")
 local frequent_roots = require("util.frequent_roots")
@@ -59,23 +60,24 @@ local conflict_markers = require("util.conflict_markers")
 
 -- Custom project tracking retained in util.frequent_roots, but disabled for now.
 -- frequent_roots.setup()
+java_project_config.register_commands()
 java_project_init.register_commands()
 live_hunks.setup()
 conflict_markers.setup()
 
 -- Movement (no leader)
-map({ "n", "x" }, "j", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
-map({ "n", "x" }, "k", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down (display line)" })
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down (display line)" })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
 map({ "n", "x", "o" }, "$", "^", { desc = "First non-blank char" })
 map({ "n", "x", "o" }, "^", "$", { desc = "End of line" })
 
 -- Direction model in this config:
---   j = up, k = down
+--   j = down, k = up
 -- Keep modifier variants aligned with that mental model where possible.
 -- Windows
 map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
-map("n", "<C-j>", "<C-w>k", { desc = "Go to upper window" })
-map("n", "<C-k>", "<C-w>j", { desc = "Go to lower window" })
+map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
+map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase height" })
 map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease height" })
@@ -88,17 +90,17 @@ map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Terminal window navigation (without leaving terminal mode)
 map("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Go to left window" })
-map("t", "<C-j>", "<C-\\><C-n><C-w>k", { desc = "Go to upper window" })
-map("t", "<C-k>", "<C-\\><C-n><C-w>j", { desc = "Go to lower window" })
+map("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Go to lower window" })
+map("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Go to upper window" })
 map("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Go to right window" })
 
 -- Move lines
-map("n", "<A-j>", "<cmd>m .-2<cr>==", { desc = "Move up" })
-map("n", "<A-k>", "<cmd>m .+1<cr>==", { desc = "Move down" })
-map("i", "<A-j>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
-map("i", "<A-k>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
-map("v", "<A-j>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
-map("v", "<A-k>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
+map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
+map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
+map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
+map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
+map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- IntelliJ-style: Move selected code with Shift+Ctrl+Up/Down
 map("v", "<C-S-Up>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
@@ -291,6 +293,9 @@ map("n", "<leader>cI", function()
   require("util.java_imports").import_unambiguous_classes()
 end, { desc = "Import unambiguous Java classes" })
 map("n", "<leader>ji", java_project_init.create, { desc = "Init Java project" })
+map("n", "<leader>ju", function()
+  java_project_config.update(0)
+end, { desc = "Update Java project config" })
 
 -- Replacing
 map("v", "<leader>rw", [[:<C-u>'<,'>s/\%V]], { desc = "Replace within selection" })
@@ -301,49 +306,6 @@ map("n", "<leader>Xh", function()
   vim.treesitter.start()
   vim.notify("Treesitter rehighlighted")
 end, { desc = "Rehighlight buffer" })
-
-local function treesitter_select_parent()
-  require("vim.treesitter._select").select_parent(vim.v.count1)
-end
-
-local function treesitter_start_selection(fallback_key)
-  if not vim.treesitter.get_parser(0, nil, { error = false }) then
-    if fallback_key then
-      vim.api.nvim_feedkeys(vim.keycode(fallback_key), "n", false)
-    end
-    return
-  end
-
-  vim.cmd.normal({ "v", bang = true })
-  treesitter_select_parent()
-end
-
-local function treesitter_select_child()
-  require("vim.treesitter._select").select_child(vim.v.count1)
-end
-
-local function treesitter_select_next()
-  require("vim.treesitter._select").select_next(vim.v.count1)
-end
-
-map("n", "<CR>", function()
-  treesitter_start_selection("<CR>")
-end, { desc = "Treesitter start selection" })
-map("n", "<A-o>", function()
-  treesitter_start_selection()
-end, { desc = "Treesitter start selection" })
-map("x", "<CR>", treesitter_select_parent, { desc = "Treesitter select parent" })
-map("x", "<A-o>", treesitter_select_parent, { desc = "Treesitter select parent" })
-map("x", "<Tab>", function()
-  treesitter_select_parent()
-end, { desc = "Treesitter select parent" })
-map("x", "<S-Tab>", function()
-  treesitter_select_child()
-end, { desc = "Treesitter select child" })
-map("x", "<A-i>", treesitter_select_child, { desc = "Treesitter select child" })
-map("x", "<BS>", function()
-  treesitter_select_next()
-end, { desc = "Treesitter select next" })
 
 map("n", "<leader>XC", function()
   local ok, java = pcall(require, "java")

@@ -51,6 +51,7 @@ nvim-lspconfig  ─────────────────────�
   ├── fidget.nvim             ── LSP progress spinner (bottom-right)
   ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
   ├── actions-preview.nvim    ── code action picker; shows diff previews for edit-backed actions (<leader>ca, <A-CR>)
+  ├── aerial.nvim             ── temporary left code outline (<leader>co)
   └── tiny-inline-diagnostic.nvim  ── inline diagnostics with wrapping (<leader>ud toggle)
 ```
 
@@ -80,6 +81,7 @@ Pyright note:
 | `K`                     | Hover                       |
 | `gK`                    | Signature help              |
 | `<leader>ca` / `<A-CR>` | Code action                 |
+| `<leader>co`            | Code outline                |
 | `<leader>cr`            | Rename                      |
 | `<leader>uh`            | Toggle inlay hints          |
 | `<leader>uu`            | Toggle reference underline  |
@@ -140,12 +142,16 @@ Filetype source policy:
 ### 4. Treesitter
 
 ```
-nvim-treesitter  (treesitter.lua)  — highlight, indent, incremental selection
+nvim-treesitter  (treesitter.lua)  — highlight and indent
   ├── nvim-treesitter-textobjects  — af/if (function), ac/ic (class),
   │                                  aa/ia (param), al/il (loop), ai/ii (cond)
   │                                  Keymaps live in config/keymaps.lua
   │                                  Markdown/YAML keep stock indentexpr
   └── rainbow-delimiters.nvim      — colorized bracket pairs
+
+lsp-selection-range.nvim  (lsp-selection-range.lua)
+  └── semantic LSP expand/shrink selection  →  <CR>/<A-o> expand,
+                                               <Tab><CR>/<A-i> shrink
 
 nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
@@ -154,8 +160,7 @@ nvim-treehopper  (motion.lua)
 **Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml,
 tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
-**Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
-moves to the next sibling node.
+**Semantic selection:** `<CR>` or `<A-o>` starts/expands the LSP selection range; visual `<Tab><CR>` or `<A-i>` shrinks back through the current range chain.
 
 ---
 
@@ -294,6 +299,10 @@ motion.lua
 glance.lua
   └── glance.nvim             ── split preview for LSP defs/refs (triggered by gd/gR/gy/gI)
                                   use_trouble_qf = true  →  sends to Trouble
+
+aerial.lua
+  └── aerial.nvim             ── left-side code outline using LSP/Treesitter
+                                  <leader>co toggles, jump closes the outline
 ```
 
 ---
@@ -401,17 +410,23 @@ nvim-java.lua
     ├── java_test          ── JUnit test runner integration
     ├── java_debug_adapter ── DAP adapter for Java
     └── spring_boot_tools  ── Spring Boot tooling
+  jdtls/org.eclipse.jdt.core.prefs
+    └── global Eclipse compiler prefs, including unused method-parameter warnings
 
 util/java_project_init.lua
   :JavaInitProject [dir] / <leader>ji
   └── local Maven/Gradle Java 21 starter templates
+
+util/java_project_config.lua
+  :JavaProjectUpdate / <leader>ju
+  └── sends JDTLS java.projectConfiguration.update for the current buffer
 
 lsp.lua excludes jdtls from mason-lspconfig (nvim-java owns it)
 vim.g.lspconfig_jdtls_enabled = false  (options.lua)
 JVM: -Xms1g / -Xmx4g  (prevents OOM on refactoring)
 ```
 
-**Java keymaps** (`<leader>j*`): ji init project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jt test class, jm test method, jv view report
+**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jt test class, jm test method, jv view report
 
 ---
 
@@ -616,6 +631,8 @@ lazy.nvim
 │   │   └── nvim-lsp-file-operations → neo-tree
 │   ├── glance.nvim
 │   ├── actions-preview.nvim
+│   ├── aerial.nvim
+│   ├── lsp-selection-range.nvim
 │   └── tiny-inline-diagnostic.nvim
 │
 ├── COMPLETION
@@ -707,7 +724,7 @@ lazy.nvim
 | Prefix            | Group          | Main plugins involved                                                                                  |
 |-------------------|----------------|--------------------------------------------------------------------------------------------------------|
 | `<leader>b`       | buffer         | bufferline                                                                                             |
-| `<leader>c`       | code           | LSP, conform, trouble                                                                                  |
+| `<leader>c`       | code           | LSP, conform, trouble, aerial                                                                          |
 | `<leader>d`       | debug          | nvim-dap                                                                                               |
 | `<leader>dg`      | debug go       | nvim-dap-go                                                                                            |
 | `<leader>e/E`     | explorer       | neo-tree                                                                                               |
@@ -747,7 +764,8 @@ lazy.nvim
   `vim.g.lspconfig_jdtls_enabled = false`).
 - **Java code actions:** `<leader>ca` / `<A-CR>` still go through `actions-preview.nvim`, but many JDTLS refactors are command-only and cannot show a real diff
   preview.
-- **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Writes normal file buffers even when LSP errors exist; Conform still skips format-on-save when errors exist.
+- **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Writes normal file buffers even when LSP errors exist; Conform still skips
+  format-on-save when errors exist.
 - **Reference style:** Underline is enabled by default, reference background is disabled by default. Toggle them with `<leader>uu` and `<leader>uH`.
 - **Go format on save:** Skipped in `conform.format_on_save` for Go — formatting is done manually or via gopls.
 - **noice hover/signature:** Disabled to avoid conflicts with inlay hints. Use `K` / `gK` natively.

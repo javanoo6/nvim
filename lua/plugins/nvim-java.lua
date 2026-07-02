@@ -17,6 +17,7 @@ return {
     local default_jdtls_version = jdtls_build.default_jdtls_version
     local jdtls_version = jdtls_build.jdtls_version
     local jdtls_dir_override = jdtls_build.jdtls_dir_override
+    local java_settings_url = vim.fn.stdpath("config") .. "/jdtls/org.eclipse.jdt.core.prefs"
     local capabilities =
       vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())
     local debug_log = java_jdtls.make_debug_log()
@@ -47,6 +48,7 @@ return {
         "java: " .. (vim.fn.executable(java21_bin .. "/java") == 1 and (java21_bin .. "/java") or vim.fn.exepath("java")),
         "JDTLS version: " .. tostring(jdtls_version),
         "JDTLS dir: " .. (jdtls_dir_override or "package-managed"),
+        "JDTLS settings: " .. java_settings_url,
         "root: " .. tostring(root_dir),
         "mixed Maven/Gradle root: " .. tostring(prefer_maven),
         "import.maven.enabled: true",
@@ -153,6 +155,9 @@ return {
             gradle = {
               enabled = true,
             },
+          },
+          settings = {
+            url = java_settings_url,
           },
           maven = {
             -- Prefer attached dependency sources over decompiled class files

@@ -15,3 +15,8 @@ Start here:
 - `git/`: Git and LazyGit workflow notes.
 - `audits/`: audit findings and follow-up lists.
 - `learning/`: learning notes and local plugin exercises.
+
+## Git Notes
+
+- [git/fix-empty-git-object-lazygit-crash.md](/home/konkov/.config/nvim/docs/git/fix-empty-git-object-lazygit-crash.md:1):
+  recover from LazyGit crashes caused by empty or missing Git object files.

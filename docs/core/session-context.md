@@ -14,13 +14,14 @@ Update this file when:
 - [docs/core/crash-course.md](/home/konkov/.config/nvim/docs/core/crash-course.md:1): practical usage guide
 - [docs/core/plugin-map.md](/home/konkov/.config/nvim/docs/core/plugin-map.md:1): plugin inventory and wiring
 - [docs/core/nvim-nav.md](/home/konkov/.config/nvim/docs/core/nvim-nav.md:1): focused navigation cheat sheet
-- [docs/git/fix-empty-git-object-lazygit-crash.md](/home/konkov/.config/nvim/docs/git/fix-empty-git-object-lazygit-crash.md:1): LazyGit/Git recovery for empty object files
+- [docs/git/fix-empty-git-object-lazygit-crash.md](/home/konkov/.config/nvim/docs/git/fix-empty-git-object-lazygit-crash.md:1): LazyGit/Git recovery for empty
+  object files
 - [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1): Python venv behavior
 
 ## Input Model
 
-- Direction model is intentionally nonstandard:
-  `h = left`, `j = up`, `k = down`, `l = right`
+- Direction model follows standard Vim movement:
+  `h = left`, `j = down`, `k = up`, `l = right`
 - `<leader>` is space, and the `<Space>` placeholder mapping is defined in
   [lua/config/options.lua](/home/konkov/.config/nvim/lua/config/options.lua:1)
   before plugin setup so `which-key` can install its trigger mapping correctly.
@@ -53,11 +54,11 @@ Update this file when:
   `<leader>um` for temporary GUI/terminal mouse use.
 - Plain `j/k` are remapped in [lua/config/keymaps.lua](/home/konkov/.config/nvim/lua/config/keymaps.lua:61).
 - Modifier variants are aligned to the same model where practical:
-  `<C-j>` upper window, `<C-k>` lower window, `<A-j>` move line/selection up,
-  `<A-k>` move line/selection down.
-- Telescope was patched locally so `<C-j>` means previous/up and `<C-k>` means
-  next/down in pickers. See [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:186).
-- Glance is configured consistently: `j` previous/up, `k` next/down. See
+  `<C-j>` lower window, `<C-k>` upper window, `<A-j>` move line/selection down,
+  `<A-k>` move line/selection up.
+- Telescope is configured so `<C-j>` means next/down and `<C-k>` means
+  previous/up in pickers. See [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:186).
+- Glance is configured consistently: `j` next/down, `k` previous/up. See
   [lua/plugins/glance.lua](/home/konkov/.config/nvim/lua/plugins/glance.lua:48).
 - Glance is pinned to the fork branch `javanoo6/glance.nvim` /
   `fix/fs-read-nil-glance-list` because upstream `list.lua` can crash when
@@ -67,8 +68,8 @@ Update this file when:
   decompiled `jdt://...` Java paths through the statusline parser without
   escaping percent-encoded segments, which breaks JDK/decompiled navigation
   with `E539`. See [lua/plugins/glance.lua](/home/konkov/.config/nvim/lua/plugins/glance.lua:104).
-- There is no global Neovim switch that forces all plugins to reinterpret
-  `j/k`; plugin-local mappings still need explicit overrides when they diverge.
+- Plugin-local mappings still need explicit overrides when their default
+  `j/k` or `<C-j>/<C-k>` behavior diverges from this config's movement model.
 
 ## Core Editing Deviations
 
@@ -82,12 +83,11 @@ Update this file when:
 - `<leader>bd` deletes the current buffer while preserving the current window
   layout. This intentionally avoids raw `:bdelete` behavior, which can collapse
   a split when the deleted buffer is displayed in that window.
-- Visual-mode Treesitter selection on `<Tab>` / `<S-Tab>` uses the live visual
-  anchor plus cursor position, not `'<` / `'>` marks, because those marks can
-  still be unset while a visual mapping is executing.
-- Treesitter incremental selection starts from normal mode with `<CR>` or
-  `<A-o>`, expands in visual mode with `<CR>`, `<Tab>`, or `<A-o>`, shrinks with
-  `<S-Tab>` or `<A-i>`, and moves to the next sibling with `<BS>`.
+- Semantic selection uses `lsp-selection-range.nvim` instead of private
+  Treesitter selection helpers. `<CR>` and `<A-o>` start/expand the current LSP
+  selection range, while visual `<Tab><CR>` and `<A-i>` shrink back through that
+  range chain. `<S-Tab>` and `<BS>` are no longer mapped for incremental
+  selection.
 - `<leader>b-` and `<leader>b|` do not open a fresh empty split in place.
   They create the split and move the current buffer into the new lower/right
   window, leaving the newly created empty buffer behind in the original window.
@@ -282,6 +282,16 @@ Update this file when:
 - JDTLS is configured to download Maven dependency sources when available, so
   external libraries should open as real source before falling back to
   decompiled `jdt://...` class content.
+- JDTLS loads global Eclipse compiler preferences from
+  [jdtls/org.eclipse.jdt.core.prefs](/home/konkov/.config/nvim/jdtls/org.eclipse.jdt.core.prefs:1)
+  through `java.settings.url`. This enables unused method-parameter diagnostics
+  while leaving abstract implementations and concrete overrides quiet. A
+  project-local `.settings/org.eclipse.jdt.core.prefs` can override these
+  preferences.
+- `:JavaProjectUpdate` / `<leader>ju` sends JDTLS
+  `java.projectConfiguration.update` for the current Java buffer. Use it after
+  changing Maven dependencies in `pom.xml` before reaching for the heavier
+  workspace clean path.
 - JDTLS runs with full-document sync (`allow_incremental_sync = false`) because
   the local custom JDTLS build can assert on incremental `didChange` edits and
   then report bogus parse errors around otherwise valid Java comments.
@@ -321,6 +331,12 @@ Update this file when:
 ## LSP / UI Decisions
 
 - LSP “go to” flows prefer Glance over raw jumps for defs/refs/types/impls.
+- `<leader>co` opens Aerial as an explicit left-side code outline. It is
+  intentionally not auto-opened and closes after jumping to a symbol, so it acts
+  like a temporary outline picker rather than a persistent sidebar.
+- Glance and Neo-tree preview scrolling both use plugin-local `<C-u>` /
+  `<C-d>` for up/down. This differs from normal-buffer `<C-d>`, which
+  duplicates lines here.
 - Code actions use `actions-preview.nvim` for richer UI and diff-backed actions.
   If `actions-preview.nvim` or its Telescope-backed setup fails,
   `<leader>ca`/`<A-CR>` fall back to native `vim.lsp.buf.code_action()`.
@@ -363,8 +379,10 @@ Update this file when:
 - Manual Treesitter startup is guarded with `pcall`; if a parser is broken or
   missing, editing continues and a per-filetype warning is shown instead of
   raising from the `FileType` autocmd.
-- Treesitter incremental selection mappings call Neovim's built-in
-  `vim.treesitter._select` module directly.
+- LSP semantic selection depends on the attached server supporting
+  `textDocument/selectionRange`; use
+  `:lua vim.print(vim.lsp.get_clients()[1].server_capabilities.selectionRangeProvider)`
+  to inspect support in the current buffer.
 - DAP virtual text masks values when the variable name or rendered value
   contains common secret terms: `secret`, `api_key`, `apikey`, `token`,
   `password`, `passwd`, `credential`, or `authorization`.

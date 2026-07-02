@@ -75,7 +75,7 @@ Until you press `Esc`, it may look like only one line changed.
 
 | Key             | Action                                |
 |-----------------|---------------------------------------|
-| `h` `j` `k` `l` | Left, Up, Down, Right                 |
+| `h` `j` `k` `l` | Left, Down, Up, Right                 |
 | `w`             | Next word start (camelCase aware)     |
 | `e`             | Next word end (camelCase aware)       |
 | `b`             | Previous word start (camelCase aware) |
@@ -98,22 +98,22 @@ Core rule:
 
 - `{count}{command}` repeats the command `count` times
 - `{operator}{count}{motion}` applies the operator across that many motions
-- because this config swaps vertical movement, `j` means up and `k` means down
+- `j` means down and `k` means up, matching Vim defaults
 
 Examples:
 
-| Keys   | Action                                    |
-|--------|-------------------------------------------|
-| `5j`   | Move up 5 lines                           |
-| `5k`   | Move down 5 lines                         |
-| `3w`   | Move forward 3 words                      |
-| `10dd` | Delete 10 lines                           |
-| `3yy`  | Yank 3 lines                              |
-| `5>>`  | Indent 5 lines right                      |
-| `d3w`  | Delete 3 words forward                    |
-| `c2j`  | Change from cursor through 2 lines upward |
-| `y4k`  | Yank through 4 lines downward             |
-| `V5j`  | Select 5 lines upward in visual line mode |
+| Keys   | Action                                      |
+|--------|---------------------------------------------|
+| `5j`   | Move down 5 lines                           |
+| `5k`   | Move up 5 lines                             |
+| `3w`   | Move forward 3 words                        |
+| `10dd` | Delete 10 lines                             |
+| `3yy`  | Yank 3 lines                                |
+| `5>>`  | Indent 5 lines right                        |
+| `d3w`  | Delete 3 words forward                      |
+| `c2j`  | Change from cursor through 2 lines downward |
+| `y4k`  | Yank through 4 lines upward                 |
+| `V5j`  | Select 5 lines downward in visual line mode |
 
 Count behavior for `j` and `k`:
 
@@ -325,22 +325,19 @@ That gives you a simple habit while still staying inside the standard Vim model.
 |-----------------------|------------------------|
 | `m` (visual/operator) | Select treesitter node |
 
-### Treesitter Incremental Selection
+### LSP Semantic Selection
 
-| Key                 | Action                           |
-|---------------------|----------------------------------|
-| `<CR>`              | Start selection from normal mode |
-| `<A-o>`             | Start / expand selection         |
-| `<Tab>`             | Expand to parent node            |
-| `<S-Tab>` / `<A-i>` | Shrink to previous node          |
-| `<BS>`              | Move to next sibling node        |
+| Key                   | Action                                |
+|-----------------------|---------------------------------------|
+| `<CR>` / `<A-o>`      | Start / expand semantic selection     |
+| `<Tab><CR>` / `<A-i>` | Shrink to previous semantic selection |
 
 ### Moving Lines
 
 | Key                                     | Action         |
 |-----------------------------------------|----------------|
-| `<A-j>`                                 | Move line up   |
-| `<A-k>`                                 | Move line down |
+| `<A-j>`                                 | Move line down |
+| `<A-k>`                                 | Move line up   |
 | (Works in normal, insert, visual modes) |
 
 ### Duplicating Lines (IntelliJ-style)
@@ -535,8 +532,8 @@ Select text first, then press `gsa` + bracket/quote:
 | `s`     | **Open with window picker** (pick split)          |
 | `P`     | Toggle floating file preview                      |
 | `l`     | Focus preview window                              |
-| `<C-f>` | Scroll preview down                               |
-| `<C-b>` | Scroll preview up                                 |
+| `<C-d>` | Scroll preview down                               |
+| `<C-u>` | Scroll preview up                                 |
 | `<C-v>` | Open in vertical split                            |
 | `<C-x>` | Open in horizontal split                          |
 | `<C-t>` | Open in new tab                                   |
@@ -644,7 +641,7 @@ This uses `nvim-cmp` cmdline completion:
 
 | Key               | Action                                                       |
 |-------------------|--------------------------------------------------------------|
-| `<C-j>` / `<C-k>` | Previous / Next                                              |
+| `<C-j>` / `<C-k>` | Next / Previous                                              |
 | `<C-n>` / `<C-p>` | Next / Previous in history                                   |
 | `<C-d>` / `<C-u>` | Scroll preview down / up                                     |
 | `<CR>`            | Open                                                         |
@@ -707,8 +704,8 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 | Key                 | Action                           |
 |---------------------|----------------------------------|
-| `j` / `<Up>`        | Previous result                  |
-| `k` / `<Down>`      | Next result                      |
+| `j` / `<Down>`      | Next result                      |
+| `k` / `<Up>`        | Previous result                  |
 | `<Tab>` / `<S-Tab>` | Next / previous location         |
 | `<C-u>` / `<C-d>`   | Scroll preview up / down         |
 | `<CR>`              | Jump to selected result          |
@@ -738,11 +735,12 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 ### Symbols & Outline
 
-| Key          | Action                        |
-|--------------|-------------------------------|
-| `<leader>cs` | Symbols (Trouble)             |
-| `<leader>cl` | Call hierarchy (Trouble)      |
-| `<leader>cu` | Usages / references (Trouble) |
+| Key          | Action                                               |
+|--------------|------------------------------------------------------|
+| `<leader>co` | Toggle left code outline (Aerial; closes after jump) |
+| `<leader>cs` | Symbols (Trouble)                                    |
+| `<leader>cl` | Call hierarchy (Trouble)                             |
+| `<leader>cu` | Usages / references (Trouble)                        |
 
 ### LSP Server Management
 
@@ -825,6 +823,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 |--------------|---------------------|
 | `<leader>jr` | Run Main            |
 | `<leader>ji` | Init Project        |
+| `<leader>ju` | Update Project      |
 | `<leader>jc` | Stop Main           |
 | `<leader>jt` | Test Current Class  |
 | `<leader>jm` | Test Current Method |
@@ -832,6 +831,10 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 `:JavaInitProject [dir]` prompts for Maven/Gradle, project directory, artifact,
 group id, and package, then opens the generated `Main.java`.
+
+`:JavaProjectUpdate` / `<leader>ju` asks JDTLS to refresh project configuration
+for the current Java buffer. Use it after editing Maven dependencies in
+`pom.xml`.
 
 ### Java Code Actions
 
@@ -1243,8 +1246,8 @@ git commit                 →  finalize merge
 | Key     | Action             |
 |---------|--------------------|
 | `<C-h>` | Go to left window  |
-| `<C-j>` | Go to upper window |
-| `<C-k>` | Go to lower window |
+| `<C-j>` | Go to lower window |
+| `<C-k>` | Go to upper window |
 | `<C-l>` | Go to right window |
 
 ---

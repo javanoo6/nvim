@@ -2,14 +2,14 @@
 
 ## Window Movement
 
-Custom direction model in this config: `j = up`, `k = down`.
+Direction model in this config follows Vim defaults: `j = down`, `k = up`.
 
 | Key            | Action                            |
 |----------------|-----------------------------------|
 | `<C-w>h/j/k/l` | Move to left/down/up/right window |
 | `<C-h>`        | Move to left window               |
-| `<C-j>`        | Move to upper window              |
-| `<C-k>`        | Move to lower window              |
+| `<C-j>`        | Move to lower window              |
+| `<C-k>`        | Move to upper window              |
 | `<C-l>`        | Move to right window              |
 | `<C-w>s`       | Split horizontal                  |
 | `<C-w>v`       | Split vertical                    |
@@ -37,21 +37,31 @@ Custom direction model in this config: `j = up`, `k = down`.
 | Keys              | Action                   |
 |-------------------|--------------------------|
 | `h`               | Left                     |
-| `j`               | Up                       |
-| `k`               | Down                     |
+| `j`               | Down                     |
+| `k`               | Up                       |
 | `l`               | Right                    |
 | `<C-h>`           | Left window              |
-| `<C-j>`           | Upper window             |
-| `<C-k>`           | Lower window             |
+| `<C-j>`           | Lower window             |
+| `<C-k>`           | Upper window             |
 | `<C-l>`           | Right window             |
-| `<A-j>`           | Move line/selection up   |
-| `<A-k>`           | Move line/selection down |
+| `<A-j>`           | Move line/selection down |
+| `<A-k>`           | Move line/selection up   |
 | `<S-h>`           | Previous buffer          |
 | `<S-l>`           | Next buffer              |
-| `Telescope <C-j>` | Previous item / move up  |
-| `Telescope <C-k>` | Next item / move down    |
-| `Glance j`        | Previous item / move up  |
-| `Glance k`        | Next item / move down    |
+| `Telescope <C-j>` | Next item / move down    |
+| `Telescope <C-k>` | Previous item / move up  |
+| `Glance j`        | Next item / move down    |
+| `Glance k`        | Previous item / move up  |
+
+## Preview Scrolling
+
+| Context                    | Key               | Action                    |
+|----------------------------|-------------------|---------------------------|
+| Glance `gd`/`gR`/`gy`/`gI` | `<C-u>` / `<C-d>` | Scroll preview up/down    |
+| Glance                     | `<leader>l`       | Switch list/preview focus |
+| Neo-tree file preview      | `P`               | Toggle floating preview   |
+| Neo-tree file preview      | `<C-u>` / `<C-d>` | Scroll preview up/down    |
+| Neo-tree file preview      | `l`               | Focus preview window      |
 
 | Key               | Action                                    |
 |-------------------|-------------------------------------------|
@@ -77,15 +87,12 @@ Custom direction model in this config: `j = up`, `k = down`.
 
 ## Visual Selection
 
-| Key                 | Action                               |
-|---------------------|--------------------------------------|
-| `gv`                | Reselect previous visual selection   |
-| `<` / `>`           | Indent and keep selection            |
-| `<CR>`              | Treesitter: start / expand selection |
-| `<A-o>`             | Treesitter: start / expand selection |
-| `<Tab>`             | Treesitter: expand to parent node    |
-| `<S-Tab>` / `<A-i>` | Treesitter: shrink to previous node  |
-| `<BS>`              | Treesitter: move to next sibling     |
+| Key                   | Action                                 |
+|-----------------------|----------------------------------------|
+| `gv`                  | Reselect previous visual selection     |
+| `<` / `>`             | Indent and keep selection              |
+| `<CR>` / `<A-o>`      | LSP: start / expand semantic selection |
+| `<Tab><CR>` / `<A-i>` | LSP: shrink semantic selection         |
 
 ## Jumps
 
