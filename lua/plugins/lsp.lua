@@ -22,6 +22,7 @@ return {
       local java_codelens = require("util.java_codelens")
       local java_field_usages = require("util.java_field_usages")
       local inlay_hints = require("util.inlay_hints")
+      local ruby = require("util.ruby")
       java_field_usages.setup()
       inlay_hints.setup()
       local function resolve_pyright_cmd()
@@ -188,6 +189,28 @@ return {
       vim.lsp.config("basedpyright", {
         capabilities = capabilities,
       })
+
+      vim.lsp.config("ruby_lsp", {
+        capabilities = capabilities,
+        cmd = function(dispatchers, config)
+          return vim.lsp.rpc.start(ruby.ruby_lsp_cmd(config and config.root_dir), dispatchers, {
+            cwd = config and config.root_dir or nil,
+          })
+        end,
+        filetypes = { "ruby", "eruby" },
+        root_dir = ruby.root_dir,
+        init_options = {
+          formatter = "auto",
+        },
+        settings = {
+          rubyLsp = {
+            rubyVersionManager = {
+              identifier = "rvm",
+            },
+          },
+        },
+      })
+      vim.lsp.enable("ruby_lsp")
 
       local function switch_python_lsp(server_name)
         local stopped = {}

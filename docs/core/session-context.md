@@ -152,6 +152,12 @@ Update this file when:
 - JavaScript and TypeScript support uses Treesitter for syntax, `ts_ls` for
   LSP, `eslint_d` through `nvim-lint`, and Prettier through Conform for
   `javascript`, `javascriptreact`, `typescript`, and `typescriptreact`.
+- Ruby support uses RVM rather than Mason for gem-backed tooling. Ruby LSP and
+  syntax diagnostics run through the project `.ruby-version`/`.ruby-gemset`
+  when present, otherwise RVM Ruby `3.2.5`. Project `.env` can set
+  `BUNDLE_GEMFILE` for projects whose Gemfile is not at the Ruby root. The
+  helper lives in
+  [lua/util/ruby.lua](/home/konkov/.config/nvim/lua/util/ruby.lua:1).
 - Python LSP defaults to Pyright. BasedPyright is installed/configured but
   opt-in through `:PythonLspUseBasedPyright`; use `:PythonLspUsePyright` to
   switch back without changing config files.

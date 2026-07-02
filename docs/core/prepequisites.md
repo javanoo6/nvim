@@ -185,6 +185,8 @@ Listed here for reference only.
 | `delve`                      | Go debugger (DAP)            |
 
 > `jdtls`, `java-debug`, and `vscode-java-test` are managed by **nvim-java**, not Mason.
+> `ruby-lsp` is managed by RVM/gems, not Mason. This config expects RVM Ruby
+> `3.2.5`, Bundler `2.7.1`, and the `ruby-lsp` gem for Ruby buffers.
 >
 > This repo also disables Glance `winbar` for Java/JDT navigation because
 > decompiled `jdt://...` URIs can trigger `E539` in upstream Glance if rendered
