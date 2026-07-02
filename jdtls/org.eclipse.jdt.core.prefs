@@ -34,7 +34,7 @@ org.eclipse.jdt.core.compiler.problem.redundantSuperinterface=warning
 
 # Method quality. Potentially-static is noisier than definitely-static, so keep
 # only the high-confidence version as a warning.
-org.eclipse.jdt.core.compiler.problem.reportMethodCanBeStatic=warning
+org.eclipse.jdt.core.compiler.problem.reportMethodCanBeStatic=ignore
 org.eclipse.jdt.core.compiler.problem.reportMethodCanBePotentiallyStatic=ignore
 
 # Opinionated style checks. These can be noisy in older codebases, but are useful
