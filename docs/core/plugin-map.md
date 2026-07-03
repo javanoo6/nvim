@@ -67,6 +67,7 @@ Pyright note:
 - `:PyrightInfo` prints the exact command path for the current session.
 
 **LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`, `basedpyright`, `ts_ls`
+**Ruby LSP:** handled through RVM and the `ruby-lsp` gem, not Mason. Projects can use `.ruby-version`, `.ruby-gemset`, and `.env` `BUNDLE_GEMFILE`.
 **Java LSP:** handled separately by `nvim-java` (jdtls) — see Java section.
 
 **Key LSP keymaps** (set on LspAttach in lsp.lua):
@@ -153,7 +154,7 @@ nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
 ```
 
-**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, sql, toml,
+**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, ruby, sql, toml,
 tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
 **Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
@@ -189,6 +190,7 @@ nvim-lint  (linting.lua)
     lua         → selene
     markdown    → markdownlint-cli2
     python      → ruff
+    ruby        → ruby -w -c through RVM Ruby 3.2.5
     yaml        → yamllint
   — missing linter executables are skipped instead of erroring on buffer open
   — Selene runs from the config root so `selene.toml` + `vim.yml` are applied

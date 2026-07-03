@@ -7,6 +7,7 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     config = function()
       local util = require("util")
+      local ruby = require("util.ruby")
       local lint = require("lint")
       local lint_timers = {}
 
@@ -39,6 +40,7 @@ return {
         lua = { "selene" },
         markdown = { "markdownlint-cli2" },
         python = { "ruff" },
+        ruby = { "ruby_rvm" },
         sh = { "shellcheck" },
         typescript = { "eslint_d" },
         typescriptreact = { "eslint_d" },
@@ -56,6 +58,18 @@ return {
           markdownlint.args = { script, "-" }
         end
       end
+
+      lint.linters.ruby_rvm = vim.tbl_extend("force", require("lint.linters.ruby"), {
+        cmd = "zsh",
+        args = {
+          "-lc",
+          function()
+            local path = vim.api.nvim_buf_get_name(0)
+            return ruby.rvm_script('ruby -w -c "$@"', { gemfile = ruby.bundle_gemfile_for(path) })
+          end,
+          "ruby-lint",
+        },
+      })
 
       local function lint_buffer(bufnr)
         if not vim.api.nvim_buf_is_valid(bufnr) or not vim.api.nvim_buf_is_loaded(bufnr) then
