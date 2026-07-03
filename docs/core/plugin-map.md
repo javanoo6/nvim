@@ -154,7 +154,8 @@ nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
 ```
 
-**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, ruby, sql, toml,
+**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, ruby, sql,
+toml,
 tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
 **Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
@@ -425,7 +426,8 @@ vim.g.lspconfig_jdtls_enabled = false  (options.lua)
 JVM: -Xms1g / -Xmx4g  (prevents OOM on refactoring)
 ```
 
-**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jt test class, jm test method, jv view report
+**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jt test class, jm test
+method, jv view report
 
 ---
 

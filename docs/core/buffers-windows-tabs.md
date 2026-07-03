@@ -49,25 +49,25 @@ The buffer can stay loaded even when no window is currently showing it.
 
 Common buffer states:
 
-| State      | Meaning                                             |
-|------------|-----------------------------------------------------|
-| visible    | currently displayed in at least one window          |
-| hidden     | loaded but not currently displayed                  |
-| modified   | has unsaved changes                                 |
-| listed     | appears in normal buffer navigation                 |
-| unlisted   | internal, plugin, scratch, or special-purpose buffer |
+| State    | Meaning                                              |
+|----------|------------------------------------------------------|
+| visible  | currently displayed in at least one window           |
+| hidden   | loaded but not currently displayed                   |
+| modified | has unsaved changes                                  |
+| listed   | appears in normal buffer navigation                  |
+| unlisted | internal, plugin, scratch, or special-purpose buffer |
 
 Useful commands:
 
-| Command    | Action                            |
-|------------|-----------------------------------|
-| `:ls`      | list buffers                      |
-| `:bnext`   | switch to next buffer             |
-| `:bprev`   | switch to previous buffer         |
-| `:b 5`     | switch to buffer number 5         |
-| `:b name`  | switch to buffer matching `name`  |
-| `:edit #`  | switch to alternate buffer        |
-| `:bdelete` | delete/unload the current buffer  |
+| Command    | Action                           |
+|------------|----------------------------------|
+| `:ls`      | list buffers                     |
+| `:bnext`   | switch to next buffer            |
+| `:bprev`   | switch to previous buffer        |
+| `:b 5`     | switch to buffer number 5        |
+| `:b name`  | switch to buffer matching `name` |
+| `:edit #`  | switch to alternate buffer       |
+| `:bdelete` | delete/unload the current buffer |
 
 Local keymaps:
 
@@ -120,31 +120,35 @@ window options.
 
 Useful commands:
 
-| Command  | Action                     |
-|----------|----------------------------|
-| `<C-w>s` | split horizontally         |
-| `<C-w>v` | split vertically           |
-| `<C-w>h` | move to left window        |
-| `<C-w>j` | move to lower window       |
-| `<C-w>k` | move to upper window       |
-| `<C-w>l` | move to right window       |
-| `<C-w>c` | close current window       |
-| `<C-w>o` | close all other windows    |
-| `<C-w>=` | equalize window sizes      |
+| Command  | Action                  |
+|----------|-------------------------|
+| `<C-w>s` | split horizontally      |
+| `<C-w>v` | split vertically        |
+| `<C-w>h` | move to left window     |
+| `<C-w>j` | move to lower window    |
+| `<C-w>k` | move to upper window    |
+| `<C-w>l` | move to right window    |
+| `<C-w>w` | move to next window     |
+| `<C-w>W` | move to previous window |
+| `<C-w>c` | close current window    |
+| `<C-w>o` | close all other windows |
+| `<C-w>=` | equalize window sizes   |
 
 Local keymaps:
 
-| Key          | Action             |
-|--------------|--------------------|
-| `<C-h>`      | left window        |
-| `<C-j>`      | lower window       |
-| `<C-k>`      | upper window       |
-| `<C-l>`      | right window       |
-| `<leader>wq` | close window       |
-| `<C-Up>`     | increase height    |
-| `<C-Down>`   | decrease height    |
-| `<C-Left>`   | decrease width     |
-| `<C-Right>`  | increase width     |
+| Key          | Action          |
+|--------------|-----------------|
+| `<C-h>`      | left window     |
+| `<C-j>`      | lower window    |
+| `<C-k>`      | upper window    |
+| `<C-l>`      | right window    |
+| `[w`         | previous window |
+| `]w`         | next window     |
+| `<leader>wq` | close window    |
+| `<C-Up>`     | increase height |
+| `<C-Down>`   | decrease height |
+| `<C-Left>`   | decrease width  |
+| `<C-Right>`  | increase width  |
 
 Closing a window does not necessarily delete its buffer. The buffer usually
 remains loaded and can be opened again in another window.
@@ -209,11 +213,11 @@ usually remain loaded.
 
 These commands operate at different layers:
 
-| Command     | Layer  | Effect                                      |
-|-------------|--------|---------------------------------------------|
+| Command     | Layer  | Effect                                       |
+|-------------|--------|----------------------------------------------|
 | `:bdelete`  | buffer | removes/unloads content from the buffer list |
-| `:close`    | window | closes one viewport                         |
-| `:tabclose` | tab    | closes one tab page and its window layout   |
+| `:close`    | window | closes one viewport                          |
+| `:tabclose` | tab    | closes one tab page and its window layout    |
 
 Example with `main.go` visible in two splits:
 

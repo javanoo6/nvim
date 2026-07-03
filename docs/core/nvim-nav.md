@@ -25,6 +25,7 @@ Direction model in this config follows Vim defaults: `j = down`, `k = up`.
 | `<C-j>`        | Move to lower window              |
 | `<C-k>`        | Move to upper window              |
 | `<C-l>`        | Move to right window              |
+| `[w` / `]w`    | Previous/next window by cycle     |
 | `<C-w>s`       | Split horizontal                  |
 | `<C-w>v`       | Split vertical                    |
 | `<C-w>c`       | Close window                      |
@@ -58,6 +59,8 @@ Direction model in this config follows Vim defaults: `j = down`, `k = up`.
 | `<C-j>`           | Lower window             |
 | `<C-k>`           | Upper window             |
 | `<C-l>`           | Right window             |
+| `[w`              | Previous window          |
+| `]w`              | Next window              |
 | `<A-j>`           | Move line/selection down |
 | `<A-k>`           | Move line/selection up   |
 | `<S-h>`           | Previous buffer          |

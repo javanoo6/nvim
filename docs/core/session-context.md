@@ -57,6 +57,9 @@ Update this file when:
 - Modifier variants are aligned to the same model where practical:
   `<C-j>` lower window, `<C-k>` upper window, `<A-j>` move line/selection down,
   `<A-k>` move line/selection up.
+- `[w` and `]w` cycle to the previous/next window. They complement spatial
+  window movement on `<C-h/j/k/l>`, while preserving the bracket-prefix pattern
+  used by buffer and tab navigation.
 - Telescope is configured so `<C-j>` means next/down and `<C-k>` means
   previous/up in pickers. See [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:186).
 - Glance is configured consistently: `j` next/down, `k` previous/up. See

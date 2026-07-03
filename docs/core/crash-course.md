@@ -476,6 +476,8 @@ browser-style single-file tab.
 | `<C-j>` | Go to lower window |
 | `<C-k>` | Go to upper window |
 | `<C-l>` | Go to right window |
+| `[w`    | Previous window    |
+| `]w`    | Next window        |
 
 ### Move Buffer to Split
 
