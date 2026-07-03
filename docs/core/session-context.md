@@ -14,6 +14,7 @@ Update this file when:
 - [docs/core/crash-course.md](/home/konkov/.config/nvim/docs/core/crash-course.md:1): practical usage guide
 - [docs/core/plugin-map.md](/home/konkov/.config/nvim/docs/core/plugin-map.md:1): plugin inventory and wiring
 - [docs/core/nvim-nav.md](/home/konkov/.config/nvim/docs/core/nvim-nav.md:1): focused navigation cheat sheet
+- [docs/core/buffers-windows-tabs.md](/home/konkov/.config/nvim/docs/core/buffers-windows-tabs.md:1): buffer/window/tab mental model
 - [docs/git/fix-empty-git-object-lazygit-crash.md](/home/konkov/.config/nvim/docs/git/fix-empty-git-object-lazygit-crash.md:1): LazyGit/Git recovery for empty
   object files
 - [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1): Python venv behavior

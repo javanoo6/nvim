@@ -1,5 +1,19 @@
 # Neovim Navigation Cheatsheet
 
+## Buffer / Window / Tab Model
+
+Detailed reference:
+[buffers-windows-tabs.md](/home/konkov/.config/nvim/docs/core/buffers-windows-tabs.md:1)
+
+```text
+Buffer = loaded text/content
+Window = viewport that shows one buffer
+Tab    = layout that contains one or more windows
+```
+
+Buffers are global to the Neovim session. Tabs contain windows, and each window
+shows one buffer. A tab is a window layout, not a browser-style single-file tab.
+
 ## Window Movement
 
 Direction model in this config follows Vim defaults: `j = down`, `k = up`.

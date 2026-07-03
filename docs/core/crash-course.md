@@ -453,13 +453,28 @@ Select text first, then press `gsa` + bracket/quote:
 
 ## Window Management
 
+Detailed mental model:
+[buffers-windows-tabs.md](/home/konkov/.config/nvim/docs/core/buffers-windows-tabs.md:1)
+
+Core distinction:
+
+```text
+Buffer = loaded text/content
+Window = viewport that shows one buffer
+Tab    = layout that contains one or more windows
+```
+
+Buffers are global to the whole Neovim session. Tabs contain windows, and each
+window displays one buffer. A tab is a split/layout workspace, not a
+browser-style single-file tab.
+
 ### Navigation
 
 | Key     | Action             |
 |---------|--------------------|
 | `<C-h>` | Go to left window  |
-| `<C-j>` | Go to up window    |
-| `<C-k>` | Go to down window  |
+| `<C-j>` | Go to lower window |
+| `<C-k>` | Go to upper window |
 | `<C-l>` | Go to right window |
 
 ### Move Buffer to Split
@@ -494,7 +509,7 @@ Select text first, then press `gsa` + bracket/quote:
 | `<M-Left>` / `<M-Right>` | Resize width (alt)  |
 | `<C-w>=`                 | Equalize windows    |
 | `<C-w>_`                 | Maximize height     |
-| `<C-w>                   | Maximize width      |
+| `<C-w>\|`                | Maximize width      |
 
 ---
 
@@ -1212,6 +1227,9 @@ git commit                 →  finalize merge
 ---
 
 ## Tabs
+
+A Neovim tab is a tab page: a layout containing one or more windows. It shares
+the same global buffer list with every other tab.
 
 | Key                  | Action    |
 |----------------------|-----------|
