@@ -145,25 +145,6 @@ end
 
 map("n", "<leader>bd", delete_current_buffer_keep_window, { desc = "Delete buffer" })
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Alternate buffer" })
-local function move_current_buffer_to_split(split_cmd)
-  local source_win = vim.api.nvim_get_current_win()
-  local source_buf = vim.api.nvim_get_current_buf()
-
-  vim.cmd(split_cmd)
-
-  local target_win = vim.api.nvim_get_current_win()
-  local target_buf = vim.api.nvim_get_current_buf()
-
-  vim.api.nvim_win_set_buf(source_win, target_buf)
-  vim.api.nvim_win_set_buf(target_win, source_buf)
-end
-
-map("n", "<leader>b-", function()
-  move_current_buffer_to_split("new")
-end, { desc = "Move buffer below" })
-map("n", "<leader>b|", function()
-  move_current_buffer_to_split("vnew")
-end, { desc = "Move buffer right" })
 
 -- Loclist navigation (quickfix is handled by trouble.nvim)
 map("n", "[l", "<cmd>lprev<cr>", { desc = "Prev loclist" })

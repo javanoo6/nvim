@@ -89,9 +89,6 @@ Update this file when:
 - Treesitter incremental selection starts from normal mode with `<CR>` or
   `<A-o>`, expands in visual mode with `<CR>`, `<Tab>`, or `<A-o>`, shrinks with
   `<S-Tab>` or `<A-i>`, and moves to the next sibling with `<BS>`.
-- `<leader>b-` and `<leader>b|` do not open a fresh empty split in place.
-  They create the split and move the current buffer into the new lower/right
-  window, leaving the newly created empty buffer behind in the original window.
 - `[<Tab>` and `]<Tab>` switch to the previous and next tab respectively. This
   leaves the existing bracket-prefix mappings such as `[b` and `]b` intact.
 
