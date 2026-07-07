@@ -5,6 +5,9 @@ gui:
     inactiveViewSelectedLineBgColor:
       - "#1f2335"
 
+os:
+  open: '/home/konkov/.config/nvim/scripts/lazygit-open-in-nvim.sh "{{filename}}"'
+
 customCommands:
   - key: "X"
     context: "localBranches"

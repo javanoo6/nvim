@@ -936,6 +936,8 @@ require('util.java_debug').debug_main()        -- Debug main
 | Key     | Action                            |
 |---------|-----------------------------------|
 | `<esc>` | Back / Cancel                     |
+| `o`     | Open file in nvim, close LazyGit  |
+| `e`     | Edit selected file via LazyGit     |
 | `q`     | Quit lazygit                      |
 | `<C-q>` | Exit terminal mode (back to nvim) |
 
@@ -952,6 +954,7 @@ Notes:
 - `X` runs `git fetch --prune` first, then removes local branches whose upstream no longer exists.
 - `X` never deletes the currently checked out branch.
 - `U` can pull from the tracked upstream or an explicitly chosen remote/branch.
+- `o` is overridden through LazyGit `os.open` to open the file in the current Neovim server and close the LazyGit float.
 - These commands are loaded by `lazygit.nvim` from `~/.config/nvim/lazygit/config.yml`.
 
 ### Diffview

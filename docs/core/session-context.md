@@ -404,6 +404,14 @@ Update this file when:
 - LazyGit opens from `<leader>Gg` or the direct alternate shortcut `<A-g>`.
 - LazyGit uses an explicit dark selected-line background in the repo-local
   config so green diff text remains readable while staging hunks from the TUI.
+- LazyGit's `o` open-file action is overridden through `os.open` in the
+  repo-local config. It runs
+  [scripts/lazygit-open-in-nvim.sh](/home/konkov/.config/nvim/scripts/lazygit-open-in-nvim.sh:1),
+  which opens the selected file through the current Neovim `$NVIM` server and
+  then closes the LazyGit float through
+  [lua/util/lazygit_open.lua](/home/konkov/.config/nvim/lua/util/lazygit_open.lua:1).
+  This avoids Linux `xdg-open` / GNOME text editor for changed files while
+  preserving `e` as LazyGit's editor action.
 - Inside LazyGit's terminal buffer, `<A-a>` first sends LazyGit `q` and then
   opens ToggleTerm after LazyGit exits. This prevents stacking the terminal
   float over the LazyGit float.
