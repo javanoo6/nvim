@@ -44,6 +44,5 @@ in `vim.schedule(...)` fixed that upstream.
 
 Current local override files:
 
-- [lua/neotest-java/core/spec_builder/compiler/client_provider.lua](/home/konkov/.config/nvim/lua/neotest-java/core/spec_builder/compiler/client_provider.lua:1)
-- [lua/neotest-java/core/spec_builder/compiler/lsp_compiler.lua](/home/konkov/.config/nvim/lua/neotest-java/core/spec_builder/compiler/lsp_compiler.lua:1)
-- [lua/neotest-java/build_tool/build_tool.lua](/home/konkov/.config/nvim/lua/neotest-java/build_tool/build_tool.lua:1)
+- [lua/neotest-java/core/file_checker.lua](/home/konkov/.config/nvim/lua/neotest-java/core/file_checker.lua:1)
+- [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)

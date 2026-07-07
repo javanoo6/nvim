@@ -57,6 +57,11 @@ back to Neotest method nodes. Because results are produced after the class/file
 command completes, `<leader>ts` can look unchanged until the whole class/file run
 finishes even when the methods themselves ran one by one.
 
+This config carries a local `neotest-java` result-builder override so single
+executed invocations of parameterized methods are matched back to the discovered
+method node. Without that mapping, JUnit output can show the invocation as
+successful while Neotest summary keeps an older failed status for the method.
+
 `<leader>tq` is an opt-in workaround for that visibility issue. It collects the
 discovered `test` nodes under the current file and runs each test node as its
 own Neotest run, waiting for one run to finish before starting the next. This can

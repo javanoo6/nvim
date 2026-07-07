@@ -201,6 +201,10 @@ Update this file when:
   [lua/neotest-java/core/file_checker.lua](/home/konkov/.config/nvim/lua/neotest-java/core/file_checker.lua:1)
   so valid `src/test/java/*Test.java` files are not rejected when the adapter was
   constructed from a stale cwd outside the Java project.
+- `neotest-java` result mapping is locally overridden at
+  [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)
+  so a single executed invocation of a parameterized JUnit method maps back to
+  the Neotest method node instead of leaving a stale failed summary status.
 - Formatter dependency status is exposed as `:FormatterInfo`. The IntelliJ
   formatter bridge now skips itself when `java` or the formatter jar is missing
   instead of failing late during format.
