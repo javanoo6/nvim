@@ -173,11 +173,12 @@ conform.nvim  (formatting.lua)
   — directory formatting implementation lives in util/format_dir.lua and uses fd/fdfind with explicit skip patterns
   — auto-formatting enabled by default (disable with :FormatDisable)
   — format-on-save warns once per unchanged error state when skipped due to LSP errors
-  — format-on-save uses 10000ms for IntelliJ-backed filetypes, 500ms otherwise
+  — format-on-save uses 10000ms for IntelliJ-backed filetypes and Ruby/RuboCop, 500ms otherwise
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
     python     → idea_formatter
+    ruby       → rubocop_rvm
     json       → prettier
     javascript/typescript/javascriptreact/typescriptreact → prettier
     yaml/markdown/java/xml/sh → idea_formatter
@@ -218,6 +219,14 @@ discovery does not depend on the shell `PATH` that launched Neovim
 <leader>pI prompt for custom pip install args
 
 ---
+
+Ruby formatting note:
+
+- `rubocop_rvm` runs through the same RVM/project-root helper as Ruby LSP and
+  linting.
+- Projects with a Gemfile use `bundle exec rubocop -x --force-exclusion`;
+  standalone Ruby files use `rubocop -x --force-exclusion`.
+- RuboCop is expected from the project bundle or selected RVM Ruby, not Mason.
 
 ### 6. UI
 

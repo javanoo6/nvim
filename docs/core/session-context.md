@@ -153,12 +153,16 @@ Update this file when:
 - JavaScript and TypeScript support uses Treesitter for syntax, `ts_ls` for
   LSP, `eslint_d` through `nvim-lint`, and Prettier through Conform for
   `javascript`, `javascriptreact`, `typescript`, and `typescriptreact`.
-- Ruby support uses RVM rather than Mason for gem-backed tooling. Ruby LSP and
-  syntax diagnostics run through the project `.ruby-version`/`.ruby-gemset`
-  when present, otherwise RVM Ruby `3.2.5`. Project `.env` can set
-  `BUNDLE_GEMFILE` for projects whose Gemfile is not at the Ruby root. The
-  helper lives in
+- Ruby support uses RVM rather than Mason for gem-backed tooling. Ruby LSP,
+  syntax diagnostics, and RuboCop formatting run through the project
+  `.ruby-version`/`.ruby-gemset` when present, otherwise RVM Ruby `3.2.5`.
+  Project `.env` can set `BUNDLE_GEMFILE` for projects whose Gemfile is not at
+  the Ruby root. The helper lives in
   [lua/util/ruby.lua](/home/konkov/.config/nvim/lua/util/ruby.lua:1).
+- Ruby formatting uses Conform with RuboCop through RVM. Projects with a Gemfile
+  run `bundle exec rubocop -x --force-exclusion`; standalone Ruby files use
+  `rubocop -x --force-exclusion`. This is layout-only autocorrection on save,
+  not full RuboCop `-a`/`-A` cleanup.
 - Python LSP defaults to Pyright. BasedPyright is installed/configured but
   opt-in through `:PythonLspUseBasedPyright`; use `:PythonLspUsePyright` to
   switch back without changing config files.
@@ -210,7 +214,8 @@ Update this file when:
   that case the write proceeds without format-on-save because Conform skips
   formatting on LSP errors.
 - Format-on-save uses a `10000ms` timeout for filetypes routed through the
-  IntelliJ formatter bridge and `500ms` for other auto-formatted filetypes.
+  IntelliJ formatter bridge and Ruby/RuboCop, and `500ms` for other
+  auto-formatted filetypes.
 - Pyright is configured locally through `vim.lsp.config("pyright", ...)` with
   a resolved Mason absolute binary path, because current `mason-lspconfig`
   auto-enable behavior can otherwise bypass repo-local `cmd` customization.

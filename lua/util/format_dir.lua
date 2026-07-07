@@ -61,6 +61,9 @@ function M.formatter_info()
     "gofumpt: " .. executable("gofumpt"),
     "goimports-reviser: " .. executable("goimports-reviser"),
     "golines: " .. executable("golines"),
+    "ruby formatter: RuboCop through RVM/project bundle (checked per project)",
+    "rvm script: " .. (vim.fn.filereadable(home .. "/.rvm/scripts/rvm") == 1 and home .. "/.rvm/scripts/rvm" or "<missing>"),
+    "zsh: " .. executable("zsh"),
     "fd: " .. (fd_executable() or "<missing>"),
   }
   vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "FormatterInfo" })

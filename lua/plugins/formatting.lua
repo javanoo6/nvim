@@ -2,6 +2,7 @@
 
 -- Formatting: conform.nvim configuration
 local format_skip_notices = {}
+local rubocop_availability = {}
 
 local function notify_format_skipped_for_errors(bufnr, error_count)
   local changedtick = vim.b[bufnr].changedtick or 0
@@ -23,10 +24,38 @@ local idea_formatter_filetypes = {
   java = true,
   markdown = true,
   python = true,
+  ruby = true,
   sh = true,
   xml = true,
   yaml = true,
 }
+
+local function ruby_rubocop_command(ctx)
+  local ruby = require("util.ruby")
+  local root = ruby.root_dir(ctx.filename)
+  local gemfile = ruby.bundle_gemfile_for(ctx.filename)
+  local command = gemfile and "bundle exec rubocop" or "rubocop"
+
+  return ruby.rvm_script(command .. ' -x --force-exclusion "$@"', { root = root, gemfile = gemfile })
+end
+
+local function ruby_rubocop_available(ctx)
+  local ruby = require("util.ruby")
+  local root = ruby.root_dir(ctx.filename)
+  local gemfile = ruby.bundle_gemfile_for(ctx.filename)
+  local command = gemfile and "bundle exec rubocop" or "rubocop"
+  local key = table.concat({ root or "", gemfile or "", command }, "\n")
+
+  if rubocop_availability[key] ~= nil then
+    return rubocop_availability[key]
+  end
+
+  local script = ruby.rvm_script(command .. " --version >/dev/null 2>&1", { root = root, gemfile = gemfile })
+  vim.fn.system({ "zsh", "-lc", script })
+  rubocop_availability[key] = vim.v.shell_error == 0
+
+  return rubocop_availability[key]
+end
 
 local function format_on_save_timeout(bufnr)
   if idea_formatter_filetypes[vim.bo[bufnr].filetype] then
@@ -92,11 +121,33 @@ return {
           command = "golines",
           args = { "--max-len", "120", "--base-formatter", "gofumpt" },
         },
+        rubocop_rvm = {
+          command = "zsh",
+          args = function(_, ctx)
+            return {
+              "-lc",
+              ruby_rubocop_command(ctx),
+              "rubocop-format",
+              "$FILENAME",
+            }
+          end,
+          cwd = function(_, ctx)
+            return require("util.ruby").root_dir(ctx.filename)
+          end,
+          condition = function(_, ctx)
+            return vim.fn.executable("zsh") == 1
+              and vim.fn.filereadable(vim.env.HOME .. "/.rvm/scripts/rvm") == 1
+              and ruby_rubocop_available(ctx)
+          end,
+          exit_codes = { 0, 1 },
+          stdin = false,
+        },
       },
       formatters_by_ft = {
         lua = { "stylua" },
         go = { "gofumpt", "goimports-reviser", "golines" },
         python = { "idea_formatter" },
+        ruby = { "rubocop_rvm" },
         json = { "prettier" },
         javascript = { "prettier" },
         javascriptreact = { "prettier" },
