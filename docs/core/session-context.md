@@ -259,6 +259,10 @@ Update this file when:
 - The local nvim-java JDTLS command/version patch is installed before
   `require("java").setup()` because auto-session can restore Java buffers during
   `VimEnter` and trigger JDTLS startup from inside nvim-java setup.
+- The local custom JDTLS repository is selected by default only when the Java
+  runtime used to launch JDTLS is Java 25 or newer. With the normal Java 21
+  runtime, Neovim falls back to package-managed JDTLS 1.54.0 unless
+  `NVIM_JDTLS_DIR`/`NVIM_JDTLS_VERSION` explicitly override it.
 - `spring-boot.nvim` stays attached on Java buffers. A local patch wraps its
   `workspace/executeClientCommand` bridge so background Spring Boot command
   failures do not surface as `spring-boot: -32603: Internal error.` during Java

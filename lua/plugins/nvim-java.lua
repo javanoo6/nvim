@@ -13,7 +13,7 @@ return {
     local java21_bin = java21_home .. "/bin"
     local java_jdtls = require("util.java_jdtls")
     local java_patches = require("util.java_patches")
-    local jdtls_build = java_jdtls.resolve_local_build()
+    local jdtls_build = java_jdtls.resolve_local_build(java21_home)
     local default_jdtls_version = jdtls_build.default_jdtls_version
     local jdtls_version = jdtls_build.jdtls_version
     local jdtls_dir_override = jdtls_build.jdtls_dir_override

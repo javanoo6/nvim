@@ -1,14 +1,30 @@
 local M = {}
 
-function M.resolve_local_build()
+local function java_major_version(java_home)
+  local java = java_home and (java_home .. "/bin/java") or "java"
+  if vim.fn.executable(java) ~= 1 then
+    java = "java"
+  end
+  if vim.fn.executable(java) ~= 1 then
+    return nil
+  end
+
+  local output = vim.fn.systemlist({ java, "-version" })
+  local first = output and output[1] or ""
+  local major = first:match('version "1%.(%d+)') or first:match('version "(%d+)')
+  return major and tonumber(major) or nil
+end
+
+function M.resolve_local_build(java_home)
   local local_jdtls_dir = "/home/konkov/Desktop/JDTLS/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository"
   local has_local_jdtls = vim.uv.fs_stat(local_jdtls_dir) ~= nil
-  local default_jdtls_version = has_local_jdtls and "local-recordrefactor" or "1.54.0"
+  local supports_local_jdtls = has_local_jdtls and (java_major_version(java_home) or 0) >= 25
+  local default_jdtls_version = supports_local_jdtls and "local-recordrefactor" or "1.54.0"
   local jdtls_version = vim.env.NVIM_JDTLS_VERSION or default_jdtls_version
   local jdtls_dir_override = vim.env.NVIM_JDTLS_DIR
 
   if not jdtls_dir_override or jdtls_dir_override == "" then
-    jdtls_dir_override = has_local_jdtls and local_jdtls_dir or nil
+    jdtls_dir_override = supports_local_jdtls and local_jdtls_dir or nil
   end
 
   return {
