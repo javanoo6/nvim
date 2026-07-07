@@ -256,13 +256,11 @@ Update this file when:
   code in `lua/util/java_*`.
 - Java home resolution prefers `NVIM_JAVA_HOME`, then `JAVA_HOME`, then
   `/usr/lib/jvm/java-21-openjdk-amd64`.
-- The local nvim-java JDTLS command/version patch is installed before
+- The local nvim-java JDTLS JVM-args patch is installed before
   `require("java").setup()` because auto-session can restore Java buffers during
   `VimEnter` and trigger JDTLS startup from inside nvim-java setup.
-- The local custom JDTLS repository is selected by default only when the Java
-  runtime used to launch JDTLS is Java 25 or newer. With the normal Java 21
-  runtime, Neovim falls back to package-managed JDTLS 1.54.0 unless
-  `NVIM_JDTLS_DIR`/`NVIM_JDTLS_VERSION` explicitly override it.
+- JDTLS is package-managed by `nvim-java`; the previous hardcoded local JDTLS
+  repository path/version override was removed after upstream support landed.
 - `spring-boot.nvim` stays attached on Java buffers. A local patch wraps its
   `workspace/executeClientCommand` bridge so background Spring Boot command
   failures do not surface as `spring-boot: -32603: Internal error.` during Java
@@ -312,9 +310,9 @@ Update this file when:
   `java.projectConfiguration.update` for the current Java buffer. Use it after
   changing Maven dependencies in `pom.xml` before reaching for the heavier
   workspace clean path.
-- JDTLS runs with full-document sync (`allow_incremental_sync = false`) because
-  the local custom JDTLS build can assert on incremental `didChange` edits and
-  then report bogus parse errors around otherwise valid Java comments.
+- JDTLS runs with full-document sync (`allow_incremental_sync = false`) to avoid
+  stale in-memory source and bogus parse diagnostics around otherwise valid Java
+  comments.
 - There is an explicit workspace clean command exposed as `<leader>XC`.
 - Java completion already applies JDTLS `additionalTextEdits`, so accepting a
   class completion item can add the matching import. For pasted unresolved class

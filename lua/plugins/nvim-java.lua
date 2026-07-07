@@ -13,14 +13,9 @@ return {
     local java21_bin = java21_home .. "/bin"
     local java_jdtls = require("util.java_jdtls")
     local java_patches = require("util.java_patches")
-    local jdtls_build = java_jdtls.resolve_local_build(java21_home)
-    local default_jdtls_version = jdtls_build.default_jdtls_version
-    local jdtls_version = jdtls_build.jdtls_version
-    local jdtls_dir_override = jdtls_build.jdtls_dir_override
     local java_settings_url = vim.fn.stdpath("config") .. "/jdtls/org.eclipse.jdt.core.prefs"
     local capabilities =
       vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())
-    local debug_log = java_jdtls.make_debug_log()
 
     local function has_root_file(root_dir, name)
       return root_dir and vim.uv.fs_stat(root_dir .. "/" .. name) ~= nil
@@ -46,8 +41,7 @@ return {
       local lines = {
         "JAVA_HOME: " .. java21_home,
         "java: " .. (vim.fn.executable(java21_bin .. "/java") == 1 and (java21_bin .. "/java") or vim.fn.exepath("java")),
-        "JDTLS version: " .. tostring(jdtls_version),
-        "JDTLS dir: " .. (jdtls_dir_override or "package-managed"),
+        "JDTLS dir: package-managed",
         "JDTLS settings: " .. java_settings_url,
         "root: " .. tostring(root_dir),
         "mixed Maven/Gradle root: " .. tostring(prefer_maven),
@@ -68,26 +62,14 @@ return {
       vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "JavaInfo" })
     end, { desc = "Show Java/JDTLS configuration for the current buffer" })
 
-    -- Allow pinning a released JDTLS milestone or pointing at a manually
-    -- unpacked custom build without editing the plugin itself. Default to
-    -- the local JDTLS build when it exists so Neovim uses the patched server.
-    java_jdtls.patch_pkgm_install_dir(jdtls_dir_override)
-    java_jdtls.register_info_command(jdtls_dir_override, jdtls_version)
     -- Install before java.setup(); session restore can open Java buffers during
     -- VimEnter and trigger JDTLS startup from inside nvim-java setup.
-    java_jdtls.patch_jdtls_cmd({
-      default_jdtls_version = default_jdtls_version,
-      jdtls_version = jdtls_version,
-      jdtls_dir_override = jdtls_dir_override,
-    })
+    java_jdtls.patch_jdtls_cmd()
 
     require("java").setup({
       checks = {
         nvim_version = true,
         nvim_jdtls_conflict = true,
-      },
-      jdtls = {
-        version = jdtls_version,
       },
       lombok = { enable = true },
       java_test = { enable = true },
@@ -104,8 +86,7 @@ return {
       },
     })
 
-    -- Guard nvim-java against malformed/empty JDTLS payloads.
-    java_patches.apply_refactor_patches(debug_log)
+    java_patches.apply_runtime_patches()
 
     vim.lsp.config("jdtls", {
       capabilities = capabilities,
@@ -128,9 +109,6 @@ return {
         params.initializationOptions.settings = vim.deepcopy(config.settings)
       end,
       flags = {
-        -- The local JDTLS build can assert while applying incremental
-        -- textDocument/didChange edits, which leaves its in-memory source out
-        -- of sync and produces bogus parse diagnostics around comments.
         allow_incremental_sync = false,
       },
       cmd_env = {

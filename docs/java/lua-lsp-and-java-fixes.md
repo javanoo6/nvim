@@ -10,13 +10,13 @@ Problem:
 - `nvim-java` assumed the response was always a table.
 - Result: `bad argument #1 to 'ipairs' (table expected, got nil)`.
 
-Local behavior:
+Current status:
 
-- runtime patch guards the `nvim-java` rename path
-- empty or invalid rename responses become a warning instead of a Lua stack
-  trace
+- removed after the `nvim-java` update that fixed the rename dispatch path
+- Java runtime patches that remain are documented in
+  [docs/java/nvim-java-patches.md](/home/konkov/.config/nvim/docs/java/nvim-java-patches.md:1)
 
-Relevant file:
+Historical file:
 
 - [lua/util/java_patches.lua](/home/konkov/.config/nvim/lua/util/java_patches.lua:1)
 
