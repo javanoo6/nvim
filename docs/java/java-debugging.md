@@ -38,12 +38,13 @@ Useful health/log commands:
 ```vim
 :JavaInfo
 :checkhealth java
-:LspLog
+<leader>ll
 ```
 
-Log path:
+Log paths:
 
 ```text
+~/.local/state/nvim/lsp.log
 ~/.local/state/nvim/nvim-java.log
 ```
 

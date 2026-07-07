@@ -576,8 +576,8 @@ This shows what mapping owns the key.
 For language-server behavior:
 
 ```vim
-:LspLog
-:lua print(vim.lsp.get_log_path())
+<leader>ll
+:lua print(vim.lsp.log.get_filename())
 ```
 
 ### What to debug first

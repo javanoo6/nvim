@@ -60,6 +60,16 @@ return {
         vim.cmd("checkhealth vim.lsp")
       end
 
+      local function open_lsp_log()
+        local log_path = vim.lsp.log.get_filename()
+        if not log_path or log_path == "" then
+          vim.notify("LSP log path is unavailable", vim.log.levels.WARN)
+          return
+        end
+
+        vim.cmd.edit(vim.fn.fnameescape(log_path))
+      end
+
       local function rename_symbol()
         local original_handler = vim.lsp.handlers["textDocument/rename"]
         local restored = false
@@ -174,7 +184,7 @@ return {
       -- LSP server management
       map("n", "<leader>lr", "<cmd>LspRestart<cr>", { desc = "Restart LSP" })
       map("n", "<leader>li", show_lsp_info, { desc = "LSP info" })
-      map("n", "<leader>ll", "<cmd>LspLog<cr>", { desc = "LSP log" })
+      map("n", "<leader>ll", open_lsp_log, { desc = "LSP log" })
 
       local capabilities =
         vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())

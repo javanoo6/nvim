@@ -220,6 +220,9 @@ Update this file when:
   a resolved Mason absolute binary path, because current `mason-lspconfig`
   auto-enable behavior can otherwise bypass repo-local `cmd` customization.
   `:PyrightInfo` shows the exact command the current session will use.
+- `<leader>ll` opens `vim.lsp.log.get_filename()` directly instead of calling
+  `:LspLog`, because this Neovim runtime does not provide a built-in `:LspLog`
+  command.
 - Remaining `:checkhealth` warnings after the audit are optional: Mason reports
   missing ecosystem runtimes for unconfigured PHP/Julia/luarocks workflows, and
   which-key reports optional `mini.icons` is absent while this config uses
