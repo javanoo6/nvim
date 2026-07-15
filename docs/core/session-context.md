@@ -197,6 +197,13 @@ Update this file when:
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached
   results, limited to the active test scope/project root.
+- Neotest output rendering is guarded by
+  [lua/util/neotest_output_guard.lua](/home/konkov/.config/nvim/lua/util/neotest_output_guard.lua:1).
+  Upstream `output` and `output_panel` read each result output file fully before
+  sending it to a terminal buffer, which can freeze Neovim on very large Java
+  test output. The local guard caps rendered output to
+  `vim.g.neotest_output_max_bytes` or 2 MiB by default, shows the beginning and
+  end, and keeps the full temp-file path visible.
 - `neotest-java` file detection is locally overridden at
   [lua/neotest-java/core/file_checker.lua](/home/konkov/.config/nvim/lua/neotest-java/core/file_checker.lua:1)
   so valid `src/test/java/*Test.java` files are not rejected when the adapter was

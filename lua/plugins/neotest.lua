@@ -166,6 +166,8 @@ return {
       },
     },
     config = function()
+      require("util.neotest_output_guard").install()
+
       require("neotest").setup({
         discovery = {
           filter_dir = scope.scoped_discovery_filter,
