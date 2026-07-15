@@ -132,6 +132,7 @@ function M.with_scope(run_fn)
     local scope = M.activate_scope(M.current_scope(source_buf))
     local ctx = {
       bufnr = source_buf,
+      cursor = vim.api.nvim_win_get_cursor(0),
       path = scope and scope.path or vim.api.nvim_buf_get_name(source_buf),
       scope = scope,
     }
@@ -290,6 +291,38 @@ local function ensure_current_file_discovered(path)
   end
 
   client:_update_positions(path, { adapter = adapter_id })
+end
+
+function M.run_nearest(ctx, args)
+  local path = ctx and ctx.path or vim.api.nvim_buf_get_name(0)
+  if path == "" then
+    require("neotest").run.run(args)
+    return
+  end
+
+  path = normalize(path)
+  local row = ctx and ctx.cursor and (ctx.cursor[1] - 1) or (vim.fn.line(".") - 1)
+
+  require("nio").run(function()
+    ensure_current_file_discovered(path)
+
+    local client = neotest_client()
+    local tree, adapter_id = nil, nil
+    if client then
+      tree, adapter_id = client:get_nearest(path, row, args or {})
+    end
+
+    if not tree then
+      vim.notify("No tests found", vim.log.levels.WARN, { title = "neotest" })
+      return
+    end
+
+    local run_args = vim.tbl_extend("force", args or {}, {
+      tree:data().id,
+      adapter = adapter_id,
+    })
+    require("neotest").run.run(run_args)
+  end)
 end
 
 function M.run_current_file(ctx)

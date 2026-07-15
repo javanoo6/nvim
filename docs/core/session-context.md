@@ -334,6 +334,10 @@ Update this file when:
   `<leader>tt`, `<leader>tf`, `<leader>tp`, and `<leader>tP` aimed at the test
   file that had focus when the key was pressed, even when split/UI window changes
   leave another buffer visible or current.
+- `<leader>tr` and `<leader>td` also capture the source cursor before opening
+  the Neotest summary. They resolve the nearest test from that original
+  buffer/line instead of relying on Neotest's no-argument `run.run()`, because
+  the summary split becomes current before the run starts.
 - The Neotest summary window uses the repo-local opener in
   [lua/util/neotest_summary.lua](/home/konkov/.config/nvim/lua/util/neotest_summary.lua:1):
   it opens as a right-side vertical split sized to one third of the screen by

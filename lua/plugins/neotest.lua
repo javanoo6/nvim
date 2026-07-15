@@ -46,15 +46,15 @@ return {
       },
       {
         "<leader>tr",
-        scope.with_scope(function()
-          require("neotest").run.run()
+        scope.with_scope(function(ctx)
+          scope.run_nearest(ctx)
         end),
         desc = "Run Nearest",
       },
       {
         "<leader>td",
-        scope.with_scope(function()
-          require("neotest").run.run({ strategy = "dap" })
+        scope.with_scope(function(ctx)
+          scope.run_nearest(ctx, { strategy = "dap" })
         end),
         desc = "Debug Nearest",
       },
