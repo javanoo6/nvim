@@ -1,6 +1,46 @@
 -- Automatic session management
 -- Saves and restores your editing session (open files, splits, cursor position, etc.)
 
+local function scrub_invalid_local_options()
+  local ok, auto_session = pcall(require, "auto-session")
+  if not ok or type(auto_session.get_root_dir) ~= "function" then
+    return
+  end
+
+  local session_files = vim.fn.globpath(auto_session.get_root_dir(), "*.vim", false, true)
+  for _, session_file in ipairs(session_files) do
+    local lines = vim.fn.readfile(session_file)
+    local has_saved_winminheight = false
+    local has_saved_winminwidth = false
+
+    for _, line in ipairs(lines) do
+      if line:match("^let s:save_winminheight = ") then
+        has_saved_winminheight = true
+      elseif line:match("^let s:save_winminwidth = ") then
+        has_saved_winminwidth = true
+      end
+    end
+
+    local changed = false
+    local scrubbed = {}
+
+    for _, line in ipairs(lines) do
+      local orphaned_winminheight_restore = line:match("^let &winminheight = s:save_winminheight$") and not has_saved_winminheight
+      local orphaned_winminwidth_restore = line:match("^let &winminwidth = s:save_winminwidth$") and not has_saved_winminwidth
+
+      if line:match("^setlocal includeformatexpr=") or orphaned_winminheight_restore or orphaned_winminwidth_restore then
+        changed = true
+      else
+        table.insert(scrubbed, line)
+      end
+    end
+
+    if changed then
+      vim.fn.writefile(scrubbed, session_file)
+    end
+  end
+end
+
 return {
   "rmagatti/auto-session",
   lazy = false, -- Must not be lazy loaded to handle the first file argument properly
@@ -27,6 +67,13 @@ return {
     -- Git branch restores swap the buffer/session state; stop attached LSPs so
     -- restored buffers attach fresh clients for the branch contents.
     lsp_stop_on_restore = true,
+
+    pre_restore_cmds = {
+      scrub_invalid_local_options,
+    },
+    post_save_cmds = {
+      scrub_invalid_local_options,
+    },
 
     -- Logging
     log_level = "error",
