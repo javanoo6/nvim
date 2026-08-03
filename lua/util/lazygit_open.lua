@@ -19,4 +19,9 @@ function M.close_lazygit()
   vim.g.lazygit_opened = 0
 end
 
+function M.open_file(path)
+  M.close_lazygit()
+  vim.cmd.edit(vim.fn.fnameescape(path))
+end
+
 return M

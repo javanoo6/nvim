@@ -8,9 +8,13 @@ case "$file" in
   *) path=$(pwd)/$file ;;
 esac
 
-close_lazygit() {
-  [ -n "${NVIM:-}" ] || return 0
-  nvim --server "$NVIM" --remote-send '<Cmd>lua require("util.lazygit_open").close_lazygit()<CR>' >/dev/null 2>&1 || true
+vim_string_literal() {
+  printf "%s" "$1" | sed "s/'/''/g"
+}
+
+open_in_nvim() {
+  escaped_path=$(vim_string_literal "$path")
+  nvim --server "$NVIM" --remote-expr "luaeval('require(\"util.lazygit_open\").open_file(_A)', '$escaped_path')" >/dev/null
 }
 
 kill_lazygit_ancestor() {
@@ -26,8 +30,7 @@ kill_lazygit_ancestor() {
 }
 
 if [ -n "${NVIM:-}" ]; then
-  nvim --server "$NVIM" --remote-tab-silent "$path"
-  close_lazygit
+  open_in_nvim
   kill_lazygit_ancestor
 else
   nvim -- "$path"
