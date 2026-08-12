@@ -5,3 +5,7 @@ globals:
     any: true
   package.config:
     any: true
+  LAZYGIT_BUFFER:
+    any: true
+  LAZYGIT_LOADED:
+    any: true
