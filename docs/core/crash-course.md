@@ -933,13 +933,13 @@ require('util.java_debug').debug_main()        -- Debug main
 
 **Inside LazyGit window:**
 
-| Key     | Action                            |
-|---------|-----------------------------------|
-| `<esc>` | Back / Cancel                     |
-| `o`     | Open file in nvim, close LazyGit  |
-| `e`     | Edit selected file via LazyGit     |
-| `q`     | Quit lazygit                      |
-| `<C-q>` | Exit terminal mode (back to nvim) |
+| Key     | Action                                    |
+|---------|-------------------------------------------|
+| `<esc>` | Back / Cancel                             |
+| `o`     | Open file in same nvim tab, close LazyGit |
+| `e`     | Edit selected file via LazyGit            |
+| `q`     | Quit lazygit                              |
+| `<C-q>` | Exit terminal mode (back to nvim)         |
 
 **Custom LazyGit commands:**
 
