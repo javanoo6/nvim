@@ -1353,13 +1353,14 @@ Notes:
 
 ## Miscellaneous
 
-| Key          | Action                 |
-|--------------|------------------------|
-| `<leader>fn` | New file               |
-| `<leader>U`  | Undotree toggle        |
-| `<leader>Pl` | Open Lazy              |
-| `<leader>Xh` | Rehighlight treesitter |
-| `<leader>XC` | Clean JDTLS workspace  |
+| Key          | Action                         |
+|--------------|--------------------------------|
+| `<leader>fn` | New file                       |
+| `<leader>U`  | Undotree toggle                |
+| `<leader>Pl` | Open Lazy                      |
+| `<leader>Xh` | Rehighlight treesitter         |
+| `<leader>XC` | Clean JDTLS workspace          |
+| `<leader>XJ` | Clean corrupt JDTLS workspaces |
 
 ---
 

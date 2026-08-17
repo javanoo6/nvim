@@ -52,6 +52,7 @@ local util = require("util")
 local map = util.map
 local inlay_hints = require("util.inlay_hints")
 local java_field_usages = require("util.java_field_usages")
+local java_jdtls_cache = require("util.java_jdtls_cache")
 local java_project_config = require("util.java_project_config")
 local java_project_init = require("util.java_project_init")
 local live_hunks = require("util.live_hunks")
@@ -62,6 +63,7 @@ local conflict_markers = require("util.conflict_markers")
 -- frequent_roots.setup()
 java_project_config.register_commands()
 java_project_init.register_commands()
+java_jdtls_cache.register_commands()
 live_hunks.setup()
 conflict_markers.setup()
 
@@ -342,6 +344,9 @@ map("n", "<leader>XC", function()
   end
   vim.notify("nvim-java workspace clean API is unavailable", vim.log.levels.ERROR)
 end, { desc = "Clean JDTLS workspace" })
+map("n", "<leader>XJ", function()
+  java_jdtls_cache.clean_corrupt_workspaces()
+end, { desc = "Clean corrupt JDTLS workspaces" })
 
 -- Keep cursor centered when scrolling/jumping
 map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })

@@ -120,6 +120,12 @@ Update this file when:
   different session, including Git branch auto-restores. Restored buffers then
   attach fresh clients for the branch contents instead of carrying old workspace
   state across branches.
+- `auto-session` scrubs invalid `setlocal includeformatexpr=...` lines from
+  saved session files, plus orphaned `winminheight`/`winminwidth` restore lines
+  whose saved script-local variables are absent, before restore and after save.
+  This keeps `sessionoptions+=localoptions` enabled while avoiding restore
+  failures from stale or plugin-generated session state that Neovim does not
+  recognize.
 - Neo-tree `Y` copies the selected absolute path to the `+` clipboard register
   when available and falls back to the unnamed register with a warning when the
   system clipboard is unavailable.
@@ -212,6 +218,11 @@ Update this file when:
   [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)
   so a single executed invocation of a parameterized JUnit method maps back to
   the Neotest method node instead of leaving a stale failed summary status.
+- `neotest-java` Java binary resolution is locally overridden at
+  [lua/neotest-java/command/binaries.lua](/home/konkov/.config/nvim/lua/neotest-java/command/binaries.lua:1)
+  so a missing JDTLS `org.eclipse.jdt.ls.core.vm.location` response falls back
+  to `NVIM_JAVA_HOME`, `JAVA_HOME`, the resolved `java` executable, or the local
+  Java 21 default instead of crashing in `Path(nil)`.
 - Formatter dependency status is exposed as `:FormatterInfo`. The IntelliJ
   formatter bridge now skips itself when `java` or the formatter jar is missing
   instead of failing late during format.
@@ -325,6 +336,11 @@ Update this file when:
   stale in-memory source and bogus parse diagnostics around otherwise valid Java
   comments.
 - There is an explicit workspace clean command exposed as `<leader>XC`.
+- `:JavaCleanCorruptWorkspaces` scans the Neovim LSP log for Eclipse/JDTLS
+  workspace corruption signatures, then quarantines matching
+  `stdpath("cache")/jdtls/workspace/proj_*` directories. Use
+  `:JavaCleanCorruptWorkspaces!` to delete instead of rename, or `<leader>XJ`
+  for the quarantine path. Active JDTLS workspaces are skipped.
 - Java completion already applies JDTLS `additionalTextEdits`, so accepting a
   class completion item can add the matching import. For pasted unresolved class
   names, `<leader>ci` imports the symbol under the cursor, auto-applying a
@@ -432,9 +448,10 @@ Update this file when:
 - LazyGit's `o` open-file action is overridden through `os.open` in the
   repo-local config. It runs
   [scripts/lazygit-open-in-nvim.sh](/home/konkov/.config/nvim/scripts/lazygit-open-in-nvim.sh:1),
-  which opens the selected file through the current Neovim `$NVIM` server and
-  then closes the LazyGit float through
-  [lua/util/lazygit_open.lua](/home/konkov/.config/nvim/lua/util/lazygit_open.lua:1).
+  which closes the LazyGit float through
+  [lua/util/lazygit_open.lua](/home/konkov/.config/nvim/lua/util/lazygit_open.lua:1)
+  and opens the selected file with `:edit` through the current Neovim `$NVIM`
+  server in the same tab/window context instead of a new tab.
   This avoids Linux `xdg-open` / GNOME text editor for changed files while
   preserving `e` as LazyGit's editor action.
 - Inside LazyGit's terminal buffer, `<A-a>` first sends LazyGit `q` and then
