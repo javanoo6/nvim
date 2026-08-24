@@ -1156,6 +1156,7 @@ git commit                 →  finalize merge
 | `<leader>Ghp` | Preview hunk      |
 | `<leader>Ghb` | Blame line (full) |
 | `<leader>GhB` | Toggle blame      |
+| `<leader>GhF` | Blame file        |
 | `<leader>Ghd` | Diff this         |
 | `<leader>Ghw` | Toggle word diff  |
 | `<leader>Ghl` | Toggle line hl    |

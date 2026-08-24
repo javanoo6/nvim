@@ -342,7 +342,7 @@ git.lua
 | `<leader>GhS/GhR`     | Stage / reset buffer                  |
 | `<leader>Ghu`         | Undo stage                            |
 | `<leader>Ghp`         | Preview hunk                          |
-| `<leader>Ghb/GhB`     | Blame line / toggle                   |
+| `<leader>Ghb/GhB/GhF` | Blame line / toggle / file            |
 | `<leader>Ghd`         | Diff this                             |
 | `<leader>Ghw/Ghl/Ghv` | Word diff / line hl / deleted toggles |
 

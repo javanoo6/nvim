@@ -154,6 +154,7 @@ return {
           gs.blame_line({ full = true })
         end, { desc = "Blame line" })
         map("n", "<leader>GhB", gs.toggle_current_line_blame, { desc = "Toggle blame" })
+        map("n", "<leader>GhF", gs.blame, { desc = "Blame file" })
         map("n", "<leader>Ghd", gs.diffthis, { desc = "Diff this" })
 
         -- Toggles
