@@ -381,7 +381,8 @@ first use.
 ```
 dap.lua
   nvim-dap  ── core debugger
-    ├── nvim-dap-ui           ── debug UI panels  →  <leader>du toggle, <leader>dU keep open, <leader>de eval
+    ├── nvim-dap-ui           ── debug UI panels  →  opens on debug start, closes on session exit,
+    │                            <leader>du toggle, <leader>dU keep open, <leader>de eval
     │     └── nvim-nio        ── async I/O
     ├── nvim-dap-virtual-text ── inline variable values (masks secrets)
     ├── nvim-dap-go           ── Go adapter (delve)  →  <leader>dgt, <leader>dgl
@@ -390,9 +391,9 @@ dap.lua
 Java DAP is provided by nvim-java (java_debug_adapter = true)
 ```
 
-**DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, C run-to-cursor, g goto line without executing, i step-into, j down stack frame, k up stack
-frame, l run last, O step-over, o step-out, p pause, r REPL, s session, t terminate, w widgets, u UI, U keep UI open on exit, e eval, gt debug Go test, gl
-debug last Go test
+**DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, C run-to-cursor, f focus current frame, g goto line without executing, i step-into, j down stack
+frame, k up stack frame, l run last, O step-over, o step-out, p pause, r REPL, s session, t terminate, w widgets, u UI, U keep UI open on exit, e eval, gt debug
+Go test, gl debug last Go test
 
 ---
 
@@ -438,7 +439,8 @@ vim.g.lspconfig_jdtls_enabled = false  (options.lua)
 JVM: -Xms2G / -Xmx8G  (prevents OOM on refactoring)
 ```
 
-**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote
+**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jtm debug test method via nvim-java,
+jtc debug test class via nvim-java, jta debug all tests via nvim-java
 
 ---
 

@@ -59,6 +59,7 @@ return {
         { "<leader>l", group = "lsp" },
         { "<leader>L", group = "leetcode" },
         { "<leader>j", group = "java" },
+        { "<leader>jt", group = "java test" },
         { "<leader>o", group = "oil" },
         { "<leader>O", group = "obsidian" },
         { "<leader>p", group = "python" },

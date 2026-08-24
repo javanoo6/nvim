@@ -799,8 +799,9 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 |---------------|----------------------------|
 | `<leader>db`  | Toggle breakpoint          |
 | `<leader>dB`  | Breakpoint with condition  |
-| `<leader>dc`  | Continue / Start debugging |
+| `<leader>dc`  | Continue active session    |
 | `<leader>dC`  | Run to cursor              |
+| `<leader>df`  | Focus current frame        |
 | `<leader>di`  | Step into                  |
 | `<leader>do`  | Step out                   |
 | `<leader>dO`  | Step over                  |
@@ -856,6 +857,9 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>jc` | Stop Main          |
 | `<leader>jl` | Toggle Runner Logs |
 | `<leader>ja` | Attach Remote JVM  |
+| `<leader>jtm` | Debug Test Method |
+| `<leader>jtc` | Debug Test Class  |
+| `<leader>jta` | Debug All Tests   |
 
 `:JavaInitProject [dir]` prompts for Maven/Gradle, project directory, artifact,
 group id, and package, then opens the generated `Main.java`.
@@ -895,6 +899,9 @@ a debug server on a port, and nvim-dap connects to it.
 | `:JavaTestDebugCurrentMethod` | Debug test method under cursor   |
 | `:JavaTestDebugCurrentClass`  | Debug entire test class          |
 | `:JavaTestDebugAllTests`      | Debug all tests in workspace     |
+| `<leader>jtm`                 | Debug test method via nvim-java  |
+| `<leader>jtc`                 | Debug test class via nvim-java   |
+| `<leader>jta`                 | Debug all tests via nvim-java    |
 | `<leader>jd`                  | Debug main class/Spring Boot app |
 
 **Via Lua API** (if you want custom keybindings):

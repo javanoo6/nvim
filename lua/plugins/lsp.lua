@@ -351,6 +351,15 @@ return {
       map("n", "<leader>jc", java_runner.stop_main, { desc = "Stop Main" })
       map("n", "<leader>jl", java_runner.toggle_logs, { desc = "Toggle Runner Logs" })
       map("n", "<leader>ja", java_debug.attach_remote, { desc = "Attach Remote JVM" })
+      map("n", "<leader>jtm", function()
+        require("java").test.debug_current_method()
+      end, { desc = "Debug Test Method" })
+      map("n", "<leader>jtc", function()
+        require("java").test.debug_current_class()
+      end, { desc = "Debug Test Class" })
+      map("n", "<leader>jta", function()
+        vim.cmd("JavaTestDebugAllTests")
+      end, { desc = "Debug All Tests" })
     end,
   },
 

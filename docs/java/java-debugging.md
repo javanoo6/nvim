@@ -97,6 +97,16 @@ Raw `nvim-java` test commands are still available when needed:
 :JavaTestDebugAllTests
 ```
 
+Mapped native `nvim-java` debug shortcuts:
+
+| Key           | Action                            |
+|---------------|-----------------------------------|
+| `<leader>jtm` | debug current test method         |
+| `<leader>jtc` | debug current test class          |
+| `<leader>jta` | debug all tests in the workspace  |
+
+These still use `nvim-dap`, so the same DAP UI and `<leader>d*` controls apply.
+
 ## DAP Controls
 
 These work once a debug session is active:
@@ -107,6 +117,7 @@ These work once a debug session is active:
 | `<leader>dB` | conditional breakpoint              |
 | `<leader>dc` | continue                            |
 | `<leader>dC` | run to cursor                       |
+| `<leader>df` | focus current frame                 |
 | `<leader>di` | step into                           |
 | `<leader>dO` | step over                           |
 | `<leader>do` | step out                            |
@@ -122,7 +133,13 @@ These work once a debug session is active:
 | `<leader>dw` | DAP hover widget                    |
 
 DAP UI opens automatically when a session starts and closes when the session
-terminates or exits.
+terminates or exits by default.
+`<leader>dc` only continues an active session; use `<leader>dl` to rerun the
+last session if the debuggee has already exited.
+
+Java stepping can enter JDK/decompiled `jdt://` buffers. DAP source jumps are
+configured to keep those buffers in a normal source window instead of replacing
+DAP UI panes.
 
 ## Remote JVM Attach
 
@@ -160,7 +177,8 @@ main-class discovery follows the Maven project model.
 1. Open the test file.
 2. Put the cursor inside the test method.
 3. Set breakpoints with `<leader>db`.
-4. Press `<leader>td` to debug nearest test.
+4. Press `<leader>td` to debug nearest test through Neotest, or `<leader>jtm`
+   to debug the current method through native `nvim-java`.
 5. Use DAP controls once the session starts.
 
 For a whole file or package, use `<leader>tf` or `<leader>tP`.

@@ -142,6 +142,13 @@ return {
             -- when Maven artifacts publish -sources.jar files.
             downloadSources = true,
           },
+          debug = {
+            settings = {
+              debugSupportOnDecompiledSource = "on",
+              showLogicalStructure = false,
+              showToString = false,
+            },
+          },
           referencesCodeLens = {
             enabled = true,
           },

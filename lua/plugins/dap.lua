@@ -32,7 +32,15 @@ return {
       {
         "<leader>dc",
         function()
-          require("dap").continue()
+          local dap = require("dap")
+          local session = dap.session() or select(2, next(dap.sessions()))
+          if not session then
+            vim.notify("No active DAP session. Use <leader>dl to run the last debug session.", vim.log.levels.INFO, { title = "DAP" })
+            return
+          end
+
+          dap.set_session(session)
+          dap.continue()
         end,
         desc = "Continue",
       },
@@ -42,6 +50,33 @@ return {
           require("dap").run_to_cursor()
         end,
         desc = "Run to Cursor",
+      },
+      {
+        "<leader>df",
+        function()
+          local dap = require("dap")
+          local session = dap.session()
+
+          if not (session and session.stopped_thread_id) then
+            for _, candidate in pairs(dap.sessions()) do
+              if candidate.stopped_thread_id then
+                session = candidate
+                break
+              end
+            end
+          end
+
+          session = session or dap.session() or select(2, next(dap.sessions()))
+          if not session then
+            vim.notify("No active DAP session. Use <leader>dl to run the last debug session.", vim.log.levels.INFO, { title = "DAP" })
+            return
+          end
+
+          dap.set_session(session)
+          require("dapui").open()
+          dap.focus_frame()
+        end,
+        desc = "Focus Frame",
       },
       {
         "<leader>dg",
@@ -147,6 +182,75 @@ return {
       local dap = require("dap")
       local dapui = require("dapui")
 
+      local dapui_filetypes = {
+        ["dap-repl"] = true,
+        dapui_breakpoints = true,
+        dapui_console = true,
+        dapui_scopes = true,
+        dapui_stacks = true,
+        dapui_watches = true,
+      }
+
+      local function is_dapui_window(win)
+        local ok, buf = pcall(vim.api.nvim_win_get_buf, win)
+        if not ok then
+          return false
+        end
+
+        return dapui_filetypes[vim.bo[buf].filetype] == true
+      end
+
+      local function is_source_window(win)
+        local ok, buf = pcall(vim.api.nvim_win_get_buf, win)
+        if not ok or is_dapui_window(win) then
+          return false
+        end
+
+        local source_ok, is_dap_source = pcall(vim.api.nvim_buf_get_var, buf, "dap_source_buf")
+        return (source_ok and is_dap_source) or vim.bo[buf].buftype == ""
+      end
+
+      dap.defaults.fallback.switchbuf = function(bufnr, line, column)
+        if column == 0 then
+          column = 1
+        end
+
+        local target_win = nil
+        local current_win = vim.api.nvim_get_current_win()
+        if is_source_window(current_win) then
+          target_win = current_win
+        end
+
+        if not target_win then
+          local previous_win = vim.fn.win_getid(vim.fn.winnr("#"))
+          if previous_win ~= 0 and is_source_window(previous_win) then
+            target_win = previous_win
+          end
+        end
+
+        if not target_win then
+          for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+            if is_source_window(win) then
+              target_win = win
+              break
+            end
+          end
+        end
+
+        if not target_win then
+          if is_dapui_window(current_win) then
+            vim.cmd("vsplit")
+            target_win = vim.api.nvim_get_current_win()
+          else
+            target_win = current_win
+          end
+        end
+
+        vim.api.nvim_set_current_win(target_win)
+        vim.api.nvim_win_set_buf(target_win, bufnr)
+        pcall(vim.api.nvim_win_set_cursor, target_win, { line, math.max(column - 1, 0) })
+      end
+
       local sensitive_dap_terms = {
         "secret",
         "api_key",
@@ -187,6 +291,9 @@ return {
 
       -- Open/Close dapui automatically
       dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.after.event_stopped["dapui_config"] = function()
         dapui.open()
       end
       dap.listeners.before.event_terminated["dapui_config"] = function()

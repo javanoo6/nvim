@@ -205,6 +205,14 @@ Update this file when:
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached
   results, limited to the active test scope/project root.
+- DAP UI opens automatically when a debug session starts and closes when the
+  session terminates or exits by default. `<leader>dU` toggles keeping DAP UI
+  open after session exit for final-state inspection. DAP source jumps use
+  `usevisible,uselast` so stopped locations prefer an existing source window,
+  and `<leader>df` reselects a stopped session, reopens DAP UI, and focuses the
+  current debug frame after switching buffers. DAP source jumps use a local
+  switch-buffer function that avoids replacing DAP UI panes, so stepping into
+  Java `jdt://` decompiled sources keeps the debug layout intact.
 - Neotest output rendering is guarded by
   [lua/util/neotest_output_guard.lua](/home/konkov/.config/nvim/lua/util/neotest_output_guard.lua:1).
   Upstream `output` and `output_panel` read each result output file fully before
@@ -220,6 +228,13 @@ Update this file when:
   [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)
   so a single executed invocation of a parameterized JUnit method maps back to
   the Neotest method node instead of leaving a stale failed summary status.
+- `neotest-java` DAP spec building is locally wrapped at
+  [lua/neotest-java/core/spec_builder/init.lua](/home/konkov/.config/nvim/lua/neotest-java/core/spec_builder/init.lua:1)
+  to normalize Java attach configs. The Java debug adapter used here requires
+  `hostName` for attach; without it, attach attempts can show as `null:<port>`.
+  The wrapper removes upstream's guessed `projectName` because it can differ
+  from JDTLS' actual project name in multi-module/demo repos and make variable
+  rendering fail with `Project <name> cannot be found`.
 - `neotest-java` Java binary resolution is locally overridden at
   [lua/neotest-java/command/binaries.lua](/home/konkov/.config/nvim/lua/neotest-java/command/binaries.lua:1)
   so a missing JDTLS `org.eclipse.jdt.ls.core.vm.location` response falls back
