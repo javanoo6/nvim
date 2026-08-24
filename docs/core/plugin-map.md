@@ -285,7 +285,7 @@ editor.lua
   │       Maven/Gradle source roots when available
   │
   ├── neo-tree.nvim           ── file explorer (<leader>e cwd, <leader>E root)
-  │     ├── native preview mode  ── `P` float preview, `l` focus, `<C-f>`/`<C-b>` scroll
+  │     ├── native preview mode  ── `P` float preview, `l` focus, `<C-d>`/`<C-u>` scroll
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in
   │     ├── open mappings reveal current file by default; `<leader>ue` toggles that session-local behavior
   │     ├── `Y` copies absolute path with unnamed-register fallback when clipboard is unavailable
@@ -366,6 +366,7 @@ git.lua
 | `<leader>GC` | Find committed conflict markers |
 | `<leader>GQ` | Finish `git mergetool`          |
 | `<leader>GA` | Abort `git mergetool`           |
+| `<leader>Gb` | Diff vs branch/ref              |
 | `<leader>Gm` | Diff vs main/master             |
 | `<leader>GM` | Diff vs origin/main             |
 | `<leader>Gq` | Close Diffview                  |
@@ -389,7 +390,9 @@ dap.lua
 Java DAP is provided by nvim-java (java_debug_adapter = true)
 ```
 
-**DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, i step-into, O step-over, o step-out, r REPL, u UI, U keep UI open on exit, e eval, t terminate
+**DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, C run-to-cursor, g goto line without executing, i step-into, j down stack frame, k up stack
+frame, l run last, O step-over, o step-out, p pause, r REPL, s session, t terminate, w widgets, u UI, U keep UI open on exit, e eval, gt debug Go test, gl
+debug last Go test
 
 ---
 
@@ -399,14 +402,14 @@ Java DAP is provided by nvim-java (java_debug_adapter = true)
 neotest.lua
   neotest
     ├── neotest-java    ── Maven/Gradle test runner
-    ├── neotest-go      ── Go test runner
+    ├── neotest-golang  ── Go test runner
     └── neotest-python  ── Python test runner
   util/neotest_scope.lua ── scoped discovery + file/package target helpers
 ```
 
-**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, tp run package, tq run file tests sequentially, tl last, tF run failed, ts summary, to
-output, tO output panel, tS stop (interactive
-picker), tw watch
+**Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, td debug nearest, tp run package, tP debug package, tq run file tests sequentially,
+tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, ts summary, to output, tO output panel, tc clear output panel, tS stop
+(interactive), tw watch
 
 ---
 
@@ -432,11 +435,10 @@ util/java_project_config.lua
 
 lsp.lua excludes jdtls from mason-lspconfig (nvim-java owns it)
 vim.g.lspconfig_jdtls_enabled = false  (options.lua)
-JVM: -Xms1g / -Xmx4g  (prevents OOM on refactoring)
+JVM: -Xms2G / -Xmx8G  (prevents OOM on refactoring)
 ```
 
-**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jt test class, jm test
-method, jv view report
+**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote
 
 ---
 
@@ -538,9 +540,9 @@ leetcode.lua
     ├── MunifTanjim/nui.nvim
     └── nvim-tree/nvim-web-devicons
     Keymaps: <leader>Ll menu, <leader>Lr run, <leader>Ls submit,
-             <leader>Ld daily, <leader>Ln random, <leader>Lt tabs,
-             <leader>Lp topic picker, <leader>LR DSA roadmap,
-             <leader>LU update cookies
+             <leader>Ld daily, <leader>Ln random, <leader>Lc console,
+             <leader>Li info, <leader>Lt tabs, <leader>Le/<leader>Lm/<leader>Lh
+             difficulty lists, <leader>LR DSA roadmap, <leader>LU update cookies
 ```
 
 ---
@@ -613,7 +615,7 @@ undotree.lua
   undotree  ── visual undo history tree  →  <leader>U
 
 marks.lua
-  marks.nvim  ── persistent marks with guttersigns, ]' / [' nav
+  marks.nvim  ── persistent marks with guttersigns, m] / m[ nav
 
 auto-save.lua
   auto-save.nvim  ── auto-save enabled by default (<leader>ua toggle)
@@ -695,7 +697,7 @@ lazy.nvim
 ├── TESTING
 │   └── neotest
 │       ├── neotest-java
-│       ├── neotest-go
+│       ├── neotest-golang
 │       └── neotest-python
 │
 ├── LEETCODE

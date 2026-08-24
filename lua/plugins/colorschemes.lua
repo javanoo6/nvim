@@ -25,7 +25,6 @@ return {
   {
     "rebelot/kanagawa.nvim",
     lazy = true,
-    priority = 1000,
     opts = {
       compile = false,
       undercurl = true,
@@ -37,10 +36,6 @@ return {
       transparent = false,
       dimInactive = false,
       terminalColors = true,
-      colors = {
-        palette = {},
-        theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
-      },
       theme = "wave",
       background = {
         dark = "wave",
@@ -53,7 +48,6 @@ return {
   {
     "nickkadutskyi/jb.nvim",
     lazy = true,
-    priority = 1000,
     opts = {},
   },
 
@@ -61,14 +55,12 @@ return {
   {
     "nyoom-engineering/oxocarbon.nvim",
     lazy = true,
-    priority = 1000,
   },
 
   -- Nordic
   {
     "AlexvZyl/nordic.nvim",
     lazy = true,
-    priority = 1000,
     opts = {
       cursorline = {
         bold = false,
@@ -102,7 +94,6 @@ return {
   {
     "vague-theme/vague.nvim",
     lazy = true,
-    priority = 1000,
     opts = {},
   },
 
@@ -110,7 +101,6 @@ return {
   {
     "rmehri01/onenord.nvim",
     lazy = true,
-    priority = 1000,
     opts = {},
   },
 
@@ -119,7 +109,6 @@ return {
     "everviolet/nvim",
     name = "evergarden",
     lazy = true,
-    priority = 1000,
     opts = {},
   },
 
@@ -127,7 +116,6 @@ return {
   {
     "olivercederborg/poimandres.nvim",
     lazy = true,
-    priority = 1000,
     opts = {
       disable_background = false,
       disable_float_background = false,

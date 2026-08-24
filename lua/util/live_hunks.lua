@@ -388,9 +388,10 @@ function M.setup()
 
   vim.api.nvim_create_autocmd("User", {
     group = group,
-    pattern = "GitsignsUpdate",
+    pattern = "GitSignsUpdate",
     callback = function(args)
-      M.schedule_refresh(args.buf)
+      local bufnr = args.data and args.data.buffer or args.buf
+      M.schedule_refresh(bufnr)
     end,
   })
 

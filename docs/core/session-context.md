@@ -51,6 +51,8 @@ Update this file when:
   runtime `PATH` values.
 - `timeoutlen` is intentionally set to `500` to make leader sequences less
   timing-sensitive with the heavy `<leader>` workflow.
+- `smoothscroll` is enabled for smoother wrapped-line scrolling on supported
+  Neovim versions.
 - Mouse support is disabled by default (`mouse=`) and can be toggled with
   `<leader>um` for temporary GUI/terminal mouse use.
 - Plain `j/k` are remapped in [lua/config/keymaps.lua](/home/konkov/.config/nvim/lua/config/keymaps.lua:61).
@@ -253,7 +255,9 @@ Update this file when:
   (`E:`, `W:`, `I:`, `H:`, `+`, `~`, `-`) so they remain visible without
   depending on icon fonts or a specific theme.
 - Lualine Java status intentionally stays a minimal colored `●`: green for
-  attached/idle JDTLS, yellow when LSP status is busy, red when unavailable.
+  attached/idle JDTLS, yellow when Neovim reports recent LSP progress, red when
+  unavailable. The yellow state is based on `vim.lsp.status()`, so it is a
+  global LSP progress signal rather than a JDTLS-only busy check.
 - `nvim-notify` background is derived from the active float/normal highlights
   via the local `NotifyBackground` refresh hook instead of a TokyoNight-specific
   hex color, so fade animations and popup contrast survive theme switches.
@@ -396,12 +400,10 @@ Update this file when:
   handled, so renamed variables do not leave stale inlay hints behind.
 - Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, enabled on
   LSP attach, and toggled with `<leader>ud`.
-- LSP inlay hints render at end-of-line through `nvim-lsp-endhints` instead of
-  Neovim's native inline positions. This avoids inline hint text colliding with
-  renamed/edited variables while preserving the normal `vim.lsp.inlay_hint`
-  enable/disable API and the local `<leader>uh` toggle. `nvim-lsp-endhints` is
-  loaded as a `nvim-lspconfig` dependency so its handler override is installed
-  before `LspAttach` enables hints.
+- LSP inlay hints are managed by
+  [lua/util/inlay_hints.lua](/home/konkov/.config/nvim/lua/util/inlay_hints.lua:1)
+  through Neovim's native `vim.lsp.inlay_hint` API and toggled with
+  `<leader>uh`.
 - Noice is allowed to own command/message UI, but hover/signature rendering is
   intentionally disabled there to avoid conflicts with the chosen editing setup.
 - `<C-CR>` and `<leader>Hy` open Yanky's Telescope `yank_history` picker through

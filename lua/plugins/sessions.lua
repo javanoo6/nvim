@@ -82,7 +82,7 @@ return {
     -- Session management keymaps
     { "<leader>Ss", "<cmd>AutoSession save<cr>", desc = "Save session" },
     { "<leader>Sr", "<cmd>AutoSession restore<cr>", desc = "Restore session" },
-    { "<leader>Sd", "<cmd>SessionDelete<cr>", desc = "Delete session" },
+    { "<leader>Sd", "<cmd>AutoSession delete<cr>", desc = "Delete session" },
     { "<leader>Sf", "<cmd>AutoSession search<cr>", desc = "Find sessions" },
     { "<leader>Sa", "<cmd>AutoSession enable<cr>", desc = "Enable auto-save" },
   },

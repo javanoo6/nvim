@@ -24,7 +24,6 @@ return {
         "json",
         "lua",
         "markdown",
-        "markdown_inline",
         "python",
         "query",
         "ruby",
@@ -96,15 +95,13 @@ return {
     dependencies = "nvim-treesitter/nvim-treesitter",
     config = function()
       require("nvim-treesitter-textobjects").setup({
-        textobjects = {
-          select = {
-            lookahead = true,
-            -- Keymaps are defined in lua/config/keymaps.lua for Which-key visibility
-          },
-          move = {
-            set_jumps = true,
-            -- Keymaps are defined in lua/config/keymaps.lua for Which-key visibility
-          },
+        select = {
+          lookahead = true,
+          -- Keymaps are defined in lua/config/keymaps.lua for Which-key visibility
+        },
+        move = {
+          set_jumps = true,
+          -- Keymaps are defined in lua/config/keymaps.lua for Which-key visibility
         },
       })
     end,
@@ -113,30 +110,7 @@ return {
   -- Rainbow delimiters
   {
     "HiPhish/rainbow-delimiters.nvim",
-    event = "LazyFile",
+    event = "FileType",
     dependencies = "nvim-treesitter/nvim-treesitter",
-    config = function()
-      local rainbow_delimiters = require("rainbow-delimiters")
-      vim.g.rainbow_delimiters = {
-        strategy = {
-          [""] = rainbow_delimiters.strategy["global"],
-        },
-        query = {
-          [""] = "rainbow-delimiters",
-        },
-        priority = {
-          [""] = 110,
-        },
-        highlight = {
-          "RainbowDelimiterRed",
-          "RainbowDelimiterYellow",
-          "RainbowDelimiterBlue",
-          "RainbowDelimiterOrange",
-          "RainbowDelimiterGreen",
-          "RainbowDelimiterViolet",
-          "RainbowDelimiterCyan",
-        },
-      }
-    end,
   },
 }

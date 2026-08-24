@@ -41,7 +41,6 @@ return {
     },
   },
   opts = {
-    headerMaxWidth = 80,
     prefills = { flags = "--fixed-strings" },
   },
   config = function(_, opts)

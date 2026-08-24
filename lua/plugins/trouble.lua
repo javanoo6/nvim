@@ -102,7 +102,7 @@ return {
             return true
           end
 
-          return filename:sub(1, #root) == root
+          return path_has_prefix(filename, root)
         end,
         java_usage_relevant = function(item, value)
           if not value then

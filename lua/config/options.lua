@@ -45,7 +45,7 @@ opt.showmode = false
 opt.laststatus = 3
 opt.fillchars = { eob = " " }
 
--- Disable lspconfig jdtls (we use nvim-jdtls)
+-- Disable lspconfig jdtls (we use nvim-java)
 vim.g.lspconfig_jdtls_enabled = false
 
 -- Better search

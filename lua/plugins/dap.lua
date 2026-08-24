@@ -60,16 +60,16 @@ return {
       {
         "<leader>dj",
         function()
-          require("dap").up()
+          require("dap").down()
         end,
-        desc = "Up",
+        desc = "Down",
       },
       {
         "<leader>dk",
         function()
-          require("dap").down()
+          require("dap").up()
         end,
-        desc = "Down",
+        desc = "Up",
       },
       {
         "<leader>dl",
@@ -138,7 +138,7 @@ return {
       {
         "<leader>dgl",
         function()
-          require("dap-go").debug_last()
+          require("dap-go").debug_last_test()
         end,
         desc = "Debug Last Go Test",
       },
@@ -146,10 +146,6 @@ return {
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
-
-      -- Setup dap-ui
-      dapui.setup()
-      vim.g.dapui_keep_open_on_exit = vim.g.dapui_keep_open_on_exit or false
 
       local sensitive_dap_terms = {
         "secret",
@@ -216,6 +212,10 @@ return {
   {
     "rcarriga/nvim-dap-ui",
     dependencies = { "nvim-neotest/nvim-nio" },
+    config = function()
+      require("dapui").setup()
+      vim.g.dapui_keep_open_on_exit = vim.g.dapui_keep_open_on_exit or false
+    end,
     keys = {
       {
         "<leader>du",

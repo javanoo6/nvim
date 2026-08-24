@@ -565,7 +565,7 @@ browser-style single-file tab.
 **Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — JDTLS automatically updates all imports and references
 across the project. This may modify many buffers at once. Save them all with `:wall`.
 
-**Preview tip:** `P` uses Neo-tree's native preview mode, so you can scan files without leaving the tree. Press `<Esc>` to close the preview.
+**Preview tip:** `P` uses Neo-tree's native preview mode, so you can scan files without leaving the tree. Press `<Esc>` to close Neo-tree.
 
 ---
 
@@ -728,7 +728,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<C-u>` / `<C-d>`   | Scroll preview up / down         |
 | `<CR>`              | Jump to selected result          |
 | `v` / `s` / `t`     | Open in vsplit / split / new tab |
-| `o`                 | Refresh preview                  |
+| `o`                 | Preview selected location        |
 | `<leader>l`         | Switch between list and preview  |
 | `q` / `Q` / `<Esc>` | Close Glance                     |
 
@@ -795,26 +795,29 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 ## Debugging
 
-| Key          | Action                     |
-|--------------|----------------------------|
-| `<leader>db` | Toggle breakpoint          |
-| `<leader>dB` | Breakpoint with condition  |
-| `<leader>dc` | Continue / Start debugging |
-| `<leader>dC` | Run to cursor              |
-| `<leader>di` | Step into                  |
-| `<leader>do` | Step out                   |
-| `<leader>dO` | Step over                  |
-| `<leader>dg` | Go to line (no execute)    |
-| `<leader>dl` | Run last                   |
-| `<leader>dp` | Pause                      |
-| `<leader>dr` | Toggle REPL                |
-| `<leader>dt` | Terminate                  |
-| `<leader>ds` | Session info               |
-| `<leader>dj` | Up (call stack)            |
-| `<leader>dk` | Down (call stack)          |
-| `<leader>dw` | Hover widgets              |
-| `<leader>du` | Toggle DAP UI              |
-| `<leader>de` | Evaluate expression        |
+| Key           | Action                     |
+|---------------|----------------------------|
+| `<leader>db`  | Toggle breakpoint          |
+| `<leader>dB`  | Breakpoint with condition  |
+| `<leader>dc`  | Continue / Start debugging |
+| `<leader>dC`  | Run to cursor              |
+| `<leader>di`  | Step into                  |
+| `<leader>do`  | Step out                   |
+| `<leader>dO`  | Step over                  |
+| `<leader>dg`  | Go to line (no execute)    |
+| `<leader>dl`  | Run last                   |
+| `<leader>dp`  | Pause                      |
+| `<leader>dr`  | Toggle REPL                |
+| `<leader>dt`  | Terminate                  |
+| `<leader>ds`  | Session info               |
+| `<leader>dj`  | Down (call stack)          |
+| `<leader>dk`  | Up (call stack)            |
+| `<leader>dw`  | Hover widgets              |
+| `<leader>du`  | Toggle DAP UI              |
+| `<leader>dU`  | Toggle DAP UI keep-open    |
+| `<leader>de`  | Evaluate expression        |
+| `<leader>dgt` | Debug Go test              |
+| `<leader>dgl` | Debug last Go test         |
 
 ---
 
@@ -825,27 +828,34 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>tt` | Run file                    |
 | `<leader>tT` | Run all test files          |
 | `<leader>tr` | Run nearest test            |
+| `<leader>td` | Debug nearest test          |
 | `<leader>tp` | Run package                 |
+| `<leader>tP` | Debug package               |
 | `<leader>tq` | Run file tests sequentially |
 | `<leader>tl` | Run last                    |
+| `<leader>tL` | Debug last                  |
+| `<leader>tf` | Debug file                  |
+| `<leader>tD` | Debug all test files        |
+| `<leader>ta` | Attach to running test      |
 | `<leader>tF` | Run failed tests            |
 | `<leader>ts` | Toggle summary              |
 | `<leader>to` | Show output                 |
 | `<leader>tO` | Toggle output panel         |
+| `<leader>tc` | Clear output panel          |
 | `<leader>tS` | Stop (interactive)          |
 | `<leader>tw` | Toggle watch                |
 
 ### Java-specific
 
-| Key          | Action              |
-|--------------|---------------------|
-| `<leader>jr` | Run Main            |
-| `<leader>ji` | Init Project        |
-| `<leader>ju` | Update Project      |
-| `<leader>jc` | Stop Main           |
-| `<leader>jt` | Test Current Class  |
-| `<leader>jm` | Test Current Method |
-| `<leader>jv` | View Test Report    |
+| Key          | Action             |
+|--------------|--------------------|
+| `<leader>jr` | Run Main           |
+| `<leader>jd` | Debug Main         |
+| `<leader>ji` | Init Project       |
+| `<leader>ju` | Update Project     |
+| `<leader>jc` | Stop Main          |
+| `<leader>jl` | Toggle Runner Logs |
+| `<leader>ja` | Attach Remote JVM  |
 
 `:JavaInitProject [dir]` prompts for Maven/Gradle, project directory, artifact,
 group id, and package, then opens the generated `Main.java`.
@@ -918,7 +928,7 @@ require('util.java_debug').debug_main()        -- Debug main
 | "Port already in use"    | Stale session — close nvim or `killall java`                                                        |
 | Breakpoints not hitting  | Check `:LspInfo` for compilation errors, or check logs: `tail -f ~/.local/state/nvim/nvim-java.log` |
 
-**See also:** `~/.config/nvim/JAVA_DEBUGGING.md` for complete reference.
+**See also:** `docs/java/java-debugging.md` for complete reference.
 
 ---
 
@@ -970,6 +980,7 @@ Notes:
 | `<leader>GC` | Find committed conflict markers |
 | `<leader>GQ` | Finish `git mergetool`          |
 | `<leader>GA` | Abort `git mergetool`           |
+| `<leader>Gb` | Diff vs branch/ref              |
 | `<leader>Gm` | Diff vs main/master             |
 | `<leader>GM` | Diff vs origin/main             |
 | `<leader>Gq` | Close Diffview                  |

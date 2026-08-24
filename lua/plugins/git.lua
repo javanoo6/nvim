@@ -116,7 +116,7 @@ return {
             return "]h"
           end
           vim.schedule(function()
-            gs.next_hunk()
+            gs.nav_hunk("next")
           end)
           return "<Ignore>"
         end, { expr = true, desc = "Next hunk" })
@@ -126,7 +126,7 @@ return {
             return "[h"
           end
           vim.schedule(function()
-            gs.prev_hunk()
+            gs.nav_hunk("prev")
           end)
           return "<Ignore>"
         end, { expr = true, desc = "Prev hunk" })

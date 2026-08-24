@@ -527,7 +527,17 @@ return {
   {
     "max397574/better-escape.nvim",
     event = "InsertEnter",
-    opts = {},
+    opts = {
+      default_mappings = false,
+      mappings = {
+        i = {
+          j = {
+            k = "<Esc>",
+            j = "<Esc>",
+          },
+        },
+      },
+    },
   },
 
   -- Lazygit

@@ -11,21 +11,16 @@ return {
     opts = {
       preset = "modern",
       delay = 0,
-      plugins = { spelling = true },
       triggers = {
         { "<auto>", mode = "nxso" },
         { "<leader>", mode = { "n", "v" } },
       },
       win = {
-        border = "rounded",
         padding = { 1, 2 },
-        no_overlap = true,
       },
       layout = {
         width = { min = 30, max = 50 },
-        height = { min = 4, max = 25 },
         spacing = 1,
-        align = "right",
       },
       sort = { "local", "order", "group", "alphanum" },
     },
@@ -53,7 +48,6 @@ return {
         { "<leader>c", group = "code", mode = { "n", "v" } },
         { "<leader>C", group = "conflict", mode = { "n", "v" } },
         { "<leader>d", group = "debug", mode = { "n", "v" } },
-        { "<leader>dg", group = "debug go" },
         { "<leader>f", group = "file/find" },
         { "<leader>g", group = "go" },
         { "<leader>gi", group = "go insert" },

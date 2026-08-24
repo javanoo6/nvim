@@ -55,7 +55,7 @@ hunk-header parser.
     - `TextChanged`
     - `TextChangedI`
     - `BufWritePost`
-    - `User GitsignsUpdate` if available
+    - `User GitSignsUpdate` if available
     - `WinScrolled`
 - Keep a per-source-buffer state table:
     - source buffer

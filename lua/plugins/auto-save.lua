@@ -7,7 +7,6 @@ return {
   version = "^1.0.0",
   cmd = "ASToggle",
   event = { "InsertLeave", "TextChanged" },
-  notify_on_error_block = false,
   opts = {
     enabled = true, -- Start enabled, toggle with <leader>ua
     trigger_events = {
