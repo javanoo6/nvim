@@ -636,13 +636,14 @@ This uses `nvim-cmp` cmdline completion:
 | `<leader>fF`      | Find files from project root |
 | `<leader>fg`      | Literal grep from cwd        |
 | `<leader>fG`      | Literal grep from root       |
+| `<leader>fi`      | Literal grep ignored from cwd |
+| `<leader>fI`      | Literal grep ignored from root |
 | `<leader>f/`      | Regex grep from cwd          |
 | `<leader>f?`      | Regex grep from root         |
 | `<leader>fb`      | Buffers                      |
 | `<leader>fR`      | Recent files                 |
 | `<leader>fs`      | New scratch file             |
 | `<leader>fS`      | Open scratch file            |
-| `<leader>fi`      | Scratch path info            |
 | `<leader>fN`      | New named scratch file       |
 | `<leader>Hy`      | Yank history                 |
 | `<leader>Hc`      | Command history              |
@@ -687,6 +688,9 @@ Scratch files are persistent temporary files managed by `scratch.nvim`.
 
 **Tip:** `<leader>fg`, `<leader>fG`, and `<leader>fe` search the text you type as-is, so `foo.` matches a literal dot. Use `<leader>f/`,
 `<leader>f?`, or `<leader>fE` when you want ripgrep regex syntax.
+
+**Tip:** `<leader>fi` and `<leader>fI` also search literal text, but include files
+ignored by `.gitignore`. Scratch path details are available with `:ScratchInfo`.
 
 **Tip:** `<leader>fr` resumes the last Telescope search exactly where you left off — useful for returning to a search after editing a file.
 

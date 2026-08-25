@@ -149,7 +149,6 @@ return {
     keys = {
       { "<leader>fs", select_scratch_type, desc = "Scratch" },
       { "<leader>fS", open_scratch, desc = "Open scratch" },
-      { "<leader>fi", "<cmd>ScratchInfo<cr>", desc = "Scratch info" },
       { "<leader>fN", "<cmd>ScratchWithName<cr>", desc = "Scratch with name" },
     },
     config = function()

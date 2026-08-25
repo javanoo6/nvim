@@ -106,6 +106,9 @@ Update this file when:
   `<leader>fg` cwd, `<leader>fG` root, and `<leader>fe` by extension all pass
   `--fixed-strings`. Regex grep is explicit on `<leader>f/` cwd,
   `<leader>f?` root, and `<leader>fE` by extension.
+- Ignored-file literal grep is explicit on `<leader>fi` cwd and `<leader>fI`
+  root. These pass `--fixed-strings --no-ignore` so ripgrep searches files
+  skipped by repo `.gitignore` rules.
 - Neo-tree sidebar cwd is intentionally tied to global cwd to avoid stale
   tab-local reopen behavior.
 - Neo-tree does not auto-follow the current file on buffer switches. In large
@@ -335,8 +338,8 @@ Update this file when:
   [docs/java/java-inspection-lint-roadmap.md](/home/konkov/.config/nvim/docs/java/java-inspection-lint-roadmap.md:1).
 - Planned IntelliJ Community inspection-engine research is tracked in
   [docs/java/java-intellij-inspection-engine-roadmap.md](/home/konkov/.config/nvim/docs/java/java-intellij-inspection-engine-roadmap.md:1).
-- `<leader>fi` / `:ScratchInfo` reports the global scratch directory, Java
-  project root, and resolved Java `Scratch.java` path for the current context.
+- `:ScratchInfo` reports the global scratch directory, Java project root, and
+  resolved Java `Scratch.java` path for the current context.
 - JDTLS is configured to download Maven dependency sources when available, so
   external libraries should open as real source before falling back to
   decompiled `jdt://...` class content.

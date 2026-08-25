@@ -74,6 +74,27 @@ return {
         desc = "Grep literal (root)",
       },
       {
+        "<leader>fi",
+        function()
+          require("telescope.builtin").live_grep({
+            cwd = require("util").get_explorer_cwd(),
+            additional_args = { "--fixed-strings", "--no-ignore" },
+            prompt_title = "Grep literal ignored (cwd)",
+          })
+        end,
+        desc = "Grep literal ignored files (cwd)",
+      },
+      {
+        "<leader>fI",
+        function()
+          require("util").pick("live_grep", {
+            additional_args = { "--fixed-strings", "--no-ignore" },
+            prompt_title = "Grep literal ignored (root)",
+          })
+        end,
+        desc = "Grep literal ignored files (root)",
+      },
+      {
         "<leader>f/",
         function()
           require("telescope.builtin").live_grep({

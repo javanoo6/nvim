@@ -275,11 +275,12 @@ editor.lua
   │
   ├── telescope.nvim          ── fuzzy finder (cwd on <leader><space>/<leader>ff/<leader>fg, root on <leader>fF/<leader>fG)
   │                              grep defaults to literal matching; regex grep is explicit on <leader>f/ and <leader>f?
+  │                              ignored-file literal grep is explicit on <leader>fi and <leader>fI
   │     └── telescope-fzf-native.nvim  ── faster sorter (requires make)
   │
   ├── scratch.nvim            ── persistent scratch files under `<leader>f`
   │     — `<leader>fs` new scratch, `<leader>fS` open scratch
-  │     — `<leader>fi` / `:ScratchInfo` reports global and Java project-local scratch paths
+  │     — `:ScratchInfo` reports global and Java project-local scratch paths
   │     — `<leader>fN` create named scratch, files stored in stdpath("state")/scratch
   │     — Java is special-cased to open project-local `Scratch.java` inside
   │       Maven/Gradle source roots when available
