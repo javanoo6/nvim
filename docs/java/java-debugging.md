@@ -97,16 +97,6 @@ Raw `nvim-java` test commands are still available when needed:
 :JavaTestDebugAllTests
 ```
 
-Mapped native `nvim-java` debug shortcuts:
-
-| Key           | Action                            |
-|---------------|-----------------------------------|
-| `<leader>jtm` | debug current test method         |
-| `<leader>jtc` | debug current test class          |
-| `<leader>jta` | debug all tests in the workspace  |
-
-These still use `nvim-dap`, so the same DAP UI and `<leader>d*` controls apply.
-
 ## DAP Controls
 
 These work once a debug session is active:
@@ -177,8 +167,7 @@ main-class discovery follows the Maven project model.
 1. Open the test file.
 2. Put the cursor inside the test method.
 3. Set breakpoints with `<leader>db`.
-4. Press `<leader>td` to debug nearest test through Neotest, or `<leader>jtm`
-   to debug the current method through native `nvim-java`.
+4. Press `<leader>td` to debug nearest test through Neotest/DAP.
 5. Use DAP controls once the session starts.
 
 For a whole file or package, use `<leader>tf` or `<leader>tP`.

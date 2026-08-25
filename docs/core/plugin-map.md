@@ -439,8 +439,7 @@ vim.g.lspconfig_jdtls_enabled = false  (options.lua)
 JVM: -Xms2G / -Xmx8G  (prevents OOM on refactoring)
 ```
 
-**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote, jtm debug test method via nvim-java,
-jtc debug test class via nvim-java, jta debug all tests via nvim-java
+**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote
 
 ---
 
