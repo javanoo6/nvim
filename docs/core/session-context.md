@@ -226,6 +226,11 @@ Update this file when:
   [lua/neotest-java/core/file_checker.lua](/home/konkov/.config/nvim/lua/neotest-java/core/file_checker.lua:1)
   so valid `src/test/java/*Test.java` files are not rejected when the adapter was
   constructed from a stale cwd outside the Java project.
+- `neotest-java` root finding is locally overridden at
+  [lua/neotest-java/core/root_finder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/root_finder.lua:1)
+  so Java test discovery uses Maven/Gradle roots only and never treats a plain
+  `.git` ancestor as a runnable Java project. This avoids `unknown project type:
+  unknown` in monorepos or after unrelated cwd changes.
 - `neotest-java` result mapping is locally overridden at
   [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)
   so a single executed invocation of a parameterized JUnit method maps back to

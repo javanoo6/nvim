@@ -32,6 +32,7 @@ opt.splitright = true
 opt.termguicolors = true
 opt.signcolumn = "yes"
 opt.cursorline = false
+-- opt.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,t:block"
 opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.updatetime = 250
