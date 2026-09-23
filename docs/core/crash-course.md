@@ -415,6 +415,10 @@ Select text first, then press `gsa` + bracket/quote:
 | `g#`    | Search partial word (backward)      |
 | `<Esc>` | Clear search highlight              |
 
+When typing `/` or `?`, completion suggestions may appear. Keep typing to
+ignore them, use `<C-e>` to close only the suggestions while staying in the
+search prompt, then press `<CR>` to run the search.
+
 ### Replace (in-buffer)
 
 | Key              | Action                           |
@@ -624,37 +628,38 @@ This uses `nvim-cmp` cmdline completion:
 | `<Down>` | Next completion item                               |
 | `<Up>`   | Previous completion item                           |
 | `<CR>`   | Confirm selected completion item without executing |
+| `<C-e>`  | Close the completion menu without leaving cmdline  |
 
 ---
 
 ## Telescope (Fuzzy Finder)
 
-| Key               | Action                       |
-|-------------------|------------------------------|
-| `<leader><space>` | Find files from cwd          |
-| `<leader>ff`      | Find files from cwd          |
-| `<leader>fF`      | Find files from project root |
-| `<leader>fg`      | Literal grep from cwd        |
-| `<leader>fG`      | Literal grep from root       |
-| `<leader>fi`      | Literal grep ignored from cwd |
+| Key               | Action                         |
+|-------------------|--------------------------------|
+| `<leader><space>` | Find files from cwd            |
+| `<leader>ff`      | Find files from cwd            |
+| `<leader>fF`      | Find files from project root   |
+| `<leader>fg`      | Literal grep from cwd          |
+| `<leader>fG`      | Literal grep from root         |
+| `<leader>fi`      | Literal grep ignored from cwd  |
 | `<leader>fI`      | Literal grep ignored from root |
-| `<leader>f/`      | Regex grep from cwd          |
-| `<leader>f?`      | Regex grep from root         |
-| `<leader>fb`      | Buffers                      |
-| `<leader>fR`      | Recent files                 |
-| `<leader>fs`      | New scratch file             |
-| `<leader>fS`      | Open scratch file            |
-| `<leader>fN`      | New named scratch file       |
-| `<leader>Hy`      | Yank history                 |
-| `<leader>Hc`      | Command history              |
-| `<leader>Hs`      | Search history               |
-| `<leader>:`       | Command history              |
-| `<leader>ss`      | Document symbols             |
-| `<leader>sS`      | Workspace symbols            |
-| `<leader>st`      | Search TODOs                 |
-| `<leader>fe`      | Literal grep by extension    |
-| `<leader>fE`      | Regex grep by extension      |
-| `<leader>fr`      | Resume last search           |
+| `<leader>f/`      | Regex grep from cwd            |
+| `<leader>f?`      | Regex grep from root           |
+| `<leader>fb`      | Buffers                        |
+| `<leader>fR`      | Recent files                   |
+| `<leader>fs`      | New scratch file               |
+| `<leader>fS`      | Open scratch file              |
+| `<leader>fN`      | New named scratch file         |
+| `<leader>Hy`      | Yank history                   |
+| `<leader>Hc`      | Command history                |
+| `<leader>Hs`      | Search history                 |
+| `<leader>:`       | Command history                |
+| `<leader>ss`      | Document symbols               |
+| `<leader>sS`      | Workspace symbols              |
+| `<leader>st`      | Search TODOs                   |
+| `<leader>fe`      | Literal grep by extension      |
+| `<leader>fE`      | Regex grep by extension        |
+| `<leader>fr`      | Resume last search             |
 
 ### Inside Telescope
 
@@ -799,30 +804,30 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 ## Debugging
 
-| Key           | Action                     |
-|---------------|----------------------------|
-| `<leader>db`  | Toggle breakpoint          |
-| `<leader>dB`  | Breakpoint with condition  |
-| `<leader>dc`  | Continue active session    |
-| `<leader>dC`  | Run to cursor              |
-| `<leader>df`  | Focus current frame        |
-| `<leader>di`  | Step into                  |
-| `<leader>do`  | Step out                   |
-| `<leader>dO`  | Step over                  |
-| `<leader>dg`  | Go to line (no execute)    |
-| `<leader>dl`  | Run last                   |
-| `<leader>dp`  | Pause                      |
-| `<leader>dr`  | Toggle REPL                |
-| `<leader>dt`  | Terminate                  |
-| `<leader>ds`  | Session info               |
-| `<leader>dj`  | Down (call stack)          |
-| `<leader>dk`  | Up (call stack)            |
-| `<leader>dw`  | Hover widgets              |
-| `<leader>du`  | Toggle DAP UI              |
-| `<leader>dU`  | Toggle DAP UI keep-open    |
-| `<leader>de`  | Evaluate expression        |
-| `<leader>dgt` | Debug Go test              |
-| `<leader>dgl` | Debug last Go test         |
+| Key           | Action                    |
+|---------------|---------------------------|
+| `<leader>db`  | Toggle breakpoint         |
+| `<leader>dB`  | Breakpoint with condition |
+| `<leader>dc`  | Continue active session   |
+| `<leader>dC`  | Run to cursor             |
+| `<leader>df`  | Focus current frame       |
+| `<leader>di`  | Step into                 |
+| `<leader>do`  | Step out                  |
+| `<leader>dO`  | Step over                 |
+| `<leader>dg`  | Go to line (no execute)   |
+| `<leader>dl`  | Run last                  |
+| `<leader>dp`  | Pause                     |
+| `<leader>dr`  | Toggle REPL               |
+| `<leader>dt`  | Terminate                 |
+| `<leader>ds`  | Session info              |
+| `<leader>dj`  | Down (call stack)         |
+| `<leader>dk`  | Up (call stack)           |
+| `<leader>dw`  | Hover widgets             |
+| `<leader>du`  | Toggle DAP UI             |
+| `<leader>dU`  | Toggle DAP UI keep-open   |
+| `<leader>de`  | Evaluate expression       |
+| `<leader>dgt` | Debug Go test             |
+| `<leader>dgl` | Debug last Go test        |
 
 ---
 
@@ -849,6 +854,10 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>tc` | Clear output panel          |
 | `<leader>tS` | Stop (interactive)          |
 | `<leader>tw` | Toggle watch                |
+
+Debug-test mappings close/skip the summary while debugging and reopen it only
+after the debug session completes. DAP UI close is deferred until that summary
+opens.
 
 ### Java-specific
 
