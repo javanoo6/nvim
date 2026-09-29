@@ -97,8 +97,15 @@ vim.api.nvim_create_autocmd("FileType", {
   group = augroup("wrap_spell"),
   pattern = { "text", "markdown", "gitcommit" },
   callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = true
+    local persist = require("persist-toggle")
+    local saved = persist.persisted()
+    for _, name in ipairs({ "wrap", "spell" }) do
+      if saved[name] == nil then
+        vim.opt_local[name] = true
+      else
+        vim.opt_local[name] = persist.get(name)
+      end
+    end
   end,
 })
 

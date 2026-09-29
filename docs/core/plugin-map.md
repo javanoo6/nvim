@@ -287,7 +287,7 @@ editor.lua
   ├── neo-tree.nvim           ── file explorer (<leader>e cwd, <leader>E root)
   │     ├── native preview mode  ── `P` float preview, `l` focus, `<C-f>`/`<C-b>` scroll
   │     ├── nvim-window-picker  ── `s` in tree = pick window to open file in
-  │     ├── open mappings reveal current file by default; `<leader>ue` toggles that session-local behavior
+  │     ├── open mappings reveal current file by default; `<leader>ue` persists that reveal-on-open preference
   │     ├── `Y` copies absolute path with unnamed-register fallback when clipboard is unavailable
   │     └── nvim-lsp-file-operations  ── rename updates imports
   │
@@ -780,3 +780,11 @@ lazy.nvim
 - **noice hover/signature:** Disabled to avoid conflicts with inlay hints. Use `K` / `gK` natively.
 - **Folding:** Globally disabled (`opt.foldenable = false`). Toggle with `<leader>uf`.
 - **LazyFile event:** Custom event alias for `BufReadPost + BufNewFile + BufWritePre`, defined in `config/lazy.lua`.
+
+## Persistent preferences
+
+`persist-toggle.nvim` is loaded at startup by `lua/plugins/persist-toggle.lua`.
+The 16 preference adapters and their defaults are in
+`lua/util/toggle_preferences.lua`. Existing preference controls now save values
+across restarts; transient UI toggles keep their existing behavior.
+See [Persistent toggle preferences](persist-toggle.md) for the full mapping.

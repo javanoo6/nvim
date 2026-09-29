@@ -2,10 +2,7 @@
 
 local M = {}
 
-M.reference_style_state = {
-  background = false,
-  underline = true,
-}
+M.reference_style_state = {}
 
 -- Safe keymap set (replaces LazyVim.safe_keymap_set)
 function M.map(mode, lhs, rhs, opts)
@@ -36,6 +33,10 @@ end
 
 -- Toggle option helper (replaces LazyVim.toggle)
 function M.toggle(option, values)
+  local persist = require("persist-toggle")
+  if not values and persist.has(option) then
+    return persist.toggle(option)
+  end
   if values then
     if vim.opt_local[option]:get() == values[1] then
       vim.opt_local[option] = values[2]
@@ -50,9 +51,7 @@ function M.toggle(option, values)
 end
 
 function M.toggle_mouse()
-  local enabled = vim.o.mouse ~= ""
-  vim.o.mouse = enabled and "" or "a"
-  vim.notify("mouse " .. (enabled and "off" or "on"))
+  return require("persist-toggle").toggle("mouse")
 end
 
 local function get_reference_background_color()
@@ -109,15 +108,11 @@ function M.apply_notify_style()
 end
 
 function M.toggle_reference_underline()
-  M.reference_style_state.underline = not M.reference_style_state.underline
-  M.apply_reference_style()
-  vim.notify("reference underline " .. (M.reference_style_state.underline and "on" or "off"))
+  return require("persist-toggle").toggle("reference_underline")
 end
 
 function M.toggle_reference_background()
-  M.reference_style_state.background = not M.reference_style_state.background
-  M.apply_reference_style()
-  vim.notify("reference background " .. (M.reference_style_state.background and "on" or "off"))
+  return require("persist-toggle").toggle("reference_background")
 end
 
 -- Root detection (simplified version of LazyVim.root)
@@ -179,9 +174,6 @@ local explorer_cwd_state = {
 }
 
 local function neotree_reveal_on_open_default()
-  if vim.g.neotree_reveal_on_open == nil then
-    vim.g.neotree_reveal_on_open = true
-  end
   return vim.g.neotree_reveal_on_open
 end
 
@@ -297,10 +289,7 @@ function M.set_neotree_reveal_on_open(enabled)
 end
 
 function M.toggle_neotree_reveal_on_open()
-  local enabled = not M.neotree_reveal_on_open_enabled()
-  M.set_neotree_reveal_on_open(enabled)
-  vim.notify("neo-tree reveal on open " .. (enabled and "on" or "off"))
-  return enabled
+  return require("persist-toggle").toggle("neotree_reveal_on_open")
 end
 
 function M.get_marker_root(bufnr)

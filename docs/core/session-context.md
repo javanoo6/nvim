@@ -19,6 +19,13 @@ Update this file when:
   object files
 - [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1): Python venv behavior
 
+## Persistent Preferences
+
+Use `persist-toggle.nvim` for durable runtime preferences. Existing preference
+keymaps and commands save changes immediately and restore them at startup.
+See [Persistent toggle preferences](persist-toggle.md) for defaults, scope,
+reset commands, and the integration policy for new toggles.
+
 ## Input Model
 
 - Direction model follows standard Vim movement:
@@ -111,7 +118,7 @@ Update this file when:
   changes stay explicit via `<leader>e`, `<leader>E`, or `.` inside Neo-tree.
 - Neo-tree reopen behavior reveals the current file by default when opened via
   `<leader>e` or `<leader>E`, without enabling full `follow_current_file`.
-  `<leader>ue` toggles that reveal-on-open behavior for the current session.
+  `<leader>ue` toggles that reveal-on-open preference across restarts.
 - `project.nvim` runs in manual mode. Opening files, including Python files in
   nested monorepo packages, must not auto-`cd` the session; use explicit root
   changes instead.

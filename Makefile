@@ -1,4 +1,4 @@
-.PHONY: check check-format check-lint format
+.PHONY: check check-format check-lint format test-toggles
 
 MASON_BIN ?= $(HOME)/.local/share/nvim/mason/bin
 STYLUA ?= $(MASON_BIN)/stylua
@@ -15,3 +15,6 @@ check-lint:
 
 format:
 	$(STYLUA) $(LUA_TARGETS)
+
+test-toggles:
+	sh scripts/test-toggle-preferences.sh

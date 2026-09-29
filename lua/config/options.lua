@@ -31,13 +31,9 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true, desc = "Leader
 
 local opt = vim.opt
 
-opt.number = true
-opt.relativenumber = true
-opt.mouse = ""
 opt.ignorecase = true
 opt.smartcase = true
 opt.hlsearch = true
-opt.wrap = false
 opt.breakindent = true
 opt.tabstop = 2
 opt.shiftwidth = 2
@@ -73,9 +69,6 @@ opt.smoothscroll = true -- Smooth scrolling (Neovim 0.10+)
 
 -- Session options (for auto-session to restore terminals, folds, window positions)
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
-
--- Disable folding - always show unfolded code
-opt.foldenable = false
 
 -- Better completion experience
 opt.completeopt = "menu,menuone,noselect,preview"

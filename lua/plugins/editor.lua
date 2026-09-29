@@ -542,10 +542,17 @@ return {
     config = function()
       local nvim_config = vim.fn.stdpath("config")
       vim.g.lazygit_use_custom_config_file_path = 1
-      vim.g.lazygit_config_file_path = {
-        vim.fn.expand("~/.config/lazygit/config.yml"),
-        nvim_config .. "/lazygit/config.yml",
-      }
+      local config_paths = {}
+      local config_dir = vim.fn.systemlist({ "lazygit", "--print-config-dir" })
+      if vim.v.shell_error == 0 and config_dir[1] then
+        local personal_config = config_dir[1] .. "/config.yml"
+        if vim.fn.filereadable(personal_config) == 1 then
+          table.insert(config_paths, personal_config)
+        end
+      end
+      table.insert(config_paths, nvim_config .. "/lazygit/config.yml")
+      vim.g.lazygit_config_file_path = config_paths
+      vim.env.NVIM_CONFIG_DIR = nvim_config
 
       -- Disable <esc> exiting terminal mode in lazygit
       -- so <esc> works properly in lazygit UI

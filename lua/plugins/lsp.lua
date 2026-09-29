@@ -124,7 +124,7 @@ return {
           source = true,
         },
       })
-      vim.diagnostic.enable(true)
+      require("persist-toggle").apply("diagnostics")
       vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
         config = vim.tbl_extend("force", config or {}, { border = "rounded" })
         return vim.lsp.handlers.hover(err, result, ctx, config)
@@ -557,9 +557,9 @@ return {
     config = function(_, opts)
       local tid = require("tiny-inline-diagnostic")
       tid.setup(opts)
-      tid.enable()
+      require("persist-toggle").apply("inline_diagnostics")
       vim.schedule(function()
-        tid.enable()
+        require("persist-toggle").apply("inline_diagnostics")
       end)
       vim.diagnostic.config({ virtual_text = false })
     end,

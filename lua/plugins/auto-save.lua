@@ -9,7 +9,6 @@ return {
   event = { "InsertLeave", "TextChanged" },
   notify_on_error_block = false,
   opts = {
-    enabled = true, -- Start enabled, toggle with <leader>ua
     trigger_events = {
       immediate_save = { "BufLeave", "FocusLost" },
       defer_save = { "InsertLeave", "TextChanged" },
@@ -39,7 +38,12 @@ return {
     { "<leader>ua", "<cmd>ASToggle<cr>", desc = "Toggle auto-save" },
   },
   config = function(_, opts)
+    local persist = require("persist-toggle")
+    opts.enabled = persist.get("autosave")
     require("auto-save").setup(opts)
+    vim.api.nvim_create_user_command("ASToggle", function()
+      persist.toggle("autosave")
+    end, { desc = "Toggle persistent auto-save preference", force = true })
     -- auto-save uses a normal :write, so conform.nvim's BufWritePre hook remains
     -- the single formatting path for both manual saves and auto-saves.
   end,

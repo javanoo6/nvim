@@ -2,6 +2,8 @@
 
 Start here:
 
+- [Persistent toggle preferences](core/persist-toggle.md): use persist-toggle.nvim for durable runtime preferences.
+
 - [core/session-context.md](/home/konkov/.config/nvim/docs/core/session-context.md:1)
 - [core/crash-course.md](/home/konkov/.config/nvim/docs/core/crash-course.md:1)
 - [core/plugin-map.md](/home/konkov/.config/nvim/docs/core/plugin-map.md:1)

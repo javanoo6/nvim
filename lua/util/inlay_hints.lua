@@ -82,7 +82,7 @@ function M.apply_for_buffer(bufnr)
 end
 
 function M.toggle()
-  M.set_enabled(not M.is_enabled())
+  return require("persist-toggle").toggle("inlay_hints")
 end
 
 function M.setup()
@@ -128,7 +128,5 @@ function M.setup()
     M.refresh_buffer(0)
   end, { desc = "Clear and re-request LSP inlay hints for the current buffer", force = true })
 end
-
-vim.g.inlay_hints_enabled = vim.g.inlay_hints_enabled ~= false
 
 return M

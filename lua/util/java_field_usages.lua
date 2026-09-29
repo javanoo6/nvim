@@ -16,10 +16,8 @@ local query = vim.treesitter.query.parse(
   ]]
 )
 
-vim.g.java_field_usages_enabled = vim.g.java_field_usages_enabled ~= false
-
 local function is_enabled()
-  return vim.g.java_field_usages_enabled ~= true
+  return vim.g.java_field_usages_enabled == true
 end
 
 local function clear(bufnr)
@@ -212,9 +210,11 @@ function M.refresh(bufnr, client)
   )
 end
 
-function M.set_enabled(enabled)
+function M.set_enabled(enabled, opts)
   vim.g.java_field_usages_enabled = enabled
-  vim.notify("Java field usages: " .. (enabled and "on" or "off"))
+  if not opts or opts.notify ~= false then
+    vim.notify("Java field usages: " .. (enabled and "on" or "off"))
+  end
 
   for bufnr, client in pairs(attached) do
     if enabled then
@@ -228,7 +228,7 @@ function M.set_enabled(enabled)
 end
 
 function M.toggle()
-  M.set_enabled(not is_enabled())
+  return require("persist-toggle").toggle("java_field_usages")
 end
 
 function M.attach(bufnr, client)
@@ -275,8 +275,6 @@ function M.attach(bufnr, client)
 end
 
 function M.setup()
-  vim.g.java_field_usages_enabled = vim.g.java_field_usages_enabled ~= false
-
   api.nvim_create_user_command("JavaFieldUsagesRefresh", function()
     M.refresh(0)
   end, { desc = "Refresh Java field usage counters for the current buffer", force = true })

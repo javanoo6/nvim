@@ -1,5 +1,9 @@
 # Task: Persist Neovim Toggle State
 
+> Superseded by the [persist-toggle.nvim integration](../core/persist-toggle.md).
+> The checklist below is the original proposal, not the current implementation.
+> Use the plugin registry instead of implementing a local JSON store.
+
 ## Goal
 
 - [ ] Move durable runtime toggles into one local persisted state file.

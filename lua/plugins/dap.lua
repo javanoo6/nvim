@@ -149,7 +149,6 @@ return {
 
       -- Setup dap-ui
       dapui.setup()
-      vim.g.dapui_keep_open_on_exit = vim.g.dapui_keep_open_on_exit or false
 
       local sensitive_dap_terms = {
         "secret",
@@ -228,9 +227,7 @@ return {
       {
         "<leader>dU",
         function()
-          vim.g.dapui_keep_open_on_exit = not vim.g.dapui_keep_open_on_exit
-          local state = vim.g.dapui_keep_open_on_exit and "enabled" or "disabled"
-          vim.notify("DAP UI keep-open-on-exit " .. state, vim.log.levels.INFO, { title = "DAP" })
+          require("persist-toggle").toggle("dapui_keep_open_on_exit")
         end,
         desc = "Toggle DAP UI keep-open",
       },
