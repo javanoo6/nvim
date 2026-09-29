@@ -33,6 +33,12 @@ local function provider(name, copy, paste)
 end
 
 local function detect_provider()
+  local pbcopy = exepath("pbcopy")
+  local pbpaste = exepath("pbpaste")
+  if pbcopy and pbpaste then
+    return provider("macOS", { plus = { pbcopy } }, { plus = { pbpaste } })
+  end
+
   local wl_copy = exepath("wl-copy")
   local wl_paste = exepath("wl-paste")
   if env_set("WAYLAND_DISPLAY") and wl_copy and wl_paste then
