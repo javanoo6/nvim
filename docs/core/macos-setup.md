@@ -7,12 +7,12 @@ Validated on Apple Silicon with Neovim 0.12.5 and Homebrew JDK 21.
 ```sh
 brew install neovim git ripgrep fd node go python lazygit tree-sitter-cli openjdk@21 maven
 brew install --cask kitty font-iosevka-term-nerd-font
-git clone --branch feat/macos-support git@github.com:javanoo6/nvim.git ~/.config/nvim
+git clone git@github.com:javanoo6/nvim.git ~/.config/nvim
 cd ~/.config/nvim
 git submodule update --init intellij-code-formatter
 ```
 
-Use the `feat/macos-support` branch until these changes are merged into `master`.
+macOS support is included in `master` and the `0.1.0` release.
 Do not overwrite an existing `~/.config/nvim`; move it aside before cloning.
 The formatter's nested IntelliJ source submodule is not required to build the CLI.
 
