@@ -311,7 +311,8 @@ return {
       require("dap-go").setup()
 
       -- Setup Python adapter
-      require("dap-python").setup("python3")
+      local mason_python = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(vim.fn.executable(mason_python) == 1 and mason_python or "python3")
 
       -- Java debug adapter is handled by nvim-java
     end,

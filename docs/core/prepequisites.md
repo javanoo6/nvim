@@ -2,6 +2,8 @@
 
 Everything needed before this Neovim setup works correctly.
 
+For macOS, start with [macOS setup](macos-setup.md). The commands below target Linux.
+
 ---
 
 ## 1. Neovim

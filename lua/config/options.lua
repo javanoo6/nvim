@@ -1,5 +1,23 @@
 -- ./lua/config/options.lua
 
+-- Homebrew's versioned JDK is not on PATH by default.
+if vim.fn.has("macunix") == 1 then
+  local java_home = vim.env.NVIM_JAVA_HOME or vim.env.JAVA_HOME
+  if not java_home then
+    for _, prefix in ipairs({ "/opt/homebrew", "/usr/local" }) do
+      local candidate = prefix .. "/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home"
+      if vim.fn.isdirectory(candidate) == 1 then
+        java_home = candidate
+        break
+      end
+    end
+  end
+  if java_home and vim.fn.isdirectory(java_home) == 1 then
+    vim.env.JAVA_HOME = java_home
+    vim.env.PATH = java_home .. "/bin:" .. vim.env.PATH
+  end
+end
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 vim.g.loaded_node_provider = 0
