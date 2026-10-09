@@ -168,6 +168,15 @@ return {
     config = function()
       require("util.neotest_output_guard").install()
 
+      local golang = require("neotest-golang")({ runner = "gotestsum" })
+      local go_is_test_file = golang.is_test_file
+      golang.is_test_file = function(path)
+        if not vim.endswith(path, "_test.go") or vim.fn.executable("go") ~= 1 then
+          return false
+        end
+        return go_is_test_file(path)
+      end
+
       require("neotest").setup({
         discovery = {
           filter_dir = scope.scoped_discovery_filter,
@@ -176,9 +185,7 @@ return {
           require("neotest-java")({
             incremental_build = true,
           }),
-          require("neotest-golang")({
-            runner = "gotestsum",
-          }),
+          golang,
           require("neotest-python")({
             dap = { justMyCode = false },
             python = function()

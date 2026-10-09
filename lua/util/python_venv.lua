@@ -4,6 +4,8 @@ local util = require("util")
 M.env_state = {
   root = nil,
   vars = {},
+  previous = {},
+  added_paths = {},
 }
 
 local root_markers = {
@@ -126,12 +128,50 @@ local function read_env_file(path)
 end
 
 local function clear_loaded_env()
-  for key in pairs(M.env_state.vars) do
-    vim.env[key] = nil
+  for key, value in pairs(M.env_state.vars) do
+    if vim.env[key] == value then
+      local previous = M.env_state.previous[key]
+      vim.env[key] = previous ~= false and previous or nil
+    end
+  end
+
+  if next(M.env_state.added_paths) then
+    local paths = vim.split(vim.env.PATH or "", ":", { plain = true })
+    paths = vim.tbl_filter(function(path)
+      return not M.env_state.added_paths[path]
+    end, paths)
+    vim.env.PATH = table.concat(paths, ":")
   end
 
   M.env_state.root = nil
   M.env_state.vars = {}
+  M.env_state.previous = {}
+  M.env_state.added_paths = {}
+end
+
+local function extend_path(value)
+  local inherited = vim.env.PATH or ""
+  value = value
+    :gsub("%${PATH}", function()
+      return inherited
+    end)
+    :gsub("%$([%a_][%w_]*)", function(key)
+      return key == "PATH" and inherited or "$" .. key
+    end)
+
+  local paths = vim.split(inherited, ":", { plain = true })
+  local seen = {}
+  for _, path in ipairs(paths) do
+    seen[path] = true
+  end
+  for _, path in ipairs(vim.split(value, ":", { plain = true })) do
+    if path ~= "" and not seen[path] then
+      paths[#paths + 1] = path
+      seen[path] = true
+      M.env_state.added_paths[path] = true
+    end
+  end
+  vim.env.PATH = table.concat(paths, ":")
 end
 
 function M.apply_project_env(bufnr)
@@ -141,13 +181,32 @@ function M.apply_project_env(bufnr)
 
   clear_loaded_env()
 
+  -- The selected env may have been an added .env PATH entry in the previous
+  -- project. Cleanup must not remove the newly selected interpreter's bin dir.
+  local python = active_python()
+  if python and python ~= "" then
+    local bin = vim.fs.dirname(python)
+    local paths = vim.split(vim.env.PATH or "", ":", { plain = true })
+    paths = vim.tbl_filter(function(path)
+      return path ~= bin
+    end, paths)
+    table.insert(paths, 1, bin)
+    vim.env.PATH = table.concat(paths, ":")
+  end
+
   if not env_file or vim.fn.filereadable(env_file) ~= 1 then
     return false
   end
 
   local vars = read_env_file(env_file)
+  local extra_path = vars.PATH
+  vars.PATH = nil
   for key, value in pairs(vars) do
+    M.env_state.previous[key] = vim.env[key] or false
     vim.env[key] = value
+  end
+  if extra_path then
+    extend_path(extra_path)
   end
 
   M.env_state.root = root
