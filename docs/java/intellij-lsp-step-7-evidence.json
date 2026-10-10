@@ -1,0 +1,310 @@
+{
+  "date": "2026-10-10",
+  "plugin_commit": "9cfad18005470e4187090013e08f92ec9e437219",
+  "server_bundle": "263.6379.0",
+  "analysis_jdk": "/usr/lib/jvm/java-21-openjdk-amd64",
+  "fixture_root": "/tmp/nvim-intellij-step7-lg4h0sms",
+  "maven-adapter": {
+    "nearest": {
+      "sample.ExampleTest#parameterized()": {
+        "output": "/tmp/nvim.konkov/YPnL64/7",
+        "status": "passed"
+      }
+    },
+    "code": 1,
+    "ok": true,
+    "results": {
+      "sample.ExampleTest#passes()": {
+        "output": "/tmp/nvim.konkov/YPnL64/2",
+        "status": "passed"
+      },
+      "sample.ExampleTest#fails()": {
+        "output": "/tmp/nvim.konkov/YPnL64/3",
+        "short": "expected: <1> but was: <2>",
+        "status": "failed",
+        "errors": [
+          {
+            "message": "expected: <1> but was: <2>",
+            "line": 7
+          }
+        ]
+      },
+      "sample.ExampleTest#parameterized()": {
+        "output": "/tmp/nvim.konkov/YPnL64/4",
+        "status": "passed"
+      }
+    },
+    "debug_spec": {
+      "strategy": {
+        "vmArgs": [],
+        "noDebug": false,
+        "args": [
+          "execute",
+          "--classpath=/tmp/nvim-intellij-step7-lg4h0sms/maven/target/classes:/tmp/nvim-intellij-step7-lg4h0sms/maven/target/test-classes:/home/konkov/.m2/repository/org/apache/commons/commons-lang3/3.17.0/commons-lang3-3.17.0.jar:/home/konkov/.m2/repository/org/junit/jupiter/junit-jupiter/5.11.4/junit-jupiter-5.11.4.jar:/home/konkov/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.11.4/junit-jupiter-api-5.11.4.jar:/home/konkov/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/konkov/.m2/repository/org/junit/platform/junit-platform-commons/1.11.4/junit-platform-commons-1.11.4.jar:/home/konkov/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/konkov/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.11.4/junit-jupiter-params-5.11.4.jar:/home/konkov/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.11.4/junit-jupiter-engine-5.11.4.jar:/home/konkov/.m2/repository/org/junit/platform/junit-platform-engine/1.11.4/junit-platform-engine-1.11.4.jar",
+          "--reports-dir=/tmp/nvim.konkov/YPnL64/8",
+          "--fail-if-no-tests",
+          "--disable-banner",
+          "--details=tree",
+          "--select-method=sample.ExampleTest#passes()"
+        ],
+        "console": "internalConsole",
+        "intellij_root": "/tmp/nvim-intellij-step7-lg4h0sms/maven",
+        "intellij_client_id": 1,
+        "cwd": "/tmp/nvim-intellij-step7-lg4h0sms/maven",
+        "type": "intellij_jvm",
+        "name": "JUnit tests",
+        "mainClass": "org.junit.platform.console.ConsoleLauncher",
+        "javaExec": "/usr/lib/jvm/java-21-openjdk-amd64/bin/java",
+        "request": "launch",
+        "classPaths": [
+          "/home/konkov/.local/share/nvim/neotest-java/junit-platform-console-standalone-6.0.3.jar"
+        ]
+      },
+      "cwd": "/tmp/nvim-intellij-step7-lg4h0sms/maven",
+      "context": {
+        "reports_dir": {
+          "opts": [],
+          "separator": "/",
+          "is_absolute": true,
+          "raw_path": "/tmp/nvim.konkov/YPnL64/8"
+        }
+      }
+    },
+    "stdout": "\u2577\n\u251c\u2500 JUnit Platform Suite \u2714\n\u251c\u2500 JUnit Jupiter \u2714\n\u2502  \u2514\u2500 ExampleTest \u2714\n\u2502     \u251c\u2500 passes() \u2714\n\u2502     \u251c\u2500 fails() \u2718 expected: <1> but was: <2>\n\u2502     \u2514\u2500 parameterized(int) \u2714\n\u2502        \u251c\u2500 [1] 1 \u2714\n\u2502        \u2514\u2500 [2] 2 \u2714\n\u2514\u2500 JUnit Vintage \u2714\n\nFailures (1):\n  JUnit Jupiter:ExampleTest:fails()\n    MethodSource [className = 'sample.ExampleTest', methodName = 'fails', methodParameterTypes = '']\n    => org.opentest4j.AssertionFailedError: expected: <1> but was: <2>\n       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)\n       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)\n       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)\n       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)\n       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:147)\n       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:558)\n       sample.ExampleTest.fails(ExampleTest.java:8)\n\nTest run finished after 108 ms\n[         5 containers found      ]\n[         0 containers skipped    ]\n[         5 containers started    ]\n[         0 containers aborted    ]\n[         5 containers successful ]\n[         0 containers failed     ]\n[         4 tests found           ]\n[         0 tests skipped         ]\n[         4 tests started         ]\n[         0 tests aborted         ]\n[         3 tests successful      ]\n[         1 tests failed          ]\n\n",
+    "positions": [
+      {
+        "id": "/tmp/nvim-intellij-step7-lg4h0sms/maven/src/test/java/sample/ExampleTest.java",
+        "type": "file",
+        "name": "ExampleTest.java"
+      },
+      {
+        "id": "sample.ExampleTest",
+        "type": "namespace",
+        "name": "ExampleTest"
+      },
+      {
+        "id": "sample.ExampleTest#passes()",
+        "type": "test",
+        "name": "passes"
+      },
+      {
+        "id": "sample.ExampleTest#fails()",
+        "type": "test",
+        "name": "fails"
+      },
+      {
+        "id": "sample.ExampleTest#parameterized()",
+        "type": "test",
+        "name": "parameterized"
+      }
+    ]
+  },
+  "gradle-adapter": {
+    "debug_spec": {
+      "cwd": "/tmp/nvim-intellij-step7-lg4h0sms/gradle",
+      "strategy": {
+        "mainClass": "org.junit.platform.console.ConsoleLauncher",
+        "javaExec": "/usr/lib/jvm/java-21-openjdk-amd64/bin/java",
+        "cwd": "/tmp/nvim-intellij-step7-lg4h0sms/gradle",
+        "type": "intellij_jvm",
+        "args": [
+          "execute",
+          "--classpath=/tmp/nvim-intellij-step7-lg4h0sms/gradle/build/classes/java/test:/tmp/nvim-intellij-step7-lg4h0sms/gradle/build/resources/test:/tmp/nvim-intellij-step7-lg4h0sms/gradle/build/classes/java/main:/tmp/nvim-intellij-step7-lg4h0sms/gradle/build/resources/main:/home/konkov/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.17.0/b17d2136f0460dcc0d2016ceefca8723bdf4ee70/commons-lang3-3.17.0.jar:/home/konkov/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-params/5.11.4/e4c86fbe2a39c60c6b87260ef7f7e7c1a1906481/junit-jupiter-params-5.11.4.jar:/home/konkov/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-api/5.11.4/308315b28e667db4091b2ba1f7aa220d1ddadb97/junit-jupiter-api-5.11.4.jar:/home/konkov/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-commons/1.11.4/8898eea3ed0da2641548d602c3e308804f166303/junit-platform-commons-1.11.4.jar:/home/konkov/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter/5.11.4/a699f024a4a4706b36bddbeb42d499aff9e09379/junit-jupiter-5.11.4.jar:/home/konkov/.gradle/caches/modules-2/files-2.1/org.opentest4j/opentest4j/1.3.0/152ea56b3a72f655d4fd677fc0ef2596c3dd5e6e/opentest4j-1.3.0.jar:/home/konkov/.gradle/caches/modules-2/files-2.1/org.apiguardian/apiguardian-api/1.1.2/a231e0d844d2721b0fa1b238006d15c6ded6842a/apiguardian-api-1.1.2.jar:/home/konkov/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-engine/5.11.4/dc10ec209623986a68ea07f67cdc7d2a65a60355/junit-jupiter-engine-5.11.4.jar:/home/konkov/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-engine/1.11.4/21f61b123ad6ac8f7e73971bff3a096c8d8e1cd0/junit-platform-engine-1.11.4.jar",
+          "--reports-dir=/tmp/nvim.konkov/V4QGTW/8",
+          "--fail-if-no-tests",
+          "--disable-banner",
+          "--details=tree",
+          "--select-method=sample.ExampleTest#passes()"
+        ],
+        "intellij_client_id": 1,
+        "noDebug": false,
+        "console": "internalConsole",
+        "request": "launch",
+        "intellij_root": "/tmp/nvim-intellij-step7-lg4h0sms/gradle",
+        "name": "JUnit tests",
+        "classPaths": [
+          "/home/konkov/.local/share/nvim/neotest-java/junit-platform-console-standalone-6.0.3.jar"
+        ],
+        "vmArgs": []
+      },
+      "context": {
+        "reports_dir": {
+          "opts": [],
+          "raw_path": "/tmp/nvim.konkov/V4QGTW/8",
+          "separator": "/",
+          "is_absolute": true
+        }
+      }
+    },
+    "results": {
+      "sample.ExampleTest#parameterized()": {
+        "output": "/tmp/nvim.konkov/V4QGTW/3",
+        "status": "passed"
+      },
+      "sample.ExampleTest#passes()": {
+        "output": "/tmp/nvim.konkov/V4QGTW/2",
+        "status": "passed"
+      },
+      "sample.ExampleTest#fails()": {
+        "errors": [
+          {
+            "message": "expected: <1> but was: <2>",
+            "line": 7
+          }
+        ],
+        "status": "failed",
+        "output": "/tmp/nvim.konkov/V4QGTW/4",
+        "short": "expected: <1> but was: <2>"
+      }
+    },
+    "ok": true,
+    "code": 1,
+    "nearest": {
+      "sample.ExampleTest#parameterized()": {
+        "output": "/tmp/nvim.konkov/V4QGTW/7",
+        "status": "passed"
+      }
+    },
+    "stdout": "\u2577\n\u251c\u2500 JUnit Platform Suite \u2714\n\u251c\u2500 JUnit Jupiter \u2714\n\u2502  \u2514\u2500 ExampleTest \u2714\n\u2502     \u251c\u2500 passes() \u2714\n\u2502     \u251c\u2500 fails() \u2718 expected: <1> but was: <2>\n\u2502     \u2514\u2500 parameterized(int) \u2714\n\u2502        \u251c\u2500 [1] 1 \u2714\n\u2502        \u2514\u2500 [2] 2 \u2714\n\u2514\u2500 JUnit Vintage \u2714\n\nFailures (1):\n  JUnit Jupiter:ExampleTest:fails()\n    MethodSource [className = 'sample.ExampleTest', methodName = 'fails', methodParameterTypes = '']\n    => org.opentest4j.AssertionFailedError: expected: <1> but was: <2>\n       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)\n       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)\n       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)\n       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)\n       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:147)\n       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:558)\n       sample.ExampleTest.fails(ExampleTest.java:8)\n\nTest run finished after 155 ms\n[         5 containers found      ]\n[         0 containers skipped    ]\n[         5 containers started    ]\n[         0 containers aborted    ]\n[         5 containers successful ]\n[         0 containers failed     ]\n[         4 tests found           ]\n[         0 tests skipped         ]\n[         4 tests started         ]\n[         0 tests aborted         ]\n[         3 tests successful      ]\n[         1 tests failed          ]\n\n",
+    "positions": [
+      {
+        "name": "ExampleTest.java",
+        "type": "file",
+        "id": "/tmp/nvim-intellij-step7-lg4h0sms/gradle/src/test/java/sample/ExampleTest.java"
+      },
+      {
+        "name": "ExampleTest",
+        "type": "namespace",
+        "id": "sample.ExampleTest"
+      },
+      {
+        "name": "passes",
+        "type": "test",
+        "id": "sample.ExampleTest#passes()"
+      },
+      {
+        "name": "fails",
+        "type": "test",
+        "id": "sample.ExampleTest#fails()"
+      },
+      {
+        "name": "parameterized",
+        "type": "test",
+        "id": "sample.ExampleTest#parameterized()"
+      }
+    ]
+  },
+  "maven-neotest": {
+    "debug": true,
+    "summary": true,
+    "failed_rerun": true,
+    "package": true,
+    "file": {
+      "sample.ExampleTest#passes()": {
+        "output": "/tmp/nvim.konkov/WQS0k4/2",
+        "status": "passed"
+      },
+      "/tmp/nvim-intellij-step7-lg4h0sms/maven/src/test/java/sample/ExampleTest.java": {
+        "output": "/tmp/nvim.konkov/WQS0k4/1",
+        "status": "failed"
+      },
+      "sample.ExampleTest#parameterized()": {
+        "output": "/tmp/nvim.konkov/WQS0k4/3",
+        "status": "passed"
+      },
+      "sample.ExampleTest": {
+        "output": "/tmp/nvim.konkov/WQS0k4/1",
+        "status": "failed"
+      },
+      "sample.ExampleTest#fails()": {
+        "short": "expected: <1> but was: <2>",
+        "status": "failed",
+        "output": "/tmp/nvim.konkov/WQS0k4/4",
+        "errors": [
+          {
+            "line": 7,
+            "message": "expected: <1> but was: <2>"
+          }
+        ]
+      }
+    },
+    "sequential": true,
+    "debug_config": {
+      "mainClass": "org.junit.platform.console.ConsoleLauncher",
+      "type": "intellij_jvm"
+    },
+    "ok": true,
+    "debug_result": {
+      "output": "/tmp/nvim.konkov/WQS0k4/24",
+      "status": "passed"
+    }
+  },
+  "gradle-neotest": {
+    "sequential": true,
+    "debug_config": {
+      "mainClass": "org.junit.platform.console.ConsoleLauncher",
+      "type": "intellij_jvm"
+    },
+    "ok": true,
+    "debug_result": {
+      "output": "/tmp/nvim.konkov/wqvOYB/24",
+      "status": "passed"
+    },
+    "summary": true,
+    "debug": true,
+    "failed_rerun": true,
+    "file": {
+      "sample.ExampleTest": {
+        "output": "/tmp/nvim.konkov/wqvOYB/1",
+        "status": "failed"
+      },
+      "sample.ExampleTest#fails()": {
+        "output": "/tmp/nvim.konkov/wqvOYB/4",
+        "status": "failed",
+        "errors": [
+          {
+            "line": 7,
+            "message": "expected: <1> but was: <2>"
+          }
+        ],
+        "short": "expected: <1> but was: <2>"
+      },
+      "sample.ExampleTest#passes()": {
+        "output": "/tmp/nvim.konkov/wqvOYB/2",
+        "status": "passed"
+      },
+      "sample.ExampleTest#parameterized()": {
+        "output": "/tmp/nvim.konkov/wqvOYB/3",
+        "status": "passed"
+      },
+      "/tmp/nvim-intellij-step7-lg4h0sms/gradle/src/test/java/sample/ExampleTest.java": {
+        "output": "/tmp/nvim.konkov/wqvOYB/1",
+        "status": "failed"
+      }
+    },
+    "package": true
+  },
+  "mixed-result": {
+    "results": {
+      "sample.MixedTest#cases()": {
+        "output": "/tmp/nvim.konkov/SuQubI/2",
+        "errors": [
+          {
+            "message": "cases(int)[1] -> expected: <2> but was: <1>",
+            "line": 5
+          }
+        ],
+        "status": "failed",
+        "short": "cases(int)[1] -> expected: <2> but was: <1>"
+      }
+    },
+    "ok": true,
+    "output": "\u2577\n\u251c\u2500 JUnit Platform Suite \u2714\n\u251c\u2500 JUnit Jupiter \u2714\n\u2502  \u2514\u2500 MixedTest \u2714\n\u2502     \u2514\u2500 cases(int) \u2714\n\u2502        \u251c\u2500 [1] 1 \u2718 expected: <2> but was: <1>\n\u2502        \u2514\u2500 [2] 2 \u2714\n\u2514\u2500 JUnit Vintage \u2714\n\nFailures (1):\n  JUnit Jupiter:MixedTest:cases(int):[1] 1\n    MethodSource [className = 'sample.MixedTest', methodName = 'cases', methodParameterTypes = 'int']\n    => org.opentest4j.AssertionFailedError: expected: <2> but was: <1>\n       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)\n       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)\n       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)\n       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:152)\n       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:147)\n       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:558)\n       sample.MixedTest.cases(MixedTest.java:6)\n\nTest run finished after 104 ms\n[         5 containers found      ]\n[         0 containers skipped    ]\n[         5 containers started    ]\n[         0 containers aborted    ]\n[         5 containers successful ]\n[         0 containers failed     ]\n[         2 tests found           ]\n[         0 tests skipped         ]\n[         2 tests started         ]\n[         0 tests aborted         ]\n[         1 tests successful      ]\n[         1 tests failed          ]\n\n"
+  },
+  "repository_checks": {
+    "stylua": "passed",
+    "selene": "0 errors, 0 warnings, 0 parse errors",
+    "git_diff_check": "passed",
+    "startup": "passed; Java commands registered, Neotest Java enabled, nvim-java/spring-boot.nvim and old Java lens helpers inactive"
+  }
+}

@@ -97,14 +97,14 @@ return {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     opts = function()
-      local function jdtls_status()
+      local function java_status()
         local bufnr = vim.api.nvim_get_current_buf()
-        local client = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })[1]
+        local client = vim.lsp.get_clients({ bufnr = bufnr, name = "intellij" })[1]
         if not client or client:is_stopped() then
           return "red"
         end
 
-        if vim.lsp.status() ~= "" then
+        if not require("intellij-lsp.progress").is_ready(client.id) or not require("intellij-lsp.status").is_idle(client.id) then
           return "yellow"
         end
 
@@ -145,7 +145,7 @@ return {
                 return "●"
               end,
               color = function()
-                local state = jdtls_status()
+                local state = java_status()
                 if state == "green" then
                   return { fg = "#98c379" }
                 end

@@ -29,7 +29,7 @@ lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
 | `nvim-lua/plenary.nvim`       | Lua utilities (async, path, …)     | dep of many            |
 | `MunifTanjim/nui.nvim`        | UI component library               | dep of neo-tree, noice |
 | `nvim-tree/nvim-web-devicons` | File-type icons                    | dep of many            |
-| `nvim-neotest/nvim-nio`       | Async I/O (dep of dap-ui, neotest) | dep                    |
+| `nvim-neotest/nvim-nio`       | Async I/O (Neotest/DAP helpers) | dep                    |
 
 ---
 
@@ -68,7 +68,7 @@ Pyright note:
 
 **LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`, `basedpyright`, `ts_ls`
 **Ruby LSP:** handled through RVM and the `ruby-lsp` gem, not Mason. Projects can use `.ruby-version`, `.ruby-gemset`, and `.env` `BUNDLE_GEMFILE`.
-**Java LSP:** handled separately by `nvim-java` (jdtls) — see Java section.
+**Java LSP:** handled separately by IntelliJ LSP — see Java section.
 
 **Key LSP keymaps** (set on LspAttach in lsp.lua):
 
@@ -169,7 +169,7 @@ moves to the next sibling node.
 conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
   — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
-  — :FormatterInfo reports formatter executable/jar availability
+  — :FormatterInfo reports formatter dependencies and IntelliJ coverage gaps
   — directory formatting implementation lives in util/format_dir.lua and uses fd/fdfind with explicit skip patterns
   — auto-formatting enabled by default (disable with :FormatDisable)
   — format-on-save warns once per unchanged error state when skipped due to LSP errors
@@ -177,11 +177,12 @@ conform.nvim  (formatting.lua)
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
-    python     → idea_formatter
+    python     → explicit unsupported formatter (Step 4 gap)
     ruby       → rubocop_rvm
     json       → prettier
     javascript/typescript/javascriptreact/typescriptreact → prettier
-    yaml/markdown/java/xml/sh → idea_formatter
+    java       → IntelliJ LSP + import optimization (ranges: reformat only)
+    yaml/markdown/xml/sh → explicit unsupported formatter (Step 4 gaps)
   Note: Go skips format-on-save (done via LSP/manual); format-on-save skips files with LSP errors
 
 nvim-lint  (linting.lua)
@@ -382,14 +383,14 @@ first use.
 ```
 dap.lua
   nvim-dap  ── core debugger
-    ├── nvim-dap-ui           ── debug UI panels  →  opens on debug start, closes on session exit,
+    ├── intellij-lsp.debug   ── default stack/locals/watches panel for all adapters
     │                            <leader>du toggle, <leader>dU keep open, <leader>de eval
-    │     └── nvim-nio        ── async I/O
+    │                            local lifecycle wrapper: util/debug_ui.lua
     ├── nvim-dap-virtual-text ── inline variable values (masks secrets)
     ├── nvim-dap-go           ── Go adapter (delve)  →  <leader>dgt, <leader>dgl
     └── nvim-dap-python       ── Python adapter
 
-Java DAP is provided by nvim-java (java_debug_adapter = true)
+Java DAP uses IntelliJ: util/java_launch.lua saves/builds, resolves launches, and starts the owning workspace adapter. nvim-dap-ui is disabled.
 ```
 
 **DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, C run-to-cursor, f focus current frame, g goto line without executing, i step-into, j down stack
@@ -403,7 +404,7 @@ Go test, gl debug last Go test
 ```
 neotest.lua
   neotest
-    ├── neotest-java    ── Maven/Gradle test runner
+    ├── neotest-java    ── discovery/XML readers; util/neotest_intellij owns compile/classpath/run/DAP
     ├── neotest-golang  ── Go test runner
     └── neotest-python  ── Python test runner
   util/neotest_scope.lua ── scoped discovery + file/package target helpers
@@ -417,30 +418,25 @@ tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, t
 
 ### 11. Java
 
-```
-nvim-java.lua
-  nvim-java  ── manages jdtls (Java LSP) entirely
-    ├── lombok             ── annotation processor support
-    ├── java_test          ── JUnit test runner integration
-    ├── java_debug_adapter ── DAP adapter for Java
-    └── spring_boot_tools  ── Spring Boot tooling
-  jdtls/org.eclipse.jdt.core.prefs
-    └── global Eclipse compiler prefs, including unused method-parameter warnings
-
-util/java_project_init.lua
-  :JavaInitProject [dir] / <leader>ji
-  └── local Maven/Gradle Java 21 starter templates
-
-util/java_project_config.lua
-  :JavaProjectUpdate / <leader>ju
-  └── sends JDTLS java.projectConfiguration.update for the current buffer
-
-lsp.lua excludes jdtls from mason-lspconfig (nvim-java owns it)
-vim.g.lspconfig_jdtls_enabled = false  (options.lua)
-JVM: -Xms2G / -Xmx8G  (prevents OOM on refactoring)
-```
-
-**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote
+- `lua/plugins/intellij-lsp.lua` loads the pinned JetBrains plugin at startup.
+- `lua/util/java_intellij.lua` merges cmp/file-operation capabilities, suppresses
+  built-in completion, disables JDTLS, and registers `JavaInfo`.
+- `nvim-java` is disabled. `neotest-java` supplies discovery/XML results;
+  `util/neotest_intellij.lua` owns test compile, classpaths, run, and debug.
+- Java symbol rename targets `intellij`; lualine tracks that client.
+- `JavaInitProject` / `<leader>ji` still create Maven/Gradle projects.
+- App/test run and debug use IntelliJ's JVM adapter and panel. Remote attach
+  remains unavailable (Step 6 skipped).
+- Smart imports use diagnostic fixes; `util/java_workspace.lua` owns scoped
+  restart/index clearing, branch refresh, and reattachment. Field counters and
+  JDTLS code-lens glue are retired; spring-boot.nvim remains disabled.
+- `JavaProjectUpdate` / `<leader>ju` reloads the current IntelliJ workspace;
+  build-file buffers resolve their owning client, and mixed roots prefer Maven.
+- Completion suggestion/rename extensions use the repo's cmp and IntelliJ client.
+- Conform uses IntelliJ for Java formatting/import optimization; rearrangement and
+  former non-Java daemon routes are explicit Step 4 gaps. The jar is no longer invoked.
+- [Step 2 details](../java/intellij-lsp-step-2.md) and
+  [migration checklist](../java/intellij-lsp-migration-plan.md).
 
 ---
 
@@ -691,7 +687,7 @@ lazy.nvim
 │
 ├── DEBUGGING
 │   └── nvim-dap
-│       ├── nvim-dap-ui → nvim-nio
+│       ├── intellij-lsp.debug → default UI
 │       ├── nvim-dap-virtual-text
 │       ├── nvim-dap-go
 │       └── nvim-dap-python
@@ -706,7 +702,7 @@ lazy.nvim
 │   └── leetcode.nvim → plenary + treesitter + telescope + nui + devicons
 │
 ├── LANGUAGE-SPECIFIC
-│   ├── nvim-java (Java / jdtls)
+│   ├── intellij-lsp.nvim (Java / IntelliJ server)
 │   └── gopher.nvim (Go extras)
 │
 ├── CODING HELPERS
@@ -773,10 +769,10 @@ lazy.nvim
 
 ## Notes & known issues
 
-- **Java LSP:** `nvim-java` owns jdtls entirely. `lspconfig` + `mason-lspconfig` are explicitly told to skip it (`server_name ~= "jdtls"`,
-  `vim.g.lspconfig_jdtls_enabled = false`).
-- **Java code actions:** `<leader>ca` / `<A-CR>` still go through `actions-preview.nvim`, but many JDTLS refactors are command-only and cannot show a real diff
-  preview.
+- **Java LSP:** IntelliJ owns Java on the migration branch; JDTLS is disabled and
+  excluded from Mason auto-enable.
+- **Java code actions:** `<leader>ca` / `<A-CR>` still use `actions-preview.nvim`;
+  IntelliJ refactoring/extension compatibility is checked in migration Step 3.
 - **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Writes normal file buffers even when LSP errors exist; Conform still skips
   format-on-save when errors exist.
 - **Reference style:** Underline is enabled by default, reference background is disabled by default. Toggle them with `<leader>uu` and `<leader>uH`.

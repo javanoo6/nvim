@@ -50,12 +50,10 @@ end
 
 function M.formatter_info()
   local home = vim.env.HOME
-  local jar = home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar"
-  local editorconfig = home .. "/.config/nvim/.editorconfig"
   local lines = {
-    "java: " .. executable("java"),
-    "idea formatter jar: " .. (vim.fn.filereadable(jar) == 1 and jar or "<missing> " .. jar),
-    ".editorconfig: " .. (vim.fn.filereadable(editorconfig) == 1 and editorconfig or "<missing> " .. editorconfig),
+    "Java: IntelliJ LSP reformat + optimize imports (no member rearrangement)",
+    "Markdown/Python/YAML/XML/shell: unsupported by pinned IntelliJ server; replacement pending",
+    "Java style: project .editorconfig / IntelliJ project code style",
     "stylua: " .. executable("stylua"),
     "prettier: " .. executable("prettier"),
     "gofumpt: " .. executable("gofumpt"),
@@ -69,17 +67,14 @@ function M.formatter_info()
   vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "FormatterInfo" })
 end
 
-local function format_buffer(conform, bufnr)
+local function format_buffer(conform, opts)
   local format_err
   local did_edit
-  local attempted = conform.format({
-    bufnr = bufnr,
-    timeout_ms = 10000,
-    lsp_format = "fallback",
-    quiet = true,
-  }, function(err, edited)
-    format_err = err
-    did_edit = edited
+  local attempted = vim.api.nvim_buf_call(opts.bufnr, function()
+    return conform.format(opts, function(err, edited)
+      format_err = err
+      did_edit = edited
+    end)
   end)
   return attempted, format_err, did_edit
 end
@@ -122,6 +117,14 @@ local function format_file(conform, path)
   vim.fn.bufload(bufnr)
   detect_filetype(bufnr, path)
 
+  local opts, prepare_err = require("util.intellij_format").options(bufnr, { quiet = true })
+  if prepare_err then
+    if not had_existing_buffer then
+      pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+    end
+    return false, prepare_err
+  end
+
   local formatters, lsp = conform.list_formatters_to_run(bufnr)
   if vim.tbl_isempty(formatters) and not lsp then
     if not had_existing_buffer then
@@ -130,7 +133,7 @@ local function format_file(conform, path)
     return false, "no formatter"
   end
 
-  local ok, attempted, format_err, did_edit = pcall(format_buffer, conform, bufnr)
+  local ok, attempted, format_err, did_edit = pcall(format_buffer, conform, opts)
   if not ok then
     if not had_existing_buffer then
       pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
@@ -155,7 +158,13 @@ local function format_file(conform, path)
   local modified = did_edit or vim.bo[bufnr].modified
   if modified then
     vim.api.nvim_buf_call(bufnr, function()
-      vim.cmd("silent update")
+      local disabled = vim.b[bufnr].disable_autoformat
+      vim.b[bufnr].disable_autoformat = true
+      local write_ok, write_err = pcall(vim.cmd, "silent update")
+      vim.b[bufnr].disable_autoformat = disabled
+      if not write_ok then
+        error(write_err)
+      end
     end)
   end
 

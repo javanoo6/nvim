@@ -757,7 +757,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>cp`            | Fix package declaration                                    |
 | `<leader>ci`            | Java: import class under cursor, prompt if ambiguous       |
 | `<leader>cI`            | Java: import unambiguous classes in buffer                 |
-| `<leader>cf`            | Format (Java: IntelliJ formatter)                          |
+| `<leader>cf`            | Format (Java: IntelliJ LSP + imports)                          |
 | `<leader>cF`            | Format current file's directory, or prompt for a directory |
 
 ### Symbols & Outline
@@ -823,13 +823,19 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>dj`  | Down (call stack)         |
 | `<leader>dk`  | Up (call stack)           |
 | `<leader>dw`  | Hover widgets             |
-| `<leader>du`  | Toggle DAP UI             |
+| `<leader>du`  | Toggle IntelliJ debug panel |
 | `<leader>dU`  | Toggle DAP UI keep-open   |
 | `<leader>de`  | Evaluate expression       |
 | `<leader>dgt` | Debug Go test             |
 | `<leader>dgl` | Debug last Go test        |
 
 ---
+
+IntelliJ's panel is the default for Java, Go, and Python. It opens on a stop,
+shows stack/locals/watches, and closes on exit unless keep-open is enabled.
+Inside the panel: Enter/Tab expand, `e` evaluates, `w` adds a watch, `dd` removes
+one, `c/n/i/o` continue/step, and `q` closes. Keep-open preserves the panel and
+watch expressions; terminated-frame values are cleared by upstream.
 
 ## Testing (Neotest)
 
@@ -861,6 +867,14 @@ opens.
 
 ### Java-specific
 
+Migration branch: IntelliJ LSP owns Java. Use `:JavaInfo` and
+`:checkhealth intellij-lsp` to inspect it. App run/debug, Java Neotest,
+smart imports, workspace reload/restart, and cache clearing use IntelliJ.
+Remote attach is unavailable because Step 6 was skipped. Field usage counters
+are retired; `gR` still lists references. The JDTLS-specific recipes below are
+inactive reference; see [the migration checklist](../java/intellij-lsp-migration-plan.md)
+and [Step 8 helpers](../java/intellij-lsp-step-8.md) for active behavior.
+
 | Key          | Action             |
 |--------------|--------------------|
 | `<leader>jr` | Run Main           |
@@ -874,9 +888,9 @@ opens.
 `:JavaInitProject [dir]` prompts for Maven/Gradle, project directory, artifact,
 group id, and package, then opens the generated `Main.java`.
 
-`:JavaProjectUpdate` / `<leader>ju` asks JDTLS to refresh project configuration
-for the current Java buffer. Use it after editing Maven dependencies in
-`pom.xml`.
+`:JavaProjectUpdate` / `<leader>ju` reloads the current IntelliJ workspace after
+changing `pom.xml` or Gradle configuration. It also works from a build-file
+buffer and reloads only its owning workspace. Mixed Maven/Gradle roots prefer Maven.
 
 ### Java Code Actions
 
@@ -1371,7 +1385,10 @@ Notes:
 - `:PythonLspUseBasedPyright` switches Python buffers to BasedPyright for the current session; `:PythonLspUsePyright` switches back.
 - Java class completion items can add imports through JDTLS completion edits. For pasted unresolved class names, use `<leader>ci` for the symbol under the
   cursor, or `<leader>cI` to walk the current buffer: one-candidate imports are applied automatically, and ambiguous imports are shown in a picker. Bulk Java
-  organize-import cleanup is handled by the IntelliJ formatter bridge.
+  organize-import cleanup is handled by IntelliJ LSP on full-file formatting.
+  Range formatting leaves imports alone; member rearrangement is unavailable.
+  Markdown/Python/YAML/XML/shell formatting is pending a replacement because the
+  pinned IntelliJ server has no formatter for these languages.
 - Use `<leader>tt` to run the current Python test file/package after selecting a venv. `neotest-python` resolves Python from the active venv and `.env`
   values loaded during venv activation are inherited by test runs.
 

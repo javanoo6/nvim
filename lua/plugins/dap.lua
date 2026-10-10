@@ -5,10 +5,9 @@ return {
   {
     "mfussenegger/nvim-dap",
     dependencies = {
-      "rcarriga/nvim-dap-ui",
       "theHamsta/nvim-dap-virtual-text",
       "nvim-neotest/nvim-nio",
-      -- Java debug adapter (via nvim-java)
+      -- Java adapter is registered by util.java_launch (IntelliJ Step 5).
       -- Go debug adapter
       "leoluz/nvim-dap-go",
       -- Python debug adapter
@@ -73,7 +72,7 @@ return {
           end
 
           dap.set_session(session)
-          require("dapui").open()
+          require("util.debug_ui").open()
           dap.focus_frame()
         end,
         desc = "Focus Frame",
@@ -162,6 +161,28 @@ return {
         end,
         desc = "Widgets",
       },
+      {
+        "<leader>du",
+        function()
+          require("util.debug_ui").toggle()
+        end,
+        desc = "Toggle IntelliJ Debug Panel",
+      },
+      {
+        "<leader>dU",
+        function()
+          require("util.debug_ui").toggle_keep_open()
+        end,
+        desc = "Toggle Debug Panel keep-open",
+      },
+      {
+        "<leader>de",
+        function()
+          require("intellij-lsp.debug").evaluate_at_cursor()
+        end,
+        desc = "Evaluate Expression",
+        mode = { "n", "x" },
+      },
       -- Go specific
       {
         "<leader>dgt",
@@ -180,24 +201,15 @@ return {
     },
     config = function()
       local dap = require("dap")
-      local dapui = require("dapui")
-
-      local dapui_filetypes = {
-        ["dap-repl"] = true,
-        dapui_breakpoints = true,
-        dapui_console = true,
-        dapui_scopes = true,
-        dapui_stacks = true,
-        dapui_watches = true,
-      }
 
       local function is_dapui_window(win)
         local ok, buf = pcall(vim.api.nvim_win_get_buf, win)
-        if not ok then
-          return false
-        end
-
-        return dapui_filetypes[vim.bo[buf].filetype] == true
+        return ok
+          and (
+            require("util.debug_ui").is_panel(buf)
+            or vim.api.nvim_buf_get_name(buf) == "intellij-lsp://output"
+            or vim.bo[buf].filetype == "dap-repl"
+          )
       end
 
       local function is_source_window(win)
@@ -289,24 +301,6 @@ return {
         end,
       })
 
-      -- Open/Close dapui automatically
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.after.event_stopped["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        if not vim.g.dapui_keep_open_on_exit then
-          dapui.close()
-        end
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        if not vim.g.dapui_keep_open_on_exit then
-          dapui.close()
-        end
-      end
-
       -- Setup Go adapter
       require("dap-go").setup()
 
@@ -314,41 +308,8 @@ return {
       local mason_python = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
       require("dap-python").setup(vim.fn.executable(mason_python) == 1 and mason_python or "python3")
 
-      -- Java debug adapter is handled by nvim-java
+      -- Java adapter/UI setup follows IntelliJ plugin initialization.
     end,
   },
-  {
-    "rcarriga/nvim-dap-ui",
-    dependencies = { "nvim-neotest/nvim-nio" },
-    config = function()
-      require("dapui").setup()
-      vim.g.dapui_keep_open_on_exit = vim.g.dapui_keep_open_on_exit or false
-    end,
-    keys = {
-      {
-        "<leader>du",
-        function()
-          require("dapui").toggle()
-        end,
-        desc = "Toggle DAP UI",
-      },
-      {
-        "<leader>dU",
-        function()
-          vim.g.dapui_keep_open_on_exit = not vim.g.dapui_keep_open_on_exit
-          local state = vim.g.dapui_keep_open_on_exit and "enabled" or "disabled"
-          vim.notify("DAP UI keep-open-on-exit " .. state, vim.log.levels.INFO, { title = "DAP" })
-        end,
-        desc = "Toggle DAP UI keep-open",
-      },
-      {
-        "<leader>de",
-        function()
-          require("dapui").eval()
-        end,
-        desc = "Eval",
-        mode = { "n", "v" },
-      },
-    },
-  },
+  { "rcarriga/nvim-dap-ui", enabled = false },
 }

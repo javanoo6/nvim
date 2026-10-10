@@ -1,5 +1,10 @@
 # Java Scratch Roadmap
 
+IntelliJ migration note (2026-10-10): project-local scratch storage is retained.
+Completion with test dependencies, run, and breakpoint debugging passed on a
+Maven fixture; see [Step 8](intellij-lsp-step-8.md). The JDTLS-specific external
+scratch proposal below is historical and needs a new capability audit.
+
 Purpose: move Java scratch behavior toward IntelliJ-like external scratch files
 without losing the project-aware autocomplete that JDTLS provides today.
 

@@ -6,10 +6,10 @@ local scope = require("util.neotest_scope")
 return {
   {
     "rcasia/neotest-java",
+    -- Discovery and XML results retained; util.neotest_intellij owns execution.
     ft = "java",
     cmd = { "NeotestJava" },
     dependencies = {
-      "nvim-java/nvim-java",
       "mfussenegger/nvim-dap",
     },
   },
@@ -27,7 +27,7 @@ return {
       "nvim-lua/plenary.nvim",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
-      "rcasia/neotest-java", -- Java (Maven/Gradle)
+      "rcasia/neotest-java", -- IntelliJ Java bridge
       "fredrikaverpil/neotest-golang", -- Go
       "nvim-neotest/neotest-python", -- Python
     },
@@ -182,9 +182,7 @@ return {
           filter_dir = scope.scoped_discovery_filter,
         },
         adapters = {
-          require("neotest-java")({
-            incremental_build = true,
-          }),
+          require("util.neotest_intellij").create(),
           golang,
           require("neotest-python")({
             dap = { justMyCode = false },

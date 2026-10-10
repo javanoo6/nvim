@@ -20,7 +20,7 @@ local function notify_format_skipped_for_errors(bufnr, error_count)
   vim.notify(message, vim.log.levels.WARN, { title = "Conform" })
 end
 
-local idea_formatter_filetypes = {
+local slow_formatter_filetypes = {
   java = true,
   markdown = true,
   python = true,
@@ -58,7 +58,7 @@ local function ruby_rubocop_available(ctx)
 end
 
 local function format_on_save_timeout(bufnr)
-  if idea_formatter_filetypes[vim.bo[bufnr].filetype] then
+  if slow_formatter_filetypes[vim.bo[bufnr].filetype] then
     return 10000
   end
 
@@ -74,7 +74,7 @@ return {
       {
         "<leader>cf",
         function()
-          require("conform").format({ timeout_ms = 10000, lsp_format = "fallback" })
+          require("util.intellij_format").format(0)
         end,
         mode = { "n", "v" },
         desc = "Format",
@@ -87,30 +87,10 @@ return {
     },
     opts = {
       formatters = {
-        idea_formatter = {
-          command = "java",
-          timeout = 10000, -- 10 seconds for daemon startup
-          args = function()
-            local home = vim.env.HOME
-            local jar = home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar"
-            local editorconfig = home .. "/.config/nvim/.editorconfig"
-            return {
-              "-jar",
-              jar,
-              "--format",
-              "--optimize-imports",
-              "--rearrange",
-              "--editorconfig",
-              editorconfig,
-              "$FILENAME",
-            }
+        intellij_unsupported = {
+          format = function(_, ctx, _, callback)
+            callback("IntelliJ server 263.6379.0 has no " .. vim.bo[ctx.buf].filetype .. " formatter; migration Step 4 gap")
           end,
-          condition = function()
-            local home = vim.env.HOME
-            local jar = home .. "/.config/nvim/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar"
-            return vim.fn.executable("java") == 1 and vim.fn.filereadable(jar) == 1
-          end,
-          stdin = false,
         },
         ["goimports-reviser"] = {
           command = "goimports-reviser",
@@ -146,18 +126,18 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         go = { "gofumpt", "goimports-reviser", "golines" },
-        python = { "idea_formatter" },
+        python = { "intellij_unsupported", lsp_format = "never" },
         ruby = { "rubocop_rvm" },
         json = { "prettier" },
         javascript = { "prettier" },
         javascriptreact = { "prettier" },
         typescript = { "prettier" },
         typescriptreact = { "prettier" },
-        yaml = { "idea_formatter" },
-        markdown = { "idea_formatter" },
-        java = { "idea_formatter" },
-        xml = { "idea_formatter" },
-        sh = { "idea_formatter" },
+        yaml = { "intellij_unsupported", lsp_format = "never" },
+        markdown = { "intellij_unsupported", lsp_format = "never" },
+        java = { lsp_format = "prefer", name = "intellij" },
+        xml = { "intellij_unsupported", lsp_format = "never" },
+        sh = { "intellij_unsupported", lsp_format = "never" },
       },
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
@@ -175,7 +155,11 @@ return {
         end
 
         format_skip_notices[bufnr] = nil
-        return { timeout_ms = format_on_save_timeout(bufnr), lsp_format = "fallback" }
+        local opts, err = require("util.intellij_format").options(bufnr, { timeout_ms = format_on_save_timeout(bufnr) })
+        if err then
+          vim.notify(err, vim.log.levels.WARN, { title = "Formatting" })
+        end
+        return opts
       end,
     },
     config = function(_, opts)

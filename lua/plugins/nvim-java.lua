@@ -2,6 +2,7 @@
 
 return {
   "nvim-java/nvim-java",
+  enabled = false, -- Replaced by IntelliJ LSP on this migration branch.
   dependencies = {
     "JavaHello/spring-boot.nvim",
   },
