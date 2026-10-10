@@ -326,9 +326,17 @@ Update this file when:
 - `lua/util/java_intellij.lua` wraps the pinned plugin's client factory to merge
   cmp/file-operation capabilities and disable built-in completion after attach.
   Upstream `autotrigger=false` alone still enables built-in completion.
+- Java inlay hints override upstream `hints.collapse complex types` to `false`
+  through `inlay_hint_settings.jetbrains.java` in `lua/plugins/intellij-lsp.lua`,
+  so generic type arguments remain visible (for example, `Map<String, String>`
+  instead of `Map<...>`). Hint enablement stays with the repo's `<leader>uh` control.
 - Plugin theme, Git, leader keymaps, completion triggers/Enter, signature popup,
-  folds, file templates, upstream run/debug defaults, and independent format-on-save are disabled
+  folds, upstream run/debug defaults, and independent format-on-save are disabled
   to preserve repo ownership while each workflow is migrated.
+- IntelliJ file templates are enabled for new empty Java files: Class, Interface,
+  Record, Enum, Annotation, and Exception. The picker derives the package and name
+  from the project path; `:IntellijLspFileTemplate` opens it manually for an empty
+  attached buffer. Selecting a template creates the file on disk before interpolation.
 - `:JavaInfo` reports the IntelliJ client/root, JDK, bundle and EULA state.
 - `<leader>jr/jd/jc/jl` run/debug/stop/toggle output through
   [lua/util/java_launch.lua](/home/konkov/.config/nvim/lua/util/java_launch.lua:1).
@@ -514,7 +522,8 @@ Update this file when:
 - LSP inlay hints are managed by
   [lua/util/inlay_hints.lua](/home/konkov/.config/nvim/lua/util/inlay_hints.lua:1)
   through Neovim's native `vim.lsp.inlay_hint` API and toggled with
-  `<leader>uh`.
+  `<leader>uh`. Switching between normal and insert mode does not toggle hints;
+  Java, Go, and Python still clear stale hint text after edits.
 - Noice is allowed to own command/message UI, but hover/signature rendering is
   intentionally disabled there to avoid conflicts with the chosen editing setup.
 - `<C-CR>` and `<leader>Hy` open Yanky's Telescope `yank_history` picker through
