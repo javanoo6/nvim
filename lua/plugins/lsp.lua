@@ -152,6 +152,14 @@ return {
           map("n", "gd", "<cmd>Glance definitions<cr>", vim.tbl_extend("force", opts, { desc = "Goto Definitions" }))
           map("n", "gR", "<cmd>Glance references<cr>", vim.tbl_extend("force", opts, { desc = "Goto References" }))
           map("n", "gy", "<cmd>Glance type_definitions<cr>", vim.tbl_extend("force", opts, { desc = "Goto Type Definitions" }))
+          if client and client.name == "intellij" and vim.bo[event.buf].filetype == "java" then
+            map(
+              "n",
+              "gt",
+              "<cmd>IntellijLspTypeHierarchy subtypes<cr>",
+              vim.tbl_extend("force", opts, { desc = "Type Hierarchy (subtypes)" })
+            )
+          end
           map("n", "gI", "<cmd>Glance implementations<cr>", vim.tbl_extend("force", opts, { desc = "Goto Implementations" }))
 
           -- Native LSP

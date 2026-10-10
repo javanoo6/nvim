@@ -51,9 +51,14 @@ end
 function M.formatter_info()
   local home = vim.env.HOME
   local lines = {
-    "Java: IntelliJ LSP reformat + optimize imports (no member rearrangement)",
-    "Markdown/Python/YAML/XML/shell: unsupported by pinned IntelliJ server; replacement pending",
-    "Java style: project .editorconfig / IntelliJ project code style",
+    "Java: standalone IntelliJ formatter (reformat + optimize imports + rearrange)",
+    "Markdown/Python/XML/YAML (.yaml/.yml)/shell: standalone IntelliJ formatter",
+    "Formatter jar: " .. vim.fn.stdpath("config") .. "/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar",
+    "Formatter jar readable: " .. tostring(
+      vim.fn.filereadable(vim.fn.stdpath("config") .. "/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar") == 1
+    ),
+    "Formatter Java: " .. executable("java"),
+    "Formatter style: " .. vim.fn.stdpath("config") .. "/.editorconfig",
     "stylua: " .. executable("stylua"),
     "prettier: " .. executable("prettier"),
     "gofumpt: " .. executable("gofumpt"),
@@ -117,7 +122,7 @@ local function format_file(conform, path)
   vim.fn.bufload(bufnr)
   detect_filetype(bufnr, path)
 
-  local opts, prepare_err = require("util.intellij_format").options(bufnr, { quiet = true })
+  local opts, prepare_err = require("util.format").options(bufnr, { quiet = true })
   if prepare_err then
     if not had_existing_buffer then
       pcall(vim.api.nvim_buf_delete, bufnr, { force = true })

@@ -2,24 +2,6 @@
 
 Short record of local fixes made during debugging on 2026-05-25.
 
-## Java Rename Guard
-
-Problem:
-
-- JDTLS rename/refactor sometimes returned no rename targets.
-- `nvim-java` assumed the response was always a table.
-- Result: `bad argument #1 to 'ipairs' (table expected, got nil)`.
-
-Current status:
-
-- removed after the `nvim-java` update that fixed the rename dispatch path
-- Java runtime patches that remain are documented in
-  [docs/java/nvim-java-patches.md](/home/konkov/.config/nvim/docs/java/nvim-java-patches.md:1)
-
-Historical file:
-
-- [lua/util/java_patches.lua](/home/konkov/.config/nvim/lua/util/java_patches.lua:1)
-
 ## LuaLS Workspace Setup
 
 Problem:

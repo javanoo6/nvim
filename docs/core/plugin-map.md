@@ -23,12 +23,12 @@ lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
 
 ### 1. Infrastructure (shared deps, always loaded)
 
-| Plugin                        | Role                               | File                   |
-|-------------------------------|------------------------------------|------------------------|
-| `folke/lazy.nvim`             | Plugin manager                     | config/lazy.lua        |
-| `nvim-lua/plenary.nvim`       | Lua utilities (async, path, …)     | dep of many            |
-| `MunifTanjim/nui.nvim`        | UI component library               | dep of neo-tree, noice |
-| `nvim-tree/nvim-web-devicons` | File-type icons                    | dep of many            |
+| Plugin                        | Role                            | File                   |
+|-------------------------------|---------------------------------|------------------------|
+| `folke/lazy.nvim`             | Plugin manager                  | config/lazy.lua        |
+| `nvim-lua/plenary.nvim`       | Lua utilities (async, path, …)  | dep of many            |
+| `MunifTanjim/nui.nvim`        | UI component library            | dep of neo-tree, noice |
+| `nvim-tree/nvim-web-devicons` | File-type icons                 | dep of many            |
 | `nvim-neotest/nvim-nio`       | Async I/O (Neotest/DAP helpers) | dep                    |
 
 ---
@@ -177,12 +177,11 @@ conform.nvim  (formatting.lua)
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
-    python     → explicit unsupported formatter (Step 4 gap)
+    python     → standalone IntelliJ formatter jar
     ruby       → rubocop_rvm
     json       → prettier
     javascript/typescript/javascriptreact/typescriptreact → prettier
-    java       → IntelliJ LSP + import optimization (ranges: reformat only)
-    yaml/markdown/xml/sh → explicit unsupported formatter (Step 4 gaps)
+    java/markdown/xml/yaml/sh → standalone IntelliJ formatter jar
   Note: Go skips format-on-save (done via LSP/manual); format-on-save skips files with LSP errors
 
 nvim-lint  (linting.lua)
@@ -421,8 +420,11 @@ tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, t
 - `lua/plugins/intellij-lsp.lua` loads the pinned JetBrains plugin at startup.
 - `lua/util/java_intellij.lua` merges cmp/file-operation capabilities, suppresses
   built-in completion, disables JDTLS, and registers `JavaInfo`.
-- `nvim-java` is disabled. `neotest-java` supplies discovery/XML results;
+- The obsolete `nvim-java` spec is removed. `neotest-java` supplies discovery/XML results;
   `util/neotest_intellij.lua` owns test compile, classpaths, run, and debug.
+- `gt` opens type hierarchy subtypes in IntelliJ-attached Java buffers.
+- New empty Java files offer IntelliJ templates; `:IntellijLspFileTemplate`
+  opens the picker manually for an empty attached buffer.
 - Java symbol rename targets `intellij`; lualine tracks that client.
 - `JavaInitProject` / `<leader>ji` still create Maven/Gradle projects.
 - App/test run and debug use IntelliJ's JVM adapter and panel. Remote attach
@@ -433,8 +435,8 @@ tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, t
 - `JavaProjectUpdate` / `<leader>ju` reloads the current IntelliJ workspace;
   build-file buffers resolve their owning client, and mixed roots prefer Maven.
 - Completion suggestion/rename extensions use the repo's cmp and IntelliJ client.
-- Conform uses IntelliJ for Java formatting/import optimization; rearrangement and
-  former non-Java daemon routes are explicit Step 4 gaps. The jar is no longer invoked.
+- Conform uses the standalone IntelliJ jar for Java formatting/import optimization/
+  rearrangement and Markdown/XML/Python/YAML/shell formatting.
 - [Step 2 details](../java/intellij-lsp-step-2.md) and
   [migration checklist](../java/intellij-lsp-migration-plan.md).
 
@@ -745,7 +747,7 @@ lazy.nvim
 | `<leader>G`       | git            | gitsigns, diffview, lazygit                                                                            |
 | `<leader>Gh`      | hunks          | gitsigns                                                                                               |
 | `<leader>h`       | harpoon/dirs   | harpoon                                                                                                |
-| `<leader>j`       | java           | nvim-java, local Java helpers                                                                          |
+| `<leader>j`       | java           | IntelliJ LSP, local Java helpers                                                                       |
 | `<leader>L`       | leetcode       | leetcode.nvim                                                                                          |
 | `<leader>l`       | lsp            | nvim-lspconfig                                                                                         |
 | `<leader>O`       | obsidian       | obsidian.nvim                                                                                          |

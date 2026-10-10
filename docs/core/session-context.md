@@ -185,9 +185,8 @@ Update this file when:
 - Python LSP defaults to Pyright. BasedPyright is installed/configured but
   opt-in through `:PythonLspUseBasedPyright`; use `:PythonLspUsePyright` to
   switch back without changing config files.
-- Python formatting is currently an explicit Step 4 migration gap: the pinned
-  IntelliJ server has no Python formatter. The jar route has been removed;
-  `ruff` remains configured for linting, with no replacement formatter selected.
+- Python formatting uses the standalone IntelliJ jar by user request, as do
+  Markdown, XML, and YAML (`.yaml` / `.yml`). Ruff remains configured for linting.
 - `FormatDir` uses `fd`/`fdfind` with explicit directory excludes instead of a
   manual Lua recursive walker. It includes hidden files, respects ignore files
   such as `.fdignore`, and filters candidates through Conform's configured
@@ -249,20 +248,8 @@ Update this file when:
   [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)
   so a single executed invocation of a parameterized JUnit method maps back to
   the Neotest method node instead of leaving a stale failed summary status.
-- `neotest-java` DAP spec building is locally wrapped at
-  [lua/neotest-java/core/spec_builder/init.lua](/home/konkov/.config/nvim/lua/neotest-java/core/spec_builder/init.lua:1)
-  to normalize Java attach configs. The Java debug adapter used here requires
-  `hostName` for attach; without it, attach attempts can show as `null:<port>`.
-  The wrapper removes upstream's guessed `projectName` because it can differ
-  from JDTLS' actual project name in multi-module/demo repos and make variable
-  rendering fail with `Project <name> cannot be found`.
-- `neotest-java` Java binary resolution is locally overridden at
-  [lua/neotest-java/command/binaries.lua](/home/konkov/.config/nvim/lua/neotest-java/command/binaries.lua:1)
-  so a missing JDTLS `org.eclipse.jdt.ls.core.vm.location` response falls back
-  to `NVIM_JAVA_HOME`, `JAVA_HOME`, the resolved `java` executable, or the local
-  Java 21 default instead of crashing in `Path(nil)`.
 - `:FormatterInfo` reports active formatter dependencies and IntelliJ migration
-  gaps. It no longer checks the retired daemon jar.
+  gaps, including the standalone jar, Java executable, and explicit EditorConfig path.
 - Directory formatting commands are registered from
   [lua/util/format_dir.lua](/home/konkov/.config/nvim/lua/util/format_dir.lua:1)
   so [lua/plugins/formatting.lua](/home/konkov/.config/nvim/lua/plugins/formatting.lua:1)
@@ -272,10 +259,8 @@ Update this file when:
 - Buffer auto-save writes normal file buffers even when LSP errors exist; in
   that case the write proceeds without format-on-save because Conform skips
   formatting on LSP errors.
-- Format-on-save uses `10000ms` per IntelliJ preparation/request and for
-  Ruby/RuboCop, and `500ms` for other auto-formatted filetypes. Java may need
-  separate waits for startup/file registration/import optimization/formatting;
-  an initial import timeout tells the user to retry after `:JavaInfo` is ready.
+- Format-on-save uses `10000ms` for standalone IntelliJ formatter routes and
+  Ruby/RuboCop, and `500ms` for other auto-formatted filetypes.
 - Pyright is configured locally through `vim.lsp.config("pyright", ...)` with
   a resolved Mason absolute binary path, because current `mason-lspconfig`
   auto-enable behavior can otherwise bypass repo-local `cmd` customization.
@@ -314,11 +299,14 @@ Update this file when:
 
 ## Java Stack: Local Solutions
 
-- IntelliJ LSP owns Java on the migration branch; `nvim-java` and
-  `spring-boot.nvim` remain disabled. Neotest uses `util.neotest_intellij` with
+- IntelliJ LSP owns Java; obsolete `nvim-java` / JDTLS runtime helpers and
+  plugin spec have been removed. `spring-boot.nvim` is not configured.
+  Neotest uses `util.neotest_intellij` with
   neotest-java's discovery/XML result readers; no JDTLS execution path or backend selector.
 - Plugin revision: `9cfad18005470e4187090013e08f92ec9e437219`; server bundle:
   `263.6379.0`. The user explicitly accepted its EAP EULA on 2026-10-10.
+- `gt` opens IntelliJ type hierarchy (subtypes) in attached Java buffers. It is
+  buffer-local; other filetypes keep Vim's next-tab behavior.
 - Startup and protocol/health validation passed on a disposable Maven project.
   Step 3 editing/navigation checks pass on disposable Maven/Gradle/multi-module
   fixtures; Spring/Lombok dependency resolution also passes. See the Step 3
@@ -369,18 +357,27 @@ Update this file when:
 - IntelliJ follow-up suggestion commands target nvim-cmp, and follow-up rename
   targets the IntelliJ client. LSP completion snippets use LuaSnip; upstream
   SnippetTextEdit live templates use Neovim's native snippet engine.
+- Pinned server `263.6379.0` inspection diagnostics have fixed selection limits:
+  unused declarations are explicitly disabled, several requested checks are off
+  or informational, and a live project-profile override did not affect results.
+  Imports/raw types/unchecked calls/self-assignment/constant conditions and
+  accidental boolean assignments do report warnings. See the diagnostics audit
+  in `docs/java/intellij-lsp-migration-plan.md`; Lua display settings cannot enable
+  checks the server does not emit.
 - `JavaInfo` includes progress state and whether initial import finished.
-- Conform uses IntelliJ LSP for Java. Full-file `<leader>cf`, format-on-save,
-  and directory formatting optimize imports before reformatting; ranges only
-  reformat. Member rearrangement is unavailable. Project `.editorconfig` and
-  IntelliJ project style replace the jar's forced repo-wide `.editorconfig`.
-- [lua/util/intellij_format.lua](/home/konkov/.config/nvim/lua/util/intellij_format.lua:1)
-  starts/attaches the owning Java client for directory targets; each newly prepared
-  file is polled for a non-null formatting response before cleanup. Standalone
-  Java formatting explicitly starts at its parent directory without build import.
-- Markdown, Python, YAML, XML, and shell routes report an unsupported formatter
-  instead of invoking the jar or another LSP. Their replacement remains pending.
-  Other languages keep their existing formatters and LSP behavior.
+- Conform uses the standalone `intellij-code-formatter` jar for Java, Markdown,
+  XML, Python, YAML, and shell. Full-file Java formatting optimizes imports and rearranges members;
+  range requests omit both cleanup flags and use Conform's filtered formatting
+  edits. The jar is more capable than pinned LSP formatting for these routes;
+  the comparison table is in `lua/plugins/formatting.lua`.
+- [lua/util/format.lua](/home/konkov/.config/nvim/lua/util/format.lua:1) checks
+  Java/jar availability and disables LSP fallback on standalone routes.
+  Formatting does not wait for the IntelliJ language server or project import.
+  The explicit style file is this config's `.editorconfig`, restoring the previous
+  standalone formatter policy.
+- Python, YAML, and shell routes use the standalone jar by explicit user request,
+  even though earlier baseline samples did not change. Other languages retain
+  their existing formatters.
 - Conform LSP requests run inside `nvim_buf_call` for their target because this
   Conform revision builds formatting parameters from the current buffer's URI
   and indentation even when `bufnr` is supplied. Directory writes temporarily
@@ -395,83 +392,13 @@ Update this file when:
   [docs/java/intellij-lsp-step-7.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-step-7.md:1),
   [docs/java/intellij-lsp-step-8.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-step-8.md:1).
 
-### Previous JDTLS implementation (inactive; migration reference)
+- `:JavaInitProject [dir]` / `<leader>ji` creates a Java 21 Maven or Gradle
+  project, opens `Main.java`, and changes cwd to its root. Java scratch files
+  remain project-local, preferring test sources; `:ScratchInfo` reports the path.
+- Cleanup removed obsolete JDTLS implementations, raw migration evidence, and
+  formatter fixtures. Readable migration findings and known limits remain in
+  the Java step notes and migration plan.
 
-- Java is not “stock lspconfig”; it is handled by `nvim-java` plus local helper
-  code in `lua/util/java_*`.
-- Java home resolution prefers `NVIM_JAVA_HOME`, then `JAVA_HOME`, then
-  `/usr/lib/jvm/java-21-openjdk-amd64`.
-- The local nvim-java JDTLS JVM-args patch is installed before
-  `require("java").setup()` because auto-session can restore Java buffers during
-  `VimEnter` and trigger JDTLS startup from inside nvim-java setup.
-- JDTLS is package-managed by `nvim-java`; the previous hardcoded local JDTLS
-  repository path/version override was removed after upstream support landed.
-- `spring-boot.nvim` stays attached on Java buffers. A local patch wraps its
-  `workspace/executeClientCommand` bridge so background Spring Boot command
-  failures do not surface as `spring-boot: -32603: Internal error.` during Java
-  rename/refactor flows.
-- `nvim-java` client lookup is patched locally so Java run/debug/test/profile
-  flows prefer the `jdtls` client attached to the current buffer instead of the
-  first global `jdtls` client. Without this, opening multiple Java workspaces
-  can make `<leader>jr` and related flows operate on the wrong project.
-- For dual-build roots that contain both `pom.xml` and Gradle build files, the
-  local JDTLS config forces Maven import on and Gradle import off for that
-  workspace, and injects those import settings into
-  `initializationOptions.settings` before JDTLS startup. This makes Maven the
-  source of truth for main-class discovery and related Java run/debug flows in
-  mixed-build projects like Spring Petclinic.
-- `<leader>jr` is wrapped locally to wait briefly for `jdtls` attachment before
-  invoking the Java runner. This avoids a silent no-op when the key is pressed
-  immediately after opening a Java buffer in a fresh project.
-- `<leader>jl` toggles the Java runner log window without stopping the running
-  app. `<leader>jc` stops the app itself.
-- `:JavaInitProject [dir]` / `<leader>ji` creates a small Java 21 Maven or
-  Gradle project from local templates, opens `Main.java`, and changes Neovim's
-  cwd to the new project root. It intentionally does not shell out to
-  `mvn archetype` or `gradle init`.
-- Java patch/workflow details live in the Java deep-dive docs listed below.
-- Java project initialization workflow and naming guidance is documented in
-  [docs/java/java-project-init.md](/home/konkov/.config/nvim/docs/java/java-project-init.md:1).
-- Scratch-file behavior is customized for Java projects: the scratch flow prefers
-  project-local `Scratch.java` under source roots so JDTLS resolves deps.
-- The planned IntelliJ-like Java scratch work is tracked in
-  [docs/java/java-scratch-roadmap.md](/home/konkov/.config/nvim/docs/java/java-scratch-roadmap.md:1).
-- Planned Java lint work is tracked in
-  [docs/java/java-inspection-lint-roadmap.md](/home/konkov/.config/nvim/docs/java/java-inspection-lint-roadmap.md:1).
-- Planned IntelliJ Community inspection-engine research is tracked in
-  [docs/java/java-intellij-inspection-engine-roadmap.md](/home/konkov/.config/nvim/docs/java/java-intellij-inspection-engine-roadmap.md:1).
-- `:ScratchInfo` reports the global scratch directory, Java project root, and
-  resolved Java `Scratch.java` path for the current context.
-- JDTLS is configured to download Maven dependency sources when available, so
-  external libraries should open as real source before falling back to
-  decompiled `jdt://...` class content.
-- JDTLS loads global Eclipse compiler preferences from
-  [jdtls/org.eclipse.jdt.core.prefs](/home/konkov/.config/nvim/jdtls/org.eclipse.jdt.core.prefs:1)
-  through `java.settings.url`. This enables unused method-parameter diagnostics
-  while leaving abstract implementations and concrete overrides quiet. A
-  project-local `.settings/org.eclipse.jdt.core.prefs` can override these
-  preferences.
-- `:JavaProjectUpdate` / `<leader>ju` sends JDTLS
-  `java.projectConfiguration.update` for the current Java buffer. Use it after
-  changing Maven dependencies in `pom.xml` before reaching for the heavier
-  workspace clean path.
-- JDTLS runs with full-document sync (`allow_incremental_sync = false`) to avoid
-  stale in-memory source and bogus parse diagnostics around otherwise valid Java
-  comments.
-- There is an explicit workspace clean command exposed as `<leader>XC`.
-- `:JavaCleanCorruptWorkspaces` scans the Neovim LSP log for Eclipse/JDTLS
-  workspace corruption signatures, then quarantines matching
-  `stdpath("cache")/jdtls/workspace/proj_*` directories. Use
-  `:JavaCleanCorruptWorkspaces!` to delete instead of rename, or `<leader>XJ`
-  for the quarantine path. Active JDTLS workspaces are skipped.
-- Java completion already applies JDTLS `additionalTextEdits`, so accepting a
-  class completion item can add the matching import. For pasted unresolved class
-  names, `<leader>ci` imports the symbol under the cursor, auto-applying a
-  single JDTLS `Import '<symbol>' (...)` quickfix or prompting when multiple
-  candidates exist. `<leader>cI` walks current-buffer Java diagnostics,
-  auto-applies unambiguous imports, and prompts only for ambiguous import
-  candidates. Bulk organize-import cleanup remains delegated to the IntelliJ
-  formatter bridge, not an LSP keymap.
 - Neotest scope, discovery filtering, package/file target resolution, and the
   guarded current-file discovery fallback live in
   [lua/util/neotest_scope.lua](/home/konkov/.config/nvim/lua/util/neotest_scope.lua:1).
@@ -630,7 +557,5 @@ Update this file when:
   [docs/java/java-debugging.md](/home/konkov/.config/nvim/docs/java/java-debugging.md:1)
   [docs/java/java-project-init.md](/home/konkov/.config/nvim/docs/java/java-project-init.md:1)
   [docs/java/java-leetcode-debugging.md](/home/konkov/.config/nvim/docs/java/java-leetcode-debugging.md:1)
-  [docs/java/nvim-java-patches.md](/home/konkov/.config/nvim/docs/java/nvim-java-patches.md:1)
   [docs/java/java-test-workflow.md](/home/konkov/.config/nvim/docs/java/java-test-workflow.md:1)
-  [docs/java/neotest-java-fast-event-fix.md](/home/konkov/.config/nvim/docs/java/neotest-java-fast-event-fix.md:1)
   [docs/java/lua-lsp-and-java-fixes.md](/home/konkov/.config/nvim/docs/java/lua-lsp-and-java-fixes.md:1)

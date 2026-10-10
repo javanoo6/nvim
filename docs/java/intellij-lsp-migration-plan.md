@@ -5,7 +5,7 @@
   preserving useful local workflows wherever the new backend supports them.
 - Working branch: `intelijidea_implementation`.
 - Status: Steps 1–3 complete; Step 4 Java formatting implemented and tested,
-  with language/rearrangement coverage gaps still open; Steps 5 and 7–8 complete; Step 6 skipped by user request.
+  with Python/YAML/shell formatter coverage gaps still open; Steps 5 and 7–8 complete; Step 6 skipped by user request.
 - Execute one step at a time. Mark a step complete after its acceptance checks
   pass, and record gaps before advancing. Keep each step independently reviewable.
 - The upstream plugin is pre-alpha. Pin the trial revision and record the server
@@ -23,11 +23,11 @@
   for every filetype currently routed through the daemon jar: Java, Markdown,
   Python, YAML, XML, and shell. Ruby currently uses RuboCop, despite appearing
   in the bridge timeout table; inventory any additional daemon-supported types.
-- Target removal of the daemon jar from those formatting routes. Verify each
-  language independently: upstream advertises Java/Kotlin, and adding a filetype
-  to client configuration does not establish server language/formatter support.
-- Record unsupported formatting, import optimization, or member rearrangement
-  as migration gaps; do not silently route them back through the jar.
+- Formatting policy revised by the user after the LSP trial: use the standalone
+  jar for Java, Markdown, and XML because it demonstrated broader formatting and
+  Java member rearrangement. Java editing remains on IntelliJ LSP.
+- Verify each language independently; Python/YAML/shell remain unsupported until
+  a formatter demonstrates meaningful edits. Do not infer support from exit code.
 - Review the downloaded server's EULA and obtain explicit acceptance before
   enabling `accept_eula`; do not assume acceptance from the migration request.
 - Preserve unrelated working-tree changes and the formatter submodule's changes.
@@ -99,7 +99,8 @@
   do not infer these from ordinary LSP formatting support.
 - [ ] Verify `.editorconfig`, project code style, unused/static imports,
   import grouping, and field/constructor/method arrangement.
-- [x] Remove the daemon jar from migrated Conform routes and formatter status helpers.
+- [x] Trial removal of the daemon jar; user subsequently chose to restore verified
+  standalone Java/Markdown/XML routes and jar status reporting.
 - [ ] Acceptance: supported routes use the plugin/server and pass manual/save/
   directory checks. Record each unsupported language and missing Java cleanup
   operation with an explicit resolution; complete coverage remains open until
@@ -108,8 +109,9 @@
 - Evidence: [Step 4 implementation and gaps](intellij-lsp-step-4.md).
   Project `.editorconfig`, unused/static imports, default grouping, range behavior,
   and unchanged member order are checked. Custom `.idea` code-style/import-layout
-  settings remain unverified. Five non-Java formatters and rearrangement have no
-  replacement yet; this step is not marked complete.
+  settings remain unverified. Standalone Java rearrangement and Markdown/XML
+  formatting have since been restored by user request; Python/YAML/shell remain
+  unresolved, so full language coverage is not marked complete.
 
 ## Step 5 — Main Run and Debug
 
@@ -175,14 +177,167 @@
 - [ ] Review the completed checks and unresolved gaps against daily workflows.
 - [ ] Confirm IntelliJ is the sole configured Java backend and the required
   editing/run/debug/test checks pass.
-- [ ] Remove obsolete JDTLS patches/dependencies after their replacements work;
+- [x] Remove obsolete JDTLS patches/dependencies after their replacements work;
   document remaining gaps without introducing a fallback selector.
-- [ ] Remove obsolete daemon formatter configuration once all targeted routes
-  have a working replacement; preserve unrelated formatter submodule changes.
+- [x] Retain the standalone daemon formatter for verified Java/Markdown/XML routes
+  by user request; preserve formatter submodule changes.
 - [ ] Update session context, crash course, plugin map, and Java workflow docs;
   reconcile the older inspection and scratch roadmaps with observed capabilities.
 - [ ] Acceptance: `make check` and focused runtime checks pass, documentation
   matches the active backend, and remaining limitations are recorded.
+
+## Current Templates, Rename, and Command Keys
+
+- File templates are enabled in `lua/plugins/intellij-lsp.lua`. A new empty Java
+  file offers Class, Interface, Record, Enum, Annotation, or Exception. IntelliJ
+  derives the package and name from its project path. Selecting a template writes
+  the empty file before interpolation; cancelling leaves the new buffer unsaved.
+  `:IntellijLspFileTemplate` opens the picker manually for an empty attached buffer.
+- `<leader>cr` uses LSP symbol rename for variables, methods, and classes. The
+  migration fixtures verified method rename, including cross-module references.
+  Neo-tree file operations use LSP will/did-rename integration; package moves and
+  updated imports were verified during migration.
+- `:IntellijLspRename {path}` is file rename only. It updates references before
+  moving the file and requires `rename_files = true`, currently disabled. The
+  pinned implementation selects the first global IntelliJ client, so it does
+  not provide our owning-workspace routing guarantee for multiple projects.
+- `gt` opens `:IntellijLspTypeHierarchy subtypes` in IntelliJ-attached Java
+  buffers. Elsewhere it keeps Vim's next-tab behavior. Use
+  `:IntellijLspTypeHierarchy supertypes` for the other direction.
+- Upstream `keymaps = false` remains intentional: its `<leader>ci` conflicts
+  with our Java import helper and `<leader>ts` with our test summary.
+- Java hints override `hints.collapse complex types` to false. Parameter names,
+  local-variable types, lambda-parameter types, and call-chain types retain the
+  upstream defaults. Normal/insert mode transitions do not toggle hints;
+  `<leader>uh` controls enablement.
+
+The 32 commands below are audited against the local configuration. Keys usually
+call repo helpers or existing Glance/Trouble/Conform/DAP actions rather than the
+literal IntelliJ commands. Twenty command entries have dedicated source-buffer
+equivalents after adding `gt`, counting Output/Log and RunStop/DebugStop separately.
+Call hierarchy uses Trouble's browser, not the same upstream UI.
+
+| Upstream command                 | Local key or status                                                                                                      |
+|----------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| `IntellijLspRestart`             | `:JavaRestart` restarts the owning workspace; no dedicated Java restart key. `<leader>lr` invokes generic `:LspRestart`. |
+| `IntellijLspClearCache`          | `<leader>XC` / `<leader>XJ`, scoped to the owning workspace                                                              |
+| `IntellijLspOutput`              | `<leader>jl`, toggle build/program output                                                                                |
+| `IntellijLspLog`                 | Same output toggle, `<leader>jl`                                                                                         |
+| `IntellijLspReferences`          | `gR` (Glance), `<leader>cu` (Trouble usages)                                                                             |
+| `IntellijLspReload`              | `<leader>ju`, reload the owning workspace                                                                                |
+| `IntellijLspTypeHierarchy`       | `gt`, subtypes; supertypes via the command                                                                               |
+| `IntellijLspCallHierarchy`       | `<leader>cl`, Trouble call hierarchy                                                                                     |
+| `IntellijLspFormat`              | `<leader>cf`, Conform standalone jar; full-file Java formatting optimizes imports and rearranges members                 |
+| `IntellijLspSymbols`             | `<leader>sS`, Telescope workspace symbols                                                                                |
+| `IntellijLspCompilationErrors`   | Command only                                                                                                             |
+| `IntellijLspExportWorkspace`     | Command only                                                                                                             |
+| `IntellijLspFileTemplate`        | Automatic picker for new empty Java files; command for manual use                                                        |
+| `IntellijLspRename`              | Disabled; use Neo-tree file operations                                                                                   |
+| `IntellijGitStatus`              | IntelliJ Git integration disabled                                                                                        |
+| `IntellijGitDiff`                | IntelliJ Git integration disabled                                                                                        |
+| `IntellijGitLog`                 | IntelliJ Git integration disabled                                                                                        |
+| `IntellijGitBranches`            | IntelliJ Git integration disabled                                                                                        |
+| `IntellijLspRun`                 | `<leader>jr`, scoped build/run helper                                                                                    |
+| `IntellijLspRunStop`             | `<leader>jc`, stop the Java build/program                                                                                |
+| `IntellijLspDebug`               | `<leader>jd`, scoped build/debug helper                                                                                  |
+| `IntellijLspDebugStop`           | `<leader>jc`; `<leader>dt` terminates the current DAP session                                                            |
+| `IntellijLspBreakpointToggle`    | `<leader>db`                                                                                                             |
+| `IntellijLspBreakpointCondition` | `<leader>dB`                                                                                                             |
+| `IntellijLspBreakpointClearAll`  | No dedicated key                                                                                                         |
+| `IntellijLspBreakpointList`      | No dedicated key                                                                                                         |
+| `IntellijLspDebugContinue`       | `<leader>dc`                                                                                                             |
+| `IntellijLspDebugStepOver`       | `<leader>dO`                                                                                                             |
+| `IntellijLspDebugStepInto`       | `<leader>di`                                                                                                             |
+| `IntellijLspDebugStepOut`        | `<leader>do`                                                                                                             |
+| `IntellijLspDebugEvaluate`       | `<leader>de`, expression or selection                                                                                    |
+| `IntellijLspDebugWatch`          | `w` inside the debug panel adds a watch; no source-buffer watch key. `<leader>dw` opens DAP hover widgets.               |
+
+## Standalone Formatter Decision
+
+The user chose to restore the standalone formatter after the pinned LSP trial.
+`<leader>cf`, format-on-save, and `:FormatDir` now use `idea_formatter` for Java,
+Markdown, and XML, with LSP fallback disabled. Full-file requests pass `--format`,
+`--optimize-imports`, and `--rearrange`; range requests only pass `--format` and
+Conform filters the resulting edits. The explicit EditorConfig path is this
+Neovim config's `.editorconfig`, as in the previous standalone route.
+
+| Capability                | Standalone jar   | Pinned LSP route      |
+|---------------------------|------------------|-----------------------|
+| Java formatting           | Yes              | Yes                   |
+| Optimize Java imports     | Yes              | Yes, separate command |
+| Rearrange Java members    | Yes              | Unavailable           |
+| Markdown / XML formatting | Demonstrated     | Unavailable           |
+| Python / YAML / shell     | Not demonstrated | Unavailable           |
+
+Follow-up disposable-file checks passed: manual Java cleanup, member order,
+repeated-format stability, range formatting without import/member cleanup,
+save-time Java cleanup, and `FormatDir` across two
+Java files plus Markdown/XML (4 changed, 0 failed). No LSP client was started.
+The code comment in `lua/plugins/formatting.lua` records the same comparison.
+
+### Python and YAML Follow-Up
+
+The user explicitly requested standalone IntelliJ formatting for `.md`, `.py`,
+`.xml`, `.yaml`, and `.yml`. Markdown/XML were already routed to the jar; Python
+and YAML now also use `idea_formatter` with LSP fallback disabled. Both YAML
+extensions resolve to Neovim's `yaml` filetype. Earlier unchanged baseline samples
+remain historical findings, rather than a reason to block these requested routes.
+A subsequent user request also routes shell (`sh`) files through the same jar;
+the unsupported-formatter stub has been removed.
+
+## Java Inspection Diagnostics Audit
+
+The requested Eclipse/JDTLS warning policy cannot currently be reproduced through
+supported configuration of server `263.6379.0`. A live disposable Maven fixture
+was queried with `textDocument/diagnostic`, then a second fresh workspace was
+queried with a selected `.idea/inspectionProfiles` profile. Both returned the
+same 19 diagnostics, all at LSP warning severity (2). The profile explicitly
+turned off `AssignmentUsedAsCondition`, but that warning still appeared.
+
+| Requested checks | Observed pinned-server behavior |
+| --- | --- |
+| Unused imports | Warnings returned (`UNUSED_IMPORT`) |
+| Raw types / unchecked operations | Warnings returned (`rawtypes`, `unchecked`) |
+| No-effect assignment / identical comparison | Warnings returned (`SillyAssignment`, `DataFlowIssue`, `ConstantValue`) |
+| Boolean assignment in conditions | Warning returned (`AssignmentUsedAsCondition`) |
+| Empty statement | Warning returned (`UnnecessarySemicolon`) |
+| Redundant explicit constructor type arguments | Warning returned (`Convert2Diamond`) |
+| Unused private field/method, local, parameter | No warning on the fixture; Java server explicitly disables `UnusedDeclarationInspection` |
+| Missing `@Override`, missing enum cases/default | No warning on fixture; inspection extension defaults have `INFORMATION` level |
+| Parameter reassignment, local hiding, switch fallthrough, ignored object allocation | No warning on fixture; corresponding inspection extensions are disabled by default |
+| Potentially-static method checks | Disabled by default, consistent with the requested quiet policy |
+
+Read-only inspection of the installed bundle's class bytecode explains the
+results: `LSInspectionsKt` chooses inspection extensions from their built-in
+`enabledByDefault`/display-level attributes, and
+`LSJavaDiagnosticsCustomizerKt` explicitly disables unused declarations (reason
+`LSP-1114`). `AnalyzerInspectionProjectProfileManager` returns its stored
+application profile and rejects `setRootProfile`. The selected project profile
+was not honored in the live diagnostic test. Ordinary IDEA profile documentation
+therefore does not establish support for this standalone language server.
+
+Neovim already enables signs, underlines, and severity sorting, with
+`tiny-inline-diagnostic.nvim` for inline messages. `<leader>xb` opens current-buffer
+diagnostics and `<leader>xx` opens project-root diagnostics in Trouble. These
+views cannot produce checks absent from the server response. No ineffective
+profile/settings keys or substitute diagnostics provider were added. Full parity
+requires a server build with configurable inspections and working unused-code
+support; compiler-only diagnostics do not replace these inspections.
+
+## Cleanup Record
+
+- Removed the disabled nvim-java plugin spec and lock entry, JDTLS JVM/client/
+  cache/branch helpers, retired field/codelens helpers, Eclipse compiler prefs,
+  and obsolete Neotest JDTLS execution/debug/binary overrides.
+- Kept the active IntelliJ test bridge and neotest-java file detection, root
+  detection, and parameterized-result overrides. The bridge replaces build_spec;
+  upstream construction does not execute the retired JDTLS paths.
+- Removed raw migration evidence JSON, formatter input/output fixtures, and
+  obsolete JDTLS patch/run/fast-event notes. Readable step findings and their
+  known limits remain as the migration record; historical baseline source paths
+  describe the pre-migration state and are not active configuration references.
+- Preserved the formatter submodule and unrelated files. Step 4's Python/YAML/shell
+  formatting gaps and Step 6's skipped remote attach remain open.
 
 ## Progress Log
 
@@ -217,5 +372,10 @@
   scoped restart/cache/HEAD reload, status, and reattachment adapted; field lenses
   retired and spring-boot.nvim remains disabled. Project scratch storage retained.
   Step 4 coverage gaps remain. Next: Step 9 final audit/cleanup.
+- Follow-up cleanup: enabled Java templates and full generic inlay types, removed
+  mode-transition hint toggles, added Java-buffer `gt` type hierarchy, documented
+  command equivalents/rename scope, and removed 34 obsolete files. `make check`,
+  adapter-construction smoke checks, and synthetic LSP-attach mapping checks pass.
+  These follow-up checks do not repeat the earlier live server/build fixtures.
 - For each completed step, append the plugin/server versions, fixtures used,
   checks passed, known gaps, and the next step.

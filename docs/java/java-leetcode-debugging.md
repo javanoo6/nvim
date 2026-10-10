@@ -15,7 +15,7 @@ Java applications because they have no:
 public static void main(String[] args)
 ```
 
-So `:JavaRunnerRunMain` and Java DAP launch discovery cannot run the original
+So `:IntellijLspRun` and Java DAP launch discovery cannot run the original
 file directly.
 
 ## Recommended Workflow
@@ -69,6 +69,6 @@ nvim /home/konkov/leetcode/HappyNumberDebug.java
 
 ## Relevant Files
 
-- [lua/plugins/nvim-java.lua](/home/konkov/.config/nvim/lua/plugins/nvim-java.lua:1)
+- [lua/plugins/intellij-lsp.lua](/home/konkov/.config/nvim/lua/plugins/intellij-lsp.lua:1)
 - [lua/plugins/dap.lua](/home/konkov/.config/nvim/lua/plugins/dap.lua:1)
 - [lua/util/java_debug.lua](/home/konkov/.config/nvim/lua/util/java_debug.lua:1)

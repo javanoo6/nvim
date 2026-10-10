@@ -28,8 +28,7 @@ Implemented on 2026-10-10. Step 6 was skipped; remote JVM attach remains unavail
   continued, and recorded a passing result.
 - Mixed passing/failing parameterized cases: method reports failure with the
   failing invocation's message.
-- `make check` passes formatting and Selene. Raw fixture checks are in
-  [the evidence file](intellij-lsp-step-7-evidence.json).
+- `make check` passed formatting and Selene during validation.
 
 ## Limits
 

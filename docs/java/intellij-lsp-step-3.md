@@ -1,7 +1,6 @@
 # Step 3 — Editing, Project Import and Navigation
 
 - Completed: 2026-10-10. Plugin/server revisions remain those recorded in Step 2.
-- Evidence: [structured results](intellij-lsp-step-3-evidence.json).
 - Checks use disposable fixtures, with saved-session restore disabled. The
   user's `cloudos` source files were not changed.
 
@@ -24,23 +23,23 @@
 
 ## Live Checks
 
-| Fixture / operation | Result |
-| --- | --- |
-| Maven, Commons Lang 3.17.0 | Ready notification received; project/dependency completion and hover resolve |
-| Gradle 8.14 wrapper | Ready notification received; sibling source and dependency source navigation resolve; no source diagnostics |
-| Mixed Maven/Gradle | Init options explicitly choose Maven; dependency/source resolution passes |
-| Two-module Maven reactor | Root widens from app to parent; app resolves sibling library source and external dependency |
-| Cross-module method rename | Renaming library `greet` to `welcome` updates declaration and app reference |
-| Spring Context 6.2.1 / Lombok 1.18.40 | `@Component` resolves to dependency source; generated `getValue()` resolves to model field; no source errors |
-| References / inlay hints | Method references include caller; parameter/type hints returned |
-| Method rename in one module | Declaration and call site update correctly |
-| Package move | Neo-tree's will/did-rename callback path updates package and caller import when Helper moves to `sample.moved` |
-| Completion import | ArrayList completion and resolve include `import java.util.ArrayList`; applying those edits adds the import |
-| Diagnostic / quick fix | Missing ArrayList emits unresolved-symbol diagnostics; actions-preview preview leaves text unchanged; applying `Import class` adds its import |
-| Generated method | Applying `Create method 'unknownNumber' in 'Main'` through actions-preview inserts a valid method returning int |
-| Source navigation | `jar:` attached Commons sources open as Java source (9,602 lines) |
-| Binary navigation | Binary StringUtils class URI opens a 572-line IntelliJ API decompiler stub |
-| Project reload | Source-buffer reload and `pom.xml`-buffer reload both complete without errors |
+| Fixture / operation                   | Result                                                                                                                                        |
+|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| Maven, Commons Lang 3.17.0            | Ready notification received; project/dependency completion and hover resolve                                                                  |
+| Gradle 8.14 wrapper                   | Ready notification received; sibling source and dependency source navigation resolve; no source diagnostics                                   |
+| Mixed Maven/Gradle                    | Init options explicitly choose Maven; dependency/source resolution passes                                                                     |
+| Two-module Maven reactor              | Root widens from app to parent; app resolves sibling library source and external dependency                                                   |
+| Cross-module method rename            | Renaming library `greet` to `welcome` updates declaration and app reference                                                                   |
+| Spring Context 6.2.1 / Lombok 1.18.40 | `@Component` resolves to dependency source; generated `getValue()` resolves to model field; no source errors                                  |
+| References / inlay hints              | Method references include caller; parameter/type hints returned                                                                               |
+| Method rename in one module           | Declaration and call site update correctly                                                                                                    |
+| Package move                          | Neo-tree's will/did-rename callback path updates package and caller import when Helper moves to `sample.moved`                                |
+| Completion import                     | ArrayList completion and resolve include `import java.util.ArrayList`; applying those edits adds the import                                   |
+| Diagnostic / quick fix                | Missing ArrayList emits unresolved-symbol diagnostics; actions-preview preview leaves text unchanged; applying `Import class` adds its import |
+| Generated method                      | Applying `Create method 'unknownNumber' in 'Main'` through actions-preview inserts a valid method returning int                               |
+| Source navigation                     | `jar:` attached Commons sources open as Java source (9,602 lines)                                                                             |
+| Binary navigation                     | Binary StringUtils class URI opens a 572-line IntelliJ API decompiler stub                                                                    |
+| Project reload                        | Source-buffer reload and `pom.xml`-buffer reload both complete without errors                                                                 |
 
 ## Additional UI/Protocol Checks
 

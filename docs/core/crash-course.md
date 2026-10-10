@@ -757,7 +757,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>cp`            | Fix package declaration                                    |
 | `<leader>ci`            | Java: import class under cursor, prompt if ambiguous       |
 | `<leader>cI`            | Java: import unambiguous classes in buffer                 |
-| `<leader>cf`            | Format (Java: IntelliJ LSP + imports)                          |
+| `<leader>cf`            | Format (Java: IntelliJ LSP + imports)                      |
 | `<leader>cF`            | Format current file's directory, or prompt for a directory |
 
 ### Symbols & Outline
@@ -804,30 +804,30 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 ## Debugging
 
-| Key           | Action                    |
-|---------------|---------------------------|
-| `<leader>db`  | Toggle breakpoint         |
-| `<leader>dB`  | Breakpoint with condition |
-| `<leader>dc`  | Continue active session   |
-| `<leader>dC`  | Run to cursor             |
-| `<leader>df`  | Focus current frame       |
-| `<leader>di`  | Step into                 |
-| `<leader>do`  | Step out                  |
-| `<leader>dO`  | Step over                 |
-| `<leader>dg`  | Go to line (no execute)   |
-| `<leader>dl`  | Run last                  |
-| `<leader>dp`  | Pause                     |
-| `<leader>dr`  | Toggle REPL               |
-| `<leader>dt`  | Terminate                 |
-| `<leader>ds`  | Session info              |
-| `<leader>dj`  | Down (call stack)         |
-| `<leader>dk`  | Up (call stack)           |
-| `<leader>dw`  | Hover widgets             |
+| Key           | Action                      |
+|---------------|-----------------------------|
+| `<leader>db`  | Toggle breakpoint           |
+| `<leader>dB`  | Breakpoint with condition   |
+| `<leader>dc`  | Continue active session     |
+| `<leader>dC`  | Run to cursor               |
+| `<leader>df`  | Focus current frame         |
+| `<leader>di`  | Step into                   |
+| `<leader>do`  | Step out                    |
+| `<leader>dO`  | Step over                   |
+| `<leader>dg`  | Go to line (no execute)     |
+| `<leader>dl`  | Run last                    |
+| `<leader>dp`  | Pause                       |
+| `<leader>dr`  | Toggle REPL                 |
+| `<leader>dt`  | Terminate                   |
+| `<leader>ds`  | Session info                |
+| `<leader>dj`  | Down (call stack)           |
+| `<leader>dk`  | Up (call stack)             |
+| `<leader>dw`  | Hover widgets               |
 | `<leader>du`  | Toggle IntelliJ debug panel |
-| `<leader>dU`  | Toggle DAP UI keep-open   |
-| `<leader>de`  | Evaluate expression       |
-| `<leader>dgt` | Debug Go test             |
-| `<leader>dgl` | Debug last Go test        |
+| `<leader>dU`  | Toggle DAP UI keep-open     |
+| `<leader>de`  | Evaluate expression         |
+| `<leader>dgt` | Debug Go test               |
+| `<leader>dgl` | Debug last Go test          |
 
 ---
 
@@ -913,32 +913,28 @@ This is expected behavior, not a broken Neovim or LSP setup.
 
 ### Java Debugging
 
-**How Java debugging works:** `nvim-java` orchestrates `jdtls` → `java-debug-adapter` → `nvim-dap`. When you start debugging, JDTLS compiles the project, starts
-a debug server on a port, and nvim-dap connects to it.
+**How Java debugging works:** IntelliJ LSP resolves Maven/Gradle compilation and
+launch paths, starts its JVM debug adapter, and nvim-dap connects to it.
 
 #### Starting Debug Sessions
 
-| Command                       | Action                           |
-|-------------------------------|----------------------------------|
-| `:JavaTestDebugCurrentMethod` | Debug test method under cursor   |
-| `:JavaTestDebugCurrentClass`  | Debug entire test class          |
-| `:JavaTestDebugAllTests`      | Debug all tests in workspace     |
-| `<leader>jd`                  | Debug main class/Spring Boot app |
+| Key          | Action                           |
+|--------------|----------------------------------|
+| `<leader>td` | Debug nearest test               |
+| `<leader>tf` | Debug current test file          |
+| `<leader>tP` | Debug current test package       |
+| `<leader>tD` | Debug all tests                  |
+| `<leader>jd` | Debug main class/Spring Boot app |
 
-**Via Lua API** (if you want custom keybindings):
-
-```lua
-require('java').test.debug_current_method()    -- Debug method
-require('java').test.debug_current_class()     -- Debug class
-require('util.java_debug').debug_main()        -- Debug main
-```
+Main launch uses `util.java_launch`; tests use `util.neotest_intellij` with
+IntelliJ compilation/classpaths and the JUnit Console launcher.
 
 #### Workflow Example
 
 1. **Open test file** (e.g., `UserControllerTest.java`) and place cursor on test method
 2. **Set breakpoints** with `<leader>db` on lines where you expect the bug
-3. **Start debugging**: `:JavaTestDebugCurrentMethod`
-4. **Wait 5-10s** for JDTLS to compile and DAP UI to open automatically
+3. **Start debugging**: `<leader>td`
+4. **Wait for Maven/Gradle compilation** and the IntelliJ debug panel to open
 5. **Use DAP controls**:
     - `<leader>dc` — Continue to breakpoint
     - `<leader>di` — Step into method
@@ -949,12 +945,12 @@ require('util.java_debug').debug_main()        -- Debug main
 
 #### Troubleshooting
 
-| Issue                    | Fix                                                                                                 |
-|--------------------------|-----------------------------------------------------------------------------------------------------|
-| "No debug session found" | Run `:JavaInfo` or `:LspInfo` — ensure JDTLS is attached                                            |
-| "Failed to start"        | Wait for JDTLS to load, or `:Lazy java` to reload                                                   |
-| "Port already in use"    | Stale session — close nvim or `killall java`                                                        |
-| Breakpoints not hitting  | Check `:LspInfo` for compilation errors, or check logs: `tail -f ~/.local/state/nvim/nvim-java.log` |
+| Issue                    | Fix                                                                |
+|--------------------------|--------------------------------------------------------------------|
+| "No debug session found" | Run `:JavaInfo` — ensure IntelliJ is attached and ready            |
+| "Failed to start"        | Check build output with `<leader>jl`; use `:JavaRestart` if needed |
+| "Port already in use"    | Stop the Java program with `<leader>jc` and retry                  |
+| Breakpoints not hitting  | Check `:JavaInfo` and build/program output with `<leader>jl`       |
 
 **See also:** `docs/java/java-debugging.md` for complete reference.
 
@@ -1383,12 +1379,11 @@ Notes:
 - Managed-env discovery is pinned to the resolved `fd`/`fdfind` binary path so `<leader>ps` does not depend on how Neovim's startup `PATH` was built.
 - `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
 - `:PythonLspUseBasedPyright` switches Python buffers to BasedPyright for the current session; `:PythonLspUsePyright` switches back.
-- Java class completion items can add imports through JDTLS completion edits. For pasted unresolved class names, use `<leader>ci` for the symbol under the
+- Java class completion items can add imports through IntelliJ LSP completion edits. For pasted unresolved class names, use `<leader>ci` for the symbol under the
   cursor, or `<leader>cI` to walk the current buffer: one-candidate imports are applied automatically, and ambiguous imports are shown in a picker. Bulk Java
-  organize-import cleanup is handled by IntelliJ LSP on full-file formatting.
-  Range formatting leaves imports alone; member rearrangement is unavailable.
-  Markdown/Python/YAML/XML/shell formatting is pending a replacement because the
-  pinned IntelliJ server has no formatter for these languages.
+  organize-import cleanup and member rearrangement use the standalone IntelliJ
+  formatter jar on full-file formatting. Range requests omit both cleanup flags.
+  Markdown/XML/Python/YAML/shell also use the jar.
 - Use `<leader>tt` to run the current Python test file/package after selecting a venv. `neotest-python` resolves Python from the active venv and `.env`
   values loaded during venv activation are inherited by test runs.
 

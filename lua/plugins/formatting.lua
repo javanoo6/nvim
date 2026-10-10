@@ -74,7 +74,7 @@ return {
       {
         "<leader>cf",
         function()
-          require("util.intellij_format").format(0)
+          require("util.format").format(0)
         end,
         mode = { "n", "v" },
         desc = "Format",
@@ -87,10 +87,31 @@ return {
     },
     opts = {
       formatters = {
-        intellij_unsupported = {
-          format = function(_, ctx, _, callback)
-            callback("IntelliJ server 263.6379.0 has no " .. vim.bo[ctx.buf].filetype .. " formatter; migration Step 4 gap")
+        -- Our standalone formatter is more capable than the pinned LSP formatter
+        -- for Java cleanup and the demonstrated non-Java formatting routes.
+        -- Capability                 | Standalone jar       | LSP 263.6379.0
+        -- Java formatting            | Yes                  | Yes
+        -- Optimize Java imports      | Yes                  | Yes (separate command)
+        -- Rearrange Java members     | Yes                  | Unavailable
+        -- Markdown / XML formatting  | Verified in baseline | Unavailable
+        -- Python / YAML              | Enabled by request   | Unavailable
+        -- Shell                      | Enabled by request   | Unavailable
+        idea_formatter = {
+          command = "java",
+          args = function(_, ctx)
+            local args = {
+              "-jar",
+              vim.fn.stdpath("config") .. "/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar",
+              "--format",
+            }
+            -- Range formatting uses Conform's filtered edits; keep cleanup out of it.
+            if not ctx.range then
+              vim.list_extend(args, { "--optimize-imports", "--rearrange" })
+            end
+            vim.list_extend(args, { "--editorconfig", vim.fn.stdpath("config") .. "/.editorconfig", "$FILENAME" })
+            return args
           end,
+          stdin = false,
         },
         ["goimports-reviser"] = {
           command = "goimports-reviser",
@@ -126,18 +147,18 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         go = { "gofumpt", "goimports-reviser", "golines" },
-        python = { "intellij_unsupported", lsp_format = "never" },
+        python = { "idea_formatter", lsp_format = "never" },
         ruby = { "rubocop_rvm" },
         json = { "prettier" },
         javascript = { "prettier" },
         javascriptreact = { "prettier" },
         typescript = { "prettier" },
         typescriptreact = { "prettier" },
-        yaml = { "intellij_unsupported", lsp_format = "never" },
-        markdown = { "intellij_unsupported", lsp_format = "never" },
-        java = { lsp_format = "prefer", name = "intellij" },
-        xml = { "intellij_unsupported", lsp_format = "never" },
-        sh = { "intellij_unsupported", lsp_format = "never" },
+        yaml = { "idea_formatter", lsp_format = "never" },
+        markdown = { "idea_formatter", lsp_format = "never" },
+        java = { "idea_formatter", lsp_format = "never" },
+        xml = { "idea_formatter", lsp_format = "never" },
+        sh = { "idea_formatter", lsp_format = "never" },
       },
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
@@ -155,7 +176,7 @@ return {
         end
 
         format_skip_notices[bufnr] = nil
-        local opts, err = require("util.intellij_format").options(bufnr, { timeout_ms = format_on_save_timeout(bufnr) })
+        local opts, err = require("util.format").options(bufnr, { timeout_ms = format_on_save_timeout(bufnr) })
         if err then
           vim.notify(err, vim.log.levels.WARN, { title = "Formatting" })
         end

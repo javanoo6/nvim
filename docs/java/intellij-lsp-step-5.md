@@ -3,7 +3,6 @@
 - Status: complete for the checked fixtures; Step 4 formatting gaps remain open.
 - Checked on 2026-10-10 with plugin `9cfad18005470e4187090013e08f92ec9e437219`
   and server `263.6379.0`.
-- Evidence: [runtime results](intellij-lsp-step-5-evidence.json).
   Disposable fixtures: `/tmp/nvim-intellij-step5-9bbi2qm3`.
 
 ## Workflow

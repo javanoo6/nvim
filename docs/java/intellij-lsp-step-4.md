@@ -4,10 +4,16 @@
   open pending replacements for unsupported languages and member rearrangement.
 - Checked on 2026-10-10 with plugin commit
   `9cfad18005470e4187090013e08f92ec9e437219`, server `263.6379.0`.
-- Evidence: [protocol and runtime results](intellij-lsp-step-4-evidence.json).
   Disposable fixtures: `/tmp/nvim-intellij-step4-1zlrc08e`.
 
-## Active Behavior
+## Current Decision
+
+The user restored the standalone formatter after this trial: Java, Markdown,
+and XML now use the jar through Conform. Java member rearrangement is restored;
+Python/YAML/shell remain unsupported. See the [current formatter decision](intellij-lsp-migration-plan.md#standalone-formatter-decision).
+The LSP trial findings below describe the earlier migration checkpoint.
+
+## LSP Trial Behavior
 
 - `<leader>cf`, Conform format-on-save, and `FormatDir` use IntelliJ for Java.
   Full-file formatting runs `java.organize.imports`, then LSP formatting.
@@ -34,14 +40,14 @@
 
 ## Observed Coverage
 
-| Former jar route | Pinned server result in Maven and standalone fixtures |
-|---|---|
-| Java | Document formatting changes layout; second request returns no edits |
-| Markdown | No formatting edits; bundled Markdown formatter absent |
-| Python | No formatting edits; bundled Python formatter absent |
-| YAML | No formatting edits; bundled YAML formatter absent |
-| XML | No formatting edits; no XML LSP formatter demonstrated |
-| Shell | No formatting edits; bundled shell formatter absent |
+| Former jar route | Pinned server result in Maven and standalone fixtures               |
+|------------------|---------------------------------------------------------------------|
+| Java             | Document formatting changes layout; second request returns no edits |
+| Markdown         | No formatting edits; bundled Markdown formatter absent              |
+| Python           | No formatting edits; bundled Python formatter absent                |
+| YAML             | No formatting edits; bundled YAML formatter absent                  |
+| XML              | No formatting edits; no XML LSP formatter demonstrated              |
+| Shell            | No formatting edits; bundled shell formatter absent                 |
 
 - Java formatting alone preserves imports and member order. The separate import
   command removes unused `Map`, sorts `ArrayList`/`List`, and removes unused static

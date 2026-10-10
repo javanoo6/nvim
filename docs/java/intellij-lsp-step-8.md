@@ -39,8 +39,7 @@ Implemented on 2026-10-10. Step 6 remains skipped.
   test dependency supplies completion for `StringUtils.upperCase`; launch paths
   include test classes/dependencies. Scratch run prints `SCRATCH=HELLO`, and
   scratch debugging stops at a breakpoint before successful continuation.
-- `make check` passes. Fixture results are in
-  [the evidence file](intellij-lsp-step-8-evidence.json).
+- `make check` passed during validation.
 
 ## Limits
 
@@ -53,4 +52,5 @@ Implemented on 2026-10-10. Step 6 remains skipped.
 - The external scratch-storage proposal remains deferred. Project creation's
   existing implementation was retained, rather than regenerated during these checks.
 - Remote attach and Step 4's rearrangement/non-Java formatter gaps remain.
-- Legacy helper files are retained inactive for Step 9 cleanup.
+- Legacy JDTLS helpers and raw evidence were removed during cleanup; these
+  readable validation findings and limits are retained.

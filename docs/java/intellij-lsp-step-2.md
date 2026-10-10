@@ -45,8 +45,8 @@
 - Project creation, generic LSP navigation/actions, and existing formatting
   remain available. Full IntelliJ editing/import parity has not been tested yet.
 - The daemon formatter is still configured; switching its routes is Step 4.
-- Inactive JDTLS helper files/spec configuration remain as migration references
-  until Step 9 cleanup; they are not registered or loaded by the new backend.
+- JDTLS helpers/spec were inactive at this checkpoint; they have since been
+  removed during cleanup.
 
 ## Validation
 
