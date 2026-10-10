@@ -325,6 +325,11 @@ Update this file when:
   Record, Enum, Annotation, and Exception. The picker derives the package and name
   from the project path; `:IntellijLspFileTemplate` opens it manually for an empty
   attached buffer. Selecting a template creates the file on disk before interpolation.
+- Neo-tree `a` -> `SomeClass.java` -> `o` offers that picker after the new empty
+  Java buffer has an IntelliJ client. `lua/util/java_file_templates.lua` tracks
+  Neo-tree's `file_added` paths and handles buffer entry/late LSP attachment,
+  because on-disk creation bypasses upstream's `BufNewFile` template trigger.
+  Populated files are ignored; cancellation/reopening does not repeat the picker.
 - `:JavaInfo` reports the IntelliJ client/root, JDK, bundle and EULA state.
 - `<leader>jr/jd/jc/jl` run/debug/stop/toggle output through
   [lua/util/java_launch.lua](/home/konkov/.config/nvim/lua/util/java_launch.lua:1).

@@ -425,6 +425,7 @@ tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, t
 - `gt` opens type hierarchy subtypes in IntelliJ-attached Java buffers.
 - New empty Java files offer IntelliJ templates; `:IntellijLspFileTemplate`
   opens the picker manually for an empty attached buffer.
+  Neo-tree `a` then `o` is integrated through `util/java_file_templates.lua`.
 - Java symbol rename targets `intellij`; lualine tracks that client.
 - `JavaInitProject` / `<leader>ji` still create Maven/Gradle projects.
 - App/test run and debug use IntelliJ's JVM adapter and panel. Remote attach

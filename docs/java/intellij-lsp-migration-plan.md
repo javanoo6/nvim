@@ -193,6 +193,11 @@
   derives the package and name from its project path. Selecting a template writes
   the empty file before interpolation; cancelling leaves the new buffer unsaved.
   `:IntellijLspFileTemplate` opens the picker manually for an empty attached buffer.
+- Neo-tree creation is integrated through `file_added`: `a`, enter a new Java
+  filename, then `o`. The local `util.java_file_templates` helper offers the
+  picker on entry or late IntelliJ attachment, only while that new buffer is
+  current and empty. It consumes the pending prompt once, including cancellation;
+  populated files and background attachments do not open a picker.
 - `<leader>cr` uses LSP symbol rename for variables, methods, and classes. The
   migration fixtures verified method rename, including cross-module references.
   Neo-tree file operations use LSP will/did-rename integration; package moves and
@@ -294,18 +299,18 @@ queried with a selected `.idea/inspectionProfiles` profile. Both returned the
 same 19 diagnostics, all at LSP warning severity (2). The profile explicitly
 turned off `AssignmentUsedAsCondition`, but that warning still appeared.
 
-| Requested checks | Observed pinned-server behavior |
-| --- | --- |
-| Unused imports | Warnings returned (`UNUSED_IMPORT`) |
-| Raw types / unchecked operations | Warnings returned (`rawtypes`, `unchecked`) |
-| No-effect assignment / identical comparison | Warnings returned (`SillyAssignment`, `DataFlowIssue`, `ConstantValue`) |
-| Boolean assignment in conditions | Warning returned (`AssignmentUsedAsCondition`) |
-| Empty statement | Warning returned (`UnnecessarySemicolon`) |
-| Redundant explicit constructor type arguments | Warning returned (`Convert2Diamond`) |
-| Unused private field/method, local, parameter | No warning on the fixture; Java server explicitly disables `UnusedDeclarationInspection` |
-| Missing `@Override`, missing enum cases/default | No warning on fixture; inspection extension defaults have `INFORMATION` level |
-| Parameter reassignment, local hiding, switch fallthrough, ignored object allocation | No warning on fixture; corresponding inspection extensions are disabled by default |
-| Potentially-static method checks | Disabled by default, consistent with the requested quiet policy |
+| Requested checks                                                                    | Observed pinned-server behavior                                                          |
+|-------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| Unused imports                                                                      | Warnings returned (`UNUSED_IMPORT`)                                                      |
+| Raw types / unchecked operations                                                    | Warnings returned (`rawtypes`, `unchecked`)                                              |
+| No-effect assignment / identical comparison                                         | Warnings returned (`SillyAssignment`, `DataFlowIssue`, `ConstantValue`)                  |
+| Boolean assignment in conditions                                                    | Warning returned (`AssignmentUsedAsCondition`)                                           |
+| Empty statement                                                                     | Warning returned (`UnnecessarySemicolon`)                                                |
+| Redundant explicit constructor type arguments                                       | Warning returned (`Convert2Diamond`)                                                     |
+| Unused private field/method, local, parameter                                       | No warning on the fixture; Java server explicitly disables `UnusedDeclarationInspection` |
+| Missing `@Override`, missing enum cases/default                                     | No warning on fixture; inspection extension defaults have `INFORMATION` level            |
+| Parameter reassignment, local hiding, switch fallthrough, ignored object allocation | No warning on fixture; corresponding inspection extensions are disabled by default       |
+| Potentially-static method checks                                                    | Disabled by default, consistent with the requested quiet policy                          |
 
 Read-only inspection of the installed bundle's class bytecode explains the
 results: `LSInspectionsKt` chooses inspection extensions from their built-in

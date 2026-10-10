@@ -1379,7 +1379,8 @@ Notes:
 - Managed-env discovery is pinned to the resolved `fd`/`fdfind` binary path so `<leader>ps` does not depend on how Neovim's startup `PATH` was built.
 - `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
 - `:PythonLspUseBasedPyright` switches Python buffers to BasedPyright for the current session; `:PythonLspUsePyright` switches back.
-- Java class completion items can add imports through IntelliJ LSP completion edits. For pasted unresolved class names, use `<leader>ci` for the symbol under the
+- Java class completion items can add imports through IntelliJ LSP completion edits. For pasted unresolved class names, use `<leader>ci` for the symbol under
+  the
   cursor, or `<leader>cI` to walk the current buffer: one-candidate imports are applied automatically, and ambiguous imports are shown in a picker. Bulk Java
   organize-import cleanup and member rearrangement use the standalone IntelliJ
   formatter jar on full-file formatting. Range requests omit both cleanup flags.

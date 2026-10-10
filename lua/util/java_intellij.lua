@@ -79,6 +79,7 @@ function M.setup(opts)
     return config
   end
   plugin.setup(opts)
+  require("util.java_file_templates").setup()
 end
 
 return M

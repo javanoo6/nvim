@@ -329,6 +329,14 @@ return {
       },
     },
     opts = {
+      event_handlers = {
+        {
+          event = "file_added",
+          handler = function(path)
+            require("util.java_file_templates").on_file_added(path)
+          end,
+        },
+      },
       filesystem = {
         bind_to_cwd = false,
         cwd_target = {
