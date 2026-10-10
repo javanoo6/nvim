@@ -5,7 +5,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
-    cmd = { "LspInfo", "PyrightInfo", "PythonLspUsePyright", "PythonLspUseBasedPyright" },
+    cmd = { "PyrightInfo", "PythonLspUsePyright", "PythonLspUseBasedPyright" },
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
@@ -188,20 +188,19 @@ return {
 
       local capabilities =
         vim.tbl_deep_extend("force", require("cmp_nvim_lsp").default_capabilities(), require("lsp-file-operations").default_capabilities())
+      vim.lsp.config("*", {
+        capabilities = capabilities,
+      })
 
       local pyright_cmd = resolve_pyright_cmd()
       vim.lsp.config("pyright", {
-        capabilities = capabilities,
         cmd = pyright_cmd,
       })
       vim.lsp.enable("pyright")
 
-      vim.lsp.config("basedpyright", {
-        capabilities = capabilities,
-      })
+      vim.lsp.config("basedpyright", {})
 
       vim.lsp.config("ruby_lsp", {
-        capabilities = capabilities,
         cmd = function(dispatchers, config)
           return vim.lsp.rpc.start(ruby.ruby_lsp_cmd(config and config.root_dir), dispatchers, {
             cwd = config and config.root_dir or nil,
@@ -245,6 +244,88 @@ return {
         switch_python_lsp("basedpyright")
       end, { desc = "Use basedpyright for Python buffers" })
 
+      vim.lsp.config("gopls", {
+        cmd = { "gopls" },
+        filetypes = { "go", "gomod", "gowork", "gotmpl" },
+        root_dir = require("lspconfig.util").root_pattern("go.work", "go.mod", ".git"),
+        settings = {
+          gopls = {
+            completeUnimported = true,
+            usePlaceholders = true,
+            analyses = {
+              unusedparams = true,
+              shadow = true,
+            },
+            staticcheck = true,
+            gofumpt = true,
+            hints = {
+              assignVariableTypes = true,
+              compositeLiteralFields = true,
+              compositeLiteralTypes = true,
+              constantValues = true,
+              functionTypeParameters = true,
+              parameterNames = true,
+              rangeVariableTypes = true,
+            },
+            ui = {
+              annotation = {
+                bounds = true,
+                escape = true,
+                inline = true,
+              },
+            },
+          },
+        },
+      })
+
+      vim.lsp.config("lua_ls", {
+        on_init = function(client)
+          if client.workspace_folders then
+            local path = client.workspace_folders[1].name
+            if path ~= vim.fn.stdpath("config") and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc")) then
+              return
+            end
+          end
+
+          client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua or {}, {
+            runtime = {
+              version = "LuaJIT",
+              path = {
+                "lua/?.lua",
+                "lua/?/init.lua",
+              },
+            },
+            diagnostics = {
+              globals = { "vim" },
+            },
+            workspace = {
+              checkThirdParty = false,
+              library = {
+                vim.env.VIMRUNTIME,
+                vim.api.nvim_get_runtime_file("lua", true),
+                vim.api.nvim_get_runtime_file("lua/lspconfig", false)[1],
+              },
+            },
+            telemetry = {
+              enable = false,
+            },
+            hint = {
+              enable = true,
+              arrayIndex = "Auto",
+              await = true,
+              awaitPropagate = true,
+              paramName = "Literal",
+              paramType = true,
+              setType = true,
+              semicolon = "Disable",
+            },
+          })
+        end,
+        settings = {
+          Lua = {},
+        },
+      })
+
       require("mason-lspconfig").setup({
         ensure_installed = {
           "lua_ls",
@@ -259,113 +340,6 @@ return {
         },
         automatic_enable = {
           exclude = { "pyright", "basedpyright" },
-        },
-        handlers = {
-          function(server_name)
-            if server_name ~= "jdtls" then
-              require("lspconfig")[server_name].setup({
-                capabilities = capabilities,
-              })
-            end
-          end,
-
-          -- Go specific
-          ["gopls"] = function()
-            require("lspconfig").gopls.setup({
-              capabilities = capabilities,
-              cmd = { "gopls" },
-              filetypes = { "go", "gomod", "gowork", "gotmpl" },
-              root_dir = require("lspconfig.util").root_pattern("go.work", "go.mod", ".git"),
-              settings = {
-                gopls = {
-                  -- Auto-complete unimported packages
-                  completeUnimported = true,
-                  -- Use placeholders in function signatures
-                  usePlaceholders = true,
-                  -- Analyses
-                  analyses = {
-                    unusedparams = true,
-                    shadow = true,
-                  },
-                  staticcheck = true,
-                  gofumpt = true,
-                  -- Inlay hints
-                  hints = {
-                    assignVariableTypes = true,
-                    compositeLiteralFields = true,
-                    compositeLiteralTypes = true,
-                    constantValues = true,
-                    functionTypeParameters = true,
-                    parameterNames = true,
-                    rangeVariableTypes = true,
-                  },
-                  ui = {
-                    annotation = {
-                      bounds = true,
-                      escape = true,
-                      inline = true,
-                    },
-                  },
-                },
-              },
-            })
-          end,
-
-          -- Lua specific
-          ["lua_ls"] = function()
-            vim.lsp.config("lua_ls", {
-              capabilities = capabilities,
-              on_init = function(client)
-                if client.workspace_folders then
-                  local path = client.workspace_folders[1].name
-                  if
-                    path ~= vim.fn.stdpath("config")
-                    and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
-                  then
-                    return
-                  end
-                end
-
-                client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua or {}, {
-                  runtime = {
-                    version = "LuaJIT",
-                    path = {
-                      "lua/?.lua",
-                      "lua/?/init.lua",
-                    },
-                  },
-                  diagnostics = {
-                    globals = { "vim" },
-                  },
-                  workspace = {
-                    checkThirdParty = false,
-                    library = {
-                      vim.env.VIMRUNTIME,
-                      vim.api.nvim_get_runtime_file("lua", true),
-                      vim.api.nvim_get_runtime_file("lua/lspconfig", false)[1],
-                    },
-                  },
-                  telemetry = {
-                    enable = false,
-                  },
-                  hint = {
-                    enable = true,
-                    arrayIndex = "Auto",
-                    await = true,
-                    awaitPropagate = true,
-                    paramName = "Literal",
-                    paramType = true,
-                    setType = true,
-                    semicolon = "Disable",
-                  },
-                })
-              end,
-              settings = {
-                Lua = {},
-              },
-            })
-            vim.lsp.enable("lua_ls")
-          end,
         },
       })
 

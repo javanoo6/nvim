@@ -415,6 +415,10 @@ Select text first, then press `gsa` + bracket/quote:
 | `g#`    | Search partial word (backward)      |
 | `<Esc>` | Clear search highlight              |
 
+When typing `/` or `?`, completion suggestions may appear. Keep typing to
+ignore them, use `<C-e>` to close only the suggestions while staying in the
+search prompt, then press `<CR>` to run the search.
+
 ### Replace (in-buffer)
 
 | Key              | Action                           |
@@ -565,7 +569,7 @@ browser-style single-file tab.
 **Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — JDTLS automatically updates all imports and references
 across the project. This may modify many buffers at once. Save them all with `:wall`.
 
-**Preview tip:** `P` uses Neo-tree's native preview mode, so you can scan files without leaving the tree. Press `<Esc>` to close the preview.
+**Preview tip:** `P` uses Neo-tree's native preview mode, so you can scan files without leaving the tree. Press `<Esc>` to close Neo-tree.
 
 ---
 
@@ -624,36 +628,38 @@ This uses `nvim-cmp` cmdline completion:
 | `<Down>` | Next completion item                               |
 | `<Up>`   | Previous completion item                           |
 | `<CR>`   | Confirm selected completion item without executing |
+| `<C-e>`  | Close the completion menu without leaving cmdline  |
 
 ---
 
 ## Telescope (Fuzzy Finder)
 
-| Key               | Action                       |
-|-------------------|------------------------------|
-| `<leader><space>` | Find files from cwd          |
-| `<leader>ff`      | Find files from cwd          |
-| `<leader>fF`      | Find files from project root |
-| `<leader>fg`      | Literal grep from cwd        |
-| `<leader>fG`      | Literal grep from root       |
-| `<leader>f/`      | Regex grep from cwd          |
-| `<leader>f?`      | Regex grep from root         |
-| `<leader>fb`      | Buffers                      |
-| `<leader>fR`      | Recent files                 |
-| `<leader>fs`      | New scratch file             |
-| `<leader>fS`      | Open scratch file            |
-| `<leader>fi`      | Scratch path info            |
-| `<leader>fN`      | New named scratch file       |
-| `<leader>Hy`      | Yank history                 |
-| `<leader>Hc`      | Command history              |
-| `<leader>Hs`      | Search history               |
-| `<leader>:`       | Command history              |
-| `<leader>ss`      | Document symbols             |
-| `<leader>sS`      | Workspace symbols            |
-| `<leader>st`      | Search TODOs                 |
-| `<leader>fe`      | Literal grep by extension    |
-| `<leader>fE`      | Regex grep by extension      |
-| `<leader>fr`      | Resume last search           |
+| Key               | Action                         |
+|-------------------|--------------------------------|
+| `<leader><space>` | Find files from cwd            |
+| `<leader>ff`      | Find files from cwd            |
+| `<leader>fF`      | Find files from project root   |
+| `<leader>fg`      | Literal grep from cwd          |
+| `<leader>fG`      | Literal grep from root         |
+| `<leader>fi`      | Literal grep ignored from cwd  |
+| `<leader>fI`      | Literal grep ignored from root |
+| `<leader>f/`      | Regex grep from cwd            |
+| `<leader>f?`      | Regex grep from root           |
+| `<leader>fb`      | Buffers                        |
+| `<leader>fR`      | Recent files                   |
+| `<leader>fs`      | New scratch file               |
+| `<leader>fS`      | Open scratch file              |
+| `<leader>fN`      | New named scratch file         |
+| `<leader>Hy`      | Yank history                   |
+| `<leader>Hc`      | Command history                |
+| `<leader>Hs`      | Search history                 |
+| `<leader>:`       | Command history                |
+| `<leader>ss`      | Document symbols               |
+| `<leader>sS`      | Workspace symbols              |
+| `<leader>st`      | Search TODOs                   |
+| `<leader>fe`      | Literal grep by extension      |
+| `<leader>fE`      | Regex grep by extension        |
+| `<leader>fr`      | Resume last search             |
 
 ### Inside Telescope
 
@@ -687,6 +693,9 @@ Scratch files are persistent temporary files managed by `scratch.nvim`.
 
 **Tip:** `<leader>fg`, `<leader>fG`, and `<leader>fe` search the text you type as-is, so `foo.` matches a literal dot. Use `<leader>f/`,
 `<leader>f?`, or `<leader>fE` when you want ripgrep regex syntax.
+
+**Tip:** `<leader>fi` and `<leader>fI` also search literal text, but include files
+ignored by `.gitignore`. Scratch path details are available with `:ScratchInfo`.
 
 **Tip:** `<leader>fr` resumes the last Telescope search exactly where you left off — useful for returning to a search after editing a file.
 
@@ -728,7 +737,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<C-u>` / `<C-d>`   | Scroll preview up / down         |
 | `<CR>`              | Jump to selected result          |
 | `v` / `s` / `t`     | Open in vsplit / split / new tab |
-| `o`                 | Refresh preview                  |
+| `o`                 | Preview selected location        |
 | `<leader>l`         | Switch between list and preview  |
 | `q` / `Q` / `<Esc>` | Close Glance                     |
 
@@ -795,26 +804,30 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 
 ## Debugging
 
-| Key          | Action                     |
-|--------------|----------------------------|
-| `<leader>db` | Toggle breakpoint          |
-| `<leader>dB` | Breakpoint with condition  |
-| `<leader>dc` | Continue / Start debugging |
-| `<leader>dC` | Run to cursor              |
-| `<leader>di` | Step into                  |
-| `<leader>do` | Step out                   |
-| `<leader>dO` | Step over                  |
-| `<leader>dg` | Go to line (no execute)    |
-| `<leader>dl` | Run last                   |
-| `<leader>dp` | Pause                      |
-| `<leader>dr` | Toggle REPL                |
-| `<leader>dt` | Terminate                  |
-| `<leader>ds` | Session info               |
-| `<leader>dj` | Up (call stack)            |
-| `<leader>dk` | Down (call stack)          |
-| `<leader>dw` | Hover widgets              |
-| `<leader>du` | Toggle DAP UI              |
-| `<leader>de` | Evaluate expression        |
+| Key           | Action                    |
+|---------------|---------------------------|
+| `<leader>db`  | Toggle breakpoint         |
+| `<leader>dB`  | Breakpoint with condition |
+| `<leader>dc`  | Continue active session   |
+| `<leader>dC`  | Run to cursor             |
+| `<leader>df`  | Focus current frame       |
+| `<leader>di`  | Step into                 |
+| `<leader>do`  | Step out                  |
+| `<leader>dO`  | Step over                 |
+| `<leader>dg`  | Go to line (no execute)   |
+| `<leader>dl`  | Run last                  |
+| `<leader>dp`  | Pause                     |
+| `<leader>dr`  | Toggle REPL               |
+| `<leader>dt`  | Terminate                 |
+| `<leader>ds`  | Session info              |
+| `<leader>dj`  | Down (call stack)         |
+| `<leader>dk`  | Up (call stack)           |
+| `<leader>dw`  | Hover widgets             |
+| `<leader>du`  | Toggle DAP UI             |
+| `<leader>dU`  | Toggle DAP UI keep-open   |
+| `<leader>de`  | Evaluate expression       |
+| `<leader>dgt` | Debug Go test             |
+| `<leader>dgl` | Debug last Go test        |
 
 ---
 
@@ -825,27 +838,38 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>tt` | Run file                    |
 | `<leader>tT` | Run all test files          |
 | `<leader>tr` | Run nearest test            |
+| `<leader>td` | Debug nearest test          |
 | `<leader>tp` | Run package                 |
+| `<leader>tP` | Debug package               |
 | `<leader>tq` | Run file tests sequentially |
 | `<leader>tl` | Run last                    |
+| `<leader>tL` | Debug last                  |
+| `<leader>tf` | Debug file                  |
+| `<leader>tD` | Debug all test files        |
+| `<leader>ta` | Attach to running test      |
 | `<leader>tF` | Run failed tests            |
 | `<leader>ts` | Toggle summary              |
 | `<leader>to` | Show output                 |
 | `<leader>tO` | Toggle output panel         |
+| `<leader>tc` | Clear output panel          |
 | `<leader>tS` | Stop (interactive)          |
 | `<leader>tw` | Toggle watch                |
 
+Debug-test mappings close/skip the summary while debugging and reopen it only
+after the debug session completes. DAP UI close is deferred until that summary
+opens.
+
 ### Java-specific
 
-| Key          | Action              |
-|--------------|---------------------|
-| `<leader>jr` | Run Main            |
-| `<leader>ji` | Init Project        |
-| `<leader>ju` | Update Project      |
-| `<leader>jc` | Stop Main           |
-| `<leader>jt` | Test Current Class  |
-| `<leader>jm` | Test Current Method |
-| `<leader>jv` | View Test Report    |
+| Key          | Action             |
+|--------------|--------------------|
+| `<leader>jr` | Run Main           |
+| `<leader>jd` | Debug Main         |
+| `<leader>ji` | Init Project       |
+| `<leader>ju` | Update Project     |
+| `<leader>jc` | Stop Main          |
+| `<leader>jl` | Toggle Runner Logs |
+| `<leader>ja` | Attach Remote JVM  |
 
 `:JavaInitProject [dir]` prompts for Maven/Gradle, project directory, artifact,
 group id, and package, then opens the generated `Main.java`.
@@ -918,7 +942,7 @@ require('util.java_debug').debug_main()        -- Debug main
 | "Port already in use"    | Stale session — close nvim or `killall java`                                                        |
 | Breakpoints not hitting  | Check `:LspInfo` for compilation errors, or check logs: `tail -f ~/.local/state/nvim/nvim-java.log` |
 
-**See also:** `~/.config/nvim/JAVA_DEBUGGING.md` for complete reference.
+**See also:** `docs/java/java-debugging.md` for complete reference.
 
 ---
 
@@ -970,6 +994,7 @@ Notes:
 | `<leader>GC` | Find committed conflict markers |
 | `<leader>GQ` | Finish `git mergetool`          |
 | `<leader>GA` | Abort `git mergetool`           |
+| `<leader>Gb` | Diff vs branch/ref              |
 | `<leader>Gm` | Diff vs main/master             |
 | `<leader>GM` | Diff vs origin/main             |
 | `<leader>Gq` | Close Diffview                  |

@@ -238,7 +238,7 @@ On Neovim 0.12+, run inside Neovim instead:
 :GoInstallDeps
 ```
 
-Installs: `gomodifytags`, `iferr` — used by gopher.nvim for struct tag generation and `if err != nil` snippets.
+Installs: `gomodifytags`, `iferr`, `impl`, `gotests`, and `json2go` for gopher.nvim helpers.
 
 ---
 

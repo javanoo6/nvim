@@ -51,6 +51,8 @@ Update this file when:
   runtime `PATH` values.
 - `timeoutlen` is intentionally set to `500` to make leader sequences less
   timing-sensitive with the heavy `<leader>` workflow.
+- `smoothscroll` is enabled for smoother wrapped-line scrolling on supported
+  Neovim versions.
 - Mouse support is disabled by default (`mouse=`) and can be toggled with
   `<leader>um` for temporary GUI/terminal mouse use.
 - Plain `j/k` are remapped in [lua/config/keymaps.lua](/home/konkov/.config/nvim/lua/config/keymaps.lua:61).
@@ -104,6 +106,9 @@ Update this file when:
   `<leader>fg` cwd, `<leader>fG` root, and `<leader>fe` by extension all pass
   `--fixed-strings`. Regex grep is explicit on `<leader>f/` cwd,
   `<leader>f?` root, and `<leader>fE` by extension.
+- Ignored-file literal grep is explicit on `<leader>fi` cwd and `<leader>fI`
+  root. These pass `--fixed-strings --no-ignore` so ripgrep searches files
+  skipped by repo `.gitignore` rules.
 - Neo-tree sidebar cwd is intentionally tied to global cwd to avoid stale
   tab-local reopen behavior.
 - Neo-tree does not auto-follow the current file on buffer switches. In large
@@ -203,6 +208,13 @@ Update this file when:
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached
   results, limited to the active test scope/project root.
+- DAP UI opens automatically when a debug session starts and closes when the
+  session terminates or exits by default. `<leader>dU` toggles keeping DAP UI
+  open after session exit for final-state inspection. `<leader>df` reselects a
+  stopped session, reopens DAP UI, and focuses the current debug frame after
+  switching buffers. DAP source jumps use a local switch-buffer function that
+  avoids replacing DAP UI panes, so stepping into Java `jdt://` decompiled
+  sources keeps the debug layout intact.
 - Neotest output rendering is guarded by
   [lua/util/neotest_output_guard.lua](/home/konkov/.config/nvim/lua/util/neotest_output_guard.lua:1).
   Upstream `output` and `output_panel` read each result output file fully before
@@ -214,10 +226,22 @@ Update this file when:
   [lua/neotest-java/core/file_checker.lua](/home/konkov/.config/nvim/lua/neotest-java/core/file_checker.lua:1)
   so valid `src/test/java/*Test.java` files are not rejected when the adapter was
   constructed from a stale cwd outside the Java project.
+- `neotest-java` root finding is locally overridden at
+  [lua/neotest-java/core/root_finder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/root_finder.lua:1)
+  so Java test discovery uses Maven/Gradle roots only and never treats a plain
+  `.git` ancestor as a runnable Java project. This avoids `unknown project type:
+  unknown` in monorepos or after unrelated cwd changes.
 - `neotest-java` result mapping is locally overridden at
   [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)
   so a single executed invocation of a parameterized JUnit method maps back to
   the Neotest method node instead of leaving a stale failed summary status.
+- `neotest-java` DAP spec building is locally wrapped at
+  [lua/neotest-java/core/spec_builder/init.lua](/home/konkov/.config/nvim/lua/neotest-java/core/spec_builder/init.lua:1)
+  to normalize Java attach configs. The Java debug adapter used here requires
+  `hostName` for attach; without it, attach attempts can show as `null:<port>`.
+  The wrapper removes upstream's guessed `projectName` because it can differ
+  from JDTLS' actual project name in multi-module/demo repos and make variable
+  rendering fail with `Project <name> cannot be found`.
 - `neotest-java` Java binary resolution is locally overridden at
   [lua/neotest-java/command/binaries.lua](/home/konkov/.config/nvim/lua/neotest-java/command/binaries.lua:1)
   so a missing JDTLS `org.eclipse.jdt.ls.core.vm.location` response falls back
@@ -253,7 +277,9 @@ Update this file when:
   (`E:`, `W:`, `I:`, `H:`, `+`, `~`, `-`) so they remain visible without
   depending on icon fonts or a specific theme.
 - Lualine Java status intentionally stays a minimal colored `●`: green for
-  attached/idle JDTLS, yellow when LSP status is busy, red when unavailable.
+  attached/idle JDTLS, yellow when Neovim reports recent LSP progress, red when
+  unavailable. The yellow state is based on `vim.lsp.status()`, so it is a
+  global LSP progress signal rather than a JDTLS-only busy check.
 - `nvim-notify` background is derived from the active float/normal highlights
   via the local `NotifyBackground` refresh hook instead of a TokyoNight-specific
   hex color, so fade animations and popup contrast survive theme switches.
@@ -317,8 +343,8 @@ Update this file when:
   [docs/java/java-inspection-lint-roadmap.md](/home/konkov/.config/nvim/docs/java/java-inspection-lint-roadmap.md:1).
 - Planned IntelliJ Community inspection-engine research is tracked in
   [docs/java/java-intellij-inspection-engine-roadmap.md](/home/konkov/.config/nvim/docs/java/java-intellij-inspection-engine-roadmap.md:1).
-- `<leader>fi` / `:ScratchInfo` reports the global scratch directory, Java
-  project root, and resolved Java `Scratch.java` path for the current context.
+- `:ScratchInfo` reports the global scratch directory, Java project root, and
+  resolved Java `Scratch.java` path for the current context.
 - JDTLS is configured to download Maven dependency sources when available, so
   external libraries should open as real source before falling back to
   decompiled `jdt://...` class content.
@@ -396,12 +422,10 @@ Update this file when:
   handled, so renamed variables do not leave stale inlay hints behind.
 - Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, enabled on
   LSP attach, and toggled with `<leader>ud`.
-- LSP inlay hints render at end-of-line through `nvim-lsp-endhints` instead of
-  Neovim's native inline positions. This avoids inline hint text colliding with
-  renamed/edited variables while preserving the normal `vim.lsp.inlay_hint`
-  enable/disable API and the local `<leader>uh` toggle. `nvim-lsp-endhints` is
-  loaded as a `nvim-lspconfig` dependency so its handler override is installed
-  before `LspAttach` enables hints.
+- LSP inlay hints are managed by
+  [lua/util/inlay_hints.lua](/home/konkov/.config/nvim/lua/util/inlay_hints.lua:1)
+  through Neovim's native `vim.lsp.inlay_hint` API and toggled with
+  `<leader>uh`.
 - Noice is allowed to own command/message UI, but hover/signature rendering is
   intentionally disabled there to avoid conflicts with the chosen editing setup.
 - `<C-CR>` and `<leader>Hy` open Yanky's Telescope `yank_history` picker through

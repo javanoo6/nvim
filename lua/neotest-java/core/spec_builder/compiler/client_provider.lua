@@ -6,6 +6,45 @@ local logger = require("neotest-java.logger")
 local function ClientProvider(deps)
   local client
 
+  local function normalize(path)
+    if not path or path == "" then
+      return nil
+    end
+    return vim.uv.fs_realpath(path) or vim.fs.normalize(path)
+  end
+
+  local function path_has_prefix(path, prefix)
+    path = normalize(path)
+    prefix = normalize(prefix)
+    if not path or not prefix then
+      return false
+    end
+    if path == prefix then
+      return true
+    end
+    local with_sep = prefix:sub(-1) == "/" and prefix or (prefix .. "/")
+    return path:sub(1, #with_sep) == with_sep
+  end
+
+  local function client_matches_cwd(lsp_client, cwd)
+    local root = lsp_client and lsp_client.config and lsp_client.config.root_dir
+    local cwd_string = cwd and cwd:to_string()
+    return lsp_client
+      and lsp_client.initialized
+      and root
+      and cwd_string
+      and (path_has_prefix(cwd_string, root) or path_has_prefix(root, cwd_string))
+  end
+
+  local function find_client_for_cwd(cwd)
+    for _, lsp_client in ipairs(deps.get_clients({ name = "jdtls" })) do
+      if client_matches_cwd(lsp_client, cwd) then
+        return lsp_client
+      end
+    end
+    return nil
+  end
+
   local function find_any_java_file(dir)
     return Path(
       assert(
@@ -37,14 +76,14 @@ local function ClientProvider(deps)
 
   return function(cwd)
     local started = deps.hrtime()
-    if client and client.initialized then
+    if client_matches_cwd(client, cwd) then
       logger.warn(("[timing] reused existing jdtls client in %.1f ms"):format((deps.hrtime() - started) / 1e6))
       return client
     end
 
-    client = deps.get_clients({ name = "jdtls" })[1]
-    if client and client.initialized then
-      logger.warn(("[timing] found active jdtls client in %.1f ms"):format((deps.hrtime() - started) / 1e6))
+    client = find_client_for_cwd(cwd)
+    if client then
+      logger.warn(("[timing] found matching jdtls client in %.1f ms"):format((deps.hrtime() - started) / 1e6))
       return client
     end
 
