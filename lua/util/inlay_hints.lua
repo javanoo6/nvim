@@ -7,7 +7,6 @@ local edit_clear_filetypes = {
   java = true,
   python = true,
 }
-local insert_disabled_buffers = {}
 
 local function each_loaded_buffer(callback)
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -86,34 +85,6 @@ function M.toggle()
 end
 
 function M.setup()
-  vim.api.nvim_create_autocmd("InsertEnter", {
-    group = edit_clear_group,
-    desc = "Hide inlay hints while editing allowlisted filetypes",
-    callback = function(event)
-      if not M.is_enabled() or not edit_clear_filetypes[vim.bo[event.buf].filetype] or not buffer_supports_inlay_hints(event.buf) then
-        return
-      end
-
-      insert_disabled_buffers[event.buf] = true
-      set_enabled(event.buf, false)
-    end,
-  })
-
-  vim.api.nvim_create_autocmd("InsertLeave", {
-    group = edit_clear_group,
-    desc = "Restore inlay hints after editing allowlisted filetypes",
-    callback = function(event)
-      if not insert_disabled_buffers[event.buf] then
-        return
-      end
-
-      insert_disabled_buffers[event.buf] = nil
-      if vim.api.nvim_buf_is_loaded(event.buf) and M.is_enabled() then
-        set_enabled(event.buf, true)
-      end
-    end,
-  })
-
   vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "TextChangedP" }, {
     group = edit_clear_group,
     desc = "Clear stale inlay hints immediately after edits",
