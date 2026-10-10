@@ -20,7 +20,14 @@ return {
       single_key_select = false,
       folding = false,
       inlay_hints = false, -- Existing repo hint controls own this setting.
-      file_templates = false,
+      inlay_hint_settings = {
+        jetbrains = {
+          java = {
+            ["hints.collapse complex types"] = false,
+          },
+        },
+      },
+      file_templates = true,
       format_on_save = false,
       run = false, -- Scoped launch/UI setup is owned by our helpers.
       debug = false,
