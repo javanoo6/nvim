@@ -309,10 +309,13 @@ Update this file when:
 - Lualine diagnostic and diff symbols intentionally use restrained ASCII labels
   (`E:`, `W:`, `I:`, `H:`, `+`, `~`, `-`) so they remain visible without
   depending on icon fonts or a specific theme.
-- Lualine Java status intentionally stays a minimal colored `●`: green for
-  attached/idle IntelliJ LSP, yellow when Neovim reports recent LSP progress, red when
-  unavailable. The yellow state is based on `vim.lsp.status()`, so it is a
-  global LSP progress signal rather than an IntelliJ-only busy check.
+- Lualine Java status intentionally stays a minimal colored `●` in Java buffers:
+  red when the buffer has no attached IntelliJ client or that client is stopped;
+  yellow while its initial import is incomplete or its status is busy;
+  green when it is attached, ready, and idle. Readiness and busy checks use
+  `intellij-lsp.progress.is_ready(client.id)` and
+  `intellij-lsp.status.is_idle(client.id)` for that buffer's IntelliJ client.
+  Other language clients do not affect the Java indicator.
 - `nvim-notify` background is derived from the active float/normal highlights
   via the local `NotifyBackground` refresh hook instead of a TokyoNight-specific
   hex color, so fade animations and popup contrast survive theme switches.
