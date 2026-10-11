@@ -511,8 +511,18 @@ Update this file when:
 - Java extract-to-local-variable may move focus into the follow-up rename prompt.
   Use `<C-w>w` to cycle focus back to the hover/floating window, or `<C-w>p` to
   return to the previously focused window.
-- LSP rename refreshes loaded inlay-hint buffers after the rename response is
-  handled, so renamed variables do not leave stale inlay hints behind.
+- LSP rename uses [lua/util/lsp_rename.lua](/home/konkov/.config/nvim/lua/util/lsp_rename.lua:1)
+  to wrap each attached client's rename handler once. Successful non-nil results
+  refresh loaded inlay-hint buffers after the existing handler applies edits.
+  Custom client handlers are preserved; otherwise the wrapper delegates to the
+  current global handler. No global replacement or restoration timer is used.
+  `<leader>cr` retains native prompts/prepare-rename and selects only IntelliJ
+  for Java. IntelliJ follow-up renames also use the installed client wrapper.
+  `tests/lsp_rename.lua` checks cancellation, errors, overlapping requests,
+  custom handlers, and Java routing through the native API. A real IntelliJ
+  smoke test in a disposable Maven project updated a method declaration and
+  call site, refreshed hints, and preserved the global handler. Interactive
+  typing and complex refactoring conflicts were not exercised by that probe.
 - Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, enabled on
   LSP attach, and toggled with `<leader>ud`.
 - LSP inlay hints are managed by
