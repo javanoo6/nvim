@@ -16,6 +16,8 @@ check-lint:
 
 check-config:
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/config_refinement.lua DiffviewOpen
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/neotest_scope.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/root_policy.lua
 
 format:
 	$(STYLUA) $(LUA_TARGETS)
