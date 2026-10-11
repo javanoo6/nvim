@@ -18,14 +18,13 @@ This stays under the UI toggle group and avoids the existing `<leader>Gh*` hunk-
 
 ## Data Source
 
-Use Gitsigns as the first source:
+Use Gitsigns as the only source:
 
 - It already owns signs, hunk parsing, and live refresh.
 - It tracks the current buffer and git base.
 - It avoids duplicating git diff parsing in the first version.
 
-If Gitsigns does not expose enough structured data for alignment, add a narrow fallback around `git diff --unified=0 -- <file>` and parse with a real
-hunk-header parser.
+If Gitsigns data is unavailable, show that state and refresh when Gitsigns updates.
 
 ## Buffer Layout
 

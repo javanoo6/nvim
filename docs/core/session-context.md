@@ -621,9 +621,16 @@ Update this file when:
 - Live git hunks view is repo-local glue in
   [lua/util/live_hunks.lua](/home/konkov/.config/nvim/lua/util/live_hunks.lua:1).
   `<leader>ug` / `:LiveHunksToggle` opens a right-side scratch buffer for the
-  current file's unstaged hunks. It uses Gitsigns `get_hunks()` first, falls
-  back to `git diff --unified=0`, and keeps one scratch row per source line so
-  `WinScrolled` can sync the view topline with the edit window.
+  current file's unstaged hunks. Gitsigns `get_hunks()` is its only data source;
+  there is no separate Git process or diff parser. A nil result means Gitsigns
+  is not attached, while an empty table means no unstaged hunks. The panel shows
+  that distinction and refreshes on `GitSignsUpdate`, including after delayed
+  attachment. It keeps one scratch row per source line so `WinScrolled` can
+  sync the view topline with the edit window.
+  `tests/live_hunks.lua` verifies real Gitsigns attachment, clean/unsaved hunks,
+  rapid edits, source selection, scroll synchronization, unavailable/error
+  states, and closing the panel with a refresh pending. Direct synchronous Git
+  calls from the panel are prohibited in that probe.
 - Diffview branch/ref helpers use structured `vim.cmd.DiffviewOpen(...)` calls
   for dynamic ref arguments.
 - Planned work:

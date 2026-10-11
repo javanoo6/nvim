@@ -326,7 +326,7 @@ aerial.lua
 git.lua
   ├── gitsigns.nvim       ── hunk signs, blame, diff, stage/reset
   │                          Keymaps: ]h/[h, <leader>Gh* (buffer-local)
-  ├── util/live_hunks.lua ── right-side live unstaged hunk view
+  ├── util/live_hunks.lua ── right-side live unstaged hunk view, Gitsigns data only
   │                          Keymaps: <leader>ug, commands: :LiveHunks*
   ├── diffview.nvim       ── full diff viewer + file history + 3-way merge view
   │                          Keymaps in keymaps.lua: <leader>GD/GF/GH/GL/Gm/GM

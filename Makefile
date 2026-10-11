@@ -20,6 +20,7 @@ check-config:
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/root_policy.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lsp_rename.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_scrub.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/live_hunks.lua
 
 format:
 	$(STYLUA) $(LUA_TARGETS)
