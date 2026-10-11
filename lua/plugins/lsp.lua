@@ -193,9 +193,9 @@ return {
       vim.lsp.config("pyright", {
         cmd = pyright_cmd,
       })
-      vim.lsp.enable("pyright")
-
       vim.lsp.config("basedpyright", {})
+      local python_lsp = require("util.python_lsp")
+      python_lsp.select("pyright")
 
       vim.lsp.config("ruby_lsp", {
         cmd = function(dispatchers, config)
@@ -219,18 +219,8 @@ return {
       vim.lsp.enable("ruby_lsp")
 
       local function switch_python_lsp(server_name)
-        local stopped = {}
-        for _, client in ipairs(vim.lsp.get_clients()) do
-          if client.name == "pyright" or client.name == "basedpyright" then
-            stopped[client.name] = true
-            client:stop(true)
-          end
-        end
-
-        vim.defer_fn(function()
-          vim.lsp.enable(server_name)
-          vim.notify("Python LSP enabled: " .. server_name, vim.log.levels.INFO)
-        end, next(stopped) and 100 or 0)
+        python_lsp.select(server_name)
+        vim.notify("Python LSP enabled: " .. server_name, vim.log.levels.INFO)
       end
 
       vim.api.nvim_create_user_command("PythonLspUsePyright", function()
@@ -244,7 +234,7 @@ return {
       vim.lsp.config("gopls", {
         cmd = { "gopls" },
         filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_dir = require("lspconfig.util").root_pattern("go.work", "go.mod", ".git"),
+        -- Keep nvim-lspconfig's callback-based Go workspace/module root policy.
         settings = {
           gopls = {
             completeUnimported = true,
@@ -264,12 +254,10 @@ return {
               parameterNames = true,
               rangeVariableTypes = true,
             },
-            ui = {
-              annotation = {
-                bounds = true,
-                escape = true,
-                inline = true,
-              },
+            annotations = {
+              bounds = true,
+              escape = true,
+              inline = true,
             },
           },
         },

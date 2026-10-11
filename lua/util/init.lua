@@ -14,21 +14,6 @@ function M.map(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
--- Check if plugin is available (replaces LazyVim.has)
-function M.has(plugin)
-  return require("lazy.core.config").spec.plugins[plugin] ~= nil
-end
-
--- Get plugin opts (replaces LazyVim.opts)
-function M.opts(name)
-  local plugin = require("lazy.core.config").spec.plugins[name]
-  if not plugin then
-    return {}
-  end
-  local Plugin = require("lazy.core.plugin")
-  return Plugin.values(plugin, "opts", false)
-end
-
 -- Create autocmd helper
 function M.augroup(name)
   return vim.api.nvim_create_augroup("custom_" .. name, { clear = true })

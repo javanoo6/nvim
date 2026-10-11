@@ -3,8 +3,6 @@ local M = {}
 local util = require("util")
 
 local state
-local setup_done = false
-local max_projects = 50
 local store_path = vim.fn.stdpath("data") .. "/frequent-roots.json"
 
 local function normalize(path)
@@ -15,19 +13,6 @@ local function normalize(path)
     path = vim.uri_to_fname(path)
   end
   return vim.uv.fs_realpath(path) or vim.fs.normalize(path)
-end
-
-local function path_has_prefix(path, prefix)
-  path = normalize(path)
-  prefix = normalize(prefix)
-  if not path or not prefix then
-    return false
-  end
-  if path == prefix then
-    return true
-  end
-  local with_sep = prefix:sub(-1) == "/" and prefix or (prefix .. "/")
-  return path:sub(1, #with_sep) == with_sep
 end
 
 local function is_dir(path)
@@ -49,32 +34,12 @@ local function dedupe_dirs(paths)
   return items
 end
 
-local function get_marker_root_for_path(path)
-  path = normalize(path)
-  if not path then
-    return nil
-  end
-
-  local search_from = path
-  if vim.fn.isdirectory(path) ~= 1 then
-    search_from = vim.fs.dirname(path)
-  end
-
-  local root = vim.fs.find(util.root_patterns, { path = search_from, upward = true })[1]
-  return root and vim.fs.dirname(root) or nil
-end
-
-local function is_project_dir(path)
-  path = normalize(path)
-  return is_dir(path) and get_marker_root_for_path(path) == path
-end
-
 local function load()
   if state then
     return state
   end
 
-  state = { manual = {}, projects = {} }
+  state = { manual = {} }
   if vim.fn.filereadable(store_path) ~= 1 then
     return state
   end
@@ -89,20 +54,19 @@ local function load()
     return state
   end
 
-  -- Migrate older schema: pinned -> manual, recent -> projects.
+  -- Keep legacy project/history fields opaque; manual writes must not discard them.
+  state = decoded
   state.manual = dedupe_dirs(decoded.manual or decoded.pinned)
-  state.projects = vim.tbl_filter(is_project_dir, dedupe_dirs(decoded.projects or decoded.recent))
   return state
 end
 
 local function save()
   local current = load()
   current.manual = dedupe_dirs(current.manual)
-  current.projects = vim.tbl_filter(is_project_dir, dedupe_dirs(current.projects))
   vim.fn.writefile({ vim.json.encode(current) }, store_path)
 end
 
-local function prepend_unique(list, path, limit)
+local function prepend_unique(list, path)
   path = normalize(path)
   if not is_dir(path) then
     return list
@@ -113,9 +77,6 @@ local function prepend_unique(list, path, limit)
     item = normalize(item)
     if item and item ~= path and is_dir(item) then
       items[#items + 1] = item
-    end
-    if limit and #items >= limit then
-      break
     end
   end
 
@@ -131,30 +92,6 @@ local function current_buffer_path(bufnr)
     return nil
   end
   return normalize(path)
-end
-
-local function current_project_root(bufnr)
-  bufnr = (bufnr == nil or bufnr == 0) and vim.api.nvim_get_current_buf() or bufnr
-  local path = current_buffer_path(bufnr)
-  if not path then
-    return nil
-  end
-
-  local marker_root = get_marker_root_for_path(path)
-  local lsp_root = util.get_lsp_root(bufnr)
-
-  if marker_root then
-    if lsp_root and path_has_prefix(lsp_root, marker_root) then
-      return lsp_root
-    end
-    return marker_root
-  end
-
-  if lsp_root then
-    return lsp_root
-  end
-
-  return nil
 end
 
 local function current_dir(bufnr)
@@ -257,48 +194,12 @@ local function telescope_pick(opts)
       return item.label or item.path or item.name
     end,
   }, function(choice)
-    if choice and choice.path then
-      open_dir(choice.path)
-    elseif choice and opts.on_choice then
+    if choice and opts.on_choice then
       opts.on_choice(choice)
+    elseif choice and choice.path then
+      open_dir(choice.path)
     end
   end)
-end
-
-function M.pick_projects()
-  local current = load()
-  local items = {}
-  for _, path in ipairs(current.projects) do
-    items[#items + 1] = {
-      path = path,
-      label = path,
-    }
-  end
-
-  telescope_pick({
-    title = "Projects",
-    items = items,
-    empty_message = "No projects yet. Open files inside a detected project first.",
-  })
-end
-
-function M.get_current_project_root(bufnr)
-  return current_project_root(bufnr)
-end
-
-function M.get_current_dir(bufnr)
-  return current_dir(bufnr)
-end
-
-function M.add_project(path)
-  path = normalize(path)
-  if not is_dir(path) then
-    return
-  end
-
-  local current = load()
-  current.projects = prepend_unique(current.projects, path, max_projects)
-  save()
 end
 
 function M.add_manual(path)
@@ -452,35 +353,6 @@ function M.manage_manual()
       end
     end,
   })
-end
-
-function M.setup()
-  if setup_done then
-    return
-  end
-  setup_done = true
-
-  load()
-  save()
-
-  local function record_buffer(bufnr)
-    if type(bufnr) ~= "number" or bufnr <= 0 or not vim.api.nvim_buf_is_valid(bufnr) then
-      bufnr = vim.api.nvim_get_current_buf()
-    end
-    local root = current_project_root(bufnr)
-    if root then
-      M.add_project(root)
-    end
-  end
-
-  vim.api.nvim_create_autocmd({ "BufEnter", "VimEnter" }, {
-    group = util.augroup("frequent_roots"),
-    callback = function(args)
-      record_buffer(args.buf)
-    end,
-  })
-
-  record_buffer(vim.api.nvim_get_current_buf())
 end
 
 return M

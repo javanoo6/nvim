@@ -69,7 +69,7 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 -- Wrap and spell for text files
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("wrap_spell"),
-  pattern = { "text", "markdown", "gitcommit" },
+  pattern = { "text", "gitcommit" },
   callback = function()
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
@@ -128,32 +128,7 @@ vim.schedule(function()
   refresh_notify_style()
 end)
 
--- Helm chart templates: treat templated YAML as Helm, not plain YAML
-vim.filetype.add({
-  pattern = {
-    [".*/templates/.*%.ya?ml"] = "helm",
-    [".*/templates/.*%.tpl"] = "helm",
-    [".*/templates/.*%.txt"] = "helm",
-    [".*/Chart%.ya?ml"] = "yaml.helm-values",
-    [".*/values%.ya?ml"] = "yaml.helm-values",
-    [".*/values%-[^/]+%.ya?ml"] = "yaml.helm-values",
-  },
-})
-
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-  group = augroup("helm_filetypes"),
-  pattern = { "*.yaml", "*.yml", "*.tpl", "*.txt" },
-  callback = function(event)
-    local path = vim.api.nvim_buf_get_name(event.buf)
-    if path:match("/templates/.*%.ya?ml$") or path:match("/templates/.*%.tpl$") or path:match("/templates/.*%.txt$") then
-      vim.bo[event.buf].filetype = "helm"
-      return
-    end
-    if path:match("/Chart%.ya?ml$") or path:match("/values%.ya?ml$") or path:match("/values%-[^/]+%.ya?ml$") then
-      vim.bo[event.buf].filetype = "yaml.helm-values"
-    end
-  end,
-})
+require("util.helm_filetype").setup()
 
 -- In oil buffers, restore normal delete/change behavior so dd+p moves entries
 vim.api.nvim_create_autocmd("FileType", {
@@ -204,8 +179,9 @@ end
 -- nvim "$MERGED" -c "DiffviewOpen"
 -- Install finish/abort keys globally for that short-lived process, because the
 -- first focused buffer may not be a classic vimdiff buffer.
+local mergetool_group = augroup("git_mergetool_keys")
 vim.api.nvim_create_autocmd("VimEnter", {
-  group = augroup("git_mergetool_keys"),
+  group = mergetool_group,
   callback = function()
     if vim.g.git_mergetool_keys or not launched_with_diffview_open() then
       return
@@ -218,7 +194,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 -- Git mergetool can also run Neovim in diff mode; expose finish/abort there.
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
-  group = augroup("git_mergetool_keys"),
+  group = mergetool_group,
   callback = function(event)
     if not vim.wo.diff or vim.b[event.buf].git_mergetool_keys then
       return
