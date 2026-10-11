@@ -20,6 +20,7 @@ return {
     config = function()
       local map = require("util").map
       local inlay_hints = require("util.inlay_hints")
+      local lsp_rename = require("util.lsp_rename")
       local ruby = require("util.ruby")
       inlay_hints.setup()
       local function resolve_pyright_cmd()
@@ -67,49 +68,6 @@ return {
         vim.cmd.edit(vim.fn.fnameescape(log_path))
       end
 
-      local function rename_symbol()
-        local original_handler = vim.lsp.handlers["textDocument/rename"]
-        local restored = false
-
-        local function restore_handler()
-          if restored then
-            return
-          end
-
-          restored = true
-          if vim.lsp.handlers["textDocument/rename"] ~= original_handler then
-            vim.lsp.handlers["textDocument/rename"] = original_handler
-          end
-        end
-
-        vim.lsp.handlers["textDocument/rename"] = function(...)
-          local result = { pcall(original_handler, ...) }
-          local ok = table.remove(result, 1)
-          vim.schedule(function()
-            inlay_hints.refresh_loaded_buffers()
-            restore_handler()
-          end)
-          if not ok then
-            error(result[1])
-          end
-
-          return unpack(result)
-        end
-
-        vim.defer_fn(restore_handler, 120000)
-
-        local bufnr = vim.api.nvim_get_current_buf()
-        if vim.bo[bufnr].filetype == "java" then
-          vim.lsp.buf.rename(nil, {
-            name = "intellij",
-            bufnr = bufnr,
-          })
-          return
-        end
-
-        vim.lsp.buf.rename()
-      end
-
       vim.diagnostic.config({
         virtual_text = false,
         signs = true,
@@ -135,6 +93,7 @@ return {
         group = require("util").augroup("lsp_attach"),
         callback = function(event)
           local client = vim.lsp.get_client_by_id(event.data.client_id)
+          lsp_rename.attach(client)
           local opts = { buffer = event.buf }
 
           -- Register LSP keymaps in which-key (buffer-local, only shown in LSP buffers)
@@ -167,7 +126,7 @@ return {
           map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover" }))
           map("n", "gK", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
           -- <leader>ca is handled globally by actions-preview.nvim
-          map("n", "<leader>cr", rename_symbol, vim.tbl_extend("force", opts, { desc = "Rename" }))
+          map("n", "<leader>cr", lsp_rename.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
 
           -- Enable inlay hints if supported
           if client and client.server_capabilities.inlayHintProvider then
