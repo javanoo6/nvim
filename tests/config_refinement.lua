@@ -279,7 +279,19 @@ local function run()
   -- Actual parser/highlighter checks across aliases; never install during tests.
   dofile(plugin_dir .. "nvim-treesitter/plugin/filetypes.lua")
   local treesitter = require("nvim-treesitter")
-  treesitter.install = function() end
+  local get_installed = treesitter.get_installed
+  local requested
+  treesitter.install = function(languages)
+    requested = languages
+  end
+  for _, installed in ipairs({ {}, { "markdown" } }) do
+    treesitter.get_installed = function()
+      return installed
+    end
+    require("plugins.treesitter")[1].config()
+    equal(vim.tbl_contains(requested, "markdown_inline"), true, "Request inline parser on clean/partial installation")
+  end
+  treesitter.get_installed = get_installed
   require("plugins.treesitter")[1].config()
   for _, case in ipairs({
     { "lua", "lua", false, "local answer = 42" },
@@ -295,6 +307,40 @@ local function run()
     equal(vim.treesitter.highlighter.active[buf] ~= nil, true, "Highlighter: " .. case[1])
     equal(vim.treesitter.language.get_lang(case[1]), case[2], "Parser alias: " .. case[1])
     equal(vim.bo[buf].indentexpr == "v:lua.require'nvim-treesitter'.indentexpr()", not case[3], "Indent policy: " .. case[1])
+  end
+  local markdown_buf = buffer(nil, {
+    "# Hello",
+    "**bold** *italic* `code` ~~gone~~ [link](https://example.com)",
+    "",
+    "```lua",
+    "local answer = 42",
+    "```",
+  })
+  vim.bo[markdown_buf].filetype = "markdown"
+  local markdown_parser = vim.treesitter.get_parser(markdown_buf, "markdown")
+  markdown_parser:parse(true)
+  local captures, injected = {}, {}
+  markdown_parser:for_each_tree(function(tree, language_tree)
+    local lang = language_tree:lang()
+    injected[lang] = true
+    if lang == "markdown_inline" then
+      local query = assert(vim.treesitter.query.get(lang, "highlights"))
+      for id in query:iter_captures(tree:root(), markdown_buf, 0, -1) do
+        captures[query.captures[id]] = true
+      end
+    end
+  end)
+  equal(injected.markdown_inline, true, "Markdown inline injection")
+  equal(injected.lua, true, "Markdown fenced Lua injection")
+  for _, capture in ipairs({
+    "markup.strong",
+    "markup.italic",
+    "markup.raw",
+    "markup.strikethrough",
+    "markup.link.label",
+    "markup.link.url",
+  }) do
+    equal(captures[capture], true, "Markdown inline capture: " .. capture)
   end
   buffer()
   vim.bo.filetype = "unsupported-audit-filetype"

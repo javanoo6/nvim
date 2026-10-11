@@ -103,6 +103,9 @@ Update this file when:
 - Treesitter activation resolves FileType aliases to parser languages, including
   `sh`, JSX, TSX, and `yaml.helm-values`. Markdown/YAML parser languages keep
   stock indentation; missing/unsupported parsers are skipped quietly.
+- Both `markdown` and `markdown_inline` are explicit installation targets.
+  Inline emphasis, code, and link captures use the latter through Markdown
+  injections; startup also requests it when only the block parser is installed.
 - `J` is disabled to avoid accidental joins from `<S-j>`.
 - `<leader>bd` deletes the current buffer while preserving the current window
   layout. This intentionally avoids raw `:bdelete` behavior, which can collapse

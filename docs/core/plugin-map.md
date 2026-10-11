@@ -154,9 +154,13 @@ nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
 ```
 
-**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, ruby, sql,
+**Configured grammar installation targets:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline,
+python, query, ruby, sql,
 toml,
 tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
+
+`markdown_inline` is explicit so startup requests it even when `markdown` is
+already installed. It supplies injected inline emphasis, code, and link captures.
 
 **Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
 moves to the next sibling node.
