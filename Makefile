@@ -21,6 +21,7 @@ check-config:
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lsp_rename.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_scrub.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/live_hunks.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lazy_bootstrap.lua
 
 format:
 	$(STYLUA) $(LUA_TARGETS)

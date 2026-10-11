@@ -2,7 +2,7 @@
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
-  vim.fn.system({
+  local ok, output = pcall(vim.fn.system, {
     "git",
     "clone",
     "--filter=blob:none",
@@ -10,6 +10,16 @@ if not vim.uv.fs_stat(lazypath) then
     "--branch=stable",
     lazypath,
   })
+  if not ok or vim.v.shell_error ~= 0 then
+    error(
+      "Failed to install lazy.nvim at "
+        .. lazypath
+        .. ":\n"
+        .. tostring(output)
+        .. "\nCheck Git, network access, and destination permissions, then restart Neovim.",
+      0
+    )
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 
