@@ -295,6 +295,15 @@ Update this file when:
   Lua edits inside the covered plugin checkouts must be documented rather than
   silently treated as upstream code. These checks launch no language servers,
   debuggers, or test processes.
+- Go Neotest uses `gotestsum v1.13.0`, pinned in the neotest-golang build hook
+  independently of `lazy-lock.json`. Its upstream
+  [go.mod](https://github.com/gotestyourself/gotestsum/blob/v1.13.0/go.mod)
+  requires Go 1.24.0; local validation used Go 1.25.6. Installation retains Go's
+  normal GOBIN/GOPATH destination. Missing Go, launch/wait errors, and nonzero
+  exits raise a Lazy build error with the pinned target, process output when
+  available, and `:Lazy build neotest-golang` retry guidance. Offline checks live
+  in `tests/gotestsum_build.lua`; disposable fresh-install checks verified the
+  adapter's default JSON/verbose/race flags with passing and failing Go tests.
 - Neotest has a repo-local failed-test rerun helper at
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached

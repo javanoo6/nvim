@@ -17,7 +17,34 @@ return {
     "fredrikaverpil/neotest-golang",
     ft = "go",
     build = function()
-      vim.system({ "go", "install", "gotest.tools/gotestsum@latest" }):wait()
+      -- Keep this external tool pinned independently of lazy-lock.json.
+      local target = "gotest.tools/gotestsum@v1.13.0"
+      local retry = "Fix the cause, then retry :Lazy build neotest-golang"
+      local go = vim.fn.exepath("go")
+      if go == "" then
+        error("Cannot install " .. target .. ": go executable not found on PATH. " .. retry, 0)
+      end
+      local ok, result = pcall(function()
+        return vim.system({ go, "install", target }, { text = true }):wait()
+      end)
+      if not ok then
+        error("Cannot install " .. target .. ": " .. tostring(result) .. "\n" .. retry, 0)
+      end
+      if result.code ~= 0 then
+        local output = vim.trim((result.stderr or "") .. "\n" .. (result.stdout or ""))
+        error(
+          string.format(
+            "%s install %s failed (exit %s, signal %s)\n%s\n%s",
+            go,
+            target,
+            tostring(result.code),
+            tostring(result.signal),
+            output ~= "" and output or "No process output",
+            retry
+          ),
+          0
+        )
+      end
     end,
   },
   {

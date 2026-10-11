@@ -413,7 +413,7 @@ Go test, gl debug last Go test
 neotest.lua
   neotest
     ├── neotest-java    ── discovery/XML readers; util/neotest_intellij owns compile/classpath/run/DAP
-    ├── neotest-golang  ── Go test runner
+    ├── neotest-golang  ── Go test runner; gotestsum v1.13.0 pinned by checked build hook
     └── neotest-python  ── Python test runner
   util/neotest_scope.lua ── scoped discovery + file/package targets; preserves editor cwd
   util/neotest_python.lua ── owning-project process/DAP cwd, independent of editor cwd

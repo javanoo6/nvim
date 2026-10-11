@@ -20,3 +20,11 @@ Start here:
 
 - [git/fix-empty-git-object-lazygit-crash.md](/home/konkov/.config/nvim/docs/git/fix-empty-git-object-lazygit-crash.md:1):
   recover from LazyGit crashes caused by empty or missing Git object files.
+
+## Configuration refinement
+
+- [Compatibility patches and upgrade checks](core/compatibility-patches.md):
+  verified revisions, targeted checks, and conditions for retiring local fixes.
+
+- [Configuration audit and step-by-step cleanup plan](audits/config-audit-2026-10-11.md):
+  remaining findings, evidence, and ordered follow-up steps.
