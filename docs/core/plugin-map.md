@@ -592,7 +592,7 @@ Quality gate:
 Makefile ── `make check` runs Mason `stylua --check` + `selene` + isolated regressions
 tests/config_refinement.lua ── `make check-config`, installed plugins, no installs/LSPs
 tests/neotest_scope.lua ── cwd preservation, discovery across projects, session restore,
-                          async Python spec ownership; no test processes/LSPs
+async Python spec ownership; no test processes/LSPs
 selene.toml / vim.yml ── local Selene config and minimal Neovim std
 
 UI inspection:

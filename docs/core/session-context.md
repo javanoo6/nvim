@@ -135,6 +135,11 @@ Update this file when:
 - `project.nvim` runs in manual mode. Opening files, including Python files in
   nested monorepo packages, must not auto-`cd` the session; use explicit root
   changes instead.
+  Its explicit detection keeps upstream LSP-first ordering and stock markers;
+  it does not use `util.root_patterns`. The shared statusline/navigation helper
+  remains marker-first and honors explicit cwd narrowing. Root profiling found
+  no worthwhile reason to cache it on this machine; measurements and a repeatable
+  probe are linked from `docs/core/root-detection-policy.md`.
 - `util.frequent_roots` now manages manual directories only (`<leader>hm`).
   Inactive project tracking/picking and unused exports were removed. Legacy
   `pinned` entries still load as manual dirs; project/history and unknown JSON

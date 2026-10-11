@@ -33,7 +33,9 @@ Root resolution is conservative by design:
 2. LSP root may refine that only if it is equal to or inside the marker root
 3. broader LSP roots are rejected
 4. if no marker root exists, fall back to LSP root
-5. final fallback is current working directory
+5. an explicit `:cd`, `:lcd`, or `:tcd` inside the detected root narrows the
+   active scope when it also contains the buffer's file
+6. final fallback is current working directory
 
 This prevents one language server from unexpectedly broadening the scope of
 Neo-tree, statusline root, or root-aware pickers.
@@ -62,24 +64,57 @@ The current shared marker list includes:
 
 Edit this list in one place only:
 
-- [lua/util/init.lua](/home/konkov/.config/nvim/lua/util/init.lua:48)
+- [lua/util/init.lua](/home/konkov/.config/nvim/lua/util/init.lua:109)
 
 ## Plugins Already Using Shared Root Logic
 
 - Neo-tree root open:
-  [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:206)
+  [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:320)
 - picker helper defaults:
-  [lua/util/init.lua](/home/konkov/.config/nvim/lua/util/init.lua:179)
-- primary Telescope file/grep mappings:
-  [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:34)
+  [lua/util/init.lua](/home/konkov/.config/nvim/lua/util/init.lua:405)
+- project-root Telescope file/grep mappings:
+  [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:50)
+  Cwd-scoped mappings use `get_explorer_cwd()` instead.
 - lualine root display:
-  [lua/plugins/ui.lua](/home/konkov/.config/nvim/lua/plugins/ui.lua:112)
+  [lua/plugins/ui.lua](/home/konkov/.config/nvim/lua/plugins/ui.lua:164)
   It now renders only the root basename while preserving the same underlying
   root resolution.
-- `project.nvim` marker list:
-  [lua/plugins/projects.lua](/home/konkov/.config/nvim/lua/plugins/projects.lua:15)
 - Trouble project filtering:
-  [lua/plugins/trouble.lua](/home/konkov/.config/nvim/lua/plugins/trouble.lua:31)
+  [lua/plugins/trouble.lua](/home/konkov/.config/nvim/lua/plugins/trouble.lua:56)
+
+## project.nvim Uses Its Own Detection Policy
+
+[lua/plugins/projects.lua](/home/konkov/.config/nvim/lua/plugins/projects.lua:11)
+sets `manual_mode = true`; the shared `patterns` assignment is commented out.
+Opening a buffer therefore does not automatically change cwd. `:ProjectRoot`
+explicitly invokes project.nvim detection, while selecting a directory through
+its Telescope projects picker can explicitly change cwd.
+
+The installed plugin retains its [upstream defaults](https://github.com/ahmedkhalf/project.nvim#configuration):
+
+- detection order: LSP first, then patterns
+- patterns: `.git`, `_darcs`, `.hg`, `.bzr`, `.svn`, `Makefile`, `package.json`
+- cwd changes: global scope
+
+This differs from `util.get_root()`, which prefers the nearest shared marker and
+accepts only equally scoped or narrower LSP roots. The relationship is through
+cwd: explicit project selection can change cwd, which the shared helper then
+considers. project.nvim does not directly call the shared helper. Retaining its
+current manual behavior does not require merging the two detection policies.
+
+## Statusline Root Cost
+
+The statusline resolves `get_root_basename()` without a cache. Local profiling
+did not justify caching; see [measurements and limits](root-profile-2026-10-11.md).
+This keeps filename, cwd, workspace, and marker changes visible on the next
+resolution without cache invalidation rules.
+
+Run `make check-config` for root-policy fixtures. To repeat optional timing
+measurements, run:
+
+```sh
+nvim --headless -u NONE -i NONE -l tests/root_policy.lua --profile
+```
 
 ## When To Reuse Shared Root Logic
 
