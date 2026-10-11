@@ -25,7 +25,7 @@ end
 local function find_java_project_root()
   local path = current_path()
   -- For Java scratch we want Maven/Gradle project context, not just generic
-  -- editor root detection. JDTLS resolves dependencies from build-aware roots.
+  -- editor root detection. IntelliJ resolves dependencies from build-aware roots.
   local root = vim.fs.find(java_build_markers, {
     path = vim.fn.isdirectory(path) == 1 and path or vim.fs.dirname(path),
     upward = true,
@@ -111,7 +111,7 @@ end
 
 local function open_scratch()
   -- In Java projects, reopening the project-local Scratch.java is usually more
-  -- useful than jumping to the global scratch list because it preserves JDTLS
+  -- useful than jumping to the global scratch list because it preserves IntelliJ
   -- project context. Outside Java projects we fall back to scratch.nvim.
   if open_java_project_scratch() then
     return

@@ -43,6 +43,20 @@ When a venv is activated:
 - Python LSP clients are restarted so Pyright sees the selected interpreter.
 - Existing terminal buffers are not force-reinitialized.
 
+The `.env` loader preserves the inherited `PATH` (including the selected venv)
+and appends unique directories from `.env`'s `PATH`. `$PATH` and `${PATH}` are
+expanded in that entry only. Other variables use the simple literal parser;
+general variable interpolation and inline comment stripping are not supported.
+On the next activation, previously loaded variables are restored to their
+original values if they have not since changed, and added PATH directories are
+removed before loading the next project's `.env`.
+The selected interpreter's bin directory is then explicitly placed first, even
+when that directory was previously added by `.env`. CLI scripts using
+`#!/usr/bin/env python3` therefore use the same environment as Python tests.
+
+Neotest's Go adapter checks for a `_test.go` filename and an executable `go`
+before calling upstream discovery, so Python test discovery works without Go.
+
 ## Commands And Keys
 
 | Key          | Command / Action                         |

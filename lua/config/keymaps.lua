@@ -51,19 +51,15 @@
 local util = require("util")
 local map = util.map
 local inlay_hints = require("util.inlay_hints")
-local java_field_usages = require("util.java_field_usages")
-local java_jdtls_cache = require("util.java_jdtls_cache")
 local java_project_config = require("util.java_project_config")
 local java_project_init = require("util.java_project_init")
 local live_hunks = require("util.live_hunks")
 local frequent_roots = require("util.frequent_roots")
 local conflict_markers = require("util.conflict_markers")
 
--- Custom project tracking retained in util.frequent_roots, but disabled for now.
--- frequent_roots.setup()
 java_project_config.register_commands()
 java_project_init.register_commands()
-java_jdtls_cache.register_commands()
+require("util.java_workspace").register_commands()
 live_hunks.setup()
 conflict_markers.setup()
 
@@ -175,10 +171,6 @@ map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New file" })
 
 -- Projects
 map("n", "<leader>fp", "<cmd>Telescope projects<cr>", { desc = "Projects" })
--- Custom project picker retained, but inactive:
--- map("n", "<leader>fp", function()
---   frequent_roots.pick_projects()
--- end, { desc = "Projects" })
 map("n", "<leader>hm", function()
   frequent_roots.manage_manual()
 end, { desc = "Manual dirs" })
@@ -239,9 +231,6 @@ end, { desc = "Toggle diagnostics" })
 map("n", "<leader>uh", function()
   inlay_hints.toggle()
 end, { desc = "Toggle inlay hints" })
-map("n", "<leader>uJ", function()
-  java_field_usages.toggle()
-end, { desc = "Toggle Java field usages" })
 map("n", "<leader>uu", function()
   util.toggle_reference_underline()
 end, { desc = "Toggle reference underline" })
@@ -336,17 +325,9 @@ map("x", "<BS>", function()
 end, { desc = "Treesitter select next" })
 
 map("n", "<leader>XC", function()
-  local ok, java = pcall(require, "java")
-  if ok and java.build and java.build.clean_workspace then
-    java.build.clean_workspace()
-    vim.notify("Requested JDTLS workspace clean. Restart Neovim after it completes.", vim.log.levels.WARN)
-    return
-  end
-  vim.notify("nvim-java workspace clean API is unavailable", vim.log.levels.ERROR)
-end, { desc = "Clean JDTLS workspace" })
-map("n", "<leader>XJ", function()
-  java_jdtls_cache.clean_corrupt_workspaces()
-end, { desc = "Clean corrupt JDTLS workspaces" })
+  require("util.java_workspace").restart(true)
+end, { desc = "Clear current IntelliJ workspace cache" })
+map("n", "<leader>XJ", "<cmd>JavaCleanCorruptWorkspaces<cr>", { desc = "Clear current IntelliJ workspace cache" })
 
 -- Keep cursor centered when scrolling/jumping
 map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
@@ -360,8 +341,9 @@ map("n", "<C-d>", function()
   vim.api.nvim_win_set_cursor(0, { lnum + 1, col })
 end, { desc = "Duplicate line" })
 map("v", "<C-d>", function()
-  local start_line = vim.fn.line("'<")
-  local end_line = vim.fn.line("'>")
+  -- Duplicate whole lines in every visual mode, using the live selection.
+  local start_line = math.min(vim.fn.line("v"), vim.fn.line("."))
+  local end_line = math.max(vim.fn.line("v"), vim.fn.line("."))
   local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
   vim.api.nvim_buf_set_lines(0, end_line, end_line, false, lines)
   vim.api.nvim_win_set_cursor(0, { end_line + 1, 0 })
@@ -465,24 +447,22 @@ map("n", "<leader>gt", "<cmd>term go test ./...<cr>", { desc = "Go test all" })
 -- Split line at cursor (like reverse of J), stay in normal mode
 -- ga: text right of cursor goes to line above
 -- gA: text right of cursor goes to line below
-map("n", "ga", function()
+local function split_line(above)
   local line = vim.api.nvim_get_current_line()
   local col = vim.api.nvim_win_get_cursor(0)[2]
   local left = line:sub(1, col)
   local right = line:sub(col + 1)
   local lnum = vim.api.nvim_win_get_cursor(0)[1]
-  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
-  vim.api.nvim_win_set_cursor(0, { lnum, 0 })
+  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, above and { right, left } or { left, right })
+  vim.api.nvim_win_set_cursor(0, { above and lnum or (lnum + 1), 0 })
+end
+
+map("n", "ga", function()
+  split_line(true)
 end, { desc = "Split line up (text right of cursor goes up)" })
 
 map("n", "gA", function()
-  local line = vim.api.nvim_get_current_line()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
-  local left = line:sub(1, col)
-  local right = line:sub(col + 1)
-  local lnum = vim.api.nvim_win_get_cursor(0)[1]
-  vim.api.nvim_buf_set_lines(0, lnum - 1, lnum, false, { left, right })
-  vim.api.nvim_win_set_cursor(0, { lnum + 1, 0 })
+  split_line(false)
 end, { desc = "Split line down (text right of cursor goes down)" })
 
 -- Treesitter Text Objects (visual and operator-pending modes)

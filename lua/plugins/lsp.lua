@@ -19,11 +19,9 @@ return {
     },
     config = function()
       local map = require("util").map
-      local java_codelens = require("util.java_codelens")
-      local java_field_usages = require("util.java_field_usages")
       local inlay_hints = require("util.inlay_hints")
+      local lsp_rename = require("util.lsp_rename")
       local ruby = require("util.ruby")
-      java_field_usages.setup()
       inlay_hints.setup()
       local function resolve_pyright_cmd()
         local exepath = vim.fn.exepath("pyright-langserver")
@@ -70,49 +68,6 @@ return {
         vim.cmd.edit(vim.fn.fnameescape(log_path))
       end
 
-      local function rename_symbol()
-        local original_handler = vim.lsp.handlers["textDocument/rename"]
-        local restored = false
-
-        local function restore_handler()
-          if restored then
-            return
-          end
-
-          restored = true
-          if vim.lsp.handlers["textDocument/rename"] ~= original_handler then
-            vim.lsp.handlers["textDocument/rename"] = original_handler
-          end
-        end
-
-        vim.lsp.handlers["textDocument/rename"] = function(...)
-          local result = { pcall(original_handler, ...) }
-          local ok = table.remove(result, 1)
-          vim.schedule(function()
-            inlay_hints.refresh_loaded_buffers()
-            restore_handler()
-          end)
-          if not ok then
-            error(result[1])
-          end
-
-          return unpack(result)
-        end
-
-        vim.defer_fn(restore_handler, 120000)
-
-        local bufnr = vim.api.nvim_get_current_buf()
-        if vim.bo[bufnr].filetype == "java" then
-          vim.lsp.buf.rename(nil, {
-            name = "jdtls",
-            bufnr = bufnr,
-          })
-          return
-        end
-
-        vim.lsp.buf.rename()
-      end
-
       vim.diagnostic.config({
         virtual_text = false,
         signs = true,
@@ -138,6 +93,7 @@ return {
         group = require("util").augroup("lsp_attach"),
         callback = function(event)
           local client = vim.lsp.get_client_by_id(event.data.client_id)
+          lsp_rename.attach(client)
           local opts = { buffer = event.buf }
 
           -- Register LSP keymaps in which-key (buffer-local, only shown in LSP buffers)
@@ -155,6 +111,14 @@ return {
           map("n", "gd", "<cmd>Glance definitions<cr>", vim.tbl_extend("force", opts, { desc = "Goto Definitions" }))
           map("n", "gR", "<cmd>Glance references<cr>", vim.tbl_extend("force", opts, { desc = "Goto References" }))
           map("n", "gy", "<cmd>Glance type_definitions<cr>", vim.tbl_extend("force", opts, { desc = "Goto Type Definitions" }))
+          if client and client.name == "intellij" and vim.bo[event.buf].filetype == "java" then
+            map(
+              "n",
+              "gt",
+              "<cmd>IntellijLspTypeHierarchy subtypes<cr>",
+              vim.tbl_extend("force", opts, { desc = "Type Hierarchy (subtypes)" })
+            )
+          end
           map("n", "gI", "<cmd>Glance implementations<cr>", vim.tbl_extend("force", opts, { desc = "Goto Implementations" }))
 
           -- Native LSP
@@ -162,21 +126,13 @@ return {
           map("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover" }))
           map("n", "gK", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature help" }))
           -- <leader>ca is handled globally by actions-preview.nvim
-          map("n", "<leader>cr", rename_symbol, vim.tbl_extend("force", opts, { desc = "Rename" }))
+          map("n", "<leader>cr", lsp_rename.rename, vim.tbl_extend("force", opts, { desc = "Rename" }))
 
           -- Enable inlay hints if supported
           if client and client.server_capabilities.inlayHintProvider then
             vim.defer_fn(function()
               inlay_hints.apply_for_buffer(event.buf)
             end, 100)
-          end
-
-          if client and client.name == "jdtls" and client.server_capabilities.codeLensProvider then
-            java_codelens.attach(event.buf, client)
-          end
-
-          if client and client.name == "jdtls" then
-            java_field_usages.attach(event.buf, client)
           end
         end,
       })
@@ -196,9 +152,9 @@ return {
       vim.lsp.config("pyright", {
         cmd = pyright_cmd,
       })
-      vim.lsp.enable("pyright")
-
       vim.lsp.config("basedpyright", {})
+      local python_lsp = require("util.python_lsp")
+      python_lsp.select("pyright")
 
       vim.lsp.config("ruby_lsp", {
         cmd = function(dispatchers, config)
@@ -222,18 +178,8 @@ return {
       vim.lsp.enable("ruby_lsp")
 
       local function switch_python_lsp(server_name)
-        local stopped = {}
-        for _, client in ipairs(vim.lsp.get_clients()) do
-          if client.name == "pyright" or client.name == "basedpyright" then
-            stopped[client.name] = true
-            client:stop(true)
-          end
-        end
-
-        vim.defer_fn(function()
-          vim.lsp.enable(server_name)
-          vim.notify("Python LSP enabled: " .. server_name, vim.log.levels.INFO)
-        end, next(stopped) and 100 or 0)
+        python_lsp.select(server_name)
+        vim.notify("Python LSP enabled: " .. server_name, vim.log.levels.INFO)
       end
 
       vim.api.nvim_create_user_command("PythonLspUsePyright", function()
@@ -247,7 +193,7 @@ return {
       vim.lsp.config("gopls", {
         cmd = { "gopls" },
         filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_dir = require("lspconfig.util").root_pattern("go.work", "go.mod", ".git"),
+        -- Keep nvim-lspconfig's callback-based Go workspace/module root policy.
         settings = {
           gopls = {
             completeUnimported = true,
@@ -267,12 +213,10 @@ return {
               parameterNames = true,
               rangeVariableTypes = true,
             },
-            ui = {
-              annotation = {
-                bounds = true,
-                escape = true,
-                inline = true,
-              },
+            annotations = {
+              bounds = true,
+              escape = true,
+              inline = true,
             },
           },
         },

@@ -82,24 +82,8 @@ return {
 
             require("util.python_venv").apply_project_env(0)
 
-            -- Pyright/basedpyright read interpreter state on startup, so stop
-            -- active Python LSP clients and re-enable them after venv switches.
-            local servers = {}
-            for _, client in ipairs(vim.lsp.get_clients()) do
-              if client.name == "pyright" or client.name == "basedpyright" then
-                client:stop(true)
-                servers[client.name] = true
-              end
-            end
-
-            if next(servers) ~= nil then
-              vim.notify("Restarting Python LSP for selected venv", vim.log.levels.INFO)
-              vim.defer_fn(function()
-                for server_name in pairs(servers) do
-                  vim.lsp.enable(server_name)
-                end
-              end, 100)
-            end
+            -- Restart only the session's selected server with the new interpreter.
+            require("util.python_lsp").restart()
           end,
         },
       }

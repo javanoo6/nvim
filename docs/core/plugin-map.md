@@ -14,22 +14,22 @@ init.lua
 └── config/autocmds.lua  — highlight-on-yank, resize, close-with-q, etc.
 
 lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
-                           format, M.icons) used by keymaps + plugins
+                           pick, M.icons) used by keymaps + plugins
 ```
 
 ---
 
 ## Plugin categories
 
-### 1. Infrastructure (shared deps, always loaded)
+### 1. Infrastructure (shared dependencies)
 
-| Plugin                        | Role                               | File                   |
-|-------------------------------|------------------------------------|------------------------|
-| `folke/lazy.nvim`             | Plugin manager                     | config/lazy.lua        |
-| `nvim-lua/plenary.nvim`       | Lua utilities (async, path, …)     | dep of many            |
-| `MunifTanjim/nui.nvim`        | UI component library               | dep of neo-tree, noice |
-| `nvim-tree/nvim-web-devicons` | File-type icons                    | dep of many            |
-| `nvim-neotest/nvim-nio`       | Async I/O (dep of dap-ui, neotest) | dep                    |
+| Plugin                        | Role                            | File                   |
+|-------------------------------|---------------------------------|------------------------|
+| `folke/lazy.nvim`             | Plugin manager                  | config/lazy.lua        |
+| `nvim-lua/plenary.nvim`       | Lua utilities (async, path, …)  | dep of many            |
+| `MunifTanjim/nui.nvim`        | UI component library            | dep of neo-tree, noice |
+| `nvim-tree/nvim-web-devicons` | File-type icons                 | dep of many            |
+| `nvim-neotest/nvim-nio`       | Async I/O (Neotest/DAP helpers) | dep                    |
 
 ---
 
@@ -48,7 +48,7 @@ nvim-lspconfig  ─────────────────────�
   ├── cmp-nvim-lsp            ── exposes LSP completions to cmp
   ├── nvim-lsp-file-operations ── rename file → updates LSP imports
   │     └── neo-tree.nvim     ── (tree triggers file ops)
-  ├── fidget.nvim             ── LSP progress spinner (bottom-right)
+  ├── fidget.nvim             ── LSP progress support (polling disabled locally)
   ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
   ├── actions-preview.nvim    ── code action picker; shows diff previews for edit-backed actions (<leader>ca, <A-CR>)
   ├── aerial.nvim             ── temporary left code outline (<leader>co)
@@ -57,8 +57,8 @@ nvim-lspconfig  ─────────────────────�
 
 Pyright note:
 
-- `pyright` is configured through `vim.lsp.config("pyright", ...)` with a
-  resolved Mason absolute binary path.
+- `pyright` is configured through `vim.lsp.config("pyright", ...)` using
+  the first executable on PATH, then an absolute Mason fallback.
 - `basedpyright` is configured but not enabled by default. Use
   `:PythonLspUseBasedPyright` to switch the current session to BasedPyright, or
   `:PythonLspUsePyright` to switch back.
@@ -68,7 +68,7 @@ Pyright note:
 
 **LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`, `basedpyright`, `ts_ls`
 **Ruby LSP:** handled through RVM and the `ruby-lsp` gem, not Mason. Projects can use `.ruby-version`, `.ruby-gemset`, and `.env` `BUNDLE_GEMFILE`.
-**Java LSP:** handled separately by `nvim-java` (jdtls) — see Java section.
+**Java LSP:** handled separately by IntelliJ LSP — see Java section.
 
 **Key LSP keymaps** (set on LspAttach in lsp.lua):
 
@@ -154,12 +154,19 @@ nvim-treehopper  (motion.lua)
   └── nvim-treesitter              — `m` in v/o to pick treesitter node
 ```
 
-**Installed grammars:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline, python, query, ruby, sql,
+**Configured grammar installation targets:** bash, c, css, go, gomod, gowork, gotmpl, helm, html, java, javascript, json, lua, markdown, markdown_inline,
+python, query, ruby, sql,
 toml,
 tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 
+`markdown_inline` is explicit so startup requests it even when `markdown` is
+already installed. It supplies injected inline emphasis, code, and link captures.
+
 **Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
 moves to the next sibling node.
+
+Activation maps filetypes to parser languages, including shell/JSX/TSX aliases
+and Helm values. Markdown/YAML variants keep stock indentation.
 
 ---
 
@@ -169,7 +176,9 @@ moves to the next sibling node.
 conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
   — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
-  — :FormatterInfo reports formatter executable/jar availability
+  — directory formatting is asynchronous and sequential; :FormatDirCancel stops after the current request
+  — modified buffers are skipped; stale async results are rejected
+  — :FormatterInfo reports formatter dependencies, jar availability, and style path
   — directory formatting implementation lives in util/format_dir.lua and uses fd/fdfind with explicit skip patterns
   — auto-formatting enabled by default (disable with :FormatDisable)
   — format-on-save warns once per unchanged error state when skipped due to LSP errors
@@ -177,11 +186,11 @@ conform.nvim  (formatting.lua)
   Formatters by filetype:
     lua        → stylua
     go         → gofumpt → goimports-reviser → golines
-    python     → idea_formatter
+    python     → standalone IntelliJ formatter jar
     ruby       → rubocop_rvm
     json       → prettier
     javascript/typescript/javascriptreact/typescriptreact → prettier
-    yaml/markdown/java/xml/sh → idea_formatter
+    java/markdown/xml/yaml/sh → standalone IntelliJ formatter jar
   Note: Go skips format-on-save (done via LSP/manual); format-on-save skips files with LSP errors
 
 nvim-lint  (linting.lua)
@@ -323,7 +332,7 @@ aerial.lua
 git.lua
   ├── gitsigns.nvim       ── hunk signs, blame, diff, stage/reset
   │                          Keymaps: ]h/[h, <leader>Gh* (buffer-local)
-  ├── util/live_hunks.lua ── right-side live unstaged hunk view
+  ├── util/live_hunks.lua ── right-side live unstaged hunk view, Gitsigns data only
   │                          Keymaps: <leader>ug, commands: :LiveHunks*
   ├── diffview.nvim       ── full diff viewer + file history + 3-way merge view
   │                          Keymaps in keymaps.lua: <leader>GD/GF/GH/GL/Gm/GM
@@ -382,14 +391,14 @@ first use.
 ```
 dap.lua
   nvim-dap  ── core debugger
-    ├── nvim-dap-ui           ── debug UI panels  →  opens on debug start, closes on session exit,
+    ├── intellij-lsp.debug   ── default stack/locals/watches panel for all adapters
     │                            <leader>du toggle, <leader>dU keep open, <leader>de eval
-    │     └── nvim-nio        ── async I/O
+    │                            local lifecycle wrapper: util/debug_ui.lua
     ├── nvim-dap-virtual-text ── inline variable values (masks secrets)
     ├── nvim-dap-go           ── Go adapter (delve)  →  <leader>dgt, <leader>dgl
     └── nvim-dap-python       ── Python adapter
 
-Java DAP is provided by nvim-java (java_debug_adapter = true)
+Java DAP uses IntelliJ: util/java_launch.lua saves/builds, resolves launches, and starts the owning workspace adapter. nvim-dap-ui is disabled.
 ```
 
 **DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, C run-to-cursor, f focus current frame, g goto line without executing, i step-into, j down stack
@@ -403,10 +412,11 @@ Go test, gl debug last Go test
 ```
 neotest.lua
   neotest
-    ├── neotest-java    ── Maven/Gradle test runner
-    ├── neotest-golang  ── Go test runner
+    ├── neotest-java    ── discovery/XML readers; util/neotest_intellij owns compile/classpath/run/DAP
+    ├── neotest-golang  ── Go test runner; gotestsum v1.13.0 pinned by checked build hook
     └── neotest-python  ── Python test runner
-  util/neotest_scope.lua ── scoped discovery + file/package target helpers
+  util/neotest_scope.lua ── scoped discovery + file/package targets; preserves editor cwd
+  util/neotest_python.lua ── owning-project process/DAP cwd, independent of editor cwd
 ```
 
 **Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, td debug nearest, tp run package, tP debug package, tq run file tests sequentially,
@@ -417,30 +427,28 @@ tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, t
 
 ### 11. Java
 
-```
-nvim-java.lua
-  nvim-java  ── manages jdtls (Java LSP) entirely
-    ├── lombok             ── annotation processor support
-    ├── java_test          ── JUnit test runner integration
-    ├── java_debug_adapter ── DAP adapter for Java
-    └── spring_boot_tools  ── Spring Boot tooling
-  jdtls/org.eclipse.jdt.core.prefs
-    └── global Eclipse compiler prefs, including unused method-parameter warnings
-
-util/java_project_init.lua
-  :JavaInitProject [dir] / <leader>ji
-  └── local Maven/Gradle Java 21 starter templates
-
-util/java_project_config.lua
-  :JavaProjectUpdate / <leader>ju
-  └── sends JDTLS java.projectConfiguration.update for the current buffer
-
-lsp.lua excludes jdtls from mason-lspconfig (nvim-java owns it)
-vim.g.lspconfig_jdtls_enabled = false  (options.lua)
-JVM: -Xms2G / -Xmx8G  (prevents OOM on refactoring)
-```
-
-**Java keymaps** (`<leader>j*`): ji init project, ju update project, jr run main, jd debug main, jc stop, jl logs, ja attach remote
+- `lua/plugins/intellij-lsp.lua` loads the pinned JetBrains plugin at startup.
+- `lua/util/java_intellij.lua` merges cmp/file-operation capabilities, suppresses
+  built-in completion, disables JDTLS, and registers `JavaInfo`.
+- The obsolete `nvim-java` spec is removed. `neotest-java` supplies discovery/XML results;
+  `util/neotest_intellij.lua` owns test compile, classpaths, run, and debug.
+- `gt` opens type hierarchy subtypes in IntelliJ-attached Java buffers.
+- New empty Java files offer IntelliJ templates; `:IntellijLspFileTemplate`
+  opens the picker manually for an empty attached buffer.
+  Neo-tree `a` then `o` is integrated through `util/java_file_templates.lua`.
+- Java symbol rename targets `intellij`; lualine tracks that client.
+- `JavaInitProject` / `<leader>ji` still create Maven/Gradle projects.
+- App/test run and debug use IntelliJ's JVM adapter and panel. Remote attach
+  is unavailable.
+- Smart imports use diagnostic fixes; `util/java_workspace.lua` owns scoped
+  restart/index clearing, branch refresh, and reattachment. Field counters and
+  JDTLS code-lens glue are retired; spring-boot.nvim remains disabled.
+- `JavaProjectUpdate` / `<leader>ju` reloads the current IntelliJ workspace;
+  build-file buffers resolve their owning client, and mixed roots prefer Maven.
+- Completion suggestion/rename extensions use the repo's cmp and IntelliJ client.
+- Conform uses the standalone IntelliJ jar for Java formatting/import optimization/
+  rearrangement and Markdown/XML/Python/YAML/shell formatting.
+- [Current Java workflow](../java/java-workflow.md).
 
 ---
 
@@ -475,7 +483,9 @@ coding.lua
   ├── Comment.nvim    ── gc / gcc line comments, gb / gbc block comments
   │     └── nvim-ts-context-commentstring  ── context-aware commentstring (JSX, HTML embeds, etc.)
   ├── mini.surround   ── gsa/gsd/gsr/gsf add/delete/replace/find surrounding
-  ├── mini.ai         ── enhanced text objects (af, if, ac, ic, ao, io, t=tag)
+  ├── mini.ai         ── block/tag/quote/bracket objects + next/previous variants
+  │                      direct af/if/ac/ic belong to nvim-treesitter-textobjects
+  │                      f/c specs retain anf/alf/inf/ilf and class equivalents
   └── yanky.nvim      ── yank history ring (p/P yanky-aware, <C-p>/<C-n> cycle)
                           <C-CR>/<leader>Hy open Telescope yank history
                           <C-A-CR> opens built-in ring history
@@ -493,15 +503,16 @@ obsidian.lua
   obsidian.nvim  ── Obsidian vault integration (lazy, ft=markdown)
     └── plenary.nvim
     Uses Telescope as picker
-    Vault path: ~/Obsidian
+    Vault path: ~/Obsidian (resolved from the current user's home)
+    URLs: vim.ui.open (native macOS open / Linux opener)
     Keymaps: <leader>On new, <leader>Oo open, <leader>Of find,
              <leader>Os search, <leader>Ob backlinks, <leader>Ol links,
              <leader>Ot tags, <leader>Od dailies, <leader>Or rename,
              <leader>Op paste image, <leader>Oc toggle checkbox
 
-ftplugin/markdown.lua  ── per-buffer markdown settings
-  ── wrap, spell, linebreak, j/k for wrapped lines
-  ── <CR> follows [[wiki-links]] / #anchor links (unless obsidian loaded)
+after/ftplugin/markdown.lua  ── local markdown settings + filetype-change cleanup
+  ── wrap, spell, linebreak; j/k use the global wrapped-line maps
+  ── <CR> follows heading links; Obsidian replaces it inside its vault
 ```
 
 ---
@@ -513,15 +524,15 @@ sessions.lua
   auto-session  ── auto save/restore on open/close
                    auto-save also when launched with file args
                    stops LSP clients before non-startup restores
-                   <leader>Ss/Sr/Sd/Sf/Sa (Sa enables auto-save)
+                   <leader>Ss/Sr/Sd/Sf/Sa (Sa enables session auto-save)
 
 projects.lua
-  project.nvim  ── near-stock project detection + recent-project history
+  project.nvim  ── manual root detection + recent-project history
                    <leader>fp opens Telescope projects
 
 util/frequent_roots.lua
   frequent roots  ── custom helper for manually managed dirs
-                    custom project-tracking code retained but currently inactive
+                    legacy project/history JSON fields preserved as opaque data
                     <leader>hm manage manual dirs (add/remove/list)
 
 terminal.lua
@@ -575,7 +586,6 @@ keymaps.lua (diagnostic):
   <leader>ui  — open UiInspect report for current cursor position
   <leader>uT  — toggle Treesitter highlighting for current buffer
   <leader>uI  — toggle vim-illuminate references for current buffer
-  <leader>uJ  — toggle Java field usage counters
   <leader>uu  — toggle reference underline
   <leader>uH  — toggle reference background
   <leader>ci  — Java: import symbol at cursor; prompt if ambiguous
@@ -585,7 +595,10 @@ keymaps.lua (diagnostic):
 ---
 
 Quality gate:
-Makefile ── `make check` runs Mason `stylua --check` + `selene`
+Makefile ── `make check` runs Mason `stylua --check` + `selene` + isolated regressions
+tests/config_refinement.lua ── `make check-config`, installed plugins, no installs/LSPs
+tests/neotest_scope.lua ── cwd preservation, discovery across projects, session restore,
+async Python spec ownership; no test processes/LSPs
 selene.toml / vim.yml ── local Selene config and minimal Neovim std
 
 UI inspection:
@@ -691,7 +704,7 @@ lazy.nvim
 │
 ├── DEBUGGING
 │   └── nvim-dap
-│       ├── nvim-dap-ui → nvim-nio
+│       ├── intellij-lsp.debug → default UI
 │       ├── nvim-dap-virtual-text
 │       ├── nvim-dap-go
 │       └── nvim-dap-python
@@ -706,7 +719,7 @@ lazy.nvim
 │   └── leetcode.nvim → plenary + treesitter + telescope + nui + devicons
 │
 ├── LANGUAGE-SPECIFIC
-│   ├── nvim-java (Java / jdtls)
+│   ├── intellij-lsp.nvim (Java / IntelliJ server)
 │   └── gopher.nvim (Go extras)
 │
 ├── CODING HELPERS
@@ -742,14 +755,14 @@ lazy.nvim
 | `<leader>dg`      | debug go       | nvim-dap-go                                                                                            |
 | `<leader>e/E`     | explorer       | neo-tree                                                                                               |
 | `-` / `<leader>o` | oil            | oil.nvim                                                                                               |
-| `<leader>f`       | file/find      | telescope, yanky                                                                                       |
+| `<leader>f`       | file/find      | telescope, scratch                                                                                       |
 | `<leader>g`       | go             | gopls, gopher                                                                                          |
 | `<leader>gi`      | go insert      | gopher                                                                                                 |
 | `<leader>gs`      | go struct tags | gopher                                                                                                 |
 | `<leader>G`       | git            | gitsigns, diffview, lazygit                                                                            |
 | `<leader>Gh`      | hunks          | gitsigns                                                                                               |
 | `<leader>h`       | harpoon/dirs   | harpoon                                                                                                |
-| `<leader>j`       | java           | nvim-java, local Java helpers                                                                          |
+| `<leader>j`       | java           | IntelliJ LSP, local Java helpers                                                                       |
 | `<leader>L`       | leetcode       | leetcode.nvim                                                                                          |
 | `<leader>l`       | lsp            | nvim-lspconfig                                                                                         |
 | `<leader>O`       | obsidian       | obsidian.nvim                                                                                          |
@@ -759,7 +772,7 @@ lazy.nvim
 | `<leader>r`       | replace        | grug-far                                                                                               |
 | `<leader>s`       | search         | telescope, todo-comments                                                                               |
 | `<leader>S`       | sessions       | auto-session                                                                                           |
-| `<leader>t`       | test/theme     | neotest, themery                                                                                       |
+| `<leader>t`       | test/theme     | neotest (theme picker is <leader>ut)                                                                                       |
 | `<leader>u`       | ui             | toggles (spell, wrap, numbers, fold, diagnostics, inlay hints, reference style, live hunks, auto-save) |
 | `<leader>w`       | windows        | splits                                                                                                 |
 | `<leader>x`       | diagnostics    | trouble                                                                                                |
@@ -773,10 +786,10 @@ lazy.nvim
 
 ## Notes & known issues
 
-- **Java LSP:** `nvim-java` owns jdtls entirely. `lspconfig` + `mason-lspconfig` are explicitly told to skip it (`server_name ~= "jdtls"`,
-  `vim.g.lspconfig_jdtls_enabled = false`).
-- **Java code actions:** `<leader>ca` / `<A-CR>` still go through `actions-preview.nvim`, but many JDTLS refactors are command-only and cannot show a real diff
-  preview.
+- **Java LSP:** IntelliJ owns Java; JDTLS is disabled and
+  excluded from Mason auto-enable.
+- **Java code actions:** `<leader>ca` / `<A-CR>` still use `actions-preview.nvim`;
+  command-only actions may have no diff preview.
 - **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Writes normal file buffers even when LSP errors exist; Conform still skips
   format-on-save when errors exist.
 - **Reference style:** Underline is enabled by default, reference background is disabled by default. Toggle them with `<leader>uu` and `<leader>uH`.

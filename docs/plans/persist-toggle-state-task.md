@@ -1,5 +1,8 @@
 # Task: Persist Neovim Toggle State
 
+Status: planned only. `toggle_state.lua` and its commands do not exist; current
+UI toggles reset to configured defaults on restart unless a plugin persists them.
+
 ## Goal
 
 - [ ] Move durable runtime toggles into one local persisted state file.
@@ -43,7 +46,6 @@
     neotree_reveal_on_open = true,
     inlay_hints = true,
     reference_underline = true,
-    java_field_usages = false,
     reference_background = false,
     autoformat = true,
     autosave = true,
@@ -93,7 +95,6 @@
 - [ ] Apply plugin-backed toggles after plugin setup or on `LspAttach` where required:
     - [ ] `inline_diagnostics`
     - [ ] `inlay_hints`
-    - [ ] `java_field_usages`
     - [ ] `neotree_reveal_on_open`
     - [ ] `autoformat`
     - [ ] `autosave`
@@ -137,9 +138,6 @@
 
 - [ ] `<leader>uh` / `inlay_hints.toggle()`
     - Current default: `vim.g.inlay_hints_enabled=true`.
-
-- [ ] `<leader>uJ` / `java_field_usages.toggle()`
-- Current default: `vim.g.java_field_usages_enabled=true`.
 
 - [ ] `<leader>uu` / `util.toggle_reference_underline()`
     - Current default: `true`.
@@ -196,7 +194,7 @@
 - [ ] `<leader>Xq` / `quicker.toggle()`
     - Opens/closes editable quickfix UI.
 
-- [ ] `<leader>du` / `dapui.toggle()`
+- [ ] `<leader>du` / `util.debug_ui.toggle()`
     - Opens/closes DAP UI.
 
 - [ ] DAP runtime toggles:
@@ -242,7 +240,6 @@
 - [ ] Add optional `:ToggleStateReset!` to reset all values.
 - [ ] Replace `util.toggle(option)` implementation so persisted options go through `toggle_state`.
 - [ ] Replace `util.toggle_mouse()` with persisted `mouse`.
-- [ ] Replace `java_field_usages` global initialization with `toggle_state`.
 - [ ] Replace reference style state initialization with `toggle_state`.
 - [ ] Replace Neo-tree reveal-on-open initialization with `toggle_state`.
 - [ ] Replace `inlay_hints` global initialization with `toggle_state`.
@@ -258,8 +255,6 @@
 ## Acceptance Criteria
 
 - [ ] Starting Neovim without `toggles.json` uses defaults.
-- [ ] Toggling `<leader>uJ` persists Java field usage state.
-- [ ] Restarting Neovim restores the previous `<leader>uJ` value.
 - [ ] Starting Neovim with a partial `toggles.json` uses persisted values where present and defaults for missing keys.
 - [ ] Invalid `toggles.json` does not break startup.
 - [ ] Toggling `<leader>uh` persists inlay hint state.

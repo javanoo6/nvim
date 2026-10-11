@@ -64,7 +64,7 @@ opt.showmode = false
 opt.laststatus = 3
 opt.fillchars = { eob = " " }
 
--- Disable lspconfig jdtls (we use nvim-java)
+-- JDTLS is disabled; IntelliJ LSP owns Java on this branch.
 vim.g.lspconfig_jdtls_enabled = false
 
 -- Better search

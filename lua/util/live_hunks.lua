@@ -60,78 +60,20 @@ local function close_state(source_buf)
   cleanup_state(source_buf)
 end
 
-local function relpath(root, path)
-  if vim.fs.relpath then
-    return vim.fs.relpath(root, path) or path
-  end
-  local prefix = root:sub(-1) == "/" and root or (root .. "/")
-  if path:sub(1, #prefix) == prefix then
-    return path:sub(#prefix + 1)
-  end
-  return path
-end
-
-local function fallback_hunks(bufnr)
-  local file = vim.api.nvim_buf_get_name(bufnr)
-  local root = vim.fs.root(file, ".git")
-  if not root then
-    return nil
-  end
-
-  local output = vim.fn.systemlist({
-    "git",
-    "-C",
-    root,
-    "diff",
-    "--no-ext-diff",
-    "--unified=0",
-    "--",
-    relpath(root, file),
-  })
-  if vim.v.shell_error ~= 0 then
-    return nil
-  end
-
-  local hunks = {}
-  local current
-  for _, line in ipairs(output) do
-    local old_start, old_count, new_start, new_count = line:match("^@@ %-(%d+),?(%d*) %+(%d+),?(%d*) @@")
-    if old_start then
-      old_count = old_count == "" and "1" or old_count
-      new_count = new_count == "" and "1" or new_count
-      current = {
-        head = line,
-        lines = {},
-        removed = { start = tonumber(old_start), count = tonumber(old_count) },
-        added = { start = tonumber(new_start), count = tonumber(new_count) },
-      }
-      if current.added.count == 0 then
-        current.type = "delete"
-      elseif current.removed.count == 0 then
-        current.type = "add"
-      else
-        current.type = "change"
-      end
-      hunks[#hunks + 1] = current
-    elseif current and (line:sub(1, 1) == "+" or line:sub(1, 1) == "-") then
-      if not line:match("^%+%+%+") and not line:match("^%-%-%-") then
-        current.lines[#current.lines + 1] = line
-      end
-    end
-  end
-
-  return hunks
-end
-
 local function get_hunks(bufnr)
   local ok, gs = pcall(require, "gitsigns")
-  if ok and gs.get_hunks then
-    local ok_hunks, hunks = pcall(gs.get_hunks, bufnr)
-    if ok_hunks and hunks then
-      return hunks
-    end
+  if not ok or type(gs.get_hunks) ~= "function" then
+    return nil, "Gitsigns is unavailable"
   end
-  return fallback_hunks(bufnr) or {}
+
+  local ok_hunks, hunks = pcall(gs.get_hunks, bufnr)
+  if not ok_hunks then
+    return nil, "Gitsigns could not read hunks"
+  end
+  if not hunks then
+    return nil, "Gitsigns is not attached to this buffer"
+  end
+  return hunks
 end
 
 local function status_label(hunk)
@@ -151,7 +93,7 @@ local function hunk_row(hunk)
   return start
 end
 
-local function render_lines(source_buf, hunks)
+local function render_lines(source_buf, hunks, empty_message)
   local line_count = math.max(vim.api.nvim_buf_line_count(source_buf), 1)
   local lines = {}
   local highlights = {}
@@ -181,7 +123,7 @@ local function render_lines(source_buf, hunks)
   end
 
   if #hunks == 0 then
-    lines[1] = "No unstaged hunks"
+    lines[1] = empty_message or "No unstaged hunks"
   end
 
   return lines, highlights
@@ -232,8 +174,8 @@ function M.refresh(source_buf)
     return
   end
 
-  local hunks = get_hunks(source_buf)
-  local lines, highlights = render_lines(source_buf, hunks)
+  local hunks, message = get_hunks(source_buf)
+  local lines, highlights = render_lines(source_buf, hunks or {}, message)
 
   vim.bo[state.view_buf].modifiable = true
   vim.api.nvim_buf_set_lines(state.view_buf, 0, -1, false, lines)

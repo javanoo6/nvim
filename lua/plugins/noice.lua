@@ -27,22 +27,5 @@ return {
       inc_rename = false,
       lsp_doc_border = true,
     },
-    routes = {
-      -- Suppress inlay hint errors
-      {
-        filter = {
-          event = "msg_show",
-          find = "inlayhint.*Invalid.*col",
-        },
-        opts = { skip = true },
-      },
-      {
-        filter = {
-          event = "notify",
-          find = "inlayhint",
-        },
-        opts = { skip = true },
-      },
-    },
   },
 }

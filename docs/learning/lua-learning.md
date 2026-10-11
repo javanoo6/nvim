@@ -370,7 +370,8 @@ Always ask:
 
 Many important settings are functions, not plain values.
 
-Example:
+Illustrative error-based guard (format-on-save uses this policy; buffer
+auto-save itself does not skip LSP errors):
 
 ```lua
 condition = function(buf)
@@ -539,12 +540,9 @@ After triggering a mapping or plugin action:
 :messages
 ```
 
-This shows output from:
-
-- `print()`
-- `vim.notify()`
-- runtime errors
-- command output
+Use `:messages` for printed output, runtime errors, and command messages.
+This config routes `vim.notify()` through nvim-notify; use `:Notifications` for
+notification history.
 
 #### `:checkhealth`
 
@@ -657,7 +655,7 @@ Goal:
 Read:
 
 - [lua/plugins/lsp.lua](/home/konkov/.config/nvim/lua/plugins/lsp.lua:1)
-- [lua/plugins/nvim-java.lua](/home/konkov/.config/nvim/lua/plugins/nvim-java.lua:1)
+- [lua/plugins/intellij-lsp.lua](/home/konkov/.config/nvim/lua/plugins/intellij-lsp.lua:1)
 
 Goal:
 
@@ -701,7 +699,7 @@ Examples:
 
 - Java runner/debug support:
   [lua/plugins/lsp.lua](/home/konkov/.config/nvim/lua/plugins/lsp.lua:1),
-  [lua/util/java_runner.lua](/home/konkov/.config/nvim/lua/util/java_runner.lua:1),
+  [lua/util/java_launch.lua](/home/konkov/.config/nvim/lua/util/java_launch.lua:1),
   [lua/util/java_debug.lua](/home/konkov/.config/nvim/lua/util/java_debug.lua:1)
 - Python venv support:
   [lua/plugins/python-venv.lua](/home/konkov/.config/nvim/lua/plugins/python-venv.lua:1),

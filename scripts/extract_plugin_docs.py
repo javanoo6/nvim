@@ -218,7 +218,7 @@ Full README available at: `{readme_path}`
 PLUGINS = [
     # Phase 1: Core Infrastructure
     ("okuuva", "auto-save.nvim"),
-    ("nvim-java", "nvim-java"),
+    ("JetBrains", "intellij-lsp.nvim"),
     
     # Phase 2: LSP Core
     ("neovim", "nvim-lspconfig"),

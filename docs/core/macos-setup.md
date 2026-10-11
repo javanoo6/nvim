@@ -1,6 +1,7 @@
 # macOS setup
 
-Validated on Apple Silicon with Neovim 0.12.5 and Homebrew JDK 21.
+Setup for Homebrew on Apple Silicon or Intel macOS. Use Neovim 0.12.0 or later
+and tree-sitter-cli 0.26.1 or later for the configured Treesitter revision.
 
 ## Install
 
@@ -12,7 +13,6 @@ cd ~/.config/nvim
 git submodule update --init intellij-code-formatter
 ```
 
-macOS support is included in `master` and the `0.1.0` release.
 Do not overwrite an existing `~/.config/nvim`; move it aside before cloning.
 The formatter's nested IntelliJ source submodule is not required to build the CLI.
 
@@ -30,12 +30,14 @@ The macOS clipboard uses `pbcopy` and `pbpaste`.
 
 Launch `nvim` and allow initial downloads to finish. Run `:Lazy restore` to use
 the committed plugin versions, then `:MasonToolsInstall` for formatters, linters
-and debuggers. Restart Neovim after the first installation; the configuration
-requires the Java Treesitter parser while loading key mappings.
+and debuggers. Restart Neovim after the first installation. Missing parsers are
+skipped quietly while they install; keymap registration does not require a
+loaded Java parser.
 
 Python debugging uses Mason's isolated `debugpy` environment when installed,
 with the existing `python3` fallback. Language servers are installed by
-Mason LSP configuration; Java tooling is installed by nvim-java.
+Mason LSP configuration; Java uses IntelliJ LSP and the local run/test bridges.
+Go tests use gotestsum v1.13.0; its build requires Go 1.24.0 or later.
 
 ## Build the formatter
 
@@ -54,8 +56,7 @@ See the formatter README for daemon and one-shot usage.
 
 - `:checkhealth`, `:JavaInfo`, and `:FormatterInfo` show integration status.
 - Run `:NeotestJava setup` once to install the JUnit runner.
-- Obsidian's vault path in `lua/plugins/obsidian.lua` is still personal to the
-  original Linux machine; point it at your actual vault before using it.
+- Obsidian resolves `~/Obsidian` from your current home; create that vault or
+  change the workspace in `lua/plugins/obsidian.lua`.
 - Ruby integration still expects RVM Ruby 3.2.5 and the gems described in
-  [prerequisites](prepequisites.md). It is not installed by the commands above.
-- Intel macOS and Linux were not retested for this change.
+  [prerequisites](prerequisites.md). It is not installed by the commands above.

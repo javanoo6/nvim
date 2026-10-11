@@ -131,21 +131,3 @@ git status --short > ../repo-status.txt
 ```
 
 Then make a fresh clone and apply the saved patches manually.
-
-## What Happened In The QBRD-5157 Case
-
-LazyGit crashed because:
-
-```text
-.git/objects/ee/64d19668813b7b35f8a113ae3b15484ef7afd3
-```
-
-was an empty file, while:
-
-```text
-refs/heads/QBRD-5157_quota_dto
-```
-
-pointed to that object. After moving all empty object files aside, a normal fetch
-restored the commit object. A second `--refetch` was needed because `HEAD` then
-referenced a missing tree object that Git had assumed was already local.

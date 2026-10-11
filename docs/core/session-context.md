@@ -85,6 +85,27 @@ Update this file when:
   counted forms use real-line movement. This keeps `5j`, `10k`, etc. sane.
 - `<C-s>` saves in insert/normal/visual/select modes.
 - `<C-d>` duplicates line or selection instead of default half-page scroll.
+  Visual duplication copies whole selected lines in character, line, and block
+  modes, using the live anchor/cursor so old selection marks cannot affect it.
+- `ga` splits text at and after the cursor onto a line above the remaining
+  prefix; `gA` puts it below. The cursor follows the moved text.
+- Markdown settings live in `after/ftplugin/markdown.lua` so they run after the
+  built-in ftplugin and append its undo script. Wrap/spell settings stay local;
+  changing filetype restores defaults. `<CR>` follows heading links outside
+  Obsidian vaults; Obsidian replaces that fallback on vault-buffer entry.
+- Obsidian's personal workspace resolves `~/Obsidian` from the current user's
+  home. External links use `vim.ui.open()` for the native platform opener;
+  unavailable handlers or launch failures produce a notification.
+- Direct `af/if/ac/ic` mappings and text-object navigation belong to
+  `nvim-treesitter-textobjects`. mini.ai supplies block/tag/quote/bracket objects
+  and next/previous variants (`anf/alf`, `inf/ilf`, and their class equivalents).
+  Its function/class specs are retained for those variants.
+- Treesitter activation resolves FileType aliases to parser languages, including
+  `sh`, JSX, TSX, and `yaml.helm-values`. Markdown/YAML parser languages keep
+  stock indentation; missing/unsupported parsers are skipped quietly.
+- Both `markdown` and `markdown_inline` are explicit installation targets.
+  Inline emphasis, code, and link captures use the latter through Markdown
+  injections; startup also requests it when only the block parser is installed.
 - `J` is disabled to avoid accidental joins from `<S-j>`.
 - `<leader>bd` deletes the current buffer while preserving the current window
   layout. This intentionally avoids raw `:bdelete` behavior, which can collapse
@@ -120,6 +141,21 @@ Update this file when:
 - `project.nvim` runs in manual mode. Opening files, including Python files in
   nested monorepo packages, must not auto-`cd` the session; use explicit root
   changes instead.
+  Its explicit detection keeps upstream LSP-first ordering and stock markers;
+  it does not use `util.root_patterns`. The shared statusline/navigation helper
+  remains marker-first and honors explicit cwd narrowing. It resolves roots
+  without a cache; the policy is in `docs/core/root-detection-policy.md`.
+- `util.frequent_roots` now manages manual directories only (`<leader>hm`).
+  Inactive project tracking/picking and unused exports were removed. Legacy
+  `pinned` entries still load as manual dirs; project/history and unknown JSON
+  fields are preserved without validation or rewriting during manual saves.
+- Helm detection is centralized in `util.helm_filetype`: only files in a chart
+  containing `Chart.yaml` or `Chart.yml` receive Helm-specific filetypes.
+  Templates use `helm`; chart-root metadata/values use `yaml.helm-values`.
+  Nested charts use their nearest owning chart, and unrelated templates/values
+  stay with ordinary detection.
+- Mergetool startup and diff-buffer hooks share one augroup ID so creating the
+  latter cannot clear the former's `VimEnter` mapping setup.
 - `auto-session` treats non-startup restores as LSP workspace boundaries:
   `lsp_stop_on_restore = true` stops attached LSP clients before restoring a
   different session, including Git branch auto-restores. Restored buffers then
@@ -131,6 +167,22 @@ Update this file when:
   This keeps `sessionoptions+=localoptions` enabled while avoiding restore
   failures from stale or plugin-generated session state that Neovim does not
   recognize.
+  [lua/util/session_scrub.lua](/home/konkov/.config/nvim/lua/util/session_scrub.lua:1)
+  cleans only the exact managed file: `SourcePre` supplies the restore path,
+  and `v:this_session` supplies the path after `:mksession`. The source hook is
+  installed before auto-session setup so it also covers startup restoration.
+  Old sessions are repaired when next restored; there is no eager migration or
+  repeated directory scan. Clean files are read but not rewritten. Files outside
+  auto-session's configured root are excluded. The installed restore hook passes
+  a display name, so the source event avoids guessing escaped/branch filenames.
+  [tests/session_scrub.lua](/home/konkov/.config/nvim/tests/session_scrub.lua:1)
+  exercises actual auto-session save/restore with disposable files, invalid
+  options/orphaned restores, valid paired restores, special names, failed writes,
+  and zero reads of unrelated sessions.
+  Local synthetic profiling (10 runs, 1,000 lines per file) measured mean cleanup
+  costs for 10/100/500 saved sessions at 2.410/22.155/110.160 ms before and
+  0.284/0.282/0.234 ms after. These are scrubber costs on warm local storage,
+  not complete startup/restore timings. Validation did not rewrite user sessions.
 - Neo-tree `Y` copies the selected absolute path to the `+` clipboard register
   when available and falls back to the unnamed register with a warning when the
   system clipboard is unavailable.
@@ -148,9 +200,24 @@ Update this file when:
 - When a Python venv is activated, `${project_root}/.env` is loaded into
   Neovim's process environment if present. New terminals, neotest runs, and
   other future jobs spawned by Neovim inherit those variables.
+  The loader appends `.env` PATH directories after the inherited PATH to keep
+  the selected venv and system tools available; only PATH supports `$PATH` /
+  `${PATH}` expansion. On the next activation it removes those added directories
+  and restores previous values of other loaded variables unless changed since.
+  After cleanup it explicitly puts the selected interpreter's bin directory
+  first, including when switching to an env previously added by `.env`.
+  Neotest guards Go discovery by filename and executable availability before
+  invoking upstream `is_test_file`, so Python tests do not require Go.
 - Plugin management moved to `<leader>P`; `<leader>Pl` opens Lazy.
 - Lazy.nvim rocks support is disabled because no configured plugin requires
   luarocks/hererocks.
+- Lazy bootstrap checks both Git clone exit status and process-launch failures.
+  Failure aborts initialization before adding the failed path or loading Lazy,
+  with the destination, original Git error, and a retry hint. It raises a startup
+  error without waiting for a keypress or forcibly exiting Neovim. Existing
+  installations still skip cloning. `tests/lazy_bootstrap.lua` checks failure,
+  missing Git, successful installation, and the installed-manager path using
+  disposable data directories and a fake Git executable.
 - Python linting uses `nvim-lint` with `ruff`, but local lint startup now
   skips any linter whose executable is missing instead of surfacing `ENOENT`
   when opening a buffer before Mason or a venv provides that tool.
@@ -177,13 +244,25 @@ Update this file when:
 - Python LSP defaults to Pyright. BasedPyright is installed/configured but
   opt-in through `:PythonLspUseBasedPyright`; use `:PythonLspUsePyright` to
   switch back without changing config files.
-- Python formatting currently uses the repo-local IntelliJ formatter bridge
-  (`idea_formatter`) rather than `black`; Mason installs `ruff` for Python
-  linting but no longer installs `black`.
+  `util.python_lsp` owns session-wide selection: switching disables the other
+  server, and venv restarts reactivate only the selected server. A generation
+  guard prevents delayed restarts from undoing a newer selection.
+- gopls inherits nvim-lspconfig's callback-based root resolver, including Go
+  workspace/module/Git and dependency-source handling, rather than a legacy
+  return-value-only `root_pattern()` override.
+- Python formatting uses the standalone IntelliJ jar by user request, as do
+  Markdown, XML, and YAML (`.yaml` / `.yml`). Ruff remains configured for linting.
 - `FormatDir` uses `fd`/`fdfind` with explicit directory excludes instead of a
   manual Lua recursive walker. It includes hidden files, respects ignore files
   such as `.fdignore`, and filters candidates through Conform's configured
   filetypes.
+- Directory discovery runs asynchronously, followed by one asynchronous Conform
+  request at a time. `:FormatDirCancel` stops after the active request completes;
+  overlapping directory runs are rejected. Modified buffers are skipped, and
+  Conform rejects stale results if a buffer changes during its request. Successful
+  edits are written with format-on-save suppressed; failed writes retain the
+  modified buffer. Unchanged files count as skipped. Tests use disposable files
+  and real subprocesses.
 - `nvim-lint` still runs immediately after writes, but `BufReadPost` linting is
   debounced briefly so opening many files does not start expensive linters all at
   once.
@@ -200,21 +279,50 @@ Update this file when:
   line count and uses non-strict line reads. This prevents completion indexing
   from surfacing `Index out of bounds` errors when a buffer changes while the
   source is indexing.
+- LuaLS workspace settings live in `.luarc.json`, with Neovim-side defaults in
+  `lua/plugins/lsp.lua`: LuaJIT, the `vim` global, runtime libraries, and disabled
+  third-party workspace prompts. External projects with their own LuaLS workspace
+  configuration retain it.
 - Local config quality checks are exposed through `make check`, which runs
-  Mason-managed `stylua --check` and `selene` against `init.lua`, `lua/`, and
-  `ftplugin/`. Selene uses the repo-local [vim.yml](/home/konkov/.config/nvim/vim.yml:1)
+  Mason-managed `stylua --check` and `selene` against `init.lua`, `lua/`,
+  `after/`, and `tests/`, then `make check-config` for isolated regressions.
+  The regression runner uses installed plugins/parsers without installing tools
+  or launching LSPs. Selene uses the repo-local [vim.yml](/home/konkov/.config/nvim/vim.yml:1)
   standard library so the Neovim `vim` global is accepted.
+- [docs/core/compatibility-patches.md](/home/konkov/.config/nvim/docs/core/compatibility-patches.md:1)
+  records internal patches, verified plugin revisions, checks, removal criteria,
+  and live workflow limits. `make check-compatibility` checks installed contracts
+  and patch behavior; it is also included in `make check-config` / `make check`.
+  A changed plugin revision requires reviewing/updating the registry, and tracked
+  Lua edits inside the covered plugin checkouts must be documented rather than
+  silently treated as upstream code. These checks launch no language servers,
+  debuggers, or test processes.
+- Go Neotest uses `gotestsum v1.13.0`, pinned in the neotest-golang build hook
+  independently of `lazy-lock.json`. Its upstream
+  [go.mod](https://github.com/gotestyourself/gotestsum/blob/v1.13.0/go.mod)
+  requires Go 1.24.0; local validation used Go 1.25.6. Installation retains Go's
+  normal GOBIN/GOPATH destination. Missing Go, launch/wait errors, and nonzero
+  exits raise a Lazy build error with the pinned target, process output when
+  available, and `:Lazy build neotest-golang` retry guidance. Offline checks live
+  in `tests/gotestsum_build.lua`; disposable fresh-install checks verified the
+  adapter's default JSON/verbose/race flags with passing and failing Go tests.
 - Neotest has a repo-local failed-test rerun helper at
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached
   results, limited to the active test scope/project root.
-- DAP UI opens automatically when a debug session starts and closes when the
-  session terminates or exits by default. `<leader>dU` toggles keeping DAP UI
-  open after session exit for final-state inspection. `<leader>df` reselects a
-  stopped session, reopens DAP UI, and focuses the current debug frame after
-  switching buffers. DAP source jumps use a local switch-buffer function that
-  avoids replacing DAP UI panes, so stepping into Java `jdt://` decompiled
-  sources keeps the debug layout intact.
+- IntelliJ's debug panel is the default UI for all `nvim-dap` adapters;
+  `nvim-dap-ui` is disabled. [lua/util/debug_ui.lua](/home/konkov/.config/nvim/lua/util/debug_ui.lua:1)
+  installs its listeners separately from upstream run/debug defaults, preserving
+  our global mappings. The panel opens on stops and closes on exit by default.
+  `<leader>du` toggles it; `<leader>dU` keeps it open on exit; `<leader>de`
+  evaluates the source expression/selection; `<leader>df` opens the panel and
+  focuses the current frame. Panel keys: Enter/Tab expand, `e` evaluate, `w`
+  watch, `dd` remove watch, `c/n/i/o` continue/step, `q` close.
+- The panel displays the stopped thread's stack and first scope, with no thread
+  or scope selector. Upstream clears locals/frame values on termination, even
+  when keep-open is enabled; watch expressions survive. DAP REPL and virtual
+  text (including secret masking) remain configured. Source jumps avoid both
+  IntelliJ panels and the REPL.
 - Neotest output rendering is guarded by
   [lua/util/neotest_output_guard.lua](/home/konkov/.config/nvim/lua/util/neotest_output_guard.lua:1).
   Upstream `output` and `output_panel` read each result output file fully before
@@ -222,6 +330,9 @@ Update this file when:
   test output. The local guard caps rendered output to
   `vim.g.neotest_output_max_bytes` or 2 MiB by default, shows the beginning and
   end, and keeps the full temp-file path visible.
+  Its synchronous libuv reads use value-first return ordering and close the
+  descriptor after a failed read. The compatibility suite exercises both output
+  consumers with real large/small files and an injected read failure.
 - `neotest-java` file detection is locally overridden at
   [lua/neotest-java/core/file_checker.lua](/home/konkov/.config/nvim/lua/neotest-java/core/file_checker.lua:1)
   so valid `src/test/java/*Test.java` files are not rejected when the adapter was
@@ -235,21 +346,8 @@ Update this file when:
   [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)
   so a single executed invocation of a parameterized JUnit method maps back to
   the Neotest method node instead of leaving a stale failed summary status.
-- `neotest-java` DAP spec building is locally wrapped at
-  [lua/neotest-java/core/spec_builder/init.lua](/home/konkov/.config/nvim/lua/neotest-java/core/spec_builder/init.lua:1)
-  to normalize Java attach configs. The Java debug adapter used here requires
-  `hostName` for attach; without it, attach attempts can show as `null:<port>`.
-  The wrapper removes upstream's guessed `projectName` because it can differ
-  from JDTLS' actual project name in multi-module/demo repos and make variable
-  rendering fail with `Project <name> cannot be found`.
-- `neotest-java` Java binary resolution is locally overridden at
-  [lua/neotest-java/command/binaries.lua](/home/konkov/.config/nvim/lua/neotest-java/command/binaries.lua:1)
-  so a missing JDTLS `org.eclipse.jdt.ls.core.vm.location` response falls back
-  to `NVIM_JAVA_HOME`, `JAVA_HOME`, the resolved `java` executable, or the local
-  Java 21 default instead of crashing in `Path(nil)`.
-- Formatter dependency status is exposed as `:FormatterInfo`. The IntelliJ
-  formatter bridge now skips itself when `java` or the formatter jar is missing
-  instead of failing late during format.
+- `:FormatterInfo` reports active formatter dependencies, including the standalone
+  jar, Java executable, and explicit EditorConfig path.
 - Directory formatting commands are registered from
   [lua/util/format_dir.lua](/home/konkov/.config/nvim/lua/util/format_dir.lua:1)
   so [lua/plugins/formatting.lua](/home/konkov/.config/nvim/lua/plugins/formatting.lua:1)
@@ -259,27 +357,28 @@ Update this file when:
 - Buffer auto-save writes normal file buffers even when LSP errors exist; in
   that case the write proceeds without format-on-save because Conform skips
   formatting on LSP errors.
-- Format-on-save uses a `10000ms` timeout for filetypes routed through the
-  IntelliJ formatter bridge and Ruby/RuboCop, and `500ms` for other
-  auto-formatted filetypes.
-- Pyright is configured locally through `vim.lsp.config("pyright", ...)` with
-  a resolved Mason absolute binary path, because current `mason-lspconfig`
+- Format-on-save uses `10000ms` for standalone IntelliJ formatter routes and
+  Ruby/RuboCop, and `500ms` for other auto-formatted filetypes.
+- Pyright is configured locally through `vim.lsp.config("pyright", ...)` using
+  the first executable on PATH, then an absolute Mason fallback, because `mason-lspconfig`
   auto-enable behavior can otherwise bypass repo-local `cmd` customization.
   `:PyrightInfo` shows the exact command the current session will use.
 - `<leader>ll` opens `vim.lsp.log.get_filename()` directly instead of calling
   `:LspLog`, because this Neovim runtime does not provide a built-in `:LspLog`
   command.
-- Remaining `:checkhealth` warnings after the audit are optional: Mason reports
-  missing ecosystem runtimes for unconfigured PHP/Julia/luarocks workflows, and
-  which-key reports optional `mini.icons` is absent while this config uses
-  `nvim-web-devicons`.
+- Health checks can report unused PHP/Julia/luarocks runtimes or optional
+  `mini.icons`; those integrations are not required by this config, which uses
+  `nvim-web-devicons`. Check other warnings against the configured workflows.
 - Lualine diagnostic and diff symbols intentionally use restrained ASCII labels
   (`E:`, `W:`, `I:`, `H:`, `+`, `~`, `-`) so they remain visible without
   depending on icon fonts or a specific theme.
-- Lualine Java status intentionally stays a minimal colored `●`: green for
-  attached/idle JDTLS, yellow when Neovim reports recent LSP progress, red when
-  unavailable. The yellow state is based on `vim.lsp.status()`, so it is a
-  global LSP progress signal rather than a JDTLS-only busy check.
+- Lualine Java status intentionally stays a minimal colored `●` in Java buffers:
+  red when the buffer has no attached IntelliJ client or that client is stopped;
+  yellow while its initial import is incomplete or its status is busy;
+  green when it is attached, ready, and idle. Readiness and busy checks use
+  `intellij-lsp.progress.is_ready(client.id)` and
+  `intellij-lsp.status.is_idle(client.id)` for that buffer's IntelliJ client.
+  Other language clients do not affect the Java indicator.
 - `nvim-notify` background is derived from the active float/normal highlights
   via the local `NotifyBackground` refresh hook instead of a TokyoNight-specific
   hex color, so fade animations and popup contrast survive theme switches.
@@ -300,84 +399,118 @@ Update this file when:
 
 ## Java Stack: Local Solutions
 
-- Java is not “stock lspconfig”; it is handled by `nvim-java` plus local helper
-  code in `lua/util/java_*`.
-- Java home resolution prefers `NVIM_JAVA_HOME`, then `JAVA_HOME`, then
-  `/usr/lib/jvm/java-21-openjdk-amd64`.
-- The local nvim-java JDTLS JVM-args patch is installed before
-  `require("java").setup()` because auto-session can restore Java buffers during
-  `VimEnter` and trigger JDTLS startup from inside nvim-java setup.
-- JDTLS is package-managed by `nvim-java`; the previous hardcoded local JDTLS
-  repository path/version override was removed after upstream support landed.
-- `spring-boot.nvim` stays attached on Java buffers. A local patch wraps its
-  `workspace/executeClientCommand` bridge so background Spring Boot command
-  failures do not surface as `spring-boot: -32603: Internal error.` during Java
-  rename/refactor flows.
-- `nvim-java` client lookup is patched locally so Java run/debug/test/profile
-  flows prefer the `jdtls` client attached to the current buffer instead of the
-  first global `jdtls` client. Without this, opening multiple Java workspaces
-  can make `<leader>jr` and related flows operate on the wrong project.
-- For dual-build roots that contain both `pom.xml` and Gradle build files, the
-  local JDTLS config forces Maven import on and Gradle import off for that
-  workspace, and injects those import settings into
-  `initializationOptions.settings` before JDTLS startup. This makes Maven the
-  source of truth for main-class discovery and related Java run/debug flows in
-  mixed-build projects like Spring Petclinic.
-- `<leader>jr` is wrapped locally to wait briefly for `jdtls` attachment before
-  invoking the Java runner. This avoids a silent no-op when the key is pressed
-  immediately after opening a Java buffer in a fresh project.
-- `<leader>jl` toggles the Java runner log window without stopping the running
-  app. `<leader>jc` stops the app itself.
-- `:JavaInitProject [dir]` / `<leader>ji` creates a small Java 21 Maven or
-  Gradle project from local templates, opens `Main.java`, and changes Neovim's
-  cwd to the new project root. It intentionally does not shell out to
-  `mvn archetype` or `gradle init`.
-- Java patch/workflow details live in the Java deep-dive docs listed below.
-- Java project initialization workflow and naming guidance is documented in
-  [docs/java/java-project-init.md](/home/konkov/.config/nvim/docs/java/java-project-init.md:1).
-- Scratch-file behavior is customized for Java projects: the scratch flow prefers
-  project-local `Scratch.java` under source roots so JDTLS resolves deps.
-- The planned IntelliJ-like Java scratch work is tracked in
-  [docs/java/java-scratch-roadmap.md](/home/konkov/.config/nvim/docs/java/java-scratch-roadmap.md:1).
-- Planned Java lint work is tracked in
-  [docs/java/java-inspection-lint-roadmap.md](/home/konkov/.config/nvim/docs/java/java-inspection-lint-roadmap.md:1).
-- Planned IntelliJ Community inspection-engine research is tracked in
-  [docs/java/java-intellij-inspection-engine-roadmap.md](/home/konkov/.config/nvim/docs/java/java-intellij-inspection-engine-roadmap.md:1).
-- `:ScratchInfo` reports the global scratch directory, Java project root, and
-  resolved Java `Scratch.java` path for the current context.
-- JDTLS is configured to download Maven dependency sources when available, so
-  external libraries should open as real source before falling back to
-  decompiled `jdt://...` class content.
-- JDTLS loads global Eclipse compiler preferences from
-  [jdtls/org.eclipse.jdt.core.prefs](/home/konkov/.config/nvim/jdtls/org.eclipse.jdt.core.prefs:1)
-  through `java.settings.url`. This enables unused method-parameter diagnostics
-  while leaving abstract implementations and concrete overrides quiet. A
-  project-local `.settings/org.eclipse.jdt.core.prefs` can override these
-  preferences.
-- `:JavaProjectUpdate` / `<leader>ju` sends JDTLS
-  `java.projectConfiguration.update` for the current Java buffer. Use it after
-  changing Maven dependencies in `pom.xml` before reaching for the heavier
-  workspace clean path.
-- JDTLS runs with full-document sync (`allow_incremental_sync = false`) to avoid
-  stale in-memory source and bogus parse diagnostics around otherwise valid Java
-  comments.
-- There is an explicit workspace clean command exposed as `<leader>XC`.
-- `:JavaCleanCorruptWorkspaces` scans the Neovim LSP log for Eclipse/JDTLS
-  workspace corruption signatures, then quarantines matching
-  `stdpath("cache")/jdtls/workspace/proj_*` directories. Use
-  `:JavaCleanCorruptWorkspaces!` to delete instead of rename, or `<leader>XJ`
-  for the quarantine path. Active JDTLS workspaces are skipped.
-- Java completion already applies JDTLS `additionalTextEdits`, so accepting a
-  class completion item can add the matching import. For pasted unresolved class
-  names, `<leader>ci` imports the symbol under the cursor, auto-applying a
-  single JDTLS `Import '<symbol>' (...)` quickfix or prompting when multiple
-  candidates exist. `<leader>cI` walks current-buffer Java diagnostics,
-  auto-applies unambiguous imports, and prompts only for ambiguous import
-  candidates. Bulk organize-import cleanup remains delegated to the IntelliJ
-  formatter bridge, not an LSP keymap.
+- IntelliJ LSP owns Java; obsolete `nvim-java` / JDTLS runtime helpers and
+  plugin spec have been removed. `spring-boot.nvim` is not configured.
+  Neotest uses `util.neotest_intellij` with
+  neotest-java's discovery/XML result readers; no JDTLS execution path or backend selector.
+- Plugin revision: `9cfad18005470e4187090013e08f92ec9e437219`; server bundle:
+  `263.6379.0`. The user explicitly accepted its EAP EULA on 2026-10-10.
+- `gt` opens IntelliJ type hierarchy (subtypes) in attached Java buffers. It is
+  buffer-local; other filetypes keep Vim's next-tab behavior.
+- Current Java workflows and their limitations are documented in
+  [docs/java/java-workflow.md](/home/konkov/.config/nvim/docs/java/java-workflow.md:1).
+- `lua/util/java_intellij.lua` wraps the pinned plugin's client factory to merge
+  cmp/file-operation capabilities and disable built-in completion after attach.
+  Upstream `autotrigger=false` alone still enables built-in completion.
+- Java inlay hints override upstream `hints.collapse complex types` to `false`
+  through `inlay_hint_settings.jetbrains.java` in `lua/plugins/intellij-lsp.lua`,
+  so generic type arguments remain visible (for example, `Map<String, String>`
+  instead of `Map<...>`). Hint enablement stays with the repo's `<leader>uh` control.
+- Plugin theme, Git, leader keymaps, completion triggers/Enter, signature popup,
+  folds, upstream run/debug defaults, and independent format-on-save are disabled
+  to preserve repo ownership of those workflows.
+- IntelliJ file templates are enabled for new empty Java files: Class, Interface,
+  Record, Enum, Annotation, and Exception. The picker derives the package and name
+  from the project path; `:IntellijLspFileTemplate` opens it manually for an empty
+  attached buffer. Selecting a template creates the file on disk before interpolation.
+- Neo-tree `a` -> `SomeClass.java` -> `o` offers that picker after the new empty
+  Java buffer has an IntelliJ client. `lua/util/java_file_templates.lua` tracks
+  Neo-tree's `file_added` paths and handles buffer entry/late LSP attachment,
+  because on-disk creation bypasses upstream's `BufNewFile` template trigger.
+  Populated files are ignored; cancellation/reopening does not repeat the picker.
+- `:JavaInfo` reports the IntelliJ client/root, JDK, bundle and EULA state.
+- `<leader>jr/jd/jc/jl` run/debug/stop/toggle output through
+  [lua/util/java_launch.lua](/home/konkov/.config/nvim/lua/util/java_launch.lua:1).
+  Launch resolution and adapter startup use the source workspace's client ID;
+  no upstream first-global-client selection. Source is saved before building;
+  Maven/Gradle builds stream into IntelliJ output and failures block launch.
+  Remote attach is unavailable.
+- Java tests use IntelliJ's test compile command, JDK, and classpath with JUnit
+  Console execution and XML results. Existing nearest/file/package/debug,
+  failed-rerun, and sequential mappings remain. Parameterized invocations aggregate
+  into their method node. JPMS, overloaded test methods, and nonstandard source
+  layouts remain limitations of this bridge. Run `:NeotestJava setup` if the console
+  jar is missing; it does not install or start JDTLS.
+- `<leader>ci/cI` use freshly pulled IntelliJ diagnostic `Import class` fixes;
+  ambiguity uses the plugin picker. Bulk imports wait for edits between fixes and
+  pause after a cancelled/unanswered picker. Field-usage counters and JDTLS lens glue
+  are absent; references use the normal LSP navigation keys.
+  References remain on `gR` (Glance).
+  The pinned IntelliJ plugin exposes Run/Debug code lenses, not a field-usage
+  counter setting. Inspection of server bundle `263.6379.0` found JVM main-entry
+  lens providers and no dedicated field-count lens provider; IDE Code Vision
+  classes bundled with the server do not establish an exposed LSP feature.
+- `JavaRestart` restarts only the owning workspace; `JavaCleanCorruptWorkspaces`
+  and `<leader>XC/XJ` clear only its reported index inside its claimed cache slot.
+  Restart allows a short graceful stop then forces it if necessary, waits for
+  actual exit, and checks ownership before deletion. Other workspaces remain active.
+- `JavaBranchRefresh` explicitly reloads the owning workspace. BufEnter/FocusGained
+  detect HEAD changes and reload; BufEnter/SessionLoadPost/LspAttach ensure a loaded
+  Java buffer reattaches without a duplicate client. Scratch storage remains
+  project-local, preferring test sources; dependency completion and run/debug are
+  checked. `spring-boot.nvim` relies on unsupported `sts.java.*` commands and stays off.
+- `JavaProjectUpdate` / `<leader>ju` reloads only the workspace owning the current
+  buffer, including build-file buffers. Mixed Maven/Gradle roots explicitly use
+  Maven on initial import and reload; other roots keep auto-detection.
+- IntelliJ follow-up suggestion commands target nvim-cmp, and follow-up rename
+  targets the IntelliJ client. LSP completion snippets use LuaSnip; upstream
+  SnippetTextEdit live templates use Neovim's native snippet engine.
+- Pinned server `263.6379.0` inspection diagnostics have fixed selection limits:
+  unused declarations are explicitly disabled, several requested checks are off
+  or informational, and a live project-profile override did not affect results.
+  Imports/raw types/unchecked calls/self-assignment/constant conditions and
+  accidental boolean assignments do report warnings. See `docs/java/java-workflow.md` for diagnostic limits; Lua display settings
+  cannot enable checks the server does not emit.
+- `JavaInfo` includes progress state and whether initial import finished.
+- Conform uses the standalone `intellij-code-formatter` jar for Java, Markdown,
+  XML, Python, YAML, and shell. Full-file Java formatting optimizes imports and rearranges members;
+  range requests omit both cleanup flags and use Conform's filtered formatting
+  edits. The jar is more capable than pinned LSP formatting for these routes;
+  the comparison table is in `lua/plugins/formatting.lua`.
+- [lua/util/format.lua](/home/konkov/.config/nvim/lua/util/format.lua:1) checks
+  Java/jar availability and disables LSP fallback on standalone routes.
+  Formatting does not wait for the IntelliJ language server or project import.
+  The explicit style file is this config's `.editorconfig`, restoring the previous
+  standalone formatter policy.
+- Python, YAML, and shell routes use the standalone jar by explicit user request,
+  with LSP fallback disabled. Other languages retain their existing formatters.
+- Conform LSP requests run inside `nvim_buf_call` for their target because this
+  Conform revision builds formatting parameters from the current buffer's URI
+  and indentation even when `bufnr` is supplied. Directory writes temporarily
+  disable autoformat to avoid duplicate cleanup.
+- `:JavaInitProject [dir]` / `<leader>ji` creates a Java 21 Maven or Gradle
+  project, opens `Main.java`, and changes cwd to its root. Java scratch files
+  remain project-local, preferring test sources; `:ScratchInfo` reports the path.
 - Neotest scope, discovery filtering, package/file target resolution, and the
   guarded current-file discovery fallback live in
   [lua/util/neotest_scope.lua](/home/konkov/.config/nvim/lua/util/neotest_scope.lua:1).
+- Activating a Neotest scope never changes global/tab/window cwd or the
+  remembered explorer scope. Test targets and process working directories are
+  independent of the editor workspace; opening summary or running tests from
+  another project does not redirect Neo-tree, Telescope, or session cwd.
+- Discovery retains the union of explicitly activated test scopes for the
+  session, so activating another project/module does not exclude an earlier
+  asynchronous discovery pass. Ignored directories and unactivated siblings
+  remain excluded. `SessionLoadPost` clears those remembered scopes.
+- Go test-file detection uses the most specific activated scope for its
+  GOPATH/GOROOT check, falling back to editor cwd for unactivated paths. This
+  keeps an activated GOPATH project discoverable after switching projects,
+  while retaining the adapter's guard against unrelated SDK/dependency tests.
+- `util.neotest_python` wraps the adapter's public `build_spec` method to capture
+  the owning project root and assign both RunSpec and DAP cwd. Unmarked files
+  use their directory; an explicit run `cwd` override is honored. A builder
+  finishing after another scope activates still launches from its source root.
+  Go and IntelliJ Java builders already set their process working directories.
 - Neotest run wrappers capture the source buffer/path before opening Neotest UI
   windows, then resolve file/package targets from that captured path. This keeps
   `<leader>tt`, `<leader>tf`, `<leader>tp`, and `<leader>tP` aimed at the test
@@ -418,16 +551,30 @@ Update this file when:
 - Java extract-to-local-variable may move focus into the follow-up rename prompt.
   Use `<C-w>w` to cycle focus back to the hover/floating window, or `<C-w>p` to
   return to the previously focused window.
-- LSP rename refreshes loaded inlay-hint buffers after the rename response is
-  handled, so renamed variables do not leave stale inlay hints behind.
+- LSP rename uses [lua/util/lsp_rename.lua](/home/konkov/.config/nvim/lua/util/lsp_rename.lua:1)
+  to wrap each attached client's rename handler once. Successful non-nil results
+  refresh loaded inlay-hint buffers after the existing handler applies edits.
+  Custom client handlers are preserved; otherwise the wrapper delegates to the
+  current global handler. No global replacement or restoration timer is used.
+  `<leader>cr` retains native prompts/prepare-rename and selects only IntelliJ
+  for Java. IntelliJ follow-up renames also use the installed client wrapper.
+  `tests/lsp_rename.lua` checks cancellation, errors, overlapping requests,
+  custom handlers, and Java routing through the native API. A real IntelliJ
+  smoke test in a disposable Maven project updated a method declaration and
+  call site, refreshed hints, and preserved the global handler. Interactive
+  typing and complex refactoring conflicts were not exercised by that probe.
 - Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, enabled on
   LSP attach, and toggled with `<leader>ud`.
 - LSP inlay hints are managed by
   [lua/util/inlay_hints.lua](/home/konkov/.config/nvim/lua/util/inlay_hints.lua:1)
   through Neovim's native `vim.lsp.inlay_hint` API and toggled with
-  `<leader>uh`.
+  `<leader>uh`. Switching between normal and insert mode does not toggle hints;
+  Java, Go, and Python still clear stale hint text after edits.
 - Noice is allowed to own command/message UI, but hover/signature rendering is
   intentionally disabled there to avoid conflicts with the chosen editing setup.
+  Inlay-hint error suppression was removed so both invalid-column errors and
+  other inlay-hint notifications remain visible through normal Noice routes.
+  This is an observation decision, not a claim that the original error is fixed.
 - `<C-CR>` and `<leader>Hy` open Yanky's Telescope `yank_history` picker through
   [lua/util/yank_history.lua](/home/konkov/.config/nvim/lua/util/yank_history.lua:1).
 - `<C-A-CR>` opens Yanky's built-in ring-history picker. Dressing has a
@@ -457,9 +604,8 @@ Update this file when:
 - DAP virtual text masks values when the variable name or rendered value
   contains common secret terms: `secret`, `api_key`, `apikey`, `token`,
   `password`, `passwd`, `credential`, or `authorization`.
-- DAP UI opens on session start and closes on termination by default.
-  `<leader>dU` toggles keeping DAP UI open after session exit for final-state
-  inspection.
+- IntelliJ's DAP panel opens on stops and closes on exit by default.
+  `<leader>dU` keeps the panel open, but upstream clears terminated-frame values.
 
 ## Git / Merge Decisions
 
@@ -478,6 +624,18 @@ Update this file when:
   server in the same tab/window context instead of a new tab.
   This avoids Linux `xdg-open` / GNOME text editor for changed files while
   preserving `e` as LazyGit's editor action.
+  [lua/util/lazygit_config.lua](/home/konkov/.config/nvim/lua/util/lazygit_config.lua:1)
+  exports `NVIM_LAZYGIT_OPEN_HELPER` from `stdpath("config")` before launching
+  LazyGit, so the shell helper follows custom config paths on Linux/macOS.
+  The YAML command quotes that helper path and leaves `{{filename}}` unwrapped:
+  LazyGit already shell-quotes filenames. Outside this integration, the helper
+  path falls back to `${XDG_CONFIG_HOME:-$HOME/.config}/${NVIM_APPNAME:-nvim}`.
+  Global LazyGit config is discovered with `lazygit --print-config-dir` and
+  included only when present; repo overrides remain last. That preserves native
+  Linux/macOS/XDG/legacy directory selection instead of guessing the OS path.
+  `tests/portability.lua` checks simulated Linux/macOS paths and URL handlers,
+  missing vault/openers/configs, and real shell-helper RPC with spaces/quotes in
+  filenames. It does not launch a browser, modify a vault, or run macOS itself.
 - Inside LazyGit's terminal buffer, `<A-a>` first sends LazyGit `q` and then
   opens ToggleTerm after LazyGit exits. This prevents stacking the terminal
   float over the LazyGit float.
@@ -499,16 +657,23 @@ Update this file when:
 - Live git hunks view is repo-local glue in
   [lua/util/live_hunks.lua](/home/konkov/.config/nvim/lua/util/live_hunks.lua:1).
   `<leader>ug` / `:LiveHunksToggle` opens a right-side scratch buffer for the
-  current file's unstaged hunks. It uses Gitsigns `get_hunks()` first, falls
-  back to `git diff --unified=0`, and keeps one scratch row per source line so
-  `WinScrolled` can sync the view topline with the edit window.
+  current file's unstaged hunks. Gitsigns `get_hunks()` is its only data source;
+  there is no separate Git process or diff parser. A nil result means Gitsigns
+  is not attached, while an empty table means no unstaged hunks. The panel shows
+  that distinction and refreshes on `GitSignsUpdate`, including after delayed
+  attachment. It keeps one scratch row per source line so `WinScrolled` can
+  sync the view topline with the edit window.
+  `tests/live_hunks.lua` verifies real Gitsigns attachment, clean/unsaved hunks,
+  rapid edits, source selection, scroll synchronization, unavailable/error
+  states, and closing the panel with a refresh pending. Direct synchronous Git
+  calls from the panel are prohibited in that probe.
 - Diffview branch/ref helpers use structured `vim.cmd.DiffviewOpen(...)` calls
   for dynamic ref arguments.
 - Planned work:
   [docs/plans/code-action-cleanup-highlight-plan.md](/home/konkov/.config/nvim/docs/plans/code-action-cleanup-highlight-plan.md:1)
-  tracks code-action cleanup highlighting, and
-  [docs/plans/live-hunks-view-plan.md](/home/konkov/.config/nvim/docs/plans/live-hunks-view-plan.md:1)
-  tracks the right-side live hunks view.
+  tracks unimplemented code-action cleanup highlighting;
+  [docs/plans/persist-toggle-state-task.md](/home/konkov/.config/nvim/docs/plans/persist-toggle-state-task.md:1)
+  proposes durable toggle preferences. Neither proposal supplies active commands.
 
 ## External Workflow Helpers
 
@@ -531,9 +696,6 @@ Update this file when:
   [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1)
 - Java-specific custom work:
   [docs/java/java-debugging.md](/home/konkov/.config/nvim/docs/java/java-debugging.md:1)
-  [docs/java/java-project-init.md](/home/konkov/.config/nvim/docs/java/java-project-init.md:1)
+  [docs/java/java-workflow.md](/home/konkov/.config/nvim/docs/java/java-workflow.md:1)
   [docs/java/java-leetcode-debugging.md](/home/konkov/.config/nvim/docs/java/java-leetcode-debugging.md:1)
-  [docs/java/nvim-java-patches.md](/home/konkov/.config/nvim/docs/java/nvim-java-patches.md:1)
   [docs/java/java-test-workflow.md](/home/konkov/.config/nvim/docs/java/java-test-workflow.md:1)
-  [docs/java/neotest-java-fast-event-fix.md](/home/konkov/.config/nvim/docs/java/neotest-java-fast-event-fix.md:1)
-  [docs/java/lua-lsp-and-java-fixes.md](/home/konkov/.config/nvim/docs/java/lua-lsp-and-java-fixes.md:1)

@@ -12,6 +12,8 @@ Neo-tree and picker cwd behavior is intentionally split from raw Neovim cwd.
   `<leader>fg`, and regex grep on `<leader>f/`) use the remembered explorer cwd.
 - Opening or switching buffers does not auto-reveal them in Neo-tree. Explorer
   scope stays put unless changed explicitly.
+- Neotest activation/run/debug/summary actions preserve the remembered explorer
+  scope and editor cwd. A test process uses its own working directory.
 - `.` inside Neo-tree sets the selected directory as the explorer scope.
 - Closing Neo-tree with `q` or `<Esc>` preserves that explicit scope.
 - `<leader>ue` toggles reveal-on-open for the current session without turning on

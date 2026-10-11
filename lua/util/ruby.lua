@@ -3,7 +3,6 @@
 local M = {}
 
 M.version = "3.2.5"
-M.bundler_version = "2.7.1"
 
 local root_markers = {
   "Gemfile",

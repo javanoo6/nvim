@@ -6,10 +6,10 @@ local scope = require("util.neotest_scope")
 return {
   {
     "rcasia/neotest-java",
+    -- Discovery and XML results retained; util.neotest_intellij owns execution.
     ft = "java",
     cmd = { "NeotestJava" },
     dependencies = {
-      "nvim-java/nvim-java",
       "mfussenegger/nvim-dap",
     },
   },
@@ -17,7 +17,34 @@ return {
     "fredrikaverpil/neotest-golang",
     ft = "go",
     build = function()
-      vim.system({ "go", "install", "gotest.tools/gotestsum@latest" }):wait()
+      -- Keep this external tool pinned independently of lazy-lock.json.
+      local target = "gotest.tools/gotestsum@v1.13.0"
+      local retry = "Fix the cause, then retry :Lazy build neotest-golang"
+      local go = vim.fn.exepath("go")
+      if go == "" then
+        error("Cannot install " .. target .. ": go executable not found on PATH. " .. retry, 0)
+      end
+      local ok, result = pcall(function()
+        return vim.system({ go, "install", target }, { text = true }):wait()
+      end)
+      if not ok then
+        error("Cannot install " .. target .. ": " .. tostring(result) .. "\n" .. retry, 0)
+      end
+      if result.code ~= 0 then
+        local output = vim.trim((result.stderr or "") .. "\n" .. (result.stdout or ""))
+        error(
+          string.format(
+            "%s install %s failed (exit %s, signal %s)\n%s\n%s",
+            go,
+            target,
+            tostring(result.code),
+            tostring(result.signal),
+            output ~= "" and output or "No process output",
+            retry
+          ),
+          0
+        )
+      end
     end,
   },
   {
@@ -27,7 +54,7 @@ return {
       "nvim-lua/plenary.nvim",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
-      "rcasia/neotest-java", -- Java (Maven/Gradle)
+      "rcasia/neotest-java", -- IntelliJ Java bridge
       "fredrikaverpil/neotest-golang", -- Go
       "nvim-neotest/neotest-python", -- Python
     },
@@ -169,12 +196,13 @@ return {
       require("util.neotest_output_guard").install()
 
       local golang = require("neotest-golang")({ runner = "gotestsum" })
-      local go_is_test_file = golang.is_test_file
       golang.is_test_file = function(path)
         if not vim.endswith(path, "_test.go") or vim.fn.executable("go") ~= 1 then
           return false
         end
-        return go_is_test_file(path)
+        -- Bind GOPATH/GOROOT checks to the file's activated test workspace,
+        -- even if another workspace becomes current during discovery.
+        return not require("neotest-golang.lib.goenv").should_skip(path, scope.discovery_cwd(path))
       end
 
       require("neotest").setup({
@@ -182,11 +210,9 @@ return {
           filter_dir = scope.scoped_discovery_filter,
         },
         adapters = {
-          require("neotest-java")({
-            incremental_build = true,
-          }),
+          require("util.neotest_intellij").create(),
           golang,
-          require("neotest-python")({
+          require("util.neotest_python").with_project_cwd(require("neotest-python")({
             dap = { justMyCode = false },
             python = function()
               local ok, venv_selector = pcall(require, "venv-selector")
@@ -196,7 +222,7 @@ return {
               end
               return "python3"
             end,
-          }),
+          })),
         },
         status = { virtual_text = true },
         summary = {
