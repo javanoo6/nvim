@@ -154,7 +154,7 @@ has a check and removal condition; larger workflow limits remain explicit.
   paths and class patterns, Git-only/Maven/Gradle roots, actual JunitResult
   objects, single/mixed parameterized outcomes, report cleanup, and abnormal exits.
 - **Manual smoke:** real Maven/Gradle nearest/file/package tests and Neotest DAP,
-  with passing/failing parameterized cases. See `docs/java/intellij-lsp-step-7.md`.
+  with passing/failing parameterized cases. See `docs/java/java-test-workflow.md`.
 - **Remove when:** each upstream module independently passes the same reproduction
   without shadowing. Preserve build-root and method-result policies; do not
   remove all overrides when only one failure is corrected.

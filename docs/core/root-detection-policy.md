@@ -104,17 +104,11 @@ current manual behavior does not require merging the two detection policies.
 
 ## Statusline Root Cost
 
-The statusline resolves `get_root_basename()` without a cache. Local profiling
-did not justify caching; see [measurements and limits](root-profile-2026-10-11.md).
+The statusline resolves `get_root_basename()` without a cache.
 This keeps filename, cwd, workspace, and marker changes visible on the next
 resolution without cache invalidation rules.
 
-Run `make check-config` for root-policy fixtures. To repeat optional timing
-measurements, run:
-
-```sh
-nvim --headless -u NONE -i NONE -l tests/root_policy.lua --profile
-```
+Run `make check-config` for root-policy fixtures.
 
 ## When To Reuse Shared Root Logic
 

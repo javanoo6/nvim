@@ -439,7 +439,7 @@ tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, t
 - Java symbol rename targets `intellij`; lualine tracks that client.
 - `JavaInitProject` / `<leader>ji` still create Maven/Gradle projects.
 - App/test run and debug use IntelliJ's JVM adapter and panel. Remote attach
-  remains unavailable (Step 6 skipped).
+  is unavailable.
 - Smart imports use diagnostic fixes; `util/java_workspace.lua` owns scoped
   restart/index clearing, branch refresh, and reattachment. Field counters and
   JDTLS code-lens glue are retired; spring-boot.nvim remains disabled.
@@ -448,8 +448,7 @@ tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, t
 - Completion suggestion/rename extensions use the repo's cmp and IntelliJ client.
 - Conform uses the standalone IntelliJ jar for Java formatting/import optimization/
   rearrangement and Markdown/XML/Python/YAML/shell formatting.
-- [Step 2 details](../java/intellij-lsp-step-2.md) and
-  [migration checklist](../java/intellij-lsp-migration-plan.md).
+- [Current Java workflow](../java/java-workflow.md).
 
 ---
 
@@ -787,10 +786,10 @@ lazy.nvim
 
 ## Notes & known issues
 
-- **Java LSP:** IntelliJ owns Java on the migration branch; JDTLS is disabled and
+- **Java LSP:** IntelliJ owns Java; JDTLS is disabled and
   excluded from Mason auto-enable.
 - **Java code actions:** `<leader>ca` / `<A-CR>` still use `actions-preview.nvim`;
-  IntelliJ refactoring/extension compatibility is checked in migration Step 3.
+  command-only actions may have no diff preview.
 - **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Writes normal file buffers even when LSP errors exist; Conform still skips
   format-on-save when errors exist.
 - **Reference style:** Underline is enabled by default, reference background is disabled by default. Toggle them with `<leader>uu` and `<leader>uH`.

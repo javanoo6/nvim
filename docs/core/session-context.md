@@ -143,9 +143,8 @@ Update this file when:
   changes instead.
   Its explicit detection keeps upstream LSP-first ordering and stock markers;
   it does not use `util.root_patterns`. The shared statusline/navigation helper
-  remains marker-first and honors explicit cwd narrowing. Root profiling found
-  no worthwhile reason to cache it on this machine; measurements and a repeatable
-  probe are linked from `docs/core/root-detection-policy.md`.
+  remains marker-first and honors explicit cwd narrowing. It resolves roots
+  without a cache; the policy is in `docs/core/root-detection-policy.md`.
 - `util.frequent_roots` now manages manual directories only (`<leader>hm`).
   Inactive project tracking/picking and unused exports were removed. Legacy
   `pinned` entries still load as manual dirs; project/history and unknown JSON
@@ -263,8 +262,7 @@ Update this file when:
   Conform rejects stale results if a buffer changes during its request. Successful
   edits are written with format-on-save suppressed; failed writes retain the
   modified buffer. Unchanged files count as skipped. Tests use disposable files
-  and real subprocesses; measurements are in
-  `docs/audits/format-dir-profile-2026-10-11.md`.
+  and real subprocesses.
 - `nvim-lint` still runs immediately after writes, but `BufReadPost` linting is
   debounced briefly so opening many files does not start expensive linters all at
   once.
@@ -281,6 +279,10 @@ Update this file when:
   line count and uses non-strict line reads. This prevents completion indexing
   from surfacing `Index out of bounds` errors when a buffer changes while the
   source is indexing.
+- LuaLS workspace settings live in `.luarc.json`, with Neovim-side defaults in
+  `lua/plugins/lsp.lua`: LuaJIT, the `vim` global, runtime libraries, and disabled
+  third-party workspace prompts. External projects with their own LuaLS workspace
+  configuration retain it.
 - Local config quality checks are exposed through `make check`, which runs
   Mason-managed `stylua --check` and `selene` against `init.lua`, `lua/`,
   `after/`, and `tests/`, then `make check-config` for isolated regressions.
@@ -344,8 +346,8 @@ Update this file when:
   [lua/neotest-java/core/result_builder.lua](/home/konkov/.config/nvim/lua/neotest-java/core/result_builder.lua:1)
   so a single executed invocation of a parameterized JUnit method maps back to
   the Neotest method node instead of leaving a stale failed summary status.
-- `:FormatterInfo` reports active formatter dependencies and IntelliJ migration
-  gaps, including the standalone jar, Java executable, and explicit EditorConfig path.
+- `:FormatterInfo` reports active formatter dependencies, including the standalone
+  jar, Java executable, and explicit EditorConfig path.
 - Directory formatting commands are registered from
   [lua/util/format_dir.lua](/home/konkov/.config/nvim/lua/util/format_dir.lua:1)
   so [lua/plugins/formatting.lua](/home/konkov/.config/nvim/lua/plugins/formatting.lua:1)
@@ -406,10 +408,8 @@ Update this file when:
   `263.6379.0`. The user explicitly accepted its EAP EULA on 2026-10-10.
 - `gt` opens IntelliJ type hierarchy (subtypes) in attached Java buffers. It is
   buffer-local; other filetypes keep Vim's next-tab behavior.
-- Startup and protocol/health validation passed on a disposable Maven project.
-  Step 3 editing/navigation checks pass on disposable Maven/Gradle/multi-module
-  fixtures; Spring/Lombok dependency resolution also passes. See the Step 3
-  evidence for limits on UI coverage and large-project validation.
+- Current Java workflows and their limitations are documented in
+  [docs/java/java-workflow.md](/home/konkov/.config/nvim/docs/java/java-workflow.md:1).
 - `lua/util/java_intellij.lua` wraps the pinned plugin's client factory to merge
   cmp/file-operation capabilities and disable built-in completion after attach.
   Upstream `autotrigger=false` alone still enables built-in completion.
@@ -419,7 +419,7 @@ Update this file when:
   instead of `Map<...>`). Hint enablement stays with the repo's `<leader>uh` control.
 - Plugin theme, Git, leader keymaps, completion triggers/Enter, signature popup,
   folds, upstream run/debug defaults, and independent format-on-save are disabled
-  to preserve repo ownership while each workflow is migrated.
+  to preserve repo ownership of those workflows.
 - IntelliJ file templates are enabled for new empty Java files: Class, Interface,
   Record, Enum, Annotation, and Exception. The picker derives the package and name
   from the project path; `:IntellijLspFileTemplate` opens it manually for an empty
@@ -435,7 +435,7 @@ Update this file when:
   Launch resolution and adapter startup use the source workspace's client ID;
   no upstream first-global-client selection. Source is saved before building;
   Maven/Gradle builds stream into IntelliJ output and failures block launch.
-  Remote attach remains unavailable: the user skipped Step 6.
+  Remote attach is unavailable.
 - Java tests use IntelliJ's test compile command, JDK, and classpath with JUnit
   Console execution and XML results. Existing nearest/file/package/debug,
   failed-rerun, and sequential mappings remain. Parameterized invocations aggregate
@@ -470,9 +470,8 @@ Update this file when:
   unused declarations are explicitly disabled, several requested checks are off
   or informational, and a live project-profile override did not affect results.
   Imports/raw types/unchecked calls/self-assignment/constant conditions and
-  accidental boolean assignments do report warnings. See the diagnostics audit
-  in `docs/java/intellij-lsp-migration-plan.md`; Lua display settings cannot enable
-  checks the server does not emit.
+  accidental boolean assignments do report warnings. See `docs/java/java-workflow.md` for diagnostic limits; Lua display settings
+  cannot enable checks the server does not emit.
 - `JavaInfo` includes progress state and whether initial import finished.
 - Conform uses the standalone `intellij-code-formatter` jar for Java, Markdown,
   XML, Python, YAML, and shell. Full-file Java formatting optimizes imports and rearranges members;
@@ -491,23 +490,9 @@ Update this file when:
   Conform revision builds formatting parameters from the current buffer's URI
   and indentation even when `bufnr` is supplied. Directory writes temporarily
   disable autoformat to avoid duplicate cleanup.
-- Plan and evidence:
-  [docs/java/intellij-lsp-migration-plan.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-migration-plan.md:1),
-  [docs/java/intellij-lsp-baseline.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-baseline.md:1),
-  [docs/java/intellij-lsp-step-2.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-step-2.md:1),
-  [docs/java/intellij-lsp-step-3.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-step-3.md:1),
-  [docs/java/intellij-lsp-step-4.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-step-4.md:1),
-  [docs/java/intellij-lsp-step-5.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-step-5.md:1),
-  [docs/java/intellij-lsp-step-7.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-step-7.md:1),
-  [docs/java/intellij-lsp-step-8.md](/home/konkov/.config/nvim/docs/java/intellij-lsp-step-8.md:1).
-
 - `:JavaInitProject [dir]` / `<leader>ji` creates a Java 21 Maven or Gradle
   project, opens `Main.java`, and changes cwd to its root. Java scratch files
   remain project-local, preferring test sources; `:ScratchInfo` reports the path.
-- Cleanup removed obsolete JDTLS implementations, raw migration evidence, and
-  formatter fixtures. Readable migration findings and known limits remain in
-  the Java step notes and migration plan.
-
 - Neotest scope, discovery filtering, package/file target resolution, and the
   guarded current-file discovery fallback live in
   [lua/util/neotest_scope.lua](/home/konkov/.config/nvim/lua/util/neotest_scope.lua:1).
@@ -713,7 +698,6 @@ Update this file when:
   [docs/python/python-venv-behavior.md](/home/konkov/.config/nvim/docs/python/python-venv-behavior.md:1)
 - Java-specific custom work:
   [docs/java/java-debugging.md](/home/konkov/.config/nvim/docs/java/java-debugging.md:1)
-  [docs/java/java-project-init.md](/home/konkov/.config/nvim/docs/java/java-project-init.md:1)
+  [docs/java/java-workflow.md](/home/konkov/.config/nvim/docs/java/java-workflow.md:1)
   [docs/java/java-leetcode-debugging.md](/home/konkov/.config/nvim/docs/java/java-leetcode-debugging.md:1)
   [docs/java/java-test-workflow.md](/home/konkov/.config/nvim/docs/java/java-test-workflow.md:1)
-  [docs/java/lua-lsp-and-java-fixes.md](/home/konkov/.config/nvim/docs/java/lua-lsp-and-java-fixes.md:1)

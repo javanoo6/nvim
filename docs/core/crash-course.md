@@ -571,7 +571,7 @@ browser-style single-file tab.
 | `m`     | Move                                              |
 | `H`     | Toggle hidden files                               |
 
-**Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — JDTLS automatically updates all imports and references
+**Tip:** Renaming or moving a Java file via `r` / `m` triggers LSP file operations — IntelliJ handles package/import/reference updates
 across the project. This may modify many buffers at once. Save them all with `:wall`.
 
 **Preview tip:** `P` uses Neo-tree's native preview mode, so you can scan files without leaving the tree. Press `<Esc>` to close Neo-tree.
@@ -694,7 +694,7 @@ Scratch files are persistent temporary files managed by `scratch.nvim`.
 - `<leader>fN` creates one with an explicit filename.
 - In a Maven/Gradle Java project, choosing `java` opens a project-local
   `src/test/java/Scratch.java` (or `src/main/java/Scratch.java` fallback) so
-  JDTLS can resolve project dependencies.
+  IntelliJ can resolve project dependencies.
 
 **Tip:** `<leader>fg`, `<leader>fG`, and `<leader>fe` search the text you type as-is, so `foo.` matches a literal dot. Use `<leader>f/`,
 `<leader>f?`, or `<leader>fE` when you want ripgrep regex syntax.
@@ -873,23 +873,21 @@ opens.
 
 ### Java-specific
 
-Migration branch: IntelliJ LSP owns Java. Use `:JavaInfo` and
-`:checkhealth intellij-lsp` to inspect it. App run/debug, Java Neotest,
-smart imports, workspace reload/restart, and cache clearing use IntelliJ.
-Remote attach is unavailable because Step 6 was skipped. Field usage counters
-are retired; `gR` still lists references. The JDTLS-specific recipes below are
-inactive reference; see [the migration checklist](../java/intellij-lsp-migration-plan.md)
-and [Step 8 helpers](../java/intellij-lsp-step-8.md) for active behavior.
+IntelliJ LSP owns Java. Use `:JavaInfo` and `:checkhealth intellij-lsp` to
+inspect the backend. App run/debug, Java Neotest, smart imports, workspace
+reload/restart, and cache clearing use IntelliJ. Remote attach is unavailable;
+`<leader>ja` only reports that limitation. Field-usage counters are unavailable;
+`gR` lists references. See [Java workflow](../java/java-workflow.md).
 
-| Key          | Action             |
-|--------------|--------------------|
-| `<leader>jr` | Run Main           |
-| `<leader>jd` | Debug Main         |
-| `<leader>ji` | Init Project       |
-| `<leader>ju` | Update Project     |
-| `<leader>jc` | Stop Main          |
-| `<leader>jl` | Toggle Runner Logs |
-| `<leader>ja` | Attach Remote JVM  |
+| Key          | Action                    |
+|--------------|---------------------------|
+| `<leader>jr` | Run Main                  |
+| `<leader>jd` | Debug Main                |
+| `<leader>ji` | Init Project              |
+| `<leader>ju` | Update Project            |
+| `<leader>jc` | Stop Main                 |
+| `<leader>jl` | Toggle Runner Logs        |
+| `<leader>ja` | Remote attach unavailable |
 
 `:JavaInitProject [dir]` prompts for Maven/Gradle, project directory, artifact,
 group id, and package, then opens the generated `Main.java`.
@@ -900,14 +898,14 @@ buffer and reloads only its owning workspace. Mixed Maven/Gradle roots prefer Ma
 
 ### Java Code Actions
 
-Java refactors and generate actions come from JDTLS code actions.
+Java refactors and generate actions come from IntelliJ code actions.
 Use `<leader>ca` or `<A-CR>` to open the code action list in
 `actions-preview.nvim`.
 
 Important limitation:
 
 - edit-backed actions usually show a real diff preview before apply
-- many Java refactors are command-only JDTLS actions, so they cannot be
+- many Java refactors are command-only IntelliJ actions, so they cannot be
   diff-previewed and may show the fallback “Preview is not available” message
 - extract-to-local-variable can move focus into the follow-up rename prompt;
   use `<C-w>w` to cycle focus back to the hover/floating window, or `<C-w>p` to
@@ -1398,14 +1396,14 @@ Notes:
 
 ## Miscellaneous
 
-| Key          | Action                         |
-|--------------|--------------------------------|
-| `<leader>fn` | New file                       |
-| `<leader>U`  | Undotree toggle                |
-| `<leader>Pl` | Open Lazy                      |
-| `<leader>Xh` | Rehighlight treesitter         |
-| `<leader>XC` | Clean JDTLS workspace          |
-| `<leader>XJ` | Clean corrupt JDTLS workspaces |
+| Key          | Action                            |
+|--------------|-----------------------------------|
+| `<leader>fn` | New file                          |
+| `<leader>U`  | Undotree toggle                   |
+| `<leader>Pl` | Open Lazy                         |
+| `<leader>Xh` | Rehighlight treesitter            |
+| `<leader>XC` | Clear owning Java workspace index |
+| `<leader>XJ` | Clear owning Java workspace index |
 
 ---
 

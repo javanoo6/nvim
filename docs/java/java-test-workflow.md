@@ -1,17 +1,29 @@
 # Java Test Workflow
 
-## Active IntelliJ workflow
+IntelliJ resolves project import, test compilation, JDK, and classpaths.
+`util.neotest_intellij` retains Neotest's UI and uses neotest-java discovery/XML
+result readers. Selected test files are saved before Maven/Gradle compilation;
+build failure blocks execution. Tests run through JUnit Console. Use
+`:NeotestJava setup` if its standalone jar is missing.
 
-- IntelliJ LSP owns Java editing and test compilation/classpaths. Neotest keeps
-  its summary/output and nearest/file/package workflows through
-  `util.neotest_intellij`, reusing neotest-java discovery and XML result readers.
-- `<leader>tr/tt/tp/tT` run nearest/file/package/all tests; `td/tf/tP/tD` debug
-  those selections using IntelliJ's JVM adapter and the default IntelliJ panel.
-- `<leader>tF` reruns failed tests; `<leader>tq` runs file methods sequentially.
-  Parameterized cases aggregate into their method status; a failing case makes
-  that method fail. `to/tO` show output; `ts` toggles summary.
-- Tests compile first through Maven/Gradle and then run via JUnit Console. Run
-  `:NeotestJava setup` if its standalone jar is absent. No JDTLS is involved.
-- App run/debug is complete in Step 5; remote attach was skipped in Step 6.
-- Results and limits: [Step 7](intellij-lsp-step-7.md),
-  [workspace/import helpers](intellij-lsp-step-8.md).
+| Keys                                                      | Action                                 |
+|-----------------------------------------------------------|----------------------------------------|
+| `<leader>tr` / `<leader>tt` / `<leader>tp` / `<leader>tT` | Run nearest / file / package / all     |
+| `<leader>td` / `<leader>tf` / `<leader>tP` / `<leader>tD` | Debug those selections                 |
+| `<leader>tF`                                              | Rerun failed tests in the active scope |
+| `<leader>tq`                                              | Run file methods sequentially          |
+| `<leader>to` / `<leader>tO`                               | Show output / toggle output panel      |
+| `<leader>ts`                                              | Toggle summary                         |
+
+Debug selections use the owning workspace's IntelliJ JVM adapter and panel.
+Compiled method signatures come from the project's `javap`. Parameterized cases
+aggregate into their method status; any failing case makes the method fail.
+
+The bridge has been checked with conventional Maven/Gradle `src/test` layouts
+and JUnit 5. JPMS module-path tests fail explicitly. Custom source sets, TestNG,
+dynamic/inherited tests, and multi-module reactor behavior require separate
+validation. Discovery IDs do not distinguish same-name overloaded methods;
+signature selection uses the first matching method.
+
+See [Java workflow](java-workflow.md) for workspace actions and
+[debugging](java-debugging.md) for breakpoint and panel controls.

@@ -1,28 +1,15 @@
 # Java Debugging for LeetCode Files
 
-Workflow note for standalone LeetCode-style Java files such as:
+LeetCode `Solution` files usually have no `public static void main(String[] args)`.
+Create a harness in a normal Java project to run or debug them locally.
 
-```text
-/home/konkov/leetcode/202.happy-number.java
-```
-
-## Key Constraint
-
-LeetCode files usually contain only a `Solution` class. They are not runnable
-Java applications because they have no:
+Use `<leader>ji` / `:JavaInitProject` to create a Maven or Gradle project, then
+place the solution and harness in its source tree. Match the package to the
+project's package and save the public class as `HappyNumberDebug.java`:
 
 ```java
-public static void main(String[] args)
-```
+package demo;
 
-So `:IntellijLspRun` and Java DAP launch discovery cannot run the original
-file directly.
-
-## Recommended Workflow
-
-Create a small harness in the same directory:
-
-```java
 class Solution {
   public boolean isHappy(int n) {
     return false;
@@ -36,39 +23,11 @@ public class HappyNumberDebug {
 }
 ```
 
-Then open the harness from the LeetCode directory:
+Open the harness, check `:JavaInfo`, set breakpoints with `<leader>db`, and
+use `<leader>jd` inside the main class. `<leader>jr` runs it without debugging.
+This follows the normal Maven/Gradle build and IntelliJ launch path; an isolated
+LeetCode file alone does not provide that build context.
 
-```bash
-cd /home/konkov/leetcode
-nvim HappyNumberDebug.java
-```
-
-Use the normal Java/DAP workflow:
-
-- verify `jdtls` with `:LspInfo`
-- set breakpoints with `<leader>db`
-- debug the main class with `<leader>jd`
-- use `<leader>d*` keys for stepping, eval, UI, and termination
-
-If needed, force Java DAP setup first:
-
-```vim
-:JavaDapConfig
-```
-
-## Runtime Note
-
-If JDTLS or Java debugging fails under the shell default JDK, launch Neovim with
-a known-good JDK:
-
-```bash
-JAVA_HOME=/usr/lib/jvm/java-1.17.0-openjdk-amd64 \
-PATH=/usr/lib/jvm/java-1.17.0-openjdk-amd64/bin:$PATH \
-nvim /home/konkov/leetcode/HappyNumberDebug.java
-```
-
-## Relevant Files
-
-- [lua/plugins/intellij-lsp.lua](/home/konkov/.config/nvim/lua/plugins/intellij-lsp.lua:1)
-- [lua/plugins/dap.lua](/home/konkov/.config/nvim/lua/plugins/dap.lua:1)
-- [lua/util/java_debug.lua](/home/konkov/.config/nvim/lua/util/java_debug.lua:1)
+Use the [debugging guide](java-debugging.md) for stepping, evaluation, and output,
+and [Java workflow](java-workflow.md) for project/JDK setup. LeetCode run/submit
+keys remain available for the original problem file.
