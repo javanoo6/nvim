@@ -176,6 +176,8 @@ and Helm values. Markdown/YAML variants keep stock indentation.
 conform.nvim  (formatting.lua)
   — format on save (BufWritePre), also <leader>cf
   — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
+  — directory formatting is asynchronous and sequential; :FormatDirCancel stops after the current request
+  — modified buffers are skipped; stale async results are rejected
   — :FormatterInfo reports formatter dependencies and IntelliJ coverage gaps
   — directory formatting implementation lives in util/format_dir.lua and uses fd/fdfind with explicit skip patterns
   — auto-formatting enabled by default (disable with :FormatDisable)

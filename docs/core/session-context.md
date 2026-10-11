@@ -257,6 +257,14 @@ Update this file when:
   manual Lua recursive walker. It includes hidden files, respects ignore files
   such as `.fdignore`, and filters candidates through Conform's configured
   filetypes.
+- Directory discovery runs asynchronously, followed by one asynchronous Conform
+  request at a time. `:FormatDirCancel` stops after the active request completes;
+  overlapping directory runs are rejected. Modified buffers are skipped, and
+  Conform rejects stale results if a buffer changes during its request. Successful
+  edits are written with format-on-save suppressed; failed writes retain the
+  modified buffer. Unchanged files count as skipped. Tests use disposable files
+  and real subprocesses; measurements are in
+  `docs/audits/format-dir-profile-2026-10-11.md`.
 - `nvim-lint` still runs immediately after writes, but `BufReadPost` linting is
   debounced briefly so opening many files does not start expensive linters all at
   once.

@@ -764,6 +764,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>cI`            | Java: import unambiguous classes in buffer                 |
 | `<leader>cf`            | Format (Java: IntelliJ LSP + imports)                      |
 | `<leader>cF`            | Format current file's directory, or prompt for a directory |
+| `:FormatDirCancel`      | Stop directory formatting after the current file finishes  |
 
 ### Symbols & Outline
 
