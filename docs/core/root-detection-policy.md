@@ -169,7 +169,10 @@ Relevant file:
 
 ### Linting
 
-`nvim-lint` currently runs with `cwd` set to the current file's directory:
+`nvim-lint` uses linter-specific working directories. Selene explicitly runs
+from this config root, Ruby uses its project/RVM helper, and other linters retain
+their configured or upstream cwd behavior. Delayed lint jobs target the original
+event buffer through `nvim_buf_call()`:
 
 - [lua/plugins/linting.lua](/home/konkov/.config/nvim/lua/plugins/linting.lua:31)
 

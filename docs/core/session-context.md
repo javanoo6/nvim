@@ -359,17 +359,16 @@ Update this file when:
   formatting on LSP errors.
 - Format-on-save uses `10000ms` for standalone IntelliJ formatter routes and
   Ruby/RuboCop, and `500ms` for other auto-formatted filetypes.
-- Pyright is configured locally through `vim.lsp.config("pyright", ...)` with
-  a resolved Mason absolute binary path, because current `mason-lspconfig`
+- Pyright is configured locally through `vim.lsp.config("pyright", ...)` using
+  the first executable on PATH, then an absolute Mason fallback, because `mason-lspconfig`
   auto-enable behavior can otherwise bypass repo-local `cmd` customization.
   `:PyrightInfo` shows the exact command the current session will use.
 - `<leader>ll` opens `vim.lsp.log.get_filename()` directly instead of calling
   `:LspLog`, because this Neovim runtime does not provide a built-in `:LspLog`
   command.
-- Remaining `:checkhealth` warnings after the audit are optional: Mason reports
-  missing ecosystem runtimes for unconfigured PHP/Julia/luarocks workflows, and
-  which-key reports optional `mini.icons` is absent while this config uses
-  `nvim-web-devicons`.
+- Health checks can report unused PHP/Julia/luarocks runtimes or optional
+  `mini.icons`; those integrations are not required by this config, which uses
+  `nvim-web-devicons`. Check other warnings against the configured workflows.
 - Lualine diagnostic and diff symbols intentionally use restrained ASCII labels
   (`E:`, `W:`, `I:`, `H:`, `+`, `~`, `-`) so they remain visible without
   depending on icon fonts or a specific theme.
@@ -444,8 +443,8 @@ Update this file when:
   jar is missing; it does not install or start JDTLS.
 - `<leader>ci/cI` use freshly pulled IntelliJ diagnostic `Import class` fixes;
   ambiguity uses the plugin picker. Bulk imports wait for edits between fixes and
-  pause after a cancelled/unanswered picker. Field counters and JDTLS lens glue
-  are retired; the redundant `<leader>uJ` retirement notice was removed.
+  pause after a cancelled/unanswered picker. Field-usage counters and JDTLS lens glue
+  are absent; references use the normal LSP navigation keys.
   References remain on `gR` (Glance).
   The pinned IntelliJ plugin exposes Run/Debug code lenses, not a field-usage
   counter setting. Inspection of server bundle `263.6379.0` found JVM main-entry
@@ -484,8 +483,7 @@ Update this file when:
   The explicit style file is this config's `.editorconfig`, restoring the previous
   standalone formatter policy.
 - Python, YAML, and shell routes use the standalone jar by explicit user request,
-  even though earlier baseline samples did not change. Other languages retain
-  their existing formatters.
+  with LSP fallback disabled. Other languages retain their existing formatters.
 - Conform LSP requests run inside `nvim_buf_call` for their target because this
   Conform revision builds formatting parameters from the current buffer's URI
   and indentation even when `bufnr` is supplied. Directory writes temporarily
@@ -673,9 +671,9 @@ Update this file when:
   for dynamic ref arguments.
 - Planned work:
   [docs/plans/code-action-cleanup-highlight-plan.md](/home/konkov/.config/nvim/docs/plans/code-action-cleanup-highlight-plan.md:1)
-  tracks code-action cleanup highlighting, and
-  [docs/plans/live-hunks-view-plan.md](/home/konkov/.config/nvim/docs/plans/live-hunks-view-plan.md:1)
-  tracks the right-side live hunks view.
+  tracks unimplemented code-action cleanup highlighting;
+  [docs/plans/persist-toggle-state-task.md](/home/konkov/.config/nvim/docs/plans/persist-toggle-state-task.md:1)
+  proposes durable toggle preferences. Neither proposal supplies active commands.
 
 ## External Workflow Helpers
 

@@ -15,5 +15,6 @@ Start every session here:
 - Prefer updating [docs/core/session-context.md](/home/konkov/.config/nvim/docs/core/session-context.md:1)
   whenever local behavior diverges from upstream plugin defaults or a new
   repo-specific helper/decision is introduced.
-- Treat Java support as heavily customized. Read the Java docs before changing
-  `nvim-java`, JDTLS, Java scratch behavior, or `neotest-java` flows.
+- Treat Java support as heavily customized. Read
+  [docs/java/java-workflow.md](/home/konkov/.config/nvim/docs/java/java-workflow.md:1)
+  before changing IntelliJ LSP, Java scratch behavior, or `neotest-java` flows.

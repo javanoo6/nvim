@@ -14,14 +14,14 @@ init.lua
 └── config/autocmds.lua  — highlight-on-yank, resize, close-with-q, etc.
 
 lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
-                           format, M.icons) used by keymaps + plugins
+                           pick, M.icons) used by keymaps + plugins
 ```
 
 ---
 
 ## Plugin categories
 
-### 1. Infrastructure (shared deps, always loaded)
+### 1. Infrastructure (shared dependencies)
 
 | Plugin                        | Role                            | File                   |
 |-------------------------------|---------------------------------|------------------------|
@@ -48,7 +48,7 @@ nvim-lspconfig  ─────────────────────�
   ├── cmp-nvim-lsp            ── exposes LSP completions to cmp
   ├── nvim-lsp-file-operations ── rename file → updates LSP imports
   │     └── neo-tree.nvim     ── (tree triggers file ops)
-  ├── fidget.nvim             ── LSP progress spinner (bottom-right)
+  ├── fidget.nvim             ── LSP progress support (polling disabled locally)
   ├── Glance (glance.lua)     ── preview pane for gd / gR / gy / gI
   ├── actions-preview.nvim    ── code action picker; shows diff previews for edit-backed actions (<leader>ca, <A-CR>)
   ├── aerial.nvim             ── temporary left code outline (<leader>co)
@@ -57,8 +57,8 @@ nvim-lspconfig  ─────────────────────�
 
 Pyright note:
 
-- `pyright` is configured through `vim.lsp.config("pyright", ...)` with a
-  resolved Mason absolute binary path.
+- `pyright` is configured through `vim.lsp.config("pyright", ...)` using
+  the first executable on PATH, then an absolute Mason fallback.
 - `basedpyright` is configured but not enabled by default. Use
   `:PythonLspUseBasedPyright` to switch the current session to BasedPyright, or
   `:PythonLspUsePyright` to switch back.
@@ -178,7 +178,7 @@ conform.nvim  (formatting.lua)
   — <leader>cF formats the current buffer's directory recursively; if no file-backed buffer exists, it prompts for a directory
   — directory formatting is asynchronous and sequential; :FormatDirCancel stops after the current request
   — modified buffers are skipped; stale async results are rejected
-  — :FormatterInfo reports formatter dependencies and IntelliJ coverage gaps
+  — :FormatterInfo reports formatter dependencies, jar availability, and style path
   — directory formatting implementation lives in util/format_dir.lua and uses fd/fdfind with explicit skip patterns
   — auto-formatting enabled by default (disable with :FormatDisable)
   — format-on-save warns once per unchanged error state when skipped due to LSP errors
@@ -524,10 +524,10 @@ sessions.lua
   auto-session  ── auto save/restore on open/close
                    auto-save also when launched with file args
                    stops LSP clients before non-startup restores
-                   <leader>Ss/Sr/Sd/Sf/Sa (Sa enables auto-save)
+                   <leader>Ss/Sr/Sd/Sf/Sa (Sa enables session auto-save)
 
 projects.lua
-  project.nvim  ── near-stock project detection + recent-project history
+  project.nvim  ── manual root detection + recent-project history
                    <leader>fp opens Telescope projects
 
 util/frequent_roots.lua
@@ -755,7 +755,7 @@ lazy.nvim
 | `<leader>dg`      | debug go       | nvim-dap-go                                                                                            |
 | `<leader>e/E`     | explorer       | neo-tree                                                                                               |
 | `-` / `<leader>o` | oil            | oil.nvim                                                                                               |
-| `<leader>f`       | file/find      | telescope, yanky                                                                                       |
+| `<leader>f`       | file/find      | telescope, scratch                                                                                       |
 | `<leader>g`       | go             | gopls, gopher                                                                                          |
 | `<leader>gi`      | go insert      | gopher                                                                                                 |
 | `<leader>gs`      | go struct tags | gopher                                                                                                 |
@@ -772,7 +772,7 @@ lazy.nvim
 | `<leader>r`       | replace        | grug-far                                                                                               |
 | `<leader>s`       | search         | telescope, todo-comments                                                                               |
 | `<leader>S`       | sessions       | auto-session                                                                                           |
-| `<leader>t`       | test/theme     | neotest, themery                                                                                       |
+| `<leader>t`       | test/theme     | neotest (theme picker is <leader>ut)                                                                                       |
 | `<leader>u`       | ui             | toggles (spell, wrap, numbers, fold, diagnostics, inlay hints, reference style, live hunks, auto-save) |
 | `<leader>w`       | windows        | splits                                                                                                 |
 | `<leader>x`       | diagnostics    | trouble                                                                                                |

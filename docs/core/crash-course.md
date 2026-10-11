@@ -29,6 +29,7 @@ nvim setup reference guide.
 21. [Miscellaneous](#miscellaneous)
 22. [Sessions](#sessions)
 23. [Obsidian (Notes)](#obsidian-notes)
+24. [LeetCode](#leetcode)
 
 ---
 
@@ -44,8 +45,8 @@ nvim setup reference guide.
 | `A`              | Insert at end of line              |
 | `o`              | Open new line below (enter insert) |
 | `O`              | Open new line above (enter insert) |
-| `ga`             | **Add line above** (stay normal)   |
-| `gA`             | **Add line below** (stay normal)   |
+| `ga`             | Move text from cursor to a line above |
+| `gA`             | Move text from cursor to a line below |
 | `v`              | Visual mode                        |
 | `V`              | Visual line mode                   |
 | `<C-v>`          | Visual block mode                  |
@@ -64,7 +65,7 @@ Until you press `Esc`, it may look like only one line changed.
 | `:q`          | Quit                |
 | `:wq` or `ZZ` | Save and quit       |
 | `:q!`         | Quit without saving |
-| `<C-s>`       | Save (in any mode)  |
+| `<C-s>`       | Save in normal/insert/visual/select modes |
 | `<leader>qq`  | Quit all            |
 
 ---
@@ -113,7 +114,7 @@ Examples:
 | `d3w`  | Delete 3 words forward                      |
 | `c2j`  | Change from cursor through 2 lines downward |
 | `y4k`  | Yank through 4 lines upward                 |
-| `V5j`  | Select 5 lines downward in visual line mode |
+| `V5j`  | Extend selection down 5 lines (6 lines total) |
 
 Count behavior for `j` and `k`:
 
@@ -134,7 +135,7 @@ Count behavior for `j` and `k`:
 
 | Key                    | Action                            |
 |------------------------|-----------------------------------|
-| `s`                    | Flash jump (type 2 chars to jump) |
+| `s`                    | Flash jump (search text, then label) |
 | `S`                    | Flash treesitter (select node)    |
 | `r` (operator)         | Remote flash                      |
 | `R` (operator/visual)  | Treesitter search                 |
@@ -178,8 +179,8 @@ Count behavior for `j` and `k`:
 | `<C-h>` | Delete previous character |
 | `<C-w>` | Delete previous word      |
 | `<C-u>` | Delete to start of line   |
-| `<C-a>` | Go to start of line r     |
-| `<C-e>` | Go to end of line         |
+| `<C-a>` | Insert previously inserted text |
+| `<C-e>` | Abort completion |
 | `<C-n>` | Next completion           |
 | `<C-p>` | Previous completion       |
 
@@ -264,7 +265,7 @@ Mental model:
 | Key | Meaning                                                     |
 |-----|-------------------------------------------------------------|
 | `q` | Start recording into a register, or stop recording          |
-| `Q` | Legacy Ex mode command; usually not part of normal workflow |
+| `Q` | Replay the last recorded macro in Neovim |
 
 Standard macro workflow:
 
@@ -399,7 +400,7 @@ Select text first, then press `gsa` + bracket/quote:
 
 - `gcc` - Comment/uncomment current line
 - `gcip` - Comment/uncomment inner paragraph
-- `V5jgc` - Select 5 lines down, then comment all
+- `V5jgc` - Select current line plus 5 below, then comment all
 - `gc` (in visual) - Comment/uncomment selection
 
 ---
@@ -438,7 +439,8 @@ search prompt, then press `<CR>` to run the search.
 | Key          | Mode   | Action                                              |
 |--------------|--------|-----------------------------------------------------|
 | `<leader>rg` | normal | Open scoped to **current file** (Paths pre-filled)  |
-| `<leader>rG` | normal | Open across **all files** (blank, full project)     |
+| `<leader>rG` | normal | Literal replace across files in the current working directory |
+| `<leader>rR` | normal | Regex replace across files in the current working directory |
 | `<leader>rw` | normal | Open with word under cursor, scoped to current file |
 | `<leader>rg` | visual | Open with selection, scoped to current file         |
 
@@ -450,7 +452,9 @@ search prompt, then press `<CR>` to run the search.
 4. Press `\r` (`<localleader>r`) to **apply** all replacements
 5. Press `q` to close
 
-**Tip:** Clear the **Paths** field to expand search to the whole project. Use glob patterns like `*.go` in Paths to scope by filetype.
+**Tip:** Clear **Paths** to search the working directory. The defaults use
+`--fixed-strings`; use `<leader>rR` or remove that flag for regex matching. Use
+globs such as `*.go` in **Paths** to scope by filetype.
 
 ### Replace (within visual selection)
 
@@ -732,19 +736,20 @@ Use this when you need to rename variables or make targeted edits across many fi
 
 ### Glance Popup
 
-After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview.
+After `gd`, `gR`, `gy`, or `gI`, Glance normally opens a results list with a
+file preview. A single result in the current buffer jumps directly.
 
 | Key                 | Action                           |
 |---------------------|----------------------------------|
 | `j` / `<Down>`      | Next result                      |
 | `k` / `<Up>`        | Previous result                  |
 | `<Tab>` / `<S-Tab>` | Next / previous location         |
-| `<C-u>` / `<C-d>`   | Scroll preview up / down         |
+| `<C-u>` / `<C-d>`   | Scroll preview up / down from the list |
 | `<CR>`              | Jump to selected result          |
 | `v` / `s` / `t`     | Open in vsplit / split / new tab |
 | `o`                 | Preview selected location        |
 | `<leader>l`         | Switch between list and preview  |
-| `q` / `Q` / `<Esc>` | Close Glance                     |
+| `q` / `Q` / `<Esc>` | Close from the list; `Q` also closes from preview |
 
 ### Documentation
 
@@ -762,7 +767,7 @@ After `gd`, `gR`, `gy`, or `gI`, Glance opens a results list with a file preview
 | `<leader>cp`            | Fix package declaration                                    |
 | `<leader>ci`            | Java: import class under cursor, prompt if ambiguous       |
 | `<leader>cI`            | Java: import unambiguous classes in buffer                 |
-| `<leader>cf`            | Format (Java: IntelliJ LSP + imports)                      |
+| `<leader>cf`            | Format through Conform (Java: standalone jar, imports, rearrangement) |
 | `<leader>cF`            | Format current file's directory, or prompt for a directory |
 | `:FormatDirCancel`      | Stop directory formatting after the current file finishes  |
 
@@ -915,6 +920,9 @@ This is expected behavior, not a broken Neovim or LSP setup.
 
 ---
 
+Full-file Java formatting uses the standalone jar to optimize imports and
+rearrange members; range formatting omits both cleanup flags.
+
 ### Java Debugging
 
 **How Java debugging works:** IntelliJ LSP resolves Maven/Gradle compilation and
@@ -1021,7 +1029,7 @@ real mapping on first use and it will not be restored for command-only plugins.
 
 | Key          | Action                   |
 |--------------|--------------------------|
-| `q`          | Close panel / quit       |
+| `<leader>Gq` | Close Diffview |
 | `<tab>`      | Next changed file        |
 | `<S-tab>`    | Prev changed file        |
 | `[x` / `]x`  | Prev / Next conflict     |
@@ -1114,21 +1122,18 @@ If you are in **nvimdiff mergetool** instead of inline markers:
 
 | Key          | Action                           |
 |--------------|----------------------------------|
-| `]x`         | Jump to next diff conflict       |
-| `[x`         | Jump to prev diff conflict       |
-| `<leader>Co` | Copy `LOCAL` hunk into `MERGED`  |
-| `<leader>Ct` | Copy `REMOTE` hunk into `MERGED` |
-| `<leader>Cl` | Focus `LOCAL` window             |
-| `<leader>Cr` | Focus `REMOTE` window            |
-| `<leader>Cm` | Focus `MERGED` window            |
+| `]c`         | Jump to next diff hunk           |
+| `[c`         | Jump to previous diff hunk       |
 | `<leader>GQ` | Write all and quit (`:wqa`)      |
 | `<leader>GA` | Abort merge tool (`:cq`)         |
 
 Notes:
 
-- `BASE` is not present in this 3-window `nvimdiff` mergetool layout.
-- Use Diffview only when you need common-ancestor context.
-- Do your edits in `MERGED`. `LOCAL` and `REMOTE` are reference panes.
+- The exact pane layout is controlled by your Git merge-tool configuration.
+- Use `<C-h/j/k/l>` to focus a pane and `:diffget` to copy from a selected reference
+  buffer; this repo does not install LOCAL/REMOTE/MERGED focus shortcuts.
+- The `<leader>Co/Ct` keys resolve inline marker blocks or Diffview conflicts;
+  they are not classic vimdiff copy-hunk mappings.
 
 **Step 6 — Need more context? Use Diffview 3-way view**
 
@@ -1174,7 +1179,7 @@ git merge feature-branch   →  conflicts appear
 open file in nvim          →  markers highlighted automatically
 ]x / [x                    →  jump between conflicts
 <leader>Co / Ct / Cb / C0  →  resolve inline (ours/theirs/both/none)
-nvimdiff mergetool         →  <leader>Co / Ct pull LOCAL/REMOTE into MERGED
+classic vimdiff mergetool  →  navigate panes, use :diffget and edit MERGED
 :wqa or <leader>GQ         →  finish mergetool
 :cq or <leader>GA          →  abort mergetool
 :DiffviewOpen              →  3-way view for complex cases
@@ -1237,12 +1242,14 @@ git commit                 →  finalize merge
 
 | Key         | Action                     |
 |-------------|----------------------------|
-| `mx`        | Toggle mark x (a-z)        |
+| `mx`        | Set mark x (a-z) |
+| `m;`        | Toggle next available mark on this line |
+| `m]` / `m[` | Next / previous mark |
 | `dmx`       | Delete mark x              |
 | `dm-`       | Delete all marks in line   |
 | `dm<space>` | Delete all marks in buffer |
-| `]'`        | Next mark                  |
-| `['`        | Prev mark                  |
+| `]'`        | End of last changed/yanked text |
+| `['`        | Start of last changed/yanked text |
 | `` `x ``    | Jump to mark x             |
 | `'x`        | Jump to mark line          |
 
@@ -1267,7 +1274,8 @@ git commit                 →  finalize merge
 | `<leader>ui` | Inspect UI/highlights                             |
 | `<leader>uT` | Toggle Treesitter buffer                          |
 | `<leader>uI` | Toggle references buffer                          |
-| `<leader>ut` | Color schemes                                     |
+| `<leader>ut` | Color schemes |
+| `<leader>ua` | Toggle buffer auto-save |
 
 ---
 
@@ -1295,8 +1303,8 @@ the same global buffer list with every other tab.
 
 | Key     | Action                                |
 |---------|---------------------------------------|
-| `<A-a>` | Open / show terminal                  |
-| `<A-c>` | Hide terminal (process keeps running) |
+| `<A-a>` | Toggle floating terminal (normal/terminal modes) |
+| `<A-c>` | Hide Toggleterm from terminal mode; process keeps running |
 
 ### Inside terminal buffer
 
@@ -1383,13 +1391,8 @@ Notes:
 - Managed-env discovery is pinned to the resolved `fd`/`fdfind` binary path so `<leader>ps` does not depend on how Neovim's startup `PATH` was built.
 - `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
 - `:PythonLspUseBasedPyright` switches Python buffers to BasedPyright for the current session; `:PythonLspUsePyright` switches back.
-- Java class completion items can add imports through IntelliJ LSP completion edits. For pasted unresolved class names, use `<leader>ci` for the symbol under
-  the
-  cursor, or `<leader>cI` to walk the current buffer: one-candidate imports are applied automatically, and ambiguous imports are shown in a picker. Bulk Java
-  organize-import cleanup and member rearrangement use the standalone IntelliJ
-  formatter jar on full-file formatting. Range requests omit both cleanup flags.
-  Markdown/XML/Python/YAML/shell also use the jar.
-- Use `<leader>tt` to run the current Python test file/package after selecting a venv. `neotest-python` resolves Python from the active venv and `.env`
+- Python formatting uses the standalone IntelliJ jar; Ruff provides linting.
+- Use `<leader>tt` to run the current Python test target after selecting a venv. `neotest-python` resolves Python from the active venv and `.env`
   values loaded during venv activation are inherited by test runs.
 
 ---
@@ -1451,7 +1454,7 @@ Press `<leader>` and wait to see all groups:
 
 ## Tips
 
-1. **Flash Jump**: Press `s` then type 2 characters to jump anywhere
+1. **Flash Jump**: Press `s`, enter search text, then choose a label
 2. **Text Objects**: Use `i` for inside, `a` for around (e.g., `diw` = delete word)
 3. **Dot Command**: `.` repeats the last change
 4. **Registers**: `"ay` yanks to register `a`, `"ap` pastes from register `a`
@@ -1463,7 +1466,10 @@ Press `<leader>` and wait to see all groups:
 
 ## Sessions
 
-Auto-saved per project directory. Restores open files, splits, and cursor positions.
+Sessions are saved per working directory and Git branch, excluding configured
+suppressed directories (`~/`, `~/Downloads`, `/`, `/tmp`). Restores open files,
+splits, and cursor positions. Non-startup restores stop attached LSP clients
+before loading the saved workspace.
 Auto-save also works when Neovim is launched with file arguments.
 Buffer auto-save starts enabled by default and writes normal file buffers even
 when the current buffer has LSP errors. Conform still skips format-on-save when
@@ -1475,13 +1481,14 @@ errors exist. Toggle auto-save with `<leader>ua`.
 | `<leader>Sr` | Restore session  |
 | `<leader>Sd` | Delete session   |
 | `<leader>Sf` | Find sessions    |
-| `<leader>Sa` | Enable auto-save |
+| `<leader>Sa` | Enable session auto-save |
 
 ---
 
 ## Obsidian (Notes)
 
-Vault: `~/Obsidian`. Active only in `.md` files.
+Vault: `~/Obsidian`, resolved from your home. Obsidian integration applies inside
+that vault. Ordinary Markdown keeps its local heading-link `<CR>` mapping.
 
 ### Navigation
 
@@ -1517,4 +1524,18 @@ Vault: `~/Obsidian`. Active only in `.md` files.
 
 ---
 
-_Generated for your Neovim setup_
+## LeetCode
+
+| Key | Action |
+|---|---|
+| `<leader>Ll` | Menu |
+| `<leader>Lr` / `<leader>Ls` | Run / submit |
+| `<leader>Ld` / `<leader>Ln` | Daily / random problem |
+| `<leader>Lc` / `<leader>Li` / `<leader>Lt` | Console / info / tabs |
+| `<leader>Le` / `<leader>Lm` / `<leader>Lh` | Easy / medium / hard lists |
+| `<leader>LR` | DSA roadmap picker |
+| `<leader>LU` | Refresh cookies |
+
+`:Leet`, `:LeetRoadmap`, and `:LeetCookies` also load the integration.
+Java local debugging uses a project harness; see
+[Java LeetCode debugging](../java/java-leetcode-debugging.md).

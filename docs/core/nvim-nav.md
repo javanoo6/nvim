@@ -45,8 +45,6 @@ Direction model in this config follows Vim defaults: `j = down`, `k = up`.
 | `:ls`               | List buffers            |
 | `<C-^>`             | Toggle last two buffers |
 
-## In-File Movement
-
 ## Navigation Matrix
 
 | Keys              | Action                   |
@@ -82,13 +80,14 @@ Direction model in this config follows Vim defaults: `j = down`, `k = up`.
 
 | Key               | Action                                    |
 |-------------------|-------------------------------------------|
-| `<C-d>` / `<C-u>` | Half-page down/up                         |
+| `<C-u>` | Half-page up, centered |
+| `<C-d>` | Duplicate line (normal) / selected lines (visual) |
 | `<C-f>` / `<C-b>` | Full page down/up                         |
 | `gg` / `G`        | File start/end                            |
 | `{` / `}`         | Paragraph up/down                         |
 | `%`               | Matching bracket                          |
 | `*` / `#`         | Search word under cursor forward/backward |
-| `gd`              | Go to local definition                    |
+| `gd` | Glance definitions in LSP buffers; local declaration otherwise |
 | `gf`              | Go to file under cursor                   |
 
 ## Marks

@@ -1,5 +1,8 @@
 # Task: Persist Neovim Toggle State
 
+Status: planned only. `toggle_state.lua` and its commands do not exist; current
+UI toggles reset to configured defaults on restart unless a plugin persists them.
+
 ## Goal
 
 - [ ] Move durable runtime toggles into one local persisted state file.
@@ -191,7 +194,7 @@
 - [ ] `<leader>Xq` / `quicker.toggle()`
     - Opens/closes editable quickfix UI.
 
-- [ ] `<leader>du` / `dapui.toggle()`
+- [ ] `<leader>du` / `util.debug_ui.toggle()`
     - Opens/closes DAP UI.
 
 - [ ] DAP runtime toggles:

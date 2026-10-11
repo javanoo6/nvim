@@ -9,11 +9,16 @@ Start here:
 ## Folders
 
 - `core/`: stable usage, navigation, plugin map, and repo behavior.
-- `plans/`: planned or unfinished work.
+- `plans/`: unimplemented proposals, explicitly separate from active behavior.
 - `java/`: current IntelliJ Java setup, run/debug, tests, and LeetCode harnesses.
 - `python/`: Python environment behavior.
 - `git/`: Git and LazyGit workflow notes.
 - `learning/`: learning notes and local plugin exercises.
+
+## Setup
+
+- [Prerequisites](core/prerequisites.md): current runtime/tool requirements and config checks.
+- [macOS setup](core/macos-setup.md): Homebrew, JDK, and formatter setup.
 
 ## Java
 

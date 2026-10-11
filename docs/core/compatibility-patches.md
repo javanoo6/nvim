@@ -172,7 +172,7 @@ has a check and removal condition; larger workflow limits remain explicit.
   completion ownership, and follow-up rename routing. `tests/lsp_rename.lua`
   covers native Java rename dispatch. These probes do not launch IntelliJ.
 - **Manual smoke:** real dependency completion/imports, rename, template creation,
-  and mixed Maven/Gradle import; see migration Steps 2, 3, and 8.
+  and mixed Maven/Gradle import; see `docs/java/java-workflow.md`.
 - **Remove when:** supported upstream hooks/options supply the same behavior;
   keep cmp ownership, workspace routing, and mixed-root policy intact.
 
@@ -192,8 +192,8 @@ has a check and removal condition; larger workflow limits remain explicit.
   launch-payload, cache deletion, or debugger acceptance test.
 - **Manual smoke:** Maven and Gradle tests, JUnit selection, build failure,
   breakpoints/continue/results, two simultaneous workspaces, scoped restart/cache
-  clearing, and remote-independent app debugging. Evidence and limits are in
-  migration Steps 5, 7, and 8; remote attach remains deferred.
+  clearing, and remote-independent app debugging. Workflow limits are in
+  `docs/java/java-workflow.md` and `java-test-workflow.md`; remote attach is unavailable.
 - **Remove when:** a supported upstream integration covers the same workflows.
   Keep these user-selected features even if replacement code is shorter.
 

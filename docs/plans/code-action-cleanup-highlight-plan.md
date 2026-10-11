@@ -9,7 +9,7 @@ Primary file to create later: `lua/util/code_action_cleanup.lua`.
 ## Scope
 
 - Treat this as an LSP-code-action signal, not a formatter/linter replacement.
-- Start with Java/JDTLS, because cleanup actions are most likely there.
+- Start with Java/IntelliJ LSP, because cleanup actions are most likely there.
 - Keep the highlight passive: no auto-apply and no diagnostics mutation.
 - Do not change `<leader>ca` / `<A-CR>` behavior. This feature is only a visual hint layer.
 
@@ -141,7 +141,7 @@ Suggested defaults:
 ## Open Questions
 
 - Should `source.organizeImports` count as cleanup? Current assumption: yes.
-- Should command-only JDTLS cleanup actions highlight the whole visible range or only show a sign? Current assumption: weak line highlight for the requested
+- Should command-only IntelliJ cleanup actions highlight the whole visible range or only show a sign? Current assumption: weak line highlight for the requested
   range.
 - Should this be Java-only until proven stable? Current assumption: yes.
 

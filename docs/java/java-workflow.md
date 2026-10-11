@@ -12,7 +12,7 @@ local IntelliJ bridge.
 Use `:JavaInfo` for the owning client, root, JDK, bundle, import progress, and
 readiness. `:checkhealth intellij-lsp` checks the installed server.
 `NVIM_JAVA_HOME` takes precedence over `JAVA_HOME` for the project JDK; the
-server uses its bundled JBR. See [prerequisites](../core/prepequisites.md) and
+server uses its bundled JBR. See [prerequisites](../core/prerequisites.md) and
 [macOS setup](../core/macos-setup.md) for platform setup.
 
 Maven and Gradle projects are supported. Roots with both build systems prefer

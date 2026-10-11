@@ -1,316 +1,105 @@
 # Resolve Git Conflicts With LazyGit And Neovim
 
-Use this when a merge, pull, or rebase stops because Git found conflicts.
+Use LazyGit to inspect/stage conflicts and finish the Git operation. Use Neovim
+for edits, inline conflict choices, or a Diffview merge view.
 
-LazyGit is used to see Git state, open conflicted files, stage resolved files,
-and finish the merge. Neovim is used to edit and resolve the conflict contents.
+## Open a conflicted file
 
-## Open LazyGit
+Open LazyGit with `<leader>Gg` or `<A-g>`. `Esc` goes back, `q` exits LazyGit,
+and `<C-q>` leaves its terminal mode without quitting the process.
 
-From Neovim normal mode:
+In the Files panel, select the conflicted file and press `o`. This repo's
+`os.open` helper opens it in the existing Neovim instance and closes the
+LazyGit float. `e` uses LazyGit's configured editor and can have a different
+process/window lifecycle.
 
-```text
-<Space>Gg
-```
+To start a merge, select a branch in LazyGit's Branches panel and use its merge
+action (`M` in the installed default mappings). `U` opens this repo's pull menu.
+Those Git operations can produce unmerged files in the Files panel.
 
-`<Space>` is this config's `<leader>` key.
+## Resolve inline markers
 
-Inside LazyGit:
-
-```text
-Esc     back / cancel inside LazyGit
-q       quit LazyGit
-<C-q>   leave LazyGit terminal mode and return to Neovim
-```
-
-## Start The Merge Or Pull
-
-To merge a branch from LazyGit:
-
-1. Open LazyGit with `<Space>Gg`.
-2. Go to the **Branches** panel with `4`.
-3. Select the branch you want to merge into the current branch.
-4. Press `M`.
-5. Confirm the merge.
-
-To pull from LazyGit:
-
-1. Open LazyGit with `<Space>Gg`.
-2. Press `U`.
-3. Choose the pull target and mode.
-4. Confirm.
-
-If Git can merge cleanly, there is nothing else to do. If Git reports conflicts,
-continue below.
-
-## Open A Conflicted File
-
-In LazyGit's **Files** panel, conflicted files appear as unmerged files.
-
-Select a conflicted file and press:
+A normal merge conflict contains:
 
 ```text
-e
+<<<<<<< HEAD
+ours
+=======
+theirs
+>>>>>>> feature-branch
 ```
 
-That opens the file in Neovim.
+| Key | Action |
+|---|---|
+| `]x` / `[x` | Next / previous marker conflict |
+| `<leader>Co` | Keep ours |
+| `<leader>Ct` | Keep theirs |
+| `<leader>Cb` | Keep both |
+| `<leader>C0` | Keep neither |
 
-## When LazyGit Opens The Merge Tool
+For a normal merge, ours is the current branch and theirs is the merged branch.
+Rebase uses ours/theirs relative to the replay operation, so inspect the contents
+rather than relying on branch intuition.
 
-This setup uses Git's `diffview` merge tool:
+If neither side is correct, edit the code and remove all marker lines manually.
+Save with `<C-s>`. Reopen LazyGit with `<leader>Gg`, review the diff, and stage
+the file with `Space`. Continue the merge/rebase using LazyGit's operation menu;
+a normal merge finishes with a commit (`c`).
+
+## Diffview
+
+`<leader>GD` opens Diffview. Its configured merge layout uses `diff3_mixed`, with
+the editable result at the bottom and reference versions available for context.
+
+| Key | Action |
+|---|---|
+| `]x` / `[x` | Next / previous conflict |
+| `<leader>Co` / `<leader>Ct` | Choose ours / theirs for the conflict |
+| `<leader>Cb` / `<leader>CB` | Choose both / base |
+| `<leader>C0` | Choose none |
+| `<leader>CO` / `<leader>CT` / `<leader>CA` | Choose ours / theirs / all for the file |
+| `<leader>Gq` | Close Diffview |
+
+## Git merge-tool processes
+
+`<leader>Gt` runs `git mergetool`. The merge tool is an external Git setting,
+not installed by this repo. Inspect it with:
+
+```sh
+git config --get merge.tool
+git config --get mergetool.diffview.cmd
+```
+
+The local Diffview tool command is:
 
 ```sh
 nvim "$MERGED" -c "DiffviewOpen"
 ```
 
-That means the flow becomes nested:
-
-```text
-main Neovim
-  -> LazyGit terminal
-      -> git mergetool
-          -> second Neovim instance with DiffviewOpen
-```
-
-The merge tool is a **second Neovim process**, not another buffer in the main
-Neovim session. Resolve the current file in that second Neovim, then finish that
-process to return to LazyGit.
-
-Use this key instead of remembering `:wqa`:
-
-```text
-<Space>GQ   finish current mergetool file and return to LazyGit
-<Space>GA   abort current mergetool file
-```
-
-`<Space>GQ` writes all windows and quits the second Neovim. It does not directly
-open the next conflicted file. After it returns you to LazyGit, stage the
-resolved file and open the next conflicted file from LazyGit.
-
-## Read The Conflict
-
-A conflict usually looks like this:
-
-```text
-<<<<<<< HEAD
-changes from ours
-=======
-changes from theirs
->>>>>>> feature-branch
-```
-
-For a normal merge:
-
-```text
-ours   = current branch / HEAD
-theirs = branch being merged in
-```
-
-During a rebase, be careful: Git's ours/theirs wording can feel reversed because
-your commit is being replayed onto another base.
-
-## Jump Between Conflicts
-
-In the conflicted file:
-
-```text
-]x      next conflict
-[x      previous conflict
-```
-
-## Resolve A Simple Conflict
-
-Use these keys in normal mode:
-
-```text
-<Space>Co    keep ours
-<Space>Ct    keep theirs
-<Space>Cb    keep both
-<Space>C0    keep neither
-```
-
-After one of these keys, the conflict markers are removed and the chosen content
-stays in the file.
-
-Then jump to the next conflict with:
-
-```text
-]x
-```
-
-Repeat until the file has no conflict markers left.
-
-## Resolve A Complex Conflict By Hand
-
-Use this when neither side is correct by itself.
-
-1. Edit the code into the final version you want.
-2. Delete the marker lines:
-
-```text
-<<<<<<< HEAD
-=======
->>>>>>> feature-branch
-```
-
-3. Save the file:
-
-```text
-<C-s>
-```
-
-The final file must not contain any `<<<<<<<`, `=======`, or `>>>>>>>` marker
-lines.
-
-## Stage The Resolved File
-
-Return to LazyGit from the second Neovim merge tool:
-
-```text
-<Space>GQ
-```
-
-This is the preferred key. It is equivalent to:
-
-```vim
-:wqa
-```
-
-If you are in the main Neovim LazyGit terminal and need to leave terminal mode
-without quitting LazyGit, press:
-
-```text
-<C-q>
-```
-
-In LazyGit's **Files** panel, select the resolved file and press:
-
-```text
-Space
-```
-
-That stages the file.
-
-Repeat the open, resolve, save, and stage flow for every conflicted file.
-
-## Move To The Next Conflicted File
-
-There is no safe single key inside the second Neovim that can both finish the
-current mergetool process and choose the next file in LazyGit. The handoff is:
-
-```text
-<Space>GQ   finish current file in second Neovim and return to LazyGit
-Space       stage the resolved file in LazyGit
-select next conflicted file
-open merge tool for that file
-```
-
-Repeat that loop until LazyGit has no conflicted files left.
-
-## Finish The Merge
-
-When every conflicted file is resolved and staged, press this in LazyGit:
-
-```text
-c
-```
-
-For a merge commit, Git usually pre-fills the merge commit message. Confirm it.
-
-## Fix Conflict Markers Already Committed
-
-If conflict markers were already committed, Git no longer sees an active merge
-conflict. The marker lines are just normal file text. Diffview cannot recreate
-the original merge state unless you still have the real unmerged index entries.
-
-Use the marker finder:
-
-```text
-<Space>GC
-```
-
-Or run the command directly:
-
-```vim
-:GitConflictMarkers
-```
-
-This scans tracked files, ignores marker examples inside fenced Markdown code
-blocks, fills the quickfix list, opens it, and jumps to the first marker. Use
-quickfix navigation to move between hits.
-
-In a file with committed markers, resolve the block like an inline conflict:
-
-```text
-]x           next marker conflict
-[x           previous marker conflict
-<Space>Co    keep ours
-<Space>Ct    keep theirs
-<Space>Cb    keep both
-<Space>C0    keep neither
-```
-
-If the automatic choices are not correct, edit the file manually and delete the
-marker lines. Then save, test, stage, and create a normal fix commit:
-
-```sh
-git add <file>
-git commit -m "Remove committed merge conflict markers"
-```
-
-Use this to only populate quickfix without jumping to the first result:
-
-```vim
-:GitConflictMarkers!
-```
-
-## Use Diffview For Hard Conflicts
-
-If inline conflict markers are not enough context, open Diffview from Neovim:
-
-```text
-<Space>GD
-```
-
-In Diffview merge view:
-
-```text
-]x / [x      next / previous conflict
-<Space>Co   accept ours
-<Space>Ct   accept theirs
-<Space>Cb   accept both
-<Space>CB   accept base
-<Space>C0   accept none
-<Space>GQ   finish current mergetool file
-<Space>GA   abort current mergetool file
-<Space>Gq   close Diffview
-```
-
-Diffview's configured merge layout shows the editable result separately from
-the reference sides, so use it when you need to compare ours, base, and theirs.
-For LazyGit-launched mergetool sessions, prefer `<Space>GQ` over `<Space>Gq`:
-`<Space>Gq` only closes Diffview, while `<Space>GQ` exits the second Neovim and
-returns to LazyGit.
-
-## Quick Reference
-
-```text
-<Space>Gg                  open LazyGit
-4                          branches panel
-M                          merge selected branch
-U                          pull menu
-<Space>GC                  find committed conflict markers
-e                          open selected conflicted file
-]x / [x                    next / previous conflict
-<Space>Co                  keep ours
-<Space>Ct                  keep theirs
-<Space>Cb                  keep both
-<Space>C0                  keep neither
-<C-s>                      save file
-<Space>GQ                  finish second nvim mergetool and return to LazyGit
-<Space>GA                  abort second nvim mergetool
-Space                      stage file in LazyGit
-c                          commit / finish merge
-<Space>GD                  open Diffview
-<Space>Gq                  close Diffview
-```
+It opens a second Neovim process. This config detects startup with
+`DiffviewOpen` and installs:
+
+| Key | Action |
+|---|---|
+| `<leader>GQ` | Write all and quit the merge-tool editor (`:wqa`) |
+| `<leader>GA` | Abort it (`:cq`) |
+
+Those keys are also installed in classic Neovim diff buffers. They are specific
+to the merge-tool lifecycle; in your main editor, save and reopen LazyGit
+instead. `<leader>Gq` closes only Diffview and does not exit a nested editor.
+The parent Git/LazyGit process controls which conflicted file is processed next.
+
+Classic vimdiff panes use normal window navigation and `:diffget`; this repo
+has no LOCAL/REMOTE/MERGED focus-key mappings. `<leader>Co/Ct` are inline-marker
+or Diffview conflict choices, rather than classic vimdiff copy-hunk mappings.
+
+## Markers committed by accident
+
+Committed markers are normal file text; they do not recreate Git's unmerged
+index state. Use `<leader>GC` / `:GitConflictMarkers` to scan tracked files,
+fill quickfix, and jump to the first hit. Examples in fenced Markdown code
+blocks are skipped. `:GitConflictMarkers!` fills quickfix without jumping.
+
+Resolve with inline choices or manual edits, save, test, stage, and create a
+normal fix commit. Diffview can compare versions, but it cannot reconstruct an
+active merge from marker text alone.
