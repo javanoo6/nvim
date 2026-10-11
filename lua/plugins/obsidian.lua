@@ -6,49 +6,50 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
   },
-  opts = {
-    workspaces = {
-      {
-        name = "personal",
-        path = "/home/konkov/Obsidian",
+  opts = function()
+    return {
+      workspaces = {
+        {
+          name = "personal",
+          path = vim.fn.expand("~") .. "/Obsidian",
+        },
       },
-    },
-    -- Use Telescope for search
-    picker = {
-      name = "telescope.nvim",
-    },
-    -- Follow links with gf
-    follow_url_func = function(url)
-      if vim.fn.executable("xdg-open") ~= 1 then
-        vim.notify("xdg-open is missing; install xdg-utils to open URLs", vim.log.levels.ERROR)
-        return
-      end
-      vim.fn.jobstart({ "xdg-open", url })
-    end,
-    ui = {
-      enable = true,
-      checkboxes = {
-        [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-        ["x"] = { char = "✓", hl_group = "ObsidianDone" },
+      -- Use Telescope for search
+      picker = {
+        name = "telescope.nvim",
       },
-    },
-    mappings = {
-      -- Follow link under cursor
-      ["<CR>"] = {
-        action = function()
-          return require("obsidian").util.gf_passthrough()
-        end,
-        opts = { noremap = false, expr = true, buffer = true, desc = "Follow link" },
+      -- Follow links with gf
+      follow_url_func = function(url)
+        local ok, process, err = pcall(vim.ui.open, url)
+        if not ok or not process then
+          vim.notify("Unable to open URL: " .. tostring(ok and err or process), vim.log.levels.ERROR)
+        end
+      end,
+      ui = {
+        enable = true,
+        checkboxes = {
+          [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+          ["x"] = { char = "✓", hl_group = "ObsidianDone" },
+        },
       },
-      -- Toggle checkbox
-      ["<leader>Oc"] = {
-        action = function()
-          return require("obsidian").util.toggle_checkbox()
-        end,
-        opts = { buffer = true, desc = "Toggle checkbox" },
+      mappings = {
+        -- Follow link under cursor
+        ["<CR>"] = {
+          action = function()
+            return require("obsidian").util.gf_passthrough()
+          end,
+          opts = { noremap = false, expr = true, buffer = true, desc = "Follow link" },
+        },
+        -- Toggle checkbox
+        ["<leader>Oc"] = {
+          action = function()
+            return require("obsidian").util.toggle_checkbox()
+          end,
+          opts = { buffer = true, desc = "Toggle checkbox" },
+        },
       },
-    },
-  },
+    }
+  end,
   keys = {
     { "<leader>On", "<cmd>ObsidianNew<cr>", desc = "New note" },
     { "<leader>Oo", "<cmd>ObsidianOpen<cr>", desc = "Open in Obsidian" },

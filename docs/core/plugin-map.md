@@ -498,7 +498,8 @@ obsidian.lua
   obsidian.nvim  ── Obsidian vault integration (lazy, ft=markdown)
     └── plenary.nvim
     Uses Telescope as picker
-    Vault path: ~/Obsidian
+    Vault path: ~/Obsidian (resolved from the current user's home)
+    URLs: vim.ui.open (native macOS open / Linux opener)
     Keymaps: <leader>On new, <leader>Oo open, <leader>Of find,
              <leader>Os search, <leader>Ob backlinks, <leader>Ol links,
              <leader>Ot tags, <leader>Od dailies, <leader>Or rename,

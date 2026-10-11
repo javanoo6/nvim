@@ -93,6 +93,9 @@ Update this file when:
   built-in ftplugin and append its undo script. Wrap/spell settings stay local;
   changing filetype restores defaults. `<CR>` follows heading links outside
   Obsidian vaults; Obsidian replaces that fallback on vault-buffer entry.
+- Obsidian's personal workspace resolves `~/Obsidian` from the current user's
+  home. External links use `vim.ui.open()` for the native platform opener;
+  unavailable handlers or launch failures produce a notification.
 - Direct `af/if/ac/ic` mappings and text-object navigation belong to
   `nvim-treesitter-textobjects`. mini.ai supplies block/tag/quote/bracket objects
   and next/previous variants (`anf/alf`, `inf/ilf`, and their class equivalents).
@@ -618,6 +621,18 @@ Update this file when:
   server in the same tab/window context instead of a new tab.
   This avoids Linux `xdg-open` / GNOME text editor for changed files while
   preserving `e` as LazyGit's editor action.
+  [lua/util/lazygit_config.lua](/home/konkov/.config/nvim/lua/util/lazygit_config.lua:1)
+  exports `NVIM_LAZYGIT_OPEN_HELPER` from `stdpath("config")` before launching
+  LazyGit, so the shell helper follows custom config paths on Linux/macOS.
+  The YAML command quotes that helper path and leaves `{{filename}}` unwrapped:
+  LazyGit already shell-quotes filenames. Outside this integration, the helper
+  path falls back to `${XDG_CONFIG_HOME:-$HOME/.config}/${NVIM_APPNAME:-nvim}`.
+  Global LazyGit config is discovered with `lazygit --print-config-dir` and
+  included only when present; repo overrides remain last. That preserves native
+  Linux/macOS/XDG/legacy directory selection instead of guessing the OS path.
+  `tests/portability.lua` checks simulated Linux/macOS paths and URL handlers,
+  missing vault/openers/configs, and real shell-helper RPC with spaces/quotes in
+  filenames. It does not launch a browser, modify a vault, or run macOS itself.
 - Inside LazyGit's terminal buffer, `<A-a>` first sends LazyGit `q` and then
   opens ToggleTerm after LazyGit exits. This prevents stacking the terminal
   float over the LazyGit float.
