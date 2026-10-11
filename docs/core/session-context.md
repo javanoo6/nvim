@@ -273,6 +273,14 @@ Update this file when:
   The regression runner uses installed plugins/parsers without installing tools
   or launching LSPs. Selene uses the repo-local [vim.yml](/home/konkov/.config/nvim/vim.yml:1)
   standard library so the Neovim `vim` global is accepted.
+- [docs/core/compatibility-patches.md](/home/konkov/.config/nvim/docs/core/compatibility-patches.md:1)
+  records internal patches, verified plugin revisions, checks, removal criteria,
+  and live workflow limits. `make check-compatibility` checks installed contracts
+  and patch behavior; it is also included in `make check-config` / `make check`.
+  A changed plugin revision requires reviewing/updating the registry, and tracked
+  Lua edits inside the covered plugin checkouts must be documented rather than
+  silently treated as upstream code. These checks launch no language servers,
+  debuggers, or test processes.
 - Neotest has a repo-local failed-test rerun helper at
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached
@@ -297,6 +305,9 @@ Update this file when:
   test output. The local guard caps rendered output to
   `vim.g.neotest_output_max_bytes` or 2 MiB by default, shows the beginning and
   end, and keeps the full temp-file path visible.
+  Its synchronous libuv reads use value-first return ordering and close the
+  descriptor after a failed read. The compatibility suite exercises both output
+  consumers with real large/small files and an injected read failure.
 - `neotest-java` file detection is locally overridden at
   [lua/neotest-java/core/file_checker.lua](/home/konkov/.config/nvim/lua/neotest-java/core/file_checker.lua:1)
   so valid `src/test/java/*Test.java` files are not rejected when the adapter was

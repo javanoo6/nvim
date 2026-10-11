@@ -25,8 +25,8 @@ local function read_chunk(fd, size, offset)
     return ""
   end
 
-  local err, data = vim.uv.fs_read(fd, size, offset)
-  assert(not err, err)
+  local data, err = vim.uv.fs_read(fd, size, offset)
+  assert(data, err)
   return data or ""
 end
 
@@ -37,16 +37,19 @@ local function read_capped(path)
     return require("neotest.lib").files.read(path)
   end
 
-  local open_err, fd = vim.uv.fs_open(path, "r", 438)
-  assert(not open_err and fd, open_err)
+  local fd, open_err = vim.uv.fs_open(path, "r", 438)
+  assert(fd, open_err)
 
   local head_size = math.floor(limit / 2)
   local tail_size = limit - head_size
-  local head = read_chunk(fd, head_size, 0)
-  local tail = read_chunk(fd, tail_size, math.max(stat.size - tail_size, 0))
-
-  local close_err = vim.uv.fs_close(fd)
-  assert(not close_err, close_err)
+  local ok, head, tail = pcall(function()
+    return read_chunk(fd, head_size, 0), read_chunk(fd, tail_size, math.max(stat.size - tail_size, 0))
+  end)
+  local closed, close_err = vim.uv.fs_close(fd)
+  assert(closed, close_err)
+  if not ok then
+    error(head, 0)
+  end
 
   return table.concat({
     "[neotest] Output truncated for Neovim safety.",

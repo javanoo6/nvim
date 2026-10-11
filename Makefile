@@ -1,4 +1,4 @@
-.PHONY: check check-format check-lint check-config format
+.PHONY: check check-format check-lint check-config check-compatibility format
 
 MASON_BIN ?= $(HOME)/.local/share/nvim/mason/bin
 STYLUA ?= $(MASON_BIN)/stylua
@@ -14,7 +14,7 @@ check-format:
 check-lint:
 	$(SELENE) $(LUA_TARGETS)
 
-check-config:
+check-config: check-compatibility
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/config_refinement.lua DiffviewOpen
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/neotest_scope.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/root_policy.lua
@@ -22,6 +22,9 @@ check-config:
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_scrub.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/live_hunks.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lazy_bootstrap.lua
+
+check-compatibility:
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/compatibility.lua
 
 format:
 	$(STYLUA) $(LUA_TARGETS)
