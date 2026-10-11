@@ -19,6 +19,7 @@ check-config:
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/neotest_scope.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/root_policy.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lsp_rename.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_scrub.lua
 
 format:
 	$(STYLUA) $(LUA_TARGETS)
