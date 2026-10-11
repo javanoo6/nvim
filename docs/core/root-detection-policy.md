@@ -112,6 +112,12 @@ Neotest in this config intentionally uses filetype-specific test scopes such as:
 
 That logic is narrower than generic project root and is intentional.
 
+Activating a test scope changes discovery/targets only. It preserves editor
+cwd (including `:lcd` / `:tcd`) and the remembered Neo-tree/Telescope scope.
+Python run/debug specs use the owning project root; Go/Java keep their adapter
+process directories. Activated discovery scopes accumulate until session
+restore, allowing pending work in another project to finish independently.
+
 Relevant file:
 
 - [lua/plugins/neotest.lua](/home/konkov/.config/nvim/lua/plugins/neotest.lua:43)

@@ -409,7 +409,8 @@ neotest.lua
     ├── neotest-java    ── discovery/XML readers; util/neotest_intellij owns compile/classpath/run/DAP
     ├── neotest-golang  ── Go test runner
     └── neotest-python  ── Python test runner
-  util/neotest_scope.lua ── scoped discovery + file/package target helpers
+  util/neotest_scope.lua ── scoped discovery + file/package targets; preserves editor cwd
+  util/neotest_python.lua ── owning-project process/DAP cwd, independent of editor cwd
 ```
 
 **Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, td debug nearest, tp run package, tP debug package, tq run file tests sequentially,
@@ -591,6 +592,8 @@ keymaps.lua (diagnostic):
 Quality gate:
 Makefile ── `make check` runs Mason `stylua --check` + `selene` + isolated regressions
 tests/config_refinement.lua ── `make check-config`, installed plugins, no installs/LSPs
+tests/neotest_scope.lua ── cwd preservation, discovery across projects, session restore,
+                          async Python spec ownership; no test processes/LSPs
 selene.toml / vim.yml ── local Selene config and minimal Neovim std
 
 UI inspection:

@@ -20,6 +20,7 @@ local IGNORED_DIRS = {
 
 local PATH_SEP = package.config:sub(1, 1)
 local active_scope = nil
+local discovery_scopes = {}
 local warned_internal_client = false
 
 local function normalize(path)
@@ -80,17 +81,24 @@ function M.get_scope()
   return active_scope or M.current_scope()
 end
 
+function M.discovery_cwd(path)
+  local best
+  for root in pairs(discovery_scopes) do
+    if path_starts_with(path, root) and (not best or #root > #best) then
+      best = root
+    end
+  end
+  return best or uv.cwd()
+end
+
 function M.activate_scope(scope)
   scope = scope or M.current_scope()
   active_scope = scope
   if not scope then
     return nil
   end
-
-  if not path_starts_with(vim.fn.getcwd(), scope.focus_root) then
-    vim.cmd("silent noautocmd cd " .. vim.fn.fnameescape(scope.focus_root))
-  end
-
+  discovery_scopes[scope.focus_root] = scope
+  -- Scope controls discovery/targets, never the editor's workspace directories.
   return scope
 end
 
@@ -99,32 +107,41 @@ function M.scoped_discovery_filter(name, rel_path, root)
     return false
   end
 
-  local scope = M.get_scope()
-  if not scope then
-    return true
-  end
-
   root = normalize(root)
-  if not path_starts_with(scope.path, root) then
-    return false
+  local scopes = vim.tbl_values(discovery_scopes)
+  if #scopes == 0 then
+    local scope = M.get_scope()
+    if not scope then
+      return true
+    end
+    scopes = { scope }
   end
 
-  if scope.focus_root == root then
-    return true
-  end
+  for _, scope in ipairs(scopes) do
+    if path_starts_with(scope.path, root) and path_starts_with(scope.focus_root, root) then
+      if scope.focus_root == root then
+        return true
+      end
 
-  if not path_starts_with(scope.focus_root, root) then
-    return false
+      local focus_rel = vim.fs.relpath(root, scope.focus_root)
+      local candidate = rel_path == "." and name or (rel_path .. "/" .. name)
+      if
+        focus_rel and (candidate == focus_rel or vim.startswith(focus_rel, candidate .. "/") or vim.startswith(candidate, focus_rel .. "/"))
+      then
+        return true
+      end
+    end
   end
-
-  local focus_rel = vim.fs.relpath(root, scope.focus_root)
-  if not focus_rel or focus_rel == "" or focus_rel == "." then
-    return true
-  end
-
-  local candidate = rel_path == "." and name or (rel_path .. "/" .. name)
-  return candidate == focus_rel or vim.startswith(focus_rel, candidate .. "/") or vim.startswith(candidate, focus_rel .. "/")
+  return false
 end
+
+vim.api.nvim_create_autocmd("SessionLoadPost", {
+  group = vim.api.nvim_create_augroup("custom_neotest_scope", { clear = true }),
+  callback = function()
+    active_scope = nil
+    discovery_scopes = {}
+  end,
+})
 
 function M.with_scope(run_fn)
   return function(...)

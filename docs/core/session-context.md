@@ -441,6 +441,23 @@ Update this file when:
 - Neotest scope, discovery filtering, package/file target resolution, and the
   guarded current-file discovery fallback live in
   [lua/util/neotest_scope.lua](/home/konkov/.config/nvim/lua/util/neotest_scope.lua:1).
+- Activating a Neotest scope never changes global/tab/window cwd or the
+  remembered explorer scope. Test targets and process working directories are
+  independent of the editor workspace; opening summary or running tests from
+  another project does not redirect Neo-tree, Telescope, or session cwd.
+- Discovery retains the union of explicitly activated test scopes for the
+  session, so activating another project/module does not exclude an earlier
+  asynchronous discovery pass. Ignored directories and unactivated siblings
+  remain excluded. `SessionLoadPost` clears those remembered scopes.
+- Go test-file detection uses the most specific activated scope for its
+  GOPATH/GOROOT check, falling back to editor cwd for unactivated paths. This
+  keeps an activated GOPATH project discoverable after switching projects,
+  while retaining the adapter's guard against unrelated SDK/dependency tests.
+- `util.neotest_python` wraps the adapter's public `build_spec` method to capture
+  the owning project root and assign both RunSpec and DAP cwd. Unmarked files
+  use their directory; an explicit run `cwd` override is honored. A builder
+  finishing after another scope activates still launches from its source root.
+  Go and IntelliJ Java builders already set their process working directories.
 - Neotest run wrappers capture the source buffer/path before opening Neotest UI
   windows, then resolve file/package targets from that captured path. This keeps
   `<leader>tt`, `<leader>tf`, `<leader>tp`, and `<leader>tP` aimed at the test

@@ -64,9 +64,10 @@ No active high-priority plugin-audit items remain.
 
 ## Testing And Debugging
 
-- [ ] Verify `util.neotest_scope.activate_scope()` changing global cwd does not
-  fight Neo-tree, Telescope cwd, or `project.nvim`. Prefer scoped adapter
-  args if possible.
+- [x] `util.neotest_scope.activate_scope()` preserves editor/explorer cwd;
+  Python process/DAP specs and Go discovery use explicit owning test scopes.
+  Step 09 regression and real Python/Go run evidence is recorded in
+  [the configuration audit](config-audit-2026-10-11.md#step-09--coordinate-test-scope-with-cwd-consumers).
 - [ ] Add a small manual test matrix for Java, Go, and Python Neotest workflows.
 
 ## Editing Helpers
