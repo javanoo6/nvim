@@ -85,6 +85,21 @@ Update this file when:
   counted forms use real-line movement. This keeps `5j`, `10k`, etc. sane.
 - `<C-s>` saves in insert/normal/visual/select modes.
 - `<C-d>` duplicates line or selection instead of default half-page scroll.
+  Visual duplication copies whole selected lines in character, line, and block
+  modes, using the live anchor/cursor so old selection marks cannot affect it.
+- `ga` splits text at and after the cursor onto a line above the remaining
+  prefix; `gA` puts it below. The cursor follows the moved text.
+- Markdown settings live in `after/ftplugin/markdown.lua` so they run after the
+  built-in ftplugin and append its undo script. Wrap/spell settings stay local;
+  changing filetype restores defaults. `<CR>` follows heading links outside
+  Obsidian vaults; Obsidian replaces that fallback on vault-buffer entry.
+- Direct `af/if/ac/ic` mappings and text-object navigation belong to
+  `nvim-treesitter-textobjects`. mini.ai supplies block/tag/quote/bracket objects
+  and next/previous variants (`anf/alf`, `inf/ilf`, and their class equivalents).
+  Its function/class specs are retained for those variants.
+- Treesitter activation resolves FileType aliases to parser languages, including
+  `sh`, JSX, TSX, and `yaml.helm-values`. Markdown/YAML parser languages keep
+  stock indentation; missing/unsupported parsers are skipped quietly.
 - `J` is disabled to avoid accidental joins from `<S-j>`.
 - `<leader>bd` deletes the current buffer while preserving the current window
   layout. This intentionally avoids raw `:bdelete` behavior, which can collapse
@@ -120,6 +135,17 @@ Update this file when:
 - `project.nvim` runs in manual mode. Opening files, including Python files in
   nested monorepo packages, must not auto-`cd` the session; use explicit root
   changes instead.
+- `util.frequent_roots` now manages manual directories only (`<leader>hm`).
+  Inactive project tracking/picking and unused exports were removed. Legacy
+  `pinned` entries still load as manual dirs; project/history and unknown JSON
+  fields are preserved without validation or rewriting during manual saves.
+- Helm detection is centralized in `util.helm_filetype`: only files in a chart
+  containing `Chart.yaml` or `Chart.yml` receive Helm-specific filetypes.
+  Templates use `helm`; chart-root metadata/values use `yaml.helm-values`.
+  Nested charts use their nearest owning chart, and unrelated templates/values
+  stay with ordinary detection.
+- Mergetool startup and diff-buffer hooks share one augroup ID so creating the
+  latter cannot clear the former's `VimEnter` mapping setup.
 - `auto-session` treats non-startup restores as LSP workspace boundaries:
   `lsp_stop_on_restore = true` stops attached LSP clients before restoring a
   different session, including Git branch auto-restores. Restored buffers then
@@ -185,6 +211,12 @@ Update this file when:
 - Python LSP defaults to Pyright. BasedPyright is installed/configured but
   opt-in through `:PythonLspUseBasedPyright`; use `:PythonLspUsePyright` to
   switch back without changing config files.
+  `util.python_lsp` owns session-wide selection: switching disables the other
+  server, and venv restarts reactivate only the selected server. A generation
+  guard prevents delayed restarts from undoing a newer selection.
+- gopls inherits nvim-lspconfig's callback-based root resolver, including Go
+  workspace/module/Git and dependency-source handling, rather than a legacy
+  return-value-only `root_pattern()` override.
 - Python formatting uses the standalone IntelliJ jar by user request, as do
   Markdown, XML, and YAML (`.yaml` / `.yml`). Ruff remains configured for linting.
 - `FormatDir` uses `fd`/`fdfind` with explicit directory excludes instead of a
@@ -208,8 +240,10 @@ Update this file when:
   from surfacing `Index out of bounds` errors when a buffer changes while the
   source is indexing.
 - Local config quality checks are exposed through `make check`, which runs
-  Mason-managed `stylua --check` and `selene` against `init.lua`, `lua/`, and
-  `ftplugin/`. Selene uses the repo-local [vim.yml](/home/konkov/.config/nvim/vim.yml:1)
+  Mason-managed `stylua --check` and `selene` against `init.lua`, `lua/`,
+  `after/`, and `tests/`, then `make check-config` for isolated regressions.
+  The regression runner uses installed plugins/parsers without installing tools
+  or launching LSPs. Selene uses the repo-local [vim.yml](/home/konkov/.config/nvim/vim.yml:1)
   standard library so the Neovim `vim` global is accepted.
 - Neotest has a repo-local failed-test rerun helper at
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).

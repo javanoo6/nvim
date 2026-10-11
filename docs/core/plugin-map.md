@@ -161,6 +161,9 @@ tsx, typescript, vim, vimdoc, yaml, xml, groovy, kotlin
 **Incremental selection:** `<CR>` or `<A-o>` starts from normal mode; `<CR>`, `<Tab>`, or `<A-o>` expands in visual mode; `<S-Tab>` or `<A-i>` shrinks; `<BS>`
 moves to the next sibling node.
 
+Activation maps filetypes to parser languages, including shell/JSX/TSX aliases
+and Helm values. Markdown/YAML variants keep stock indentation.
+
 ---
 
 ### 5. Formatting & Linting
@@ -474,7 +477,9 @@ coding.lua
   ├── Comment.nvim    ── gc / gcc line comments, gb / gbc block comments
   │     └── nvim-ts-context-commentstring  ── context-aware commentstring (JSX, HTML embeds, etc.)
   ├── mini.surround   ── gsa/gsd/gsr/gsf add/delete/replace/find surrounding
-  ├── mini.ai         ── enhanced text objects (af, if, ac, ic, ao, io, t=tag)
+  ├── mini.ai         ── block/tag/quote/bracket objects + next/previous variants
+  │                      direct af/if/ac/ic belong to nvim-treesitter-textobjects
+  │                      f/c specs retain anf/alf/inf/ilf and class equivalents
   └── yanky.nvim      ── yank history ring (p/P yanky-aware, <C-p>/<C-n> cycle)
                           <C-CR>/<leader>Hy open Telescope yank history
                           <C-A-CR> opens built-in ring history
@@ -498,9 +503,9 @@ obsidian.lua
              <leader>Ot tags, <leader>Od dailies, <leader>Or rename,
              <leader>Op paste image, <leader>Oc toggle checkbox
 
-ftplugin/markdown.lua  ── per-buffer markdown settings
-  ── wrap, spell, linebreak, j/k for wrapped lines
-  ── <CR> follows [[wiki-links]] / #anchor links (unless obsidian loaded)
+after/ftplugin/markdown.lua  ── local markdown settings + filetype-change cleanup
+  ── wrap, spell, linebreak; j/k use the global wrapped-line maps
+  ── <CR> follows heading links; Obsidian replaces it inside its vault
 ```
 
 ---
@@ -520,7 +525,7 @@ projects.lua
 
 util/frequent_roots.lua
   frequent roots  ── custom helper for manually managed dirs
-                    custom project-tracking code retained but currently inactive
+                    legacy project/history JSON fields preserved as opaque data
                     <leader>hm manage manual dirs (add/remove/list)
 
 terminal.lua
@@ -584,7 +589,8 @@ keymaps.lua (diagnostic):
 ---
 
 Quality gate:
-Makefile ── `make check` runs Mason `stylua --check` + `selene`
+Makefile ── `make check` runs Mason `stylua --check` + `selene` + isolated regressions
+tests/config_refinement.lua ── `make check-config`, installed plugins, no installs/LSPs
 selene.toml / vim.yml ── local Selene config and minimal Neovim std
 
 UI inspection:

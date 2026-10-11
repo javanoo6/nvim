@@ -293,7 +293,12 @@ Practical beginner tip:
 
 That gives you a simple habit while still staying inside the standard Vim model.
 
-### Text Objects (Mini.ai)
+### Text Objects (Treesitter and Mini.ai)
+
+Treesitter owns direct function/class/parameter/loop/conditional mappings and
+their navigation. Mini.ai supplies block/tag/quote/bracket objects and
+next/previous variants: `anf` / `alf` select the next/previous whole function,
+`inf` / `ilf` select its contents; use `c` instead of `f` for classes.
 
 | Object        | Description                        |
 |---------------|------------------------------------|
