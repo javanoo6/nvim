@@ -206,6 +206,13 @@ Update this file when:
 - Plugin management moved to `<leader>P`; `<leader>Pl` opens Lazy.
 - Lazy.nvim rocks support is disabled because no configured plugin requires
   luarocks/hererocks.
+- Lazy bootstrap checks both Git clone exit status and process-launch failures.
+  Failure aborts initialization before adding the failed path or loading Lazy,
+  with the destination, original Git error, and a retry hint. It raises a startup
+  error without waiting for a keypress or forcibly exiting Neovim. Existing
+  installations still skip cloning. `tests/lazy_bootstrap.lua` checks failure,
+  missing Git, successful installation, and the installed-manager path using
+  disposable data directories and a fake Git executable.
 - Python linting uses `nvim-lint` with `ruff`, but local lint startup now
   skips any linter whose executable is missing instead of surfacing `ENOENT`
   when opening a buffer before Mason or a venv provides that tool.
