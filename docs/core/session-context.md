@@ -162,6 +162,22 @@ Update this file when:
   This keeps `sessionoptions+=localoptions` enabled while avoiding restore
   failures from stale or plugin-generated session state that Neovim does not
   recognize.
+  [lua/util/session_scrub.lua](/home/konkov/.config/nvim/lua/util/session_scrub.lua:1)
+  cleans only the exact managed file: `SourcePre` supplies the restore path,
+  and `v:this_session` supplies the path after `:mksession`. The source hook is
+  installed before auto-session setup so it also covers startup restoration.
+  Old sessions are repaired when next restored; there is no eager migration or
+  repeated directory scan. Clean files are read but not rewritten. Files outside
+  auto-session's configured root are excluded. The installed restore hook passes
+  a display name, so the source event avoids guessing escaped/branch filenames.
+  [tests/session_scrub.lua](/home/konkov/.config/nvim/tests/session_scrub.lua:1)
+  exercises actual auto-session save/restore with disposable files, invalid
+  options/orphaned restores, valid paired restores, special names, failed writes,
+  and zero reads of unrelated sessions.
+  Local synthetic profiling (10 runs, 1,000 lines per file) measured mean cleanup
+  costs for 10/100/500 saved sessions at 2.410/22.155/110.160 ms before and
+  0.284/0.282/0.234 ms after. These are scrubber costs on warm local storage,
+  not complete startup/restore timings. Validation did not rewrite user sessions.
 - Neo-tree `Y` copies the selected absolute path to the `+` clipboard register
   when available and falls back to the unnamed register with a warning when the
   system clipboard is unavailable.
@@ -532,6 +548,9 @@ Update this file when:
   Java, Go, and Python still clear stale hint text after edits.
 - Noice is allowed to own command/message UI, but hover/signature rendering is
   intentionally disabled there to avoid conflicts with the chosen editing setup.
+  Inlay-hint error suppression was removed so both invalid-column errors and
+  other inlay-hint notifications remain visible through normal Noice routes.
+  This is an observation decision, not a claim that the original error is fixed.
 - `<C-CR>` and `<leader>Hy` open Yanky's Telescope `yank_history` picker through
   [lua/util/yank_history.lua](/home/konkov/.config/nvim/lua/util/yank_history.lua:1).
 - `<C-A-CR>` opens Yanky's built-in ring-history picker. Dressing has a
