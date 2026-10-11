@@ -380,7 +380,12 @@ Update this file when:
 - `<leader>ci/cI` use freshly pulled IntelliJ diagnostic `Import class` fixes;
   ambiguity uses the plugin picker. Bulk imports wait for edits between fixes and
   pause after a cancelled/unanswered picker. Field counters and JDTLS lens glue
-  are retired; `<leader>uJ` reports retirement and references remain on `gR`.
+  are retired; the redundant `<leader>uJ` retirement notice was removed.
+  References remain on `gR` (Glance).
+  The pinned IntelliJ plugin exposes Run/Debug code lenses, not a field-usage
+  counter setting. Inspection of server bundle `263.6379.0` found JVM main-entry
+  lens providers and no dedicated field-count lens provider; IDE Code Vision
+  classes bundled with the server do not establish an exposed LSP feature.
 - `JavaRestart` restarts only the owning workspace; `JavaCleanCorruptWorkspaces`
   and `<leader>XC/XJ` clear only its reported index inside its claimed cache slot.
   Restart allows a short graceful stop then forces it if necessary, waits for

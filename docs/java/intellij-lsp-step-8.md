@@ -24,8 +24,9 @@ Implemented on 2026-10-10. Step 6 remains skipped.
   named Java buffer's workspace actions.
 - Project creation and scratch storage remain: Java scratch prefers
   `src/test/java/Scratch.java`, then `src/main/java/Scratch.java`.
-- JDTLS field counters/code-lens setup is retired. `<leader>uJ` reports this;
-  `gR` still lists references. `spring-boot.nvim` remains disabled because its
+- JDTLS field counters/code-lens setup is retired. The temporary `<leader>uJ`
+  retirement notice was subsequently removed; `gR` still lists references.
+  `spring-boot.nvim` remains disabled because its
   integrations use JDTLS commands; ordinary Spring app run/debug is Step 5.
 
 ## Verified
