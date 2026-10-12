@@ -28,6 +28,7 @@ check-config: check-compatibility
 
 check-compatibility:
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/compatibility.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/java_virtual_buffers.lua
 
 format:
 	$(STYLUA) $(LUA_TARGETS)

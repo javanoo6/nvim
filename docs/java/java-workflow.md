@@ -43,6 +43,10 @@ Exception templates. The project path determines package and name.
 buffer. Neo-tree `a` then `o` supports this through `util.java_file_templates`;
 existing populated files and cancelled prompts do not trigger another picker.
 Use symbol rename for class/method/variable changes and Neo-tree for file moves.
+Diffview revision/index buffers are excluded from IntelliJ startup and local
+workspace attachment. Their virtual paths previously resolved to root `.` and
+failed initialization on `file://.` when cycling Java files after `<leader>GM`.
+The real source buffers keep normal Java support.
 Upstream `:IntellijLspRename` is a separate file-rename feature and is disabled
 by the current configuration.
 

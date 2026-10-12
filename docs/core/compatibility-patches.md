@@ -161,16 +161,20 @@ has a check and removal condition; larger workflow limits remain explicit.
 
 ## IntelliJ client factory and editor commands
 
-- **Owner:** `lua/util/java_intellij.lua` wraps `intellij-lsp.client.config` and
+- **Owner:** `lua/util/java_intellij.lua` wraps `intellij-lsp.client.config`,
+  guards `find_root` against virtual/non-file buffers, and
   overrides `extensions.EDITOR_COMMANDS` suggestion/rename entries.
 - **Dependencies:** factory config signature/capabilities/on_attach callback,
   editor command table, readiness/status helpers, template prompt, and debug setup.
 - **Reason:** preserve cmp and file-operation capabilities, let cmp own completion,
-  restrict follow-up rename to IntelliJ, and select Maven for mixed build roots.
+  restrict follow-up rename to IntelliJ, select Maven for mixed build roots,
+  and prevent Diffview Java snapshots from starting a workspace on `file://.`.
 - **Check:** compatibility suite checks real installed API shapes, then uses a
   factory/setup seam to verify capability merging, upstream attach chaining,
   completion ownership, and follow-up rename routing. `tests/lsp_rename.lua`
-  covers native Java rename dispatch. These probes do not launch IntelliJ.
+  covers native Java rename dispatch. `tests/java_virtual_buffers.lua` exercises
+  real root discovery, upstream startup, local reattachment, and library ownership
+  with virtual buffers and a Maven marker in cwd. These probes do not launch IntelliJ.
 - **Manual smoke:** real dependency completion/imports, rename, template creation,
   and mixed Maven/Gradle import; see `docs/java/java-workflow.md`.
 - **Remove when:** supported upstream hooks/options supply the same behavior;

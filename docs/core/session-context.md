@@ -412,6 +412,12 @@ Update this file when:
 - `lua/util/java_intellij.lua` wraps the pinned plugin's client factory to merge
   cmp/file-operation capabilities and disable built-in completion after attach.
   Upstream `autotrigger=false` alone still enables built-in completion.
+- IntelliJ root detection and local workspace attachment skip virtual/non-file
+  buffers. Diffview revision and index buffers can still have `filetype=java`
+  (and index buffers can have empty `buftype`); searching their `diffview://`
+  names previously found cwd's `pom.xml` as root `.` and failed initialization
+  on `file://.` while cycling files after `<leader>GM`. Real Java files keep
+  normal attachment; upstream retains ownership of decompiled library buffers.
 - Java inlay hints override upstream `hints.collapse complex types` to `false`
   through `inlay_hint_settings.jetbrains.java` in `lua/plugins/intellij-lsp.lua`,
   so generic type arguments remain visible (for example, `Map<String, String>`

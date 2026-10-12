@@ -1,5 +1,15 @@
 local M = {}
 local original_config
+local original_find_root
+
+function M.is_source_buffer(bufnr)
+  local name = vim.api.nvim_buf_get_name(bufnr)
+  -- Diffview revision/index buffers can have buftype="" and filetype=java.
+  -- Walking their virtual URI finds cwd's pom.xml as ".", yielding file://.
+  -- Reject URI schemes, but retain Windows drive paths (C:/ or C:\).
+  local virtual = name:match("^%a[%w+.-]*:") and not name:match("^%a:[/\\]")
+  return vim.bo[bufnr].buftype == "" and name ~= "" and not virtual
+end
 
 function M.unavailable(action, step)
   vim.notify(action .. " is pending IntelliJ migration Step " .. step, vim.log.levels.WARN, { title = "Java" })
@@ -50,6 +60,13 @@ function M.setup(opts)
   end
 
   local factory = require("intellij-lsp.client")
+  original_find_root = original_find_root or factory.find_root
+  factory.find_root = function(bufnr)
+    if not M.is_source_buffer(bufnr) then
+      return nil
+    end
+    return original_find_root(bufnr)
+  end
   local editor_commands = require("intellij-lsp.extensions").EDITOR_COMMANDS
   editor_commands["editor.action.triggerSuggest"] = function()
     if vim.fn.mode():sub(1, 1) == "i" then

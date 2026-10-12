@@ -81,6 +81,11 @@ function M.setup()
       if vim.bo[bufnr].filetype ~= "java" then
         return
       end
+      -- Historical Diffview contents must not attach to the live workspace.
+      -- Decompiled library buffers are attached by their upstream owner instead.
+      if not require("util.java_intellij").is_source_buffer(bufnr) then
+        return
+      end
       local factory = require("intellij-lsp.client")
       local existing = factory.find_ancestor_client(vim.api.nvim_buf_get_name(bufnr))
       if existing then
