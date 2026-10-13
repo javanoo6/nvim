@@ -77,6 +77,43 @@ Update this file when:
 - Plugin-local mappings still need explicit overrides when their default
   `j/k` or `<C-j>/<C-k>` behavior diverges from this config's movement model.
 
+## Persistent Preferences
+
+- `javanoo6/persist-toggle.nvim` loads before other eager plugins (priority 10000).
+  [lua/util/preferences.lua](/home/konkov/.config/nvim/lua/util/preferences.lua:1)
+  owns all 24 registered defaults, their setters, and plugin command bridges.
+  [docs/core/preferences.md](/home/konkov/.config/nvim/docs/core/preferences.md:1)
+  lists IDs, controls, startup behavior, and scope.
+- Saved values live at `stdpath("state") .. "/persist-toggle/state.json"`.
+  Existing keymaps persist editing options, diagnostics, hints, reference style,
+  Neo-tree reveal, auto-save, autoformat, debug keep-open, Gitsigns display modes,
+  Oil hidden files, and Flash search. Session auto-save/restore and automatic
+  test-summary opening are also registered preferences.
+- Plugin setup consumes or applies saved values rather than overriding them.
+  Native `ASToggle`, `TinyInlineDiag enable/disable/toggle`, and the four
+  Gitsigns display commands persist the same preferences as their keymaps.
+  Auto-session's operational safety disables remain temporary; `<leader>Sa`
+  saves the durable session-auto-save preference.
+- Editing-option changes apply to normal file windows and future window defaults;
+  special plugin buffers keep their own layout settings. Session restore reapplies
+  these preferences, preventing saved session local options from winning.
+  Markdown/text/gitcommit keep wrap/spell on until an explicit saved override
+  exists. Resetting the override restores those filetype defaults.
+- `:PersistToggleInfo`, `:PersistToggle {id}`, `:PersistToggleSet {id} true|false`,
+  `:PersistToggleReset {id}`, and `:PersistToggleResetAll` manage preferences.
+- Temporary windows, breakpoints, watch targets, pins, and buffer-local debugging
+  controls keep their existing scope. Theme and pin persistence stay with their
+  owning plugins.
+- Debug-test keys never auto-open the summary and close an existing summary.
+  Ordinary test runs honor `test_summary_on_run`; `<leader>ts` remains explicit.
+  DAP initialization also closes a loaded test summary for other debug entry
+  points. `<leader>tl` explicitly uses the integrated strategy so a previous
+  debug run cannot silently turn a regular rerun into another debug run.
+- `tests/persist_preferences.lua` verifies actual plugin setup and command paths,
+  saved false values across two Neovim processes, prose overrides, session restore,
+  and resets using disposable state. `tests/neotest_scope.lua` exercises all five
+  debug mappings and the DAP listener without launching debuggers.
+
 ## Core Editing Deviations
 
 - `$` and `^` are swapped from upstream Vim behavior:
@@ -137,7 +174,7 @@ Update this file when:
   changes stay explicit via `<leader>e`, `<leader>E`, or `.` inside Neo-tree.
 - Neo-tree reopen behavior reveals the current file by default when opened via
   `<leader>e` or `<leader>E`, without enabling full `follow_current_file`.
-  `<leader>ue` toggles that reveal-on-open behavior for the current session.
+  `<leader>ue` toggles that reveal-on-open preference and persists it across restarts.
 - `project.nvim` runs in manual mode. Opening files, including Python files in
   nested monorepo packages, must not auto-`cd` the session; use explicit root
   changes instead.
@@ -522,8 +559,9 @@ Update this file when:
   `<leader>tt`, `<leader>tf`, `<leader>tp`, and `<leader>tP` aimed at the test
   file that had focus when the key was pressed, even when split/UI window changes
   leave another buffer visible or current.
-- `<leader>tr` and `<leader>td` also capture the source cursor before opening
-  the Neotest summary. They resolve the nearest test from that original
+- `<leader>tr` and `<leader>td` also capture the source cursor before changing
+  Neotest UI (regular runs may open the summary; debug runs close it). They
+  resolve the nearest test from that original
   buffer/line instead of relying on Neotest's no-argument `run.run()`, because
   the summary split becomes current before the run starts.
 - The Neotest summary window uses the repo-local opener in
@@ -569,8 +607,9 @@ Update this file when:
   smoke test in a disposable Maven project updated a method declaration and
   call site, refreshed hints, and preserved the global handler. Interactive
   typing and complex refactoring conflicts were not exercised by that probe.
-- Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, enabled on
-  LSP attach, and toggled with `<leader>ud`.
+- Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, restored from
+  `persist-toggle` after setup on LSP attach, and toggled with `<leader>ud`.
+  The former immediate and scheduled unconditional enables were removed.
 - LSP inlay hints are managed by
   [lua/util/inlay_hints.lua](/home/konkov/.config/nvim/lua/util/inlay_hints.lua:1)
   through Neovim's native `vim.lsp.inlay_hint` API and toggled with
@@ -677,9 +716,10 @@ Update this file when:
   for dynamic ref arguments.
 - Planned work:
   [docs/plans/code-action-cleanup-highlight-plan.md](/home/konkov/.config/nvim/docs/plans/code-action-cleanup-highlight-plan.md:1)
-  tracks unimplemented code-action cleanup highlighting;
+  tracks unimplemented code-action cleanup highlighting. Toggle persistence is
+  implemented through `persist-toggle.nvim`; the old local-helper proposal in
   [docs/plans/persist-toggle-state-task.md](/home/konkov/.config/nvim/docs/plans/persist-toggle-state-task.md:1)
-  proposes durable toggle preferences. Neither proposal supplies active commands.
+  is superseded.
 
 ## External Workflow Helpers
 

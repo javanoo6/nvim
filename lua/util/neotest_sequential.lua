@@ -72,7 +72,9 @@ end
 
 function M.run_current_file_tests(args)
   scope.activate_scope()
-  require("neotest").summary.open()
+  if require("util.preferences").get("test_summary_on_run") then
+    require("neotest").summary.open()
+  end
   require("neotest").output_panel.clear()
 
   local path = current_file_path()

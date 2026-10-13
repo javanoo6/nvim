@@ -27,16 +27,21 @@ function M.toggle()
 end
 
 function M.toggle_keep_open()
-  vim.g.debug_panel_keep_open = not vim.g.debug_panel_keep_open
-  vim.notify("Debug panel keep-open-on-exit " .. (vim.g.debug_panel_keep_open and "enabled" or "disabled"))
+  require("util.preferences").toggle("debug_panel_keep_open")
 end
 
 function M.setup()
   local dap = require("dap")
   require("intellij-lsp.debug").setup()
+  dap.listeners.before.event_initialized["close_test_summary"] = function()
+    local neotest = package.loaded.neotest
+    if neotest then
+      neotest.summary.close()
+    end
+  end
   -- Upstream opens on stops for every adapter. Retain our exit-close policy.
   local function close_on_exit()
-    if not vim.g.debug_panel_keep_open then
+    if not require("util.preferences").get("debug_panel_keep_open") then
       vim.schedule(M.close)
     end
   end

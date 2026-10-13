@@ -29,13 +29,13 @@ theirs
 >>>>>>> feature-branch
 ```
 
-| Key | Action |
-|---|---|
-| `]x` / `[x` | Next / previous marker conflict |
-| `<leader>Co` | Keep ours |
-| `<leader>Ct` | Keep theirs |
-| `<leader>Cb` | Keep both |
-| `<leader>C0` | Keep neither |
+| Key          | Action                          |
+|--------------|---------------------------------|
+| `]x` / `[x`  | Next / previous marker conflict |
+| `<leader>Co` | Keep ours                       |
+| `<leader>Ct` | Keep theirs                     |
+| `<leader>Cb` | Keep both                       |
+| `<leader>C0` | Keep neither                    |
 
 For a normal merge, ours is the current branch and theirs is the merged branch.
 Rebase uses ours/theirs relative to the replay operation, so inspect the contents
@@ -51,14 +51,14 @@ a normal merge finishes with a commit (`c`).
 `<leader>GD` opens Diffview. Its configured merge layout uses `diff3_mixed`, with
 the editable result at the bottom and reference versions available for context.
 
-| Key | Action |
-|---|---|
-| `]x` / `[x` | Next / previous conflict |
-| `<leader>Co` / `<leader>Ct` | Choose ours / theirs for the conflict |
-| `<leader>Cb` / `<leader>CB` | Choose both / base |
-| `<leader>C0` | Choose none |
+| Key                                        | Action                                  |
+|--------------------------------------------|-----------------------------------------|
+| `]x` / `[x`                                | Next / previous conflict                |
+| `<leader>Co` / `<leader>Ct`                | Choose ours / theirs for the conflict   |
+| `<leader>Cb` / `<leader>CB`                | Choose both / base                      |
+| `<leader>C0`                               | Choose none                             |
 | `<leader>CO` / `<leader>CT` / `<leader>CA` | Choose ours / theirs / all for the file |
-| `<leader>Gq` | Close Diffview |
+| `<leader>Gq`                               | Close Diffview                          |
 
 ## Git merge-tool processes
 
@@ -79,10 +79,10 @@ nvim "$MERGED" -c "DiffviewOpen"
 It opens a second Neovim process. This config detects startup with
 `DiffviewOpen` and installs:
 
-| Key | Action |
-|---|---|
+| Key          | Action                                            |
+|--------------|---------------------------------------------------|
 | `<leader>GQ` | Write all and quit the merge-tool editor (`:wqa`) |
-| `<leader>GA` | Abort it (`:cq`) |
+| `<leader>GA` | Abort it (`:cq`)                                  |
 
 Those keys are also installed in classic Neovim diff buffers. They are specific
 to the merge-tool lifecycle; in your main editor, save and reopen LazyGit

@@ -4,18 +4,18 @@ Open a Java source file in a Maven/Gradle project and check `:JavaInfo` for an
 attached, ready IntelliJ client. Set breakpoints with `<leader>db`, then put the
 cursor inside the class to launch.
 
-| Key / command | Action |
-|---|---|
-| `<leader>jr` | Run the class enclosing the cursor |
-| `<leader>jd` | Debug that class |
-| `<leader>jc` | Stop the Java build/program |
-| `<leader>jl` | Toggle build/program output |
-| `<leader>dc` | Continue |
-| `<leader>di` / `<leader>dO` / `<leader>do` | Step into / over / out |
-| `<leader>de` | Evaluate the source expression or selection |
-| `<leader>du` | Toggle the IntelliJ debug panel |
-| `<leader>dU` | Keep the panel open after exit |
-| `<leader>dt` | Terminate the current DAP session |
+| Key / command                              | Action                                      |
+|--------------------------------------------|---------------------------------------------|
+| `<leader>jr`                               | Run the class enclosing the cursor          |
+| `<leader>jd`                               | Debug that class                            |
+| `<leader>jc`                               | Stop the Java build/program                 |
+| `<leader>jl`                               | Toggle build/program output                 |
+| `<leader>dc`                               | Continue                                    |
+| `<leader>di` / `<leader>dO` / `<leader>do` | Step into / over / out                      |
+| `<leader>de`                               | Evaluate the source expression or selection |
+| `<leader>du`                               | Toggle the IntelliJ debug panel             |
+| `<leader>dU`                               | Keep the panel open after exit              |
+| `<leader>dt`                               | Terminate the current DAP session           |
 
 Source is saved and Maven/Gradle compiles before launch. Build failure blocks
 launch and opens output. `:IntellijLspRun!` and `:IntellijLspDebug!` explicitly

@@ -7,6 +7,10 @@ return {
     "folke/flash.nvim",
     event = "VeryLazy",
     opts = {},
+    config = function(_, opts)
+      require("flash").setup(opts)
+      require("util.preferences").apply("flash_search")
+    end,
     keys = {
       {
         "s",
@@ -44,7 +48,7 @@ return {
         "<c-s>",
         mode = { "c" },
         function()
-          require("flash").toggle()
+          require("util.preferences").toggle("flash_search")
         end,
         desc = "Toggle Flash Search",
       },

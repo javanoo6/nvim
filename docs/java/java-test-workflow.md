@@ -16,6 +16,7 @@ build failure blocks execution. Tests run through JUnit Console. Use
 | `<leader>ts`                                              | Toggle summary                         |
 
 Debug selections use the owning workspace's IntelliJ JVM adapter and panel.
+They close the test summary and never auto-open it; `<leader>ts` opens it manually.
 Compiled method signatures come from the project's `javap`. Parameterized cases
 aggregate into their method status; any failing case makes the method fail.
 

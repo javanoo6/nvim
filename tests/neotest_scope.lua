@@ -133,6 +133,57 @@ local function run()
   equal(captured.path, path_a, "UI switch preserves source path")
   equal(captured.scope.focus_root, root_a, "UI switch preserves source scope")
   equal(scope.get_scope().focus_root, root_b, "New active scope is independent of captured run")
+  local opened, closed, cleared = 0, 0, 0
+  package.loaded.neotest = {
+    summary = {
+      open = function()
+        opened = opened + 1
+      end,
+      close = function()
+        closed = closed + 1
+      end,
+    },
+    output_panel = {
+      clear = function()
+        cleared = cleared + 1
+      end,
+    },
+  }
+  -- Execute every configured debug key, so new wrappers cannot silently open UI.
+  local debug_keys = { ["<leader>td"] = true, ["<leader>tP"] = true, ["<leader>tL"] = true, ["<leader>tf"] = true, ["<leader>tD"] = true }
+  for _, plugin in ipairs(require("plugins.neotest")) do
+    if plugin[1] == "nvim-neotest/neotest" then
+      package.loaded.neotest.run = { run = function() end, run_last = function() end }
+      package.loaded.neotest.state = {
+        adapter_ids = function()
+          return {}
+        end,
+      }
+      local nearest = scope.run_nearest
+      scope.run_nearest = function() end
+      for _, key in ipairs(plugin.keys) do
+        if debug_keys[key[1]] then
+          key[2]()
+        end
+      end
+      scope.run_nearest = nearest
+    end
+  end
+  equal(opened, 0, "Debug mappings never open summary")
+  equal(closed, 5, "Every debug mapping closes existing summary")
+  equal(cleared, 5, "Debug mappings still clear old output")
+  scope.with_scope(function() end)()
+  equal(opened, 1, "Regular test run still opens summary")
+  local dap_before = package.loaded.dap
+  local debug_before = package.loaded["intellij-lsp.debug"]
+  local fake_dap = { listeners = { before = { event_initialized = {} }, after = { event_terminated = {}, event_exited = {} } } }
+  package.loaded.dap = fake_dap
+  package.loaded["intellij-lsp.debug"] = { setup = function() end }
+  require("util.debug_ui").setup()
+  fake_dap.listeners.before.event_initialized.close_test_summary()
+  equal(closed, 6, "DAP initialization closes summary for non-test debug entry points")
+  package.loaded.dap = dap_before
+  package.loaded["intellij-lsp.debug"] = debug_before
   package.loaded.neotest = nil
 
   -- A builder that yields while B activates must still launch A from A's root.

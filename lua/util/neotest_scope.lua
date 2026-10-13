@@ -143,7 +143,8 @@ vim.api.nvim_create_autocmd("SessionLoadPost", {
   end,
 })
 
-function M.with_scope(run_fn)
+function M.with_scope(run_fn, opts)
+  opts = opts or {}
   return function(...)
     local source_buf = vim.api.nvim_get_current_buf()
     local scope = M.activate_scope(M.current_scope(source_buf))
@@ -154,7 +155,11 @@ function M.with_scope(run_fn)
       scope = scope,
     }
 
-    require("neotest").summary.open()
+    if opts.debug then
+      require("neotest").summary.close()
+    elseif require("util.preferences").get("test_summary_on_run") then
+      require("neotest").summary.open()
+    end
     require("neotest").output_panel.clear()
     return run_fn(ctx, ...)
   end

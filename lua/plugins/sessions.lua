@@ -7,13 +7,15 @@ return {
   config = function(_, opts)
     -- Install before setup so startup restores also sanitize their exact path.
     require("util.session_scrub").setup()
-    require("auto-session").setup(opts)
+    local preferences = require("util.preferences")
+    opts.auto_save = preferences.get("session_autosave")
+    opts.auto_restore = preferences.get("session_autorestore")
+    local session = require("auto-session")
+    session.setup(opts)
   end,
   opts = {
-    -- Enable auto-save and auto-restore
-    auto_save = true,
+    -- Runtime auto-save/restore preferences are supplied during setup.
     args_allow_files_auto_save = true,
-    auto_restore = true,
     auto_restore_last_session = false, -- Don't restore last session automatically when starting nvim without args
     git_use_branch_name = true,
     git_auto_restore_on_branch_change = true,
@@ -48,6 +50,12 @@ return {
     { "<leader>Sr", "<cmd>AutoSession restore<cr>", desc = "Restore session" },
     { "<leader>Sd", "<cmd>AutoSession delete<cr>", desc = "Delete session" },
     { "<leader>Sf", "<cmd>AutoSession search<cr>", desc = "Find sessions" },
-    { "<leader>Sa", "<cmd>AutoSession enable<cr>", desc = "Enable auto-save" },
+    {
+      "<leader>Sa",
+      function()
+        require("util.preferences").set("session_autosave", true)
+      end,
+      desc = "Enable session auto-save",
+    },
   },
 }

@@ -59,7 +59,7 @@ function M.refresh_loaded_buffers()
 end
 
 function M.is_enabled()
-  return vim.g.inlay_hints_enabled ~= false
+  return require("util.preferences").get("inlay_hints")
 end
 
 function M.set_enabled(enabled, opts)
@@ -81,7 +81,7 @@ function M.apply_for_buffer(bufnr)
 end
 
 function M.toggle()
-  M.set_enabled(not M.is_enabled())
+  require("util.preferences").toggle("inlay_hints")
 end
 
 function M.setup()
@@ -99,7 +99,5 @@ function M.setup()
     M.refresh_buffer(0)
   end, { desc = "Clear and re-request LSP inlay hints for the current buffer", force = true })
 end
-
-vim.g.inlay_hints_enabled = vim.g.inlay_hints_enabled ~= false
 
 return M

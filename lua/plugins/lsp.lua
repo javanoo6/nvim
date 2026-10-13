@@ -79,7 +79,6 @@ return {
           source = true,
         },
       })
-      vim.diagnostic.enable(true)
       vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
         config = vim.tbl_extend("force", config or {}, { border = "rounded" })
         return vim.lsp.handlers.hover(err, result, ctx, config)
@@ -475,10 +474,8 @@ return {
     config = function(_, opts)
       local tid = require("tiny-inline-diagnostic")
       tid.setup(opts)
-      tid.enable()
-      vim.schedule(function()
-        tid.enable()
-      end)
+      require("util.preferences").bind_inline_diagnostics(tid)
+      require("util.preferences").apply("inline_diagnostics")
       vim.diagnostic.config({ virtual_text = false })
     end,
   },

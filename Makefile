@@ -27,6 +27,7 @@ check-config: check-compatibility
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/gotestsum_build.lua
 
 check-compatibility:
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/persist_preferences.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/compatibility.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/java_virtual_buffers.lua
 

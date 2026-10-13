@@ -23,13 +23,14 @@ lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
 
 ### 1. Infrastructure (shared dependencies)
 
-| Plugin                        | Role                            | File                   |
-|-------------------------------|---------------------------------|------------------------|
-| `folke/lazy.nvim`             | Plugin manager                  | config/lazy.lua        |
-| `nvim-lua/plenary.nvim`       | Lua utilities (async, path, …)  | dep of many            |
-| `MunifTanjim/nui.nvim`        | UI component library            | dep of neo-tree, noice |
-| `nvim-tree/nvim-web-devicons` | File-type icons                 | dep of many            |
-| `nvim-neotest/nvim-nio`       | Async I/O (Neotest/DAP helpers) | dep                    |
+| Plugin                         | Role                            | File                                             |
+|--------------------------------|---------------------------------|--------------------------------------------------|
+| `folke/lazy.nvim`              | Plugin manager                  | config/lazy.lua                                  |
+| `javanoo6/persist-toggle.nvim` | Persistent runtime preferences  | plugins/persist-toggle.lua; util/preferences.lua |
+| `nvim-lua/plenary.nvim`        | Lua utilities (async, path, …)  | dep of many                                      |
+| `MunifTanjim/nui.nvim`         | UI component library            | dep of neo-tree, noice                           |
+| `nvim-tree/nvim-web-devicons`  | File-type icons                 | dep of many                                      |
+| `nvim-neotest/nvim-nio`        | Async I/O (Neotest/DAP helpers) | dep                                              |
 
 ---
 
@@ -755,7 +756,7 @@ lazy.nvim
 | `<leader>dg`      | debug go       | nvim-dap-go                                                                                            |
 | `<leader>e/E`     | explorer       | neo-tree                                                                                               |
 | `-` / `<leader>o` | oil            | oil.nvim                                                                                               |
-| `<leader>f`       | file/find      | telescope, scratch                                                                                       |
+| `<leader>f`       | file/find      | telescope, scratch                                                                                     |
 | `<leader>g`       | go             | gopls, gopher                                                                                          |
 | `<leader>gi`      | go insert      | gopher                                                                                                 |
 | `<leader>gs`      | go struct tags | gopher                                                                                                 |
@@ -772,7 +773,7 @@ lazy.nvim
 | `<leader>r`       | replace        | grug-far                                                                                               |
 | `<leader>s`       | search         | telescope, todo-comments                                                                               |
 | `<leader>S`       | sessions       | auto-session                                                                                           |
-| `<leader>t`       | test/theme     | neotest (theme picker is <leader>ut)                                                                                       |
+| `<leader>t`       | test/theme     | neotest (theme picker is <leader>ut)                                                                   |
 | `<leader>u`       | ui             | toggles (spell, wrap, numbers, fold, diagnostics, inlay hints, reference style, live hunks, auto-save) |
 | `<leader>w`       | windows        | splits                                                                                                 |
 | `<leader>x`       | diagnostics    | trouble                                                                                                |
@@ -790,10 +791,14 @@ lazy.nvim
   excluded from Mason auto-enable.
 - **Java code actions:** `<leader>ca` / `<A-CR>` still use `actions-preview.nvim`;
   command-only actions may have no diff preview.
-- **Auto-save:** Enabled by default (`enabled = true`). Toggle with `<leader>ua`. Writes normal file buffers even when LSP errors exist; Conform still skips
+- **Auto-save:** Enabled by default through `persist-toggle`; saved preferences override that default. Toggle with `<leader>ua`. Writes normal file buffers even
+  when LSP errors exist; Conform still skips
   format-on-save when errors exist.
 - **Reference style:** Underline is enabled by default, reference background is disabled by default. Toggle them with `<leader>uu` and `<leader>uH`.
 - **Go format on save:** Skipped in `conform.format_on_save` for Go — formatting is done manually or via gopls.
 - **noice hover/signature:** Disabled to avoid conflicts with inlay hints. Use `K` / `gK` natively.
-- **Folding:** Globally disabled (`opt.foldenable = false`). Toggle with `<leader>uf`.
+- **Folding:** Disabled by default through `persist-toggle`. Toggle with `<leader>uf`.
 - **LazyFile event:** Custom event alias for `BufReadPost + BufNewFile + BufWritePre`, defined in `config/lazy.lua`.
+
+Persistent toggles and their registry IDs are listed in [preferences.md](preferences.md).
+Debug-test mappings close the summary; regular runs honor `test_summary_on_run`.

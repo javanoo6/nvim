@@ -252,3 +252,23 @@ has a check and removal condition; larger workflow limits remain explicit.
   and normal diagnostics usable.
 - **Remove when:** upstream uses the supported diagnostic API and its behavior
   matches the repo's buffer-local toggling policy.
+
+## Persistent Gitsigns commands
+
+- **Owner:** `lua/util/preferences.lua`, `bind_gitsigns()`.
+- **Dependency:** Gitsigns public display-toggle APIs and
+  `gitsigns.actions._get_cmd_func(name)` returning a CLI callback accepting parsed
+  positional arguments. Verified with locked revision
+  `eb60cc7b94c46005237fd34170d76f3a089a90aa`.
+- **Reason:** Gitsigns captures its toggle functions in a separate command table.
+  Replacing public APIs alone leaves `:Gitsigns toggle_*` outside persistence.
+  The local bridge intercepts four owned display commands and delegates all
+  other command lookups unchanged. Original setters apply persisted preferences
+  without calling back through the bridge.
+- **Check:** `tests/persist_preferences.lua` restores the real Gitsigns config,
+  runs `:Gitsigns toggle_current_line_blame false`, and checks both persisted and
+  live values. It also checks the public line-highlight API.
+- **Manual smoke:** toggle blame/word diff/line highlighting/deleted lines using
+  keymaps and commands in an attached Git buffer, then restart Neovim.
+- **Remove when:** upstream provides persistence hooks covering both public APIs
+  and CLI display toggles. Preserve durable preferences during replacement.

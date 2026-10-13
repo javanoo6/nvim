@@ -1,13 +1,13 @@
 -- Run after the built-in Markdown ftplugin so its undo script is preserved.
 
 -- Markdown specific settings
-vim.opt_local.wrap = true -- Wrap text
+vim.opt_local.wrap = require("util.preferences").option_value("wrap") -- Wrap text
 vim.opt_local.breakindent = true -- Match indent on line break
 vim.opt_local.linebreak = true -- Line break on whole words
 
 -- Spell check
 vim.opt_local.spelllang = "en_us"
-vim.opt_local.spell = true
+vim.opt_local.spell = require("util.preferences").option_value("spell")
 
 local undo = "setlocal wrap< breakindent< linebreak< spelllang< spell<"
 vim.b.undo_ftplugin = vim.b.undo_ftplugin and (vim.b.undo_ftplugin .. " | " .. undo) or undo
