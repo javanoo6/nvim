@@ -198,6 +198,24 @@ Update this file when:
   different session, including Git branch auto-restores. Restored buffers then
   attach fresh clients for the branch contents instead of carrying old workspace
   state across branches.
+- Session saves include Bufferline pins and display order as path-based JSON in
+  auto-session's companion `*x.vim` file. `util.bufferline` captures this through
+  `save_extra_data` and reapplies it in `post_restore_cmds`, after native session
+  events and Bufferline's one-shot restore have finished. Each cwd/branch owns
+  its pins/order; repeated restores and restarts recover both. Legacy sessions
+  without metadata restore without pins instead of inheriting another branch's
+  state. Existing pin state becomes durable on the next session save; lost pins
+  cannot be recovered from older session files. This does not enable broad
+  `sessionoptions+=globals` persistence.
+- `util.session_branch` starts auto-session's Git watcher even when startup finds
+  no saved session. It resolves HEAD via `git rev-parse --git-path HEAD` with
+  absolute paths, supporting nested cwd and worktrees, rearms on global cwd
+  changes, and closes stopped watcher handles. Upstream still owns branch save,
+  modified-buffer confirmation, and restore behavior. A branch without a saved
+  session retains the current buffers until a session is saved for it.
+  `tests/session_workspace.lua` exercises actual branch notifications from a
+  fresh workspace, repeated branch/manual restores, a separate Neovim process,
+  unpinning, legacy sessions, nested cwd, worktrees, and leaving Git.
 - `auto-session` scrubs invalid `setlocal includeformatexpr=...` lines from
   saved session files, plus orphaned `winminheight`/`winminwidth` restore lines
   whose saved script-local variables are absent, before restore and after save.

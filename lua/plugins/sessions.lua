@@ -7,6 +7,7 @@ return {
   config = function(_, opts)
     -- Install before setup so startup restores also sanitize their exact path.
     require("util.session_scrub").setup()
+    require("util.session_branch").setup()
     local preferences = require("util.preferences")
     opts.auto_save = preferences.get("session_autosave")
     opts.auto_restore = preferences.get("session_autorestore")
@@ -34,6 +35,30 @@ return {
     -- Git branch restores swap the buffer/session state; stop attached LSPs so
     -- restored buffers attach fresh clients for the branch contents.
     lsp_stop_on_restore = true,
+
+    save_extra_data = function()
+      return require("util.bufferline").save_session()
+    end,
+    restore_extra_data = function(_, data)
+      require("util.bufferline").load_session(data)
+    end,
+    pre_restore_cmds = {
+      function()
+        require("util.bufferline").before_restore()
+      end,
+    },
+    post_restore_cmds = {
+      function()
+        require("util.bufferline").after_restore()
+      end,
+    },
+    no_restore_cmds = {
+      function(is_startup)
+        if is_startup then
+          require("util.session_branch").start()
+        end
+      end,
+    },
 
     post_save_cmds = {
       function()

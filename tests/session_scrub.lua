@@ -2,6 +2,7 @@
 local repo = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h")
 vim.opt.runtimepath:prepend(repo)
 vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/lazy/auto-session")
+vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/lazy/bufferline.nvim")
 local root = vim.fn.tempname()
 local sessions = root .. "/sessions"
 vim.fn.mkdir(sessions, "p")

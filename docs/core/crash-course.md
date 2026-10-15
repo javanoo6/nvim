@@ -1471,6 +1471,15 @@ suppressed directories (`~/`, `~/Downloads`, `/`, `/tmp`). Restores open files,
 splits, and cursor positions. Non-startup restores stop attached LSP clients
 before loading the saved workspace.
 Auto-save also works when Neovim is launched with file arguments.
+Pins and the arranged buffer order are saved separately for each directory/branch
+and restored after restarting Neovim or returning to that branch. Use
+`<leader>bp` to pin/unpin, then `<leader>Ss` to save immediately (normal exit and
+branch switching also save automatically). Existing sessions acquire pin/order
+metadata on their next save; older sessions cannot recover previously lost pins.
+The Git watcher also runs when startup finds no saved session, including from
+nested directories and worktrees. A new branch with no session keeps the current
+buffers. Session selection with `<leader>Sf` restores editor state and does not
+check out the selected session's Git branch.
 Buffer auto-save starts enabled by default and writes normal file buffers even
 when the current buffer has LSP errors. Conform still skips format-on-save when
 errors exist. Toggle auto-save with `<leader>ua`.

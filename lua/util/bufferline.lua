@@ -1,4 +1,79 @@
 local M = {}
+local pending_session
+
+-- Store paths rather than transient buffer IDs. This payload belongs to one
+-- auto-session, independently of Bufferline's process-global persistence.
+function M.save_session()
+  require("bufferline")
+  local groups = require("bufferline.groups")
+  local state = require("bufferline.state")
+  local order, pins, seen = {}, {}, {}
+  local function add(id)
+    if seen[id] or not vim.api.nvim_buf_is_valid(id) or not vim.bo[id].buflisted or vim.bo[id].buftype ~= "" then
+      return
+    end
+    seen[id] = true
+    local path = vim.api.nvim_buf_get_name(id)
+    if path == "" then
+      return
+    end
+    order[#order + 1] = path
+    if groups._is_pinned({ id = id }) then
+      pins[#pins + 1] = path
+    end
+  end
+  for _, item in ipairs(state.components) do
+    add(item.id)
+  end
+  for _, id in ipairs(state.custom_sort or {}) do
+    add(id)
+  end
+  for _, id in ipairs(vim.api.nvim_list_bufs()) do
+    add(id)
+  end
+  return vim.json.encode({ bufferline = { order = order, pins = pins } })
+end
+
+function M.before_restore()
+  pending_session = nil
+  -- Legacy sessions must not inherit the previous workspace's metadata.
+  vim.g.BufferlinePinnedBuffers = ""
+  vim.g.BufferlinePositions = ""
+end
+
+function M.load_session(data)
+  local ok, decoded = pcall(vim.json.decode, data)
+  if ok and type(decoded) == "table" then
+    pending_session = decoded.bufferline
+  end
+end
+
+function M.after_restore()
+  require("bufferline")
+  local groups = require("bufferline.groups")
+  local ids = {}
+  for _, id in ipairs(vim.api.nvim_list_bufs()) do
+    groups.remove_id_from_manual_groupings(id)
+    ids[vim.api.nvim_buf_get_name(id)] = id
+  end
+  vim.g.BufferlinePinnedBuffers = ""
+  local data = pending_session or {}
+  for _, path in ipairs(data.pins or {}) do
+    if ids[path] then
+      groups.add_element("pinned", { id = ids[path] })
+    end
+  end
+  local order = {}
+  for _, path in ipairs(data.order or {}) do
+    if ids[path] then
+      order[#order + 1] = ids[path]
+    end
+  end
+  require("bufferline.state").set({ custom_sort = #order > 0 and order or vim.NIL })
+  require("bufferline.utils").save_positions(order)
+  pending_session = nil
+  require("bufferline.ui").refresh()
+end
 
 local function find_upvalue(fn, name)
   for index = 1, math.huge do

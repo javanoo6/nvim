@@ -214,6 +214,22 @@ has a check and removal condition; larger workflow limits remain explicit.
 - **Remove when:** upstream persists/removes stale pins safely without recovery;
   verify persistence and deletion transitions before dropping the helper.
 
+## Session pins, order, and Git watcher startup
+
+- **Owners:** `lua/util/bufferline.lua`, `lua/util/session_branch.lua`,
+  `lua/plugins/sessions.lua`.
+- **Dependencies:** auto-session `save_extra_data`, `restore_extra_data` (name,
+  payload), pre/post-restore and no-restore hooks; Git watcher start/stop methods
+  and `uv_git_watcher`; Bufferline group methods, `state.set`, `state.components`,
+  `state.custom_sort`, and `utils.save_positions`.
+- **Failure:** Bufferline globals are absent from session files and its pin
+  restore runs only once. Auto-session starts Git watching only after a restore
+  and assumes a relative `.git/HEAD`, missing fresh startups and worktrees.
+- **Check:** `tests/session_workspace.lua` uses real saves, repeated restores,
+  another Neovim process, and Git notifications with disposable repositories.
+- **Remove when:** upstream supplies per-session pins/order and starts a watcher
+  without requiring a saved session, resolving HEAD for nested cwd and worktrees.
+
 ## Glance fork and Java winbar
 
 - **Owners:** `lua/plugins/glance.lua`; pinned fork
