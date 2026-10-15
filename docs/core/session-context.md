@@ -93,7 +93,7 @@ Update this file when:
   Native `ASToggle`, `TinyInlineDiag enable/disable/toggle`, and the four
   Gitsigns display commands persist the same preferences as their keymaps.
   Auto-session's operational safety disables remain temporary; `<leader>Sa`
-  saves the durable session-auto-save preference.
+  toggles `session_autosave` through persist-toggle and saves the durable preference.
 - Editing-option changes apply to normal file windows and future window defaults;
   special plugin buffers keep their own layout settings. Session restore reapplies
   these preferences, preventing saved session local options from winning.

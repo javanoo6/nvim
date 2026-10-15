@@ -1490,7 +1490,7 @@ errors exist. Toggle auto-save with `<leader>ua`.
 | `<leader>Sr` | Restore session          |
 | `<leader>Sd` | Delete session           |
 | `<leader>Sf` | Find sessions            |
-| `<leader>Sa` | Enable session auto-save |
+| `<leader>Sa` | Toggle session auto-save |
 
 ---
 

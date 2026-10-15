@@ -525,7 +525,7 @@ sessions.lua
   auto-session  ── auto save/restore on open/close
                    auto-save also when launched with file args
                    stops LSP clients before non-startup restores
-                   <leader>Ss/Sr/Sd/Sf/Sa (Sa enables session auto-save)
+                   <leader>Ss/Sr/Sd/Sf/Sa (Sa toggles persistent session auto-save)
 
 projects.lua
   project.nvim  ── manual root detection + recent-project history

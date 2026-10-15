@@ -78,9 +78,9 @@ return {
     {
       "<leader>Sa",
       function()
-        require("util.preferences").set("session_autosave", true)
+        require("util.preferences").toggle("session_autosave")
       end,
-      desc = "Enable session auto-save",
+      desc = "Toggle session auto-save",
     },
   },
 }
