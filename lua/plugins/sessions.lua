@@ -37,19 +37,24 @@ return {
     lsp_stop_on_restore = true,
 
     save_extra_data = function()
-      return require("util.bufferline").save_session()
+      local data = vim.json.decode(require("util.bufferline").save_session())
+      data.breakpoints = require("util.session_breakpoints").save_session()
+      return vim.json.encode(data)
     end,
     restore_extra_data = function(_, data)
       require("util.bufferline").load_session(data)
+      require("util.session_breakpoints").load_session(data)
     end,
     pre_restore_cmds = {
       function()
         require("util.bufferline").before_restore()
+        require("util.session_breakpoints").before_restore()
       end,
     },
     post_restore_cmds = {
       function()
         require("util.bufferline").after_restore()
+        require("util.session_breakpoints").after_restore()
       end,
     },
     no_restore_cmds = {

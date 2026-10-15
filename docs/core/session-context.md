@@ -101,9 +101,9 @@ Update this file when:
   exists. Resetting the override restores those filetype defaults.
 - `:PersistToggleInfo`, `:PersistToggle {id}`, `:PersistToggleSet {id} true|false`,
   `:PersistToggleReset {id}`, and `:PersistToggleResetAll` manage preferences.
-- Temporary windows, breakpoints, watch targets, pins, and buffer-local debugging
-  controls keep their existing scope. Theme and pin persistence stay with their
-  owning plugins.
+- Temporary windows, watch targets, and buffer-local debugging controls keep
+  their existing scope. Themery owns theme persistence; sessions own buffer pins,
+  order, and DAP breakpoints.
 - Debug-test keys never auto-open the summary and close an existing summary.
   Ordinary test runs honor `test_summary_on_run`; `<leader>ts` remains explicit.
   DAP initialization also closes a loaded test summary for other debug entry
@@ -216,6 +216,17 @@ Update this file when:
   `tests/session_workspace.lua` exercises actual branch notifications from a
   fresh workspace, repeated branch/manual restores, a separate Neovim process,
   unpinning, legacy sessions, nested cwd, worktrees, and leaving Git.
+- `util.session_breakpoints` saves DAP source breakpoints in the same per-session
+  companion JSON as pins/order. Absolute paths and current sign line numbers are
+  saved with conditions, hit conditions, and log messages; adapter IDs and
+  verification state are discarded. Restore replaces the previous workspace's
+  breakpoints, including when the saved set is empty or a legacy session has no
+  breakpoint metadata. Existing files outside the listed buffer set are loaded
+  unlisted to place signs; missing files and lines beyond EOF are skipped.
+  Saving without DAP usage does not load the debugger. Restoring a nonempty set
+  loads DAP but does not launch an adapter/program. Existing saved sessions gain
+  breakpoint metadata on their next save. `tests/session_workspace.lua` covers
+  fresh-process and branch restoration, clearing, unlisted files, and stale paths.
 - `auto-session` scrubs invalid `setlocal includeformatexpr=...` lines from
   saved session files, plus orphaned `winminheight`/`winminwidth` restore lines
   whose saved script-local variables are absent, before restore and after save.

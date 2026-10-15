@@ -4,6 +4,11 @@ Open a Java source file in a Maven/Gradle project and check `:JavaInfo` for an
 attached, ready IntelliJ client. Set breakpoints with `<leader>db`, then put the
 cursor inside the class to launch.
 
+Source breakpoints persist with the directory/branch session, including conditions,
+hit conditions, and log messages. `<leader>Ss` saves them immediately; session
+auto-save also captures them on exit and branch changes. Restarting Neovim or
+restoring that branch recovers its saved set without launching a debugger.
+
 | Key / command                              | Action                                      |
 |--------------------------------------------|---------------------------------------------|
 | `<leader>jr`                               | Run the class enclosing the cursor          |

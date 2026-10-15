@@ -1476,6 +1476,11 @@ and restored after restarting Neovim or returning to that branch. Use
 `<leader>bp` to pin/unpin, then `<leader>Ss` to save immediately (normal exit and
 branch switching also save automatically). Existing sessions acquire pin/order
 metadata on their next save; older sessions cannot recover previously lost pins.
+DAP breakpoints are saved with the same session, including conditions, hit counts,
+and log messages. Set them with `<leader>db` / `<leader>dB`, then save with
+`<leader>Ss` or let session auto-save run. Returning restores that branch's set;
+clearing breakpoints and saving keeps them cleared. Deleted files and lines past
+the end of a shortened file are skipped. Restoring does not start debugging.
 The Git watcher also runs when startup finds no saved session, including from
 nested directories and worktrees. A new branch with no session keeps the current
 buffers. Session selection with `<leader>Sf` restores editor state and does not

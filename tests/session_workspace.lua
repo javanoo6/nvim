@@ -1,7 +1,7 @@
 -- Real plugin lifecycle, Git notifications, and a fresh process; disposable data.
 local repo = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h")
 vim.opt.rtp:prepend(repo)
-for _, name in ipairs({ "auto-session", "bufferline.nvim" }) do
+for _, name in ipairs({ "auto-session", "bufferline.nvim", "nvim-dap", "nvim-nio" }) do
   vim.opt.rtp:append(vim.fn.stdpath("data") .. "/lazy/" .. name)
 end
 vim.env.AUTOSESSION_UNIT_TESTING = "1"
@@ -33,6 +33,11 @@ spec.config(nil, opts)
 local groups = require("bufferline.groups")
 local state = require("bufferline.state")
 local paths = { root .. "/project/a.lua", root .. "/project/b, special.lua", root .. "/project/c.lua" }
+local expected_breakpoints = {
+  { path = paths[1], line = 1 },
+  { path = paths[2], line = 1, condition = "x > 0", hit_condition = "3", log_message = "value={x}" },
+}
+local saved_breakpoints = require("util.session_breakpoints")
 local function current()
   -- Render the actual bar so assertions cover the order users see, not just
   -- the stored custom_sort array.
@@ -51,6 +56,11 @@ local function run()
       { order = { paths[2], paths[1], paths[3] }, pins = { paths[2], paths[1] } },
       "Fresh process restores pins and arranged order"
     )
+    equal(
+      saved_breakpoints.save_session(),
+      expected_breakpoints,
+      "Fresh process restores regular, conditional, hit-count, and log breakpoints"
+    )
     return
   end
   vim.fn.mkdir(root .. "/project/nested", "p")
@@ -63,10 +73,17 @@ local function run()
   vim.cmd.cd(root .. "/project/nested")
   equal(auto.auto_restore_session_at_vim_enter(), false, "Fresh workspace has no session")
   equal(require("auto-session.git").uv_git_watcher ~= nil, true, "Fresh startup watches nested repository")
+  equal(package.loaded.dap, nil, "Ordinary startup does not load DAP")
+  auto.save_session(nil, { show_message = false })
+  equal(package.loaded.dap, nil, "Saving without breakpoints does not load DAP")
   for _, path in ipairs(paths) do
     vim.cmd.edit(path)
   end
   local ids = vim.tbl_map(vim.fn.bufnr, paths)
+  require("dap")
+  local breakpoints = require("dap.breakpoints")
+  breakpoints.set({}, ids[1], 1)
+  breakpoints.set({ condition = "x > 0", hit_condition = "3", log_message = "value={x}" }, ids[2], 1)
   groups.add_element("pinned", { id = ids[2] })
   groups.add_element("pinned", { id = ids[1] })
   -- This is the custom order Bufferline's move command records.
@@ -108,6 +125,7 @@ local function run()
   vim.cmd("silent %bw!")
   vim.cmd.edit(paths[3])
   groups.add_element("pinned", { id = vim.api.nvim_get_current_buf() })
+  breakpoints.set({}, vim.api.nvim_get_current_buf(), 1)
   state.set({ components = {}, custom_sort = vim.NIL })
   local expected_other = current()
   auto.save_session(other_name, { show_message = false })
@@ -120,6 +138,7 @@ local function run()
     "Watcher did not restore main"
   )
   equal(current(), expected_main, "Branch return restores main pins and order")
+  equal(saved_breakpoints.save_session(), expected_breakpoints, "Branch return restores main breakpoints")
   git("switch", "other")
   assert(
     vim.wait(3000, function()
@@ -128,18 +147,40 @@ local function run()
     "Rearmed watcher did not restore other"
   )
   equal(current(), expected_other, "Other branch has its own buffers and pins")
+  equal(saved_breakpoints.save_session(), { { path = paths[3], line = 1 } }, "Other branch has its own breakpoints")
   restore(main)
   equal(current(), expected_main, "Repeated manual restore recovers main metadata")
   restore(other)
   equal(current(), expected_other, "Repeated restore replaces previous pins")
   groups.remove_element("pinned", { id = vim.fn.bufnr(paths[3]) })
+  require("dap").clear_breakpoints()
   auto.save_session(nil, { show_message = false })
   restore(main)
   restore(other)
   equal(current().pins, {}, "Explicitly unpinned session stays unpinned")
+  equal(saved_breakpoints.save_session(), {}, "Cleared breakpoints stay cleared after save and restore")
   vim.fn.delete((main:gsub("%.vim$", "x.vim")))
   restore(main)
   equal(current().pins, {}, "Legacy session does not inherit previous pins")
+  equal(saved_breakpoints.save_session(), {}, "Legacy session does not inherit previous breakpoints")
+  -- Breakpoints also survive in files outside the listed/open workspace.
+  local hidden_path = root .. "/project/closed.lua"
+  vim.fn.writefile({ "one", "two", "three" }, hidden_path)
+  local hidden = vim.fn.bufadd(hidden_path)
+  vim.fn.bufload(hidden)
+  breakpoints.set({}, hidden, 2)
+  equal(vim.bo[hidden].buflisted, false, "Breakpoint fixture is outside the bufferline")
+  auto.save_session("breakpoint edge cases", { show_message = false })
+  local edge = vim.v.this_session
+  restore(edge)
+  equal(saved_breakpoints.save_session(), { { path = hidden_path, line = 2 } }, "Unlisted file breakpoint survives session restore")
+  equal(vim.bo[vim.fn.bufnr(hidden_path)].buflisted, false, "Breakpoint restore keeps the file unlisted")
+  vim.fn.writefile({ "shorter" }, hidden_path)
+  restore(edge)
+  equal(saved_breakpoints.save_session(), {}, "Out-of-range saved breakpoint is skipped")
+  vim.fn.delete(hidden_path)
+  restore(edge)
+  equal(saved_breakpoints.save_session(), {}, "Missing file breakpoint is skipped")
   -- Git worktrees have a .git file rather than a directory.
   require("util.session_branch").stop()
   git("worktree", "add", "-b", "worktree", root .. "/worktree")

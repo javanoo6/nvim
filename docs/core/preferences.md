@@ -57,7 +57,8 @@ failed-test runs, and sequential runs honor `test_summary_on_run`. You can still
 open the summary manually with `<leader>ts`. DAP initialization closes an existing
 summary for debug launches outside those test mappings too.
 
-Temporary UI open/close actions, breakpoints, watch targets, buffer-local
-Treesitter/Illuminate disables, and `:FormatDisable!` stay local to their current
-context. Themery and bufferline retain their existing persistence. Oil retains
-its protection against changing hidden-file visibility with unsaved edits.
+Temporary UI open/close actions, watch targets, buffer-local Treesitter/Illuminate
+disables, and `:FormatDisable!` stay local to their current context. Themery owns
+theme persistence. Sessions persist buffer pins/order and DAP source breakpoints
+per working directory and Git branch. Oil retains its protection against changing
+hidden-file visibility with unsaved edits.

@@ -230,6 +230,21 @@ has a check and removal condition; larger workflow limits remain explicit.
 - **Remove when:** upstream supplies per-session pins/order and starts a watcher
   without requiring a saved session, resolving HEAD for nested cwd and worktrees.
 
+## Session breakpoints
+
+- **Owners:** `lua/util/session_breakpoints.lua`, `lua/plugins/sessions.lua`.
+- **Dependencies:** the same auto-session extra-data/lifecycle hooks as buffer
+  metadata; `dap.breakpoints.get/set`, DAP source sign positions, public
+  `dap.clear_breakpoints`, `dap.sessions`, and session `set_breakpoints`.
+- **Behavior:** save path/line/condition/hit-condition/log-message data per
+  cwd/branch, replace breakpoints on restore, and update attached adapters.
+  Empty and legacy snapshots clear old breakpoints. Missing files and stale
+  lines are skipped; unlisted files remain unlisted. No adapter state is saved.
+- **Check:** `tests/session_workspace.lua` covers real session and branch
+  restores, a fresh process, clearing, unlisted files, and missing/stale locations.
+- **Remove when:** upstream provides compatible per-session source-breakpoint
+  persistence, including clearing and the existing condition/logpoint semantics.
+
 ## Glance fork and Java winbar
 
 - **Owners:** `lua/plugins/glance.lua`; pinned fork
