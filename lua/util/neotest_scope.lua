@@ -110,6 +110,11 @@ function M.scoped_discovery_filter(name, rel_path, root)
   root = normalize(root)
   local scopes = vim.tbl_values(discovery_scopes)
   if #scopes == 0 then
+    -- Neotest's filesystem walker resumes in a libuv callback. Buffer APIs
+    -- used by the fallback scope must run on Neovim's main event loop.
+    if vim.in_fast_event() then
+      require("nio").scheduler()
+    end
     local scope = M.get_scope()
     if not scope then
       return true
@@ -124,7 +129,8 @@ function M.scoped_discovery_filter(name, rel_path, root)
       end
 
       local focus_rel = vim.fs.relpath(root, scope.focus_root)
-      local candidate = rel_path == "." and name or (rel_path .. "/" .. name)
+      -- Neotest already includes name in the root-relative directory path.
+      local candidate = rel_path
       if
         focus_rel and (candidate == focus_rel or vim.startswith(focus_rel, candidate .. "/") or vim.startswith(candidate, focus_rel .. "/"))
       then

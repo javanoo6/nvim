@@ -586,6 +586,10 @@ Update this file when:
   session, so activating another project/module does not exclude an earlier
   asynchronous discovery pass. Ignored directories and unactivated siblings
   remain excluded. `SessionLoadPost` clears those remembered scopes.
+- Discovery filtering uses Neotest's root-relative directory path as supplied
+  (it already includes the directory name). Before any scope is activated, the
+  current-buffer fallback yields out of libuv fast callbacks before reading
+  buffer APIs, avoiding `E5560` during cold/session-restored discovery.
 - Go test-file detection uses the most specific activated scope for its
   GOPATH/GOROOT check, falling back to editor cwd for unactivated paths. This
   keeps an activated GOPATH project discoverable after switching projects,
