@@ -553,6 +553,9 @@ browser-style single-file tab.
 
 ### Inside Neo-tree
 
+Opening a file closes Neo-tree automatically in the active tab, including split
+opens. Expanding folders and previewing files keep the tree open.
+
 | Key     | Action                                            |
 |---------|---------------------------------------------------|
 | `<CR>`  | Open file / Expand full single-child folder chain |

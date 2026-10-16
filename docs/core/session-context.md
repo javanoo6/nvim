@@ -169,6 +169,9 @@ Update this file when:
   skipped by repo `.gitignore` rules.
 - Neo-tree sidebar cwd is intentionally tied to global cwd to avoid stale
   tab-local reopen behavior.
+- Neo-tree closes in the active tab after opening a file, including split and
+  window-picker opens, through its `file_opened` event. Directory expansion and
+  previews keep the tree open; opening a new tab leaves the original tab's tree.
 - Neo-tree does not auto-follow the current file on buffer switches. In large
   monorepos this keeps the sidebar/root stable while opening buffers; scope
   changes stay explicit via `<leader>e`, `<leader>E`, or `.` inside Neo-tree.

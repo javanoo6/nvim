@@ -331,6 +331,12 @@ return {
     opts = {
       event_handlers = {
         {
+          event = "file_opened",
+          handler = function()
+            require("neo-tree.command").execute({ action = "close" })
+          end,
+        },
+        {
           event = "file_added",
           handler = function(path)
             require("util.java_file_templates").on_file_added(path)
