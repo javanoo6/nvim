@@ -35,6 +35,13 @@ depend on the shell `PATH` used to launch Neovim.
 
 ## Activation Semantics
 
+`util.python_venv_picker` captures the originating Python buffer before opening
+the picker. Confirmation saves the choice to that buffer and project, even if
+popup activity changes the alternate buffer or the interpreter is already
+active elsewhere. Selection from a non-Python buffer uses the alternate Python
+buffer; if neither is available, open a Python file first. A deleted originating
+buffer cancels activation rather than redirecting it to another project.
+
 When a venv is activated:
 
 - `VIRTUAL_ENV` is updated.
@@ -59,13 +66,14 @@ before calling upstream discovery, so Python test discovery works without Go.
 
 ## Commands And Keys
 
-| Key          | Command / Action                         |
-|--------------|------------------------------------------|
-| `<leader>ps` | select env                               |
-| `<leader>pc` | create env                               |
-| `<leader>pr` | recreate env                             |
-| `<leader>pi` | install default deps                     |
-| `<leader>pI` | prompt for custom `pip install ...` args |
+| Key          | Command / Action                                     |
+|--------------|------------------------------------------------------|
+| `<leader>ps` | select env                                           |
+| `<leader>pe` | show loaded .env path, variables, and effective PATH |
+| `<leader>pc` | create env                                           |
+| `<leader>pr` | recreate env                                         |
+| `<leader>pi` | install default deps                                 |
+| `<leader>pI` | prompt for custom `pip install ...` args             |
 
 Commands:
 

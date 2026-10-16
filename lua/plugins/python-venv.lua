@@ -17,6 +17,13 @@ return {
     },
     keys = {
       {
+        "<leader>pe",
+        function()
+          require("util.python_venv").show_env()
+        end,
+        desc = "Show project env vars",
+      },
+      {
         "<leader>ps",
         function()
           require("util.python_venv").select()
@@ -89,6 +96,7 @@ return {
       }
     end,
     config = function(_, opts)
+      require("util.python_venv_picker").install()
       require("venv-selector").setup(opts)
       require("util.python_venv").register_commands()
     end,

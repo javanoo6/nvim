@@ -458,6 +458,21 @@ function M.prompt_install()
   end)
 end
 
+function M.show_env()
+  local lines = {
+    "Python: " .. (active_python() or "not selected"),
+    ".env: " .. (M.env_state.root and (M.env_state.root .. "/.env") or "not loaded"),
+    "",
+  }
+  for _, key in ipairs(vim.fn.sort(vim.tbl_keys(M.env_state.vars))) do
+    lines[#lines + 1] = key .. "=" .. vim.inspect(vim.env[key])
+  end
+  -- PATH is merged during loading and is not stored in env_state.vars.
+  lines[#lines + 1] = ""
+  lines[#lines + 1] = "Effective PATH=" .. (vim.env.PATH or "")
+  vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "Python environment" })
+end
+
 function M.register_commands()
   local command_names = {
     "PythonVenvSelect",

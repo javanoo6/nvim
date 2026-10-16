@@ -11,6 +11,15 @@ Update this file when:
 
 ## Start Here
 
+- `<leader>pe` shows the selected Python, loaded project `.env` path, current
+  values of its variables, and effective merged PATH.
+
+- Venv picker selection is bound to its originating Python buffer by
+  `util.python_venv_picker`. Upstream resolves the alternate/first Python buffer
+  while the popup is open, which can save the selection to the wrong project.
+  The helper also records the buffer selection when the interpreter is already
+  active (upstream otherwise returns before updating buffer memory/cache).
+
 - [docs/core/crash-course.md](/home/konkov/.config/nvim/docs/core/crash-course.md:1): practical usage guide
 - [docs/core/plugin-map.md](/home/konkov/.config/nvim/docs/core/plugin-map.md:1): plugin inventory and wiring
 - [docs/core/nvim-nav.md](/home/konkov/.config/nvim/docs/core/nvim-nav.md:1): focused navigation cheat sheet
