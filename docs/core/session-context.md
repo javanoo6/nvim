@@ -275,6 +275,11 @@ Update this file when:
   `~/.local/share/nvim/python-venvs`. That search uses an explicit resolved
   `fd`/`fdfind` path at startup so env discovery does not depend on the shell
   `PATH` that launched Neovim.
+- Python venv activation preserves the DAP adapter's Mason `debugpy` interpreter.
+  Only the debugged program follows the selected `VIRTUAL_ENV` (unless a launch
+  configuration overrides `python`/`pythonPath`). Do not rerun `dap-python.setup()`
+  with the project interpreter: project venvs may not contain debugpy, and repeated
+  setup also duplicates default launch configurations.
 - When a Python venv is activated, `${project_root}/.env` is loaded into
   Neovim's process environment if present. New terminals, neotest runs, and
   other future jobs spawned by Neovim inherit those variables.

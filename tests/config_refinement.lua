@@ -3,7 +3,7 @@ local repo = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h")
 local plugin_dir = vim.fn.stdpath("data") .. "/lazy/"
 vim.opt.runtimepath:prepend(repo)
 vim.opt.runtimepath:append(repo .. "/after")
-for _, name in ipairs({ "nvim-lspconfig", "nvim-treesitter", "nvim-treesitter-textobjects", "mini.ai" }) do
+for _, name in ipairs({ "nvim-lspconfig", "nvim-treesitter", "nvim-treesitter-textobjects", "mini.ai", "nvim-dap", "nvim-dap-python" }) do
   assert(vim.fn.isdirectory(plugin_dir .. name) == 1, "Missing installed test dependency: " .. name)
   vim.opt.runtimepath:append(plugin_dir .. name)
 end
@@ -245,7 +245,7 @@ local function run()
   equal({ enabled.pyright, enabled.basedpyright }, { true, false }, "Restart works before client attachment")
 
   -- Exercise the actual venv callback wiring with two selected interpreter paths.
-  local active_python, dap_python
+  local active_python
   package.preload["venv-selector"] = function()
     return {
       python = function()
@@ -253,17 +253,16 @@ local function run()
       end,
     }
   end
-  package.preload["dap-python"] = function()
-    return {
-      setup = function(python)
-        dap_python = python
-      end,
-    }
-  end
+  local dap = require("dap")
+  local adapter_python = fixture .. "/debugpy/bin/python"
+  require("dap-python").setup(adapter_python)
+  local config_count = #dap.configurations.python
+  local original_virtual_env = vim.env.VIRTUAL_ENV
   python_lsp.select("basedpyright")
   local activate = require("plugins.python-venv")[1].opts().options.on_venv_activate_callback
   for _, env in ipairs({ "env-a", "env-b" }) do
     active_python = write(env .. "/bin/python")
+    vim.env.VIRTUAL_ENV = vim.fs.dirname(vim.fs.dirname(active_python))
     activate()
     assert(
       vim.wait(500, function()
@@ -272,9 +271,16 @@ local function run()
       "Venv callback did not restart"
     )
     equal({ enabled.pyright, enabled.basedpyright }, { false, true }, "Venv callback preserves selection: " .. env)
-    equal(dap_python, active_python, "Venv callback updates DAP: " .. env)
+    dap.adapters.python(function(adapter)
+      equal(adapter.command, adapter_python, "Venv callback preserves debugpy adapter: " .. env)
+      adapter.enrich_config({ request = "launch", envFile = fixture .. "/missing.env" }, function(config)
+        equal(config.pythonPath, active_python, "Debuggee follows selected venv: " .. env)
+      end)
+    end, { request = "launch" })
+    equal(#dap.configurations.python, config_count, "Venv callback does not duplicate launch configurations: " .. env)
     equal(vim.env.PATH:match("^[^:]+"), vim.fs.dirname(active_python), "Venv callback puts interpreter first: " .. env)
   end
+  vim.env.VIRTUAL_ENV = original_virtual_env
 
   -- Actual parser/highlighter checks across aliases; never install during tests.
   dofile(plugin_dir .. "nvim-treesitter/plugin/filetypes.lua")

@@ -82,11 +82,7 @@ return {
           set_environment_variables = true,
           search_timeout = 5,
           on_venv_activate_callback = function()
-            local python = require("venv-selector").python()
-            if python and python ~= "" then
-              require("dap-python").setup(python)
-            end
-
+            -- DAP keeps Mason's debugpy interpreter; the debuggee uses VIRTUAL_ENV.
             require("util.python_venv").apply_project_env(0)
 
             -- Restart only the session's selected server with the new interpreter.

@@ -40,8 +40,9 @@ Wayland/X11 clipboard tool; without one, this config falls back to Vim registers
   and a C toolchain are needed for the Go adapter's default race-enabled tests.
 - Python 3 with venv/pip support for environment commands and Python tooling.
   Mason installs debugpy; the DAP setup uses its isolated interpreter when
-  available, with a `python3` fallback. Selecting a project venv changes DAP's
-  interpreter, so that interpreter needs debugpy for debugging.
+  available, with a `python3` fallback (which needs debugpy installed).
+  Selecting a project venv changes the debuggee interpreter through `VIRTUAL_ENV`;
+  the adapter keeps Mason's interpreter, so project envs do not need debugpy.
 - JDK 21 for the standalone IntelliJ formatter and generated Java projects;
   Maven and/or Gradle (including project wrappers) for Java build/run/test flows.
   `NVIM_JAVA_HOME` overrides `JAVA_HOME` for the IntelliJ project SDK. The

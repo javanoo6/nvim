@@ -50,6 +50,11 @@ When a venv is activated:
 - Python LSP clients are restarted so Pyright sees the selected interpreter.
 - Existing terminal buffers are not force-reinitialized.
 
+Python debugging keeps the adapter on Mason's isolated `debugpy` interpreter.
+Venv activation does not call `dap-python.setup()` again. The debugged program
+uses the selected venv through `VIRTUAL_ENV`, unless its launch configuration
+explicitly overrides `python` or `pythonPath`. Project venvs do not need debugpy.
+
 The `.env` loader preserves the inherited `PATH` (including the selected venv)
 and appends unique directories from `.env`'s `PATH`. `$PATH` and `${PATH}` are
 expanded in that entry only. Other variables use the simple literal parser;
