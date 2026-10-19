@@ -125,6 +125,13 @@ Update this file when:
 
 ## Core Editing Deviations
 
+- Agents format explicit code/Markdown paths with `./format.sh FILE...`
+  (`--help` for usage). Paths are relative to the caller, so the absolute script
+  path also works from other projects. It starts a formatter-only Neovim,
+  loads `plugins.formatting` options and Mason's executable PATH, and calls
+  `util.format` synchronously without loading sessions, LSPs, or UI plugins.
+  Missing/unsupported files or unavailable formatters fail before writes;
+  runtime formatter failures exit nonzero and earlier files may already be saved.
 - `$` and `^` are swapped from upstream Vim behavior:
   `$` goes to first non-blank, `^` goes to end of line.
 - Plain `j/k` use wrapped display-line movement when no count is given, but
