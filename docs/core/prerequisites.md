@@ -87,6 +87,27 @@ tools; restart after initial setup.
 | gofumpt, goimports-reviser, golines                  | Go formatting                                     |
 | delve, debugpy                                       | Go/Python debugging                               |
 
+## Markdown and Mermaid preview
+
+`md-render.nvim` requires Neovim 0.12+ and a Kitty graphics compatible terminal
+for inline images and Mermaid diagrams. Install Mermaid CLI with the Node/npm
+environment used to launch Neovim:
+
+```sh
+npm install -g @mermaid-js/mermaid-cli
+mmdc --version
+```
+
+The CLI uses Puppeteer's headless Chrome; allow its browser download during
+installation. Verify with `:MdRender demo`, then use `<leader>mt` to toggle a
+Markdown file between source and render or `<leader>ms` to see both in a vertical
+split. Without `mmdc`, upstream can fall back to an on-demand npm download.
+Plain Markdown renders without the diagram CLI; Mermaid images require it.
+On Linux, the plugin prefers installed `google-chrome` when
+`PUPPETEER_EXECUTABLE_PATH` is unset, so Ubuntu's sandbox restrictions on
+Puppeteer's downloaded browser do not prevent rendering. An explicit value of
+that environment variable is preserved. No sandbox-disabling flags are added.
+
 ## Standalone formatter
 
 Initialize the formatter submodule and build its jar using JDK 21 and Maven:

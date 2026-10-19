@@ -132,6 +132,18 @@ Update this file when:
   `util.format` synchronously without loading sessions, LSPs, or UI plugins.
   Missing/unsupported files or unavailable formatters fail before writes;
   runtime formatter failures exit nonzero and earlier files may already be saved.
+- Markdown preview uses `delphinus/md-render.nvim`, loaded on `:MdRender` or
+  `<leader>m` actions. `<leader>mt` swaps source/render in the current window;
+  `<leader>ms` opens a vertical source/render split with live updates and
+  synchronized navigation; `<leader>mp` toggles a floating preview;
+  `<leader>md` opens the upstream demo. Render buffers are read-only and the
+  source stays editable. Mermaid diagrams render locally through `mmdc` and
+  display through Kitty graphics. On Linux, loading the plugin sets
+  `PUPPETEER_EXECUTABLE_PATH` to detected system `google-chrome` when no explicit
+  override exists: Puppeteer's downloaded Chrome cannot start its sandbox on
+  this Ubuntu host, while system Chrome works with the sandbox enabled.
+  Experimental insert-mode auto-toggle is not
+  enabled, and experimental scaled headings are explicitly disabled.
 - `$` and `^` are swapped from upstream Vim behavior:
   `$` goes to first non-blank, `^` goes to end of line.
 - Plain `j/k` use wrapped display-line movement when no count is given, but

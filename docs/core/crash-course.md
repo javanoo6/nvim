@@ -33,6 +33,25 @@ nvim setup reference guide.
 
 ---
 
+## Markdown preview
+
+Markdown and Mermaid diagrams can be rendered inside Neovim with
+`md-render.nvim`. The rendered view is read-only; toggle back to edit the source.
+
+| Key          | Action                                                  |
+|--------------|---------------------------------------------------------|
+| `<leader>mt` | Toggle raw source / rendered view in the current window |
+| `<leader>ms` | Open source and rendered view in a vertical split       |
+| `<leader>mp` | Toggle floating rendered preview                        |
+| `<leader>md` | Open the renderer's built-in demo                       |
+
+The split updates live and synchronizes navigation. Use `<C-h>` / `<C-l>` to
+move between its windows, and `<C-w>c` to close the focused split. Rendered
+regions expand/fold with `za` or `<CR>`. Mermaid images need `mmdc` and a Kitty
+graphics compatible terminal; see [prerequisites](prerequisites.md).
+Automatic source/render switching is experimental and left off.
+Try the [Markdown and Mermaid example](markdown-preview.md).
+
 ## Vim Basics
 
 ### Modes
