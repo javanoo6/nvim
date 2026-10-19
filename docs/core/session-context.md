@@ -388,19 +388,31 @@ Update this file when:
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached
   results, limited to the active test scope/project root.
-- IntelliJ's debug panel is the default UI for all `nvim-dap` adapters;
-  `nvim-dap-ui` is disabled. [lua/util/debug_ui.lua](/home/konkov/.config/nvim/lua/util/debug_ui.lua:1)
-  installs its listeners separately from upstream run/debug defaults, preserving
-  our global mappings. The panel opens on stops and closes on exit by default.
-  `<leader>du` toggles it; `<leader>dU` keeps it open on exit; `<leader>de`
-  evaluates the source expression/selection; `<leader>df` opens the panel and
-  focuses the current frame. Panel keys: Enter/Tab expand, `e` evaluate, `w`
-  watch, `dd` remove watch, `c/n/i/o` continue/step, `q` close.
-- The panel displays the stopped thread's stack and first scope, with no thread
-  or scope selector. Upstream clears locals/frame values on termination, even
-  when keep-open is enabled; watch expressions survive. DAP REPL and virtual
-  text (including secret masking) remain configured. Source jumps avoid both
-  IntelliJ panels and the REPL.
+- `nvim-dap-ui` is the shared debugger UI for Java, Go, Python, and other DAP
+  adapters. [lua/util/debug_ui.lua](/home/konkov/.config/nvim/lua/util/debug_ui.lua:1)
+  owns setup and lifecycle; IntelliJ's combined debug panel/listeners are disabled.
+  Stack stays on the left (select a frame to inspect its locals). The bottom
+  defaults to Locals/scopes with Watches alongside. `<Tab>` in a debug pane or
+  `<leader>dr` anywhere switches to Console: interactive DAP REPL plus integrated
+  terminal output. Adapter `output` events appear in the REPL; adapters requesting
+  an integrated terminal use the output pane. External-terminal output remains
+  external. The chosen bottom view survives closing/reopening during this session.
+- `<leader>du` toggles the complete UI; `<leader>dU` keeps it open on exit;
+  `<leader>df` opens it and focuses the current source frame. It opens on stops
+  without taking source focus, and closes after the last session terminates by
+  default. Watches survive closing/reopening. Variable visibility after exit is
+  managed by dap-ui; terminated values are not a saved snapshot.
+- Debug-pane Normal keys: `e` evaluate prompt, `w` add-watch prompt, `dd` remove
+  watch, `E` edit value/watch, Enter expand/select, `c` continue, `n` step over,
+  `s` step into, `o` step out, `p` pause, `t` terminate, `q` close the whole UI.
+  `i` also steps into in Stack/Locals; in REPL/Watches it retains insert mode.
+  `j/k` keep standard movement. Use `<Esc>` to leave Console insert/terminal mode
+  before pane shortcuts. `<leader>de` evaluates the source expression/selection
+  through dap-ui, retaining IntelliJ's dotted/call-chain extraction in Normal mode.
+  Expression syntax and evaluation/stepping support depend on the adapter.
+  Virtual text (including secret masking) remains configured; source jumps avoid
+  debugger panes, IntelliJ output, and the REPL. `tests/dap_ui.lua` checks actual
+  plugin layouts, focus, keymaps and watch persistence without launching adapters.
 - Neotest output rendering is guarded by
   [lua/util/neotest_output_guard.lua](/home/konkov/.config/nvim/lua/util/neotest_output_guard.lua:1).
   Upstream `output` and `output_panel` read each result output file fully before
@@ -695,7 +707,7 @@ Update this file when:
 - DAP virtual text masks values when the variable name or rendered value
   contains common secret terms: `secret`, `api_key`, `apikey`, `token`,
   `password`, `passwd`, `credential`, or `authorization`.
-- IntelliJ's DAP panel opens on stops and closes on exit by default.
+- The shared DAP UI opens on stops and closes on exit by default.
   `<leader>dU` keeps the panel open, but upstream clears terminated-frame values.
 
 ## Git / Merge Decisions

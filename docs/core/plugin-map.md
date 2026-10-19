@@ -392,18 +392,19 @@ first use.
 ```
 dap.lua
   nvim-dap  ── core debugger
-    ├── intellij-lsp.debug   ── default stack/locals/watches panel for all adapters
+    ├── nvim-dap-ui          ── shared Stack sidebar + bottom Locals/Console views
     │                            <leader>du toggle, <leader>dU keep open, <leader>de eval
     │                            local lifecycle wrapper: util/debug_ui.lua
     ├── nvim-dap-virtual-text ── inline variable values (masks secrets)
     ├── nvim-dap-go           ── Go adapter (delve)  →  <leader>dgt, <leader>dgl
     └── nvim-dap-python       ── Python adapter
 
-Java DAP uses IntelliJ: util/java_launch.lua saves/builds, resolves launches, and starts the owning workspace adapter. nvim-dap-ui is disabled.
+Java DAP uses IntelliJ: util/java_launch.lua saves/builds, resolves launches, and starts the owning workspace adapter. util/debug_ui.lua configures nvim-dap-ui for all adapters.
 ```
 
 **DAP keymaps** (`<leader>d*`): b/B breakpoint, c continue, C run-to-cursor, f focus current frame, g goto line without executing, i step-into, j down stack
-frame, k up stack frame, l run last, O step-over, o step-out, p pause, r REPL, s session, t terminate, w widgets, u UI, U keep UI open on exit, e eval, gt debug
+frame, k up stack frame, l run last, O step-over, o step-out, p pause, r switch Locals/Console, s session, t terminate, w widgets, u UI, U keep UI open on exit,
+e eval, gt debug
 Go test, gl debug last Go test
 
 ---
@@ -705,7 +706,7 @@ lazy.nvim
 │
 ├── DEBUGGING
 │   └── nvim-dap
-│       ├── intellij-lsp.debug → default UI
+│       ├── nvim-dap-ui → shared UI
 │       ├── nvim-dap-virtual-text
 │       ├── nvim-dap-go
 │       └── nvim-dap-python

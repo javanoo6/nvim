@@ -818,38 +818,56 @@ file preview. A single result in the current buffer jumps directly.
 
 ## Debugging
 
-| Key           | Action                      |
-|---------------|-----------------------------|
-| `<leader>db`  | Toggle breakpoint           |
-| `<leader>dB`  | Breakpoint with condition   |
-| `<leader>dc`  | Continue active session     |
-| `<leader>dC`  | Run to cursor               |
-| `<leader>df`  | Focus current frame         |
-| `<leader>di`  | Step into                   |
-| `<leader>do`  | Step out                    |
-| `<leader>dO`  | Step over                   |
-| `<leader>dg`  | Go to line (no execute)     |
-| `<leader>dl`  | Run last                    |
-| `<leader>dp`  | Pause                       |
-| `<leader>dr`  | Toggle REPL                 |
-| `<leader>dt`  | Terminate                   |
-| `<leader>ds`  | Session info                |
-| `<leader>dj`  | Down (call stack)           |
-| `<leader>dk`  | Up (call stack)             |
-| `<leader>dw`  | Hover widgets               |
-| `<leader>du`  | Toggle IntelliJ debug panel |
-| `<leader>dU`  | Toggle DAP UI keep-open     |
-| `<leader>de`  | Evaluate expression         |
-| `<leader>dgt` | Debug Go test               |
-| `<leader>dgl` | Debug last Go test          |
+| Key           | Action                    |
+|---------------|---------------------------|
+| `<leader>db`  | Toggle breakpoint         |
+| `<leader>dB`  | Breakpoint with condition |
+| `<leader>dc`  | Continue active session   |
+| `<leader>dC`  | Run to cursor             |
+| `<leader>df`  | Focus current frame       |
+| `<leader>di`  | Step into                 |
+| `<leader>do`  | Step out                  |
+| `<leader>dO`  | Step over                 |
+| `<leader>dg`  | Go to line (no execute)   |
+| `<leader>dl`  | Run last                  |
+| `<leader>dp`  | Pause                     |
+| `<leader>dr`  | Switch Locals / Console   |
+| `<leader>dt`  | Terminate                 |
+| `<leader>ds`  | Session info              |
+| `<leader>dj`  | Down (call stack)         |
+| `<leader>dk`  | Up (call stack)           |
+| `<leader>dw`  | Hover widgets             |
+| `<leader>du`  | Toggle debugger UI        |
+| `<leader>dU`  | Toggle DAP UI keep-open   |
+| `<leader>de`  | Evaluate expression       |
+| `<leader>dgt` | Debug Go test             |
+| `<leader>dgl` | Debug last Go test        |
 
 ---
 
-IntelliJ's panel is the default for Java, Go, and Python. It opens on a stop,
-shows stack/locals/watches, and closes on exit unless keep-open is enabled.
-Inside the panel: Enter/Tab expand, `e` evaluates, `w` adds a watch, `dd` removes
-one, `c/n/i/o` continue/step, and `q` closes. Keep-open preserves the panel and
-watch expressions; terminated-frame values are cleared by upstream.
+The shared DAP UI works with Java, Go, Python, and other configured adapters.
+Stack stays on the left; select a frame to inspect its locals. Below the source,
+Locals/scopes and Watches share the bottom area. Press `<Tab>` in a debug pane
+or `<leader>dr` anywhere to switch it to Console (interactive REPL and program
+output). Press again to return to Locals. The UI opens on stops and closes on
+exit unless keep-open is enabled.
+
+| Pane key (Normal mode) | Action                                |
+|------------------------|---------------------------------------|
+| `e` / `w`              | Prompt to evaluate / add watch        |
+| `c` / `n` / `s` / `o`  | Continue / step over / into / out     |
+| `p` / `t`              | Pause / terminate                     |
+| Enter                  | Expand variable or select stack frame |
+| `dd` / `E`             | Remove watch / edit value or watch    |
+| Tab                    | Switch Locals / Console               |
+| `q`                    | Close the complete UI                 |
+
+`j/k` keep normal movement. In Stack/Locals, `i` also steps into; in
+REPL/Watches, `i` starts typing. Leave insert/terminal mode with `<Esc>` before
+using pane shortcuts. Watches survive closing/reopening. Expression syntax,
+variable scopes, and debugger capabilities come from each language's adapter.
+Adapter output goes to the REPL; integrated-terminal output has its own Console
+section. Programs configured with an external terminal still use that terminal.
 
 ## Testing (Neotest)
 
@@ -949,7 +967,7 @@ IntelliJ compilation/classpaths and the JUnit Console launcher.
 1. **Open test file** (e.g., `UserControllerTest.java`) and place cursor on test method
 2. **Set breakpoints** with `<leader>db` on lines where you expect the bug
 3. **Start debugging**: `<leader>td`
-4. **Wait for Maven/Gradle compilation** and the IntelliJ debug panel to open
+4. **Wait for Maven/Gradle compilation** and the shared DAP UI to open
 5. **Use DAP controls**:
     - `<leader>dc` — Continue to breakpoint
     - `<leader>di` — Step into method

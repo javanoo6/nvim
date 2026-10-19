@@ -201,15 +201,16 @@ local function run()
   scope.with_scope(function() end)()
   equal(opened, 1, "Regular test run still opens summary")
   local dap_before = package.loaded.dap
-  local debug_before = package.loaded["intellij-lsp.debug"]
-  local fake_dap = { listeners = { before = { event_initialized = {} }, after = { event_terminated = {}, event_exited = {} } } }
+  local debug_before = package.loaded.dapui
+  local fake_dap =
+    { listeners = { before = { event_initialized = {} }, after = { event_stopped = {}, event_terminated = {}, event_exited = {} } } }
   package.loaded.dap = fake_dap
-  package.loaded["intellij-lsp.debug"] = { setup = function() end }
+  package.loaded.dapui = { setup = function() end }
   require("util.debug_ui").setup()
   fake_dap.listeners.before.event_initialized.close_test_summary()
   equal(closed, 6, "DAP initialization closes summary for non-test debug entry points")
   package.loaded.dap = dap_before
-  package.loaded["intellij-lsp.debug"] = debug_before
+  package.loaded.dapui = debug_before
   package.loaded.neotest = nil
 
   -- A builder that yields while B activates must still launch A from A's root.
