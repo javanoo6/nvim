@@ -425,6 +425,9 @@ Update this file when:
   either pane. The preview is detected by its window highlight, so ordinary
   source windows do not acquire Glance hints. Its popup uses zindex 60 above
   Glance; dialogs with focus still hide it.
+  Results-list hints explicitly show Ctrl-u scrolling the preview up five lines
+  and Ctrl-d down five lines. Focused-preview hints show j/k down/up and native
+  Ctrl-u/Ctrl-d half-page scrolling.
 - Trouble diagnostics, symbols, calls, and references panes show shared
   hints via `util.trouble_help`; `gH` toggles them and `?` keeps full help.
 - Diffview shows contextual shortcut hints via `util.diffview_help` in its

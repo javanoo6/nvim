@@ -15,6 +15,8 @@ function M.setup()
     lines = function(ft)
       if ft ~= "Glance" then
         return {
+          " j Down / k Up (inside preview)",
+          " Ctrl-u Up / Ctrl-d Down (half-page)",
           " Tab/Shift-Tab Next/previous location",
           " <leader>l Focus results list",
           " Q Close Glance",
@@ -27,7 +29,8 @@ function M.setup()
         " Enter Jump        o Preview",
         " v Vsplit          s Split",
         " t Open tab        h/l Close/open fold",
-        " Ctrl-u/d Scroll preview up/down",
+        " Ctrl-u Scroll preview UP (5 lines)",
+        " Ctrl-d Scroll preview DOWN (5 lines)",
         " <leader>l Focus source preview",
         " Ctrl-q Send results to quickfix",
         " q/Q/Esc Close     gH Hide/show popup",
