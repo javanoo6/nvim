@@ -411,6 +411,9 @@ Update this file when:
   only ordinary `intellij_jvm` runs (`noDebug = true`) auto-open IntelliJ output.
   Java/Python/Go and other debug sessions use the shared DAP Console without
   opening a duplicate output window. Manual output access remains available.
+- Quickfix/Quicker panes show `util.quicker_help` hints, including editable
+  results, applying changes, and context expansion. Location-list windows get
+  `:l*` navigation/history commands instead of `:c*`. `gH` toggles the popup.
 - Glance shows separate results-list and source-preview hints through
   `util.glance_help`, including detached floating views. `gH` toggles them in
   either pane. The preview is detected by its window highlight, so ordinary
