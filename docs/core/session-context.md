@@ -411,6 +411,9 @@ Update this file when:
   only ordinary `intellij_jvm` runs (`noDebug = true`) auto-open IntelliJ output.
   Java/Python/Go and other debug sessions use the shared DAP Console without
   opening a duplicate output window. Manual output access remains available.
+- Undotree's history tree shows `util.undotree_help` hints for state restore,
+  undo/redo, saved states, diff markers, and returning to the editor.
+  `gH` toggles the popup; `?` retains the plugin's built-in help.
 - Quickfix/Quicker panes show `util.quicker_help` hints, including editable
   results, applying changes, and context expansion. Location-list windows get
   `:l*` navigation/history commands instead of `:c*`. `gH` toggles the popup.
