@@ -18,7 +18,12 @@ function M.refresh()
       break
     end
   end
-  if not profile or profile.enabled == false or vim.fn.mode() ~= "n" or vim.api.nvim_win_get_config(current).relative ~= "" then
+  if
+    not profile
+    or profile.enabled == false
+    or vim.fn.mode() ~= "n"
+    or (vim.api.nvim_win_get_config(current).relative ~= "" and not profile.allow_float)
+  then
     M.close()
     return
   end
@@ -49,7 +54,7 @@ function M.refresh()
     title = " " .. profile.title .. " ",
     title_pos = "center",
     focusable = false,
-    zindex = 40,
+    zindex = profile.zindex or 40,
   }
   if win and vim.api.nvim_win_is_valid(win) then
     vim.api.nvim_win_set_config(win, config)

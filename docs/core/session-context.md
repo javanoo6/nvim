@@ -411,6 +411,11 @@ Update this file when:
   only ordinary `intellij_jvm` runs (`noDebug = true`) auto-open IntelliJ output.
   Java/Python/Go and other debug sessions use the shared DAP Console without
   opening a duplicate output window. Manual output access remains available.
+- Glance shows separate results-list and source-preview hints through
+  `util.glance_help`, including detached floating views. `gH` toggles them in
+  either pane. The preview is detected by its window highlight, so ordinary
+  source windows do not acquire Glance hints. Its popup uses zindex 60 above
+  Glance; dialogs with focus still hide it.
 - Trouble diagnostics, symbols, calls, and references panes show shared
   hints via `util.trouble_help`; `gH` toggles them and `?` keeps full help.
 - Diffview shows contextual shortcut hints via `util.diffview_help` in its

@@ -45,6 +45,7 @@ return {
 
         mappings = {
           list = {
+            ["gH"] = require("util.glance_help").toggle,
             ["j"] = actions.next,
             ["k"] = actions.previous,
             ["<Down>"] = actions.next,
@@ -67,6 +68,7 @@ return {
             ["<C-q>"] = actions.quickfix,
           },
           preview = {
+            ["gH"] = require("util.glance_help").toggle,
             ["Q"] = actions.close,
             ["<Tab>"] = actions.next_location,
             ["<S-Tab>"] = actions.previous_location,
