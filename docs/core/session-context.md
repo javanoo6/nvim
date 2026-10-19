@@ -411,6 +411,8 @@ Update this file when:
   only ordinary `intellij_jvm` runs (`noDebug = true`) auto-open IntelliJ output.
   Java/Python/Go and other debug sessions use the shared DAP Console without
   opening a duplicate output window. Manual output access remains available.
+- Trouble diagnostics, symbols, calls, and references panes show shared
+  hints via `util.trouble_help`; `gH` toggles them and `?` keeps full help.
 - Diffview shows contextual shortcut hints via `util.diffview_help` in its
   file/history panels and active diff windows, including local merge mappings.
   `gH` toggles hints; `g?` retains full help. File-open hooks refresh hints.
