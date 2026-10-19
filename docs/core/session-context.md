@@ -659,7 +659,8 @@ Update this file when:
   [lua/util/inlay_hints.lua](/home/konkov/.config/nvim/lua/util/inlay_hints.lua:1)
   through Neovim's native `vim.lsp.inlay_hint` API and toggled with
   `<leader>uh`. Switching between normal and insert mode does not toggle hints;
-  Java, Go, and Python still clear stale hint text after edits.
+  Go and Python clear stale hint text after edits. Java relies on native LSP hint
+  updates without the custom clear-on-edit hook.
 - Noice is allowed to own command/message UI, but hover/signature rendering is
   intentionally disabled there to avoid conflicts with the chosen editing setup.
   Inlay-hint error suppression was removed so both invalid-column errors and

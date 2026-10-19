@@ -4,7 +4,6 @@ local namespace = vim.api.nvim_create_namespace("nvim.lsp.inlayhint")
 local edit_clear_group = vim.api.nvim_create_augroup("custom_inlay_hint_edit_clear", { clear = true })
 local edit_clear_filetypes = {
   go = true,
-  java = true,
   python = true,
 }
 
