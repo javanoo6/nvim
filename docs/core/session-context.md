@@ -411,10 +411,17 @@ Update this file when:
   only ordinary `intellij_jvm` runs (`noDebug = true`) auto-open IntelliJ output.
   Java/Python/Go and other debug sessions use the shared DAP Console without
   opening a duplicate output window. Manual output access remains available.
+- Neo-tree and Oil show matching shortcut popups in Normal mode, supplied by
+  `util.explorer_help` and registered from `config.autocmds`. `gH` toggles each
+  explorer's popup independently for the current Neovim session. Existing full
+  help remains `?` in Neo-tree and `g?` in Oil. Popups do not take focus and hide
+  in source, other dialogs, or insert mode. All three tools share one popup via
+  `util.focus_help`, so switching tools replaces the hints instead of stacking.
 - A compact, nonfocusable `DAP keys` popup appears at the upper right while a
   DAP pane has Normal-mode focus. It hides in source, prompts, and insert/terminal
   mode. `?` in a pane toggles the popup for the current Neovim session; it is
-  enabled on startup. `util.debug_help` owns the popup and focus hooks.
+  enabled on startup. `util.debug_help` supplies DAP hints; `util.focus_help`
+  owns the shared popup renderer and focus hooks.
 - Debug-pane Normal keys: `e` evaluate prompt, `w` add-watch prompt, `dd` remove
   watch, `E` edit value/watch, Enter expand/select, `c` continue, `n` step over,
   `s` step into, `o` step out, `p` pause, `t` terminate, `q` close the whole UI.

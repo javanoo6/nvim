@@ -553,6 +553,9 @@ browser-style single-file tab.
 
 ### Inside Neo-tree
 
+Neo-tree and Oil also show a small shortcut popup while focused in Normal mode.
+Use `gH` to hide/show it, `?` for Neo-tree's full help, or `g?` for Oil's full help.
+
 Opening a file closes Neo-tree automatically in the active tab, including split
 opens. Expanding folders and previewing files keep the tree open.
 

@@ -520,6 +520,13 @@ return {
         },
       },
       open_files_do_not_replace_types = { "terminal", "trouble", "qf" },
+      window = {
+        mappings = {
+          ["gH"] = function()
+            require("util.focus_help").toggle("neo-tree")
+          end,
+        },
+      },
     },
   },
 
@@ -550,6 +557,9 @@ return {
       use_default_keymaps = false,
       keymaps = {
         ["g?"] = "actions.show_help",
+        ["gH"] = function()
+          require("util.focus_help").toggle("oil")
+        end,
         ["<CR>"] = "actions.select",
         ["<C-v>"] = "actions.select_vsplit",
         ["<C-x>"] = "actions.select_split",
