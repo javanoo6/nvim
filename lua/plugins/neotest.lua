@@ -82,7 +82,7 @@ return {
         "<leader>td",
         scope.with_scope(function(ctx)
           scope.run_nearest(ctx, { strategy = "dap" })
-        end),
+        end, { debug = true }),
         desc = "Debug Nearest",
       },
       {
@@ -96,13 +96,13 @@ return {
         "<leader>tP",
         scope.with_scope(function(ctx)
           require("neotest").run.run({ scope.current_package_target(ctx), strategy = "dap" })
-        end),
+        end, { debug = true }),
         desc = "Debug Package",
       },
       {
         "<leader>tl",
         scope.with_scope(function()
-          require("neotest").run.run_last()
+          require("neotest").run.run_last({ strategy = "integrated" })
         end),
         desc = "Run Last",
       },
@@ -124,21 +124,21 @@ return {
         "<leader>tL",
         scope.with_scope(function()
           require("neotest").run.run_last({ strategy = "dap" })
-        end),
+        end, { debug = true }),
         desc = "Debug Last",
       },
       {
         "<leader>tf",
         scope.with_scope(function(ctx)
           require("neotest").run.run({ ctx.path ~= "" and ctx.path or vim.fn.expand("%"), strategy = "dap" })
-        end),
+        end, { debug = true }),
         desc = "Debug File",
       },
       {
         "<leader>tD",
         scope.with_scope(function()
           require("neotest").run.run({ scope.focus_root_or_cwd(), strategy = "dap" })
-        end),
+        end, { debug = true }),
         desc = "Debug All Test Files",
       },
       {

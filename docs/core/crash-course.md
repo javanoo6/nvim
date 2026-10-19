@@ -37,21 +37,21 @@ nvim setup reference guide.
 
 ### Modes
 
-| Key              | Action                             |
-|------------------|------------------------------------|
-| `i`              | Insert mode (before cursor)        |
-| `a`              | Insert mode (after cursor)         |
-| `I`              | Insert at beginning of line        |
-| `A`              | Insert at end of line              |
-| `o`              | Open new line below (enter insert) |
-| `O`              | Open new line above (enter insert) |
+| Key              | Action                                |
+|------------------|---------------------------------------|
+| `i`              | Insert mode (before cursor)           |
+| `a`              | Insert mode (after cursor)            |
+| `I`              | Insert at beginning of line           |
+| `A`              | Insert at end of line                 |
+| `o`              | Open new line below (enter insert)    |
+| `O`              | Open new line above (enter insert)    |
 | `ga`             | Move text from cursor to a line above |
 | `gA`             | Move text from cursor to a line below |
-| `v`              | Visual mode                        |
-| `V`              | Visual line mode                   |
-| `<C-v>`          | Visual block mode                  |
-| `Esc` or `<C-[>` | Return to normal mode              |
-| `:`              | Command mode                       |
+| `v`              | Visual mode                           |
+| `V`              | Visual line mode                      |
+| `<C-v>`          | Visual block mode                     |
+| `Esc` or `<C-[>` | Return to normal mode                 |
+| `:`              | Command mode                          |
 
 **Visual block tip:** After `<C-v>`, you can edit multiple lines column-wise with `I` or `A`.
 Type your text, then press `Esc` to apply it to every selected line.
@@ -59,14 +59,14 @@ Until you press `Esc`, it may look like only one line changed.
 
 ### Saving & Quitting
 
-| Key           | Action              |
-|---------------|---------------------|
-| `:w`          | Save file           |
-| `:q`          | Quit                |
-| `:wq` or `ZZ` | Save and quit       |
-| `:q!`         | Quit without saving |
+| Key           | Action                                    |
+|---------------|-------------------------------------------|
+| `:w`          | Save file                                 |
+| `:q`          | Quit                                      |
+| `:wq` or `ZZ` | Save and quit                             |
+| `:q!`         | Quit without saving                       |
 | `<C-s>`       | Save in normal/insert/visual/select modes |
-| `<leader>qq`  | Quit all            |
+| `<leader>qq`  | Quit all                                  |
 
 ---
 
@@ -103,17 +103,17 @@ Core rule:
 
 Examples:
 
-| Keys   | Action                                      |
-|--------|---------------------------------------------|
-| `5j`   | Move down 5 lines                           |
-| `5k`   | Move up 5 lines                             |
-| `3w`   | Move forward 3 words                        |
-| `10dd` | Delete 10 lines                             |
-| `3yy`  | Yank 3 lines                                |
-| `5>>`  | Indent 5 lines right                        |
-| `d3w`  | Delete 3 words forward                      |
-| `c2j`  | Change from cursor through 2 lines downward |
-| `y4k`  | Yank through 4 lines upward                 |
+| Keys   | Action                                        |
+|--------|-----------------------------------------------|
+| `5j`   | Move down 5 lines                             |
+| `5k`   | Move up 5 lines                               |
+| `3w`   | Move forward 3 words                          |
+| `10dd` | Delete 10 lines                               |
+| `3yy`  | Yank 3 lines                                  |
+| `5>>`  | Indent 5 lines right                          |
+| `d3w`  | Delete 3 words forward                        |
+| `c2j`  | Change from cursor through 2 lines downward   |
+| `y4k`  | Yank through 4 lines upward                   |
 | `V5j`  | Extend selection down 5 lines (6 lines total) |
 
 Count behavior for `j` and `k`:
@@ -133,13 +133,13 @@ Count behavior for `j` and `k`:
 
 ### Fast Navigation (Flash.nvim)
 
-| Key                    | Action                            |
-|------------------------|-----------------------------------|
+| Key                    | Action                               |
+|------------------------|--------------------------------------|
 | `s`                    | Flash jump (search text, then label) |
-| `S`                    | Flash treesitter (select node)    |
-| `r` (operator)         | Remote flash                      |
-| `R` (operator/visual)  | Treesitter search                 |
-| `<C-s>` (command mode) | Toggle flash search               |
+| `S`                    | Flash treesitter (select node)       |
+| `r` (operator)         | Remote flash                         |
+| `R` (operator/visual)  | Treesitter search                    |
+| `<C-s>` (command mode) | Toggle flash search                  |
 
 ### Jump Lists
 
@@ -174,15 +174,15 @@ Count behavior for `j` and `k`:
 
 ### Insert Mode
 
-| Key     | Action                    |
-|---------|---------------------------|
-| `<C-h>` | Delete previous character |
-| `<C-w>` | Delete previous word      |
-| `<C-u>` | Delete to start of line   |
+| Key     | Action                          |
+|---------|---------------------------------|
+| `<C-h>` | Delete previous character       |
+| `<C-w>` | Delete previous word            |
+| `<C-u>` | Delete to start of line         |
 | `<C-a>` | Insert previously inserted text |
-| `<C-e>` | Abort completion |
-| `<C-n>` | Next completion           |
-| `<C-p>` | Previous completion       |
+| `<C-e>` | Abort completion                |
+| `<C-n>` | Next completion                 |
+| `<C-p>` | Previous completion             |
 
 **Snippet tip:** in Java, Go, and Python, typing `main` and expanding it through
 completion/snippets inserts the language-appropriate entry-point template.
@@ -262,10 +262,10 @@ Mental model:
 
 #### Macros
 
-| Key | Meaning                                                     |
-|-----|-------------------------------------------------------------|
-| `q` | Start recording into a register, or stop recording          |
-| `Q` | Replay the last recorded macro in Neovim |
+| Key | Meaning                                            |
+|-----|----------------------------------------------------|
+| `q` | Start recording into a register, or stop recording |
+| `Q` | Replay the last recorded macro in Neovim           |
 
 Standard macro workflow:
 
@@ -436,13 +436,13 @@ search prompt, then press `<CR>` to run the search.
 
 ### Replace (project-wide — grug-far)
 
-| Key          | Mode   | Action                                              |
-|--------------|--------|-----------------------------------------------------|
-| `<leader>rg` | normal | Open scoped to **current file** (Paths pre-filled)  |
+| Key          | Mode   | Action                                                        |
+|--------------|--------|---------------------------------------------------------------|
+| `<leader>rg` | normal | Open scoped to **current file** (Paths pre-filled)            |
 | `<leader>rG` | normal | Literal replace across files in the current working directory |
-| `<leader>rR` | normal | Regex replace across files in the current working directory |
-| `<leader>rw` | normal | Open with word under cursor, scoped to current file |
-| `<leader>rg` | visual | Open with selection, scoped to current file         |
+| `<leader>rR` | normal | Regex replace across files in the current working directory   |
+| `<leader>rw` | normal | Open with word under cursor, scoped to current file           |
+| `<leader>rg` | visual | Open with selection, scoped to current file                   |
 
 **How to use grug-far:**
 
@@ -552,6 +552,9 @@ browser-style single-file tab.
 | `<leader>E` | Explorer (project root)      |
 
 ### Inside Neo-tree
+
+Opening a file closes Neo-tree automatically in the active tab, including split
+opens. Expanding folders and previewing files keep the tree open.
 
 | Key     | Action                                            |
 |---------|---------------------------------------------------|
@@ -739,16 +742,16 @@ Use this when you need to rename variables or make targeted edits across many fi
 After `gd`, `gR`, `gy`, or `gI`, Glance normally opens a results list with a
 file preview. A single result in the current buffer jumps directly.
 
-| Key                 | Action                           |
-|---------------------|----------------------------------|
-| `j` / `<Down>`      | Next result                      |
-| `k` / `<Up>`        | Previous result                  |
-| `<Tab>` / `<S-Tab>` | Next / previous location         |
-| `<C-u>` / `<C-d>`   | Scroll preview up / down from the list |
-| `<CR>`              | Jump to selected result          |
-| `v` / `s` / `t`     | Open in vsplit / split / new tab |
-| `o`                 | Preview selected location        |
-| `<leader>l`         | Switch between list and preview  |
+| Key                 | Action                                            |
+|---------------------|---------------------------------------------------|
+| `j` / `<Down>`      | Next result                                       |
+| `k` / `<Up>`        | Previous result                                   |
+| `<Tab>` / `<S-Tab>` | Next / previous location                          |
+| `<C-u>` / `<C-d>`   | Scroll preview up / down from the list            |
+| `<CR>`              | Jump to selected result                           |
+| `v` / `s` / `t`     | Open in vsplit / split / new tab                  |
+| `o`                 | Preview selected location                         |
+| `<leader>l`         | Switch between list and preview                   |
 | `q` / `Q` / `<Esc>` | Close from the list; `Q` also closes from preview |
 
 ### Documentation
@@ -760,16 +763,16 @@ file preview. A single result in the current buffer jumps directly.
 
 ### Code Actions
 
-| Key                     | Action                                                     |
-|-------------------------|------------------------------------------------------------|
-| `<leader>ca` / `<A-CR>` | Code action                                                |
-| `<leader>cr`            | Rename                                                     |
-| `<leader>cp`            | Fix package declaration                                    |
-| `<leader>ci`            | Java: import class under cursor, prompt if ambiguous       |
-| `<leader>cI`            | Java: import unambiguous classes in buffer                 |
+| Key                     | Action                                                                |
+|-------------------------|-----------------------------------------------------------------------|
+| `<leader>ca` / `<A-CR>` | Code action                                                           |
+| `<leader>cr`            | Rename                                                                |
+| `<leader>cp`            | Fix package declaration                                               |
+| `<leader>ci`            | Java: import class under cursor, prompt if ambiguous                  |
+| `<leader>cI`            | Java: import unambiguous classes in buffer                            |
 | `<leader>cf`            | Format through Conform (Java: standalone jar, imports, rearrangement) |
-| `<leader>cF`            | Format current file's directory, or prompt for a directory |
-| `:FormatDirCancel`      | Stop directory formatting after the current file finishes  |
+| `<leader>cF`            | Format current file's directory, or prompt for a directory            |
+| `:FormatDirCancel`      | Stop directory formatting after the current file finishes             |
 
 ### Symbols & Outline
 
@@ -815,38 +818,56 @@ file preview. A single result in the current buffer jumps directly.
 
 ## Debugging
 
-| Key           | Action                      |
-|---------------|-----------------------------|
-| `<leader>db`  | Toggle breakpoint           |
-| `<leader>dB`  | Breakpoint with condition   |
-| `<leader>dc`  | Continue active session     |
-| `<leader>dC`  | Run to cursor               |
-| `<leader>df`  | Focus current frame         |
-| `<leader>di`  | Step into                   |
-| `<leader>do`  | Step out                    |
-| `<leader>dO`  | Step over                   |
-| `<leader>dg`  | Go to line (no execute)     |
-| `<leader>dl`  | Run last                    |
-| `<leader>dp`  | Pause                       |
-| `<leader>dr`  | Toggle REPL                 |
-| `<leader>dt`  | Terminate                   |
-| `<leader>ds`  | Session info                |
-| `<leader>dj`  | Down (call stack)           |
-| `<leader>dk`  | Up (call stack)             |
-| `<leader>dw`  | Hover widgets               |
-| `<leader>du`  | Toggle IntelliJ debug panel |
-| `<leader>dU`  | Toggle DAP UI keep-open     |
-| `<leader>de`  | Evaluate expression         |
-| `<leader>dgt` | Debug Go test               |
-| `<leader>dgl` | Debug last Go test          |
+| Key           | Action                    |
+|---------------|---------------------------|
+| `<leader>db`  | Toggle breakpoint         |
+| `<leader>dB`  | Breakpoint with condition |
+| `<leader>dc`  | Continue active session   |
+| `<leader>dC`  | Run to cursor             |
+| `<leader>df`  | Focus current frame       |
+| `<leader>di`  | Step into                 |
+| `<leader>do`  | Step out                  |
+| `<leader>dO`  | Step over                 |
+| `<leader>dg`  | Go to line (no execute)   |
+| `<leader>dl`  | Run last                  |
+| `<leader>dp`  | Pause                     |
+| `<leader>dr`  | Switch Locals / Console   |
+| `<leader>dt`  | Terminate                 |
+| `<leader>ds`  | Session info              |
+| `<leader>dj`  | Down (call stack)         |
+| `<leader>dk`  | Up (call stack)           |
+| `<leader>dw`  | Hover widgets             |
+| `<leader>du`  | Toggle debugger UI        |
+| `<leader>dU`  | Toggle DAP UI keep-open   |
+| `<leader>de`  | Evaluate expression       |
+| `<leader>dgt` | Debug Go test             |
+| `<leader>dgl` | Debug last Go test        |
 
 ---
 
-IntelliJ's panel is the default for Java, Go, and Python. It opens on a stop,
-shows stack/locals/watches, and closes on exit unless keep-open is enabled.
-Inside the panel: Enter/Tab expand, `e` evaluates, `w` adds a watch, `dd` removes
-one, `c/n/i/o` continue/step, and `q` closes. Keep-open preserves the panel and
-watch expressions; terminated-frame values are cleared by upstream.
+The shared DAP UI works with Java, Go, Python, and other configured adapters.
+Stack stays on the left; select a frame to inspect its locals. Below the source,
+Locals/scopes and Watches share the bottom area. Press `<Tab>` in a debug pane
+or `<leader>dr` anywhere to switch it to Console (interactive REPL and program
+output). Press again to return to Locals. The UI opens on stops and closes on
+exit unless keep-open is enabled.
+
+| Pane key (Normal mode) | Action                                |
+|------------------------|---------------------------------------|
+| `e` / `w`              | Prompt to evaluate / add watch        |
+| `c` / `n` / `s` / `o`  | Continue / step over / into / out     |
+| `p` / `t`              | Pause / terminate                     |
+| Enter                  | Expand variable or select stack frame |
+| `dd` / `E`             | Remove watch / edit value or watch    |
+| Tab                    | Switch Locals / Console               |
+| `q`                    | Close the complete UI                 |
+
+`j/k` keep normal movement. In Stack/Locals, `i` also steps into; in
+REPL/Watches, `i` starts typing. Leave insert/terminal mode with `<Esc>` before
+using pane shortcuts. Watches survive closing/reopening. Expression syntax,
+variable scopes, and debugger capabilities come from each language's adapter.
+Adapter output goes to the REPL; integrated-terminal output has its own Console
+section. Programs configured with an external terminal still use that terminal.
 
 ## Testing (Neotest)
 
@@ -872,9 +893,9 @@ watch expressions; terminated-frame values are cleared by upstream.
 | `<leader>tS` | Stop (interactive)          |
 | `<leader>tw` | Toggle watch                |
 
-Debug-test mappings close/skip the summary while debugging and reopen it only
-after the debug session completes. DAP UI close is deferred until that summary
-opens.
+Debug-test mappings close the summary and never auto-open it. Use `<leader>ts`
+to open it manually. Regular runs honor the persisted `test_summary_on_run`
+preference. `<leader>tl` reruns normally even if the last run was a debug run.
 
 ### Java-specific
 
@@ -946,7 +967,7 @@ IntelliJ compilation/classpaths and the JUnit Console launcher.
 1. **Open test file** (e.g., `UserControllerTest.java`) and place cursor on test method
 2. **Set breakpoints** with `<leader>db` on lines where you expect the bug
 3. **Start debugging**: `<leader>td`
-4. **Wait for Maven/Gradle compilation** and the IntelliJ debug panel to open
+4. **Wait for Maven/Gradle compilation** and the shared DAP UI to open
 5. **Use DAP controls**:
     - `<leader>dc` — Continue to breakpoint
     - `<leader>di` — Step into method
@@ -1029,7 +1050,7 @@ real mapping on first use and it will not be restored for command-only plugins.
 
 | Key          | Action                   |
 |--------------|--------------------------|
-| `<leader>Gq` | Close Diffview |
+| `<leader>Gq` | Close Diffview           |
 | `<tab>`      | Next changed file        |
 | `<S-tab>`    | Prev changed file        |
 | `[x` / `]x`  | Prev / Next conflict     |
@@ -1120,12 +1141,12 @@ For complex conflicts (you need to hand-edit the result):
 
 If you are in **nvimdiff mergetool** instead of inline markers:
 
-| Key          | Action                           |
-|--------------|----------------------------------|
-| `]c`         | Jump to next diff hunk           |
-| `[c`         | Jump to previous diff hunk       |
-| `<leader>GQ` | Write all and quit (`:wqa`)      |
-| `<leader>GA` | Abort merge tool (`:cq`)         |
+| Key          | Action                      |
+|--------------|-----------------------------|
+| `]c`         | Jump to next diff hunk      |
+| `[c`         | Jump to previous diff hunk  |
+| `<leader>GQ` | Write all and quit (`:wqa`) |
+| `<leader>GA` | Abort merge tool (`:cq`)    |
 
 Notes:
 
@@ -1240,18 +1261,18 @@ git commit                 →  finalize merge
 
 ## Marks
 
-| Key         | Action                     |
-|-------------|----------------------------|
-| `mx`        | Set mark x (a-z) |
+| Key         | Action                                  |
+|-------------|-----------------------------------------|
+| `mx`        | Set mark x (a-z)                        |
 | `m;`        | Toggle next available mark on this line |
-| `m]` / `m[` | Next / previous mark |
-| `dmx`       | Delete mark x              |
-| `dm-`       | Delete all marks in line   |
-| `dm<space>` | Delete all marks in buffer |
-| `]'`        | End of last changed/yanked text |
-| `['`        | Start of last changed/yanked text |
-| `` `x ``    | Jump to mark x             |
-| `'x`        | Jump to mark line          |
+| `m]` / `m[` | Next / previous mark                    |
+| `dmx`       | Delete mark x                           |
+| `dm-`       | Delete all marks in line                |
+| `dm<space>` | Delete all marks in buffer              |
+| `]'`        | End of last changed/yanked text         |
+| `['`        | Start of last changed/yanked text       |
+| `` `x ``    | Jump to mark x                          |
+| `'x`        | Jump to mark line                       |
 
 ---
 
@@ -1274,8 +1295,8 @@ git commit                 →  finalize merge
 | `<leader>ui` | Inspect UI/highlights                             |
 | `<leader>uT` | Toggle Treesitter buffer                          |
 | `<leader>uI` | Toggle references buffer                          |
-| `<leader>ut` | Color schemes |
-| `<leader>ua` | Toggle buffer auto-save |
+| `<leader>ut` | Color schemes                                     |
+| `<leader>ua` | Toggle buffer auto-save                           |
 
 ---
 
@@ -1301,9 +1322,9 @@ the same global buffer list with every other tab.
 
 ### Toggleterm (floating terminal)
 
-| Key     | Action                                |
-|---------|---------------------------------------|
-| `<A-a>` | Toggle floating terminal (normal/terminal modes) |
+| Key     | Action                                                    |
+|---------|-----------------------------------------------------------|
+| `<A-a>` | Toggle floating terminal (normal/terminal modes)          |
 | `<A-c>` | Hide Toggleterm from terminal mode; process keeps running |
 
 ### Inside terminal buffer
@@ -1471,17 +1492,31 @@ suppressed directories (`~/`, `~/Downloads`, `/`, `/tmp`). Restores open files,
 splits, and cursor positions. Non-startup restores stop attached LSP clients
 before loading the saved workspace.
 Auto-save also works when Neovim is launched with file arguments.
+Pins and the arranged buffer order are saved separately for each directory/branch
+and restored after restarting Neovim or returning to that branch. Use
+`<leader>bp` to pin/unpin, then `<leader>Ss` to save immediately (normal exit and
+branch switching also save automatically). Existing sessions acquire pin/order
+metadata on their next save; older sessions cannot recover previously lost pins.
+DAP breakpoints are saved with the same session, including conditions, hit counts,
+and log messages. Set them with `<leader>db` / `<leader>dB`, then save with
+`<leader>Ss` or let session auto-save run. Returning restores that branch's set;
+clearing breakpoints and saving keeps them cleared. Deleted files and lines past
+the end of a shortened file are skipped. Restoring does not start debugging.
+The Git watcher also runs when startup finds no saved session, including from
+nested directories and worktrees. A new branch with no session keeps the current
+buffers. Session selection with `<leader>Sf` restores editor state and does not
+check out the selected session's Git branch.
 Buffer auto-save starts enabled by default and writes normal file buffers even
 when the current buffer has LSP errors. Conform still skips format-on-save when
 errors exist. Toggle auto-save with `<leader>ua`.
 
-| Key          | Action           |
-|--------------|------------------|
-| `<leader>Ss` | Save session     |
-| `<leader>Sr` | Restore session  |
-| `<leader>Sd` | Delete session   |
-| `<leader>Sf` | Find sessions    |
-| `<leader>Sa` | Enable session auto-save |
+| Key          | Action                   |
+|--------------|--------------------------|
+| `<leader>Ss` | Save session             |
+| `<leader>Sr` | Restore session          |
+| `<leader>Sd` | Delete session           |
+| `<leader>Sf` | Find sessions            |
+| `<leader>Sa` | Toggle session auto-save |
 
 ---
 
@@ -1526,16 +1561,20 @@ that vault. Ordinary Markdown keeps its local heading-link `<CR>` mapping.
 
 ## LeetCode
 
-| Key | Action |
-|---|---|
-| `<leader>Ll` | Menu |
-| `<leader>Lr` / `<leader>Ls` | Run / submit |
-| `<leader>Ld` / `<leader>Ln` | Daily / random problem |
-| `<leader>Lc` / `<leader>Li` / `<leader>Lt` | Console / info / tabs |
+| Key                                        | Action                     |
+|--------------------------------------------|----------------------------|
+| `<leader>Ll`                               | Menu                       |
+| `<leader>Lr` / `<leader>Ls`                | Run / submit               |
+| `<leader>Ld` / `<leader>Ln`                | Daily / random problem     |
+| `<leader>Lc` / `<leader>Li` / `<leader>Lt` | Console / info / tabs      |
 | `<leader>Le` / `<leader>Lm` / `<leader>Lh` | Easy / medium / hard lists |
-| `<leader>LR` | DSA roadmap picker |
-| `<leader>LU` | Refresh cookies |
+| `<leader>LR`                               | DSA roadmap picker         |
+| `<leader>LU`                               | Refresh cookies            |
 
 `:Leet`, `:LeetRoadmap`, and `:LeetCookies` also load the integration.
 Java local debugging uses a project harness; see
 [Java LeetCode debugging](../java/java-leetcode-debugging.md).
+
+Runtime toggle preferences survive restarts through `persist-toggle.nvim`.
+Use `:PersistToggleInfo` to inspect them; see [preferences](preferences.md) for
+IDs and reset commands.

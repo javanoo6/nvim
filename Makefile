@@ -15,11 +15,14 @@ check-lint:
 	$(SELENE) $(LUA_TARGETS)
 
 check-config: check-compatibility
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/dap_ui.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/config_refinement.lua DiffviewOpen
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/neotest_scope.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/python_venv_picker.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/root_policy.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lsp_rename.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_scrub.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_workspace.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/live_hunks.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lazy_bootstrap.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/portability.lua
@@ -27,6 +30,7 @@ check-config: check-compatibility
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/gotestsum_build.lua
 
 check-compatibility:
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/persist_preferences.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/compatibility.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/java_virtual_buffers.lua
 

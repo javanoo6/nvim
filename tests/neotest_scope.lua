@@ -67,6 +67,25 @@ local function run()
       events[#events + 1] = vim.deepcopy(vim.v.event)
     end,
   })
+  -- Exercise the installed filesystem walker before any scope is activated.
+  -- Its libuv callbacks must safely resolve the current-buffer fallback.
+  local unrelated = write("unrelated/test_unrelated.py", {})
+  local ignored = write("project A/build/test_generated.py", {})
+  local observed_fast_callback = false
+  async(function()
+    local files = require("neotest.lib").files.find(fixture, {
+      filter_dir = function(...)
+        observed_fast_callback = observed_fast_callback or vim.in_fast_event()
+        return scope.scoped_discovery_filter(...)
+      end,
+    })
+    equal(vim.tbl_contains(files, path_a), true, "Cold discovery reaches focused project test")
+    equal(vim.tbl_contains(files, nested_path), true, "Cold discovery traverses nested directories")
+    equal(vim.tbl_contains(files, path_b), false, "Cold discovery excludes other projects")
+    equal(vim.tbl_contains(files, unrelated), false, "Cold discovery excludes unactivated siblings")
+    equal(vim.tbl_contains(files, ignored), false, "Cold discovery excludes generated directories")
+  end)
+  equal(observed_fast_callback, true, "Installed walker exercises fast-event fallback")
   scope.activate_scope()
   equal(vim.fn.getcwd(-1, -1), fixture, "Test activation preserves global workspace")
   equal(util.get_explorer_cwd(), fixture, "Test activation preserves explicit explorer pin")
@@ -76,12 +95,19 @@ local function run()
   scope.activate_scope()
   equal(vim.fn.getcwd(), fixture, "Second project preserves editor cwd")
   equal(util.get_explorer_cwd(), fixture, "Explorer scope survives second project")
-  equal(scope.scoped_discovery_filter("tests", ".", root_a), true, "Previous project's async discovery remains allowed")
-  equal(scope.scoped_discovery_filter("tests", ".", root_b), true, "New project's discovery remains allowed")
-  equal(scope.scoped_discovery_filter("project A", ".", fixture), true, "Shared parent retains first module")
-  equal(scope.scoped_discovery_filter("project B", ".", fixture), true, "Shared parent retains second module")
-  equal(scope.scoped_discovery_filter("unrelated", ".", fixture), false, "Unactivated sibling remains excluded")
-  equal(scope.scoped_discovery_filter(".git", ".", root_b), false, "Ignored dirs remain excluded")
+  equal(scope.scoped_discovery_filter("tests", "tests", root_a), true, "Previous project's async discovery remains allowed")
+  equal(scope.scoped_discovery_filter("tests", "tests", root_b), true, "New project's discovery remains allowed")
+  equal(scope.scoped_discovery_filter("project A", "project A", fixture), true, "Shared parent retains first module")
+  equal(scope.scoped_discovery_filter("project B", "project B", fixture), true, "Shared parent retains second module")
+  equal(scope.scoped_discovery_filter("unrelated", "unrelated", fixture), false, "Unactivated sibling remains excluded")
+  equal(scope.scoped_discovery_filter(".git", ".git", root_b), false, "Ignored dirs remain excluded")
+  async(function()
+    local files = require("neotest.lib").files.find(fixture, { filter_dir = scope.scoped_discovery_filter })
+    equal(vim.tbl_contains(files, path_a), true, "Real scan retains first activated project")
+    equal(vim.tbl_contains(files, path_b), true, "Real scan retains second activated project")
+    equal(vim.tbl_contains(files, unrelated), false, "Real scan excludes unactivated siblings")
+    equal(vim.tbl_contains(files, ignored), false, "Real scan excludes generated directories")
+  end)
   equal(scope.discovery_cwd(path_a), root_a, "Discovery retains first project's cwd")
   equal(scope.discovery_cwd(path_b), root_b, "Discovery retains second project's cwd")
   local goenv = require("neotest-golang.lib.goenv")
@@ -133,6 +159,58 @@ local function run()
   equal(captured.path, path_a, "UI switch preserves source path")
   equal(captured.scope.focus_root, root_a, "UI switch preserves source scope")
   equal(scope.get_scope().focus_root, root_b, "New active scope is independent of captured run")
+  local opened, closed, cleared = 0, 0, 0
+  package.loaded.neotest = {
+    summary = {
+      open = function()
+        opened = opened + 1
+      end,
+      close = function()
+        closed = closed + 1
+      end,
+    },
+    output_panel = {
+      clear = function()
+        cleared = cleared + 1
+      end,
+    },
+  }
+  -- Execute every configured debug key, so new wrappers cannot silently open UI.
+  local debug_keys = { ["<leader>td"] = true, ["<leader>tP"] = true, ["<leader>tL"] = true, ["<leader>tf"] = true, ["<leader>tD"] = true }
+  for _, plugin in ipairs(require("plugins.neotest")) do
+    if plugin[1] == "nvim-neotest/neotest" then
+      package.loaded.neotest.run = { run = function() end, run_last = function() end }
+      package.loaded.neotest.state = {
+        adapter_ids = function()
+          return {}
+        end,
+      }
+      local nearest = scope.run_nearest
+      scope.run_nearest = function() end
+      for _, key in ipairs(plugin.keys) do
+        if debug_keys[key[1]] then
+          key[2]()
+        end
+      end
+      scope.run_nearest = nearest
+    end
+  end
+  equal(opened, 0, "Debug mappings never open summary")
+  equal(closed, 5, "Every debug mapping closes existing summary")
+  equal(cleared, 5, "Debug mappings still clear old output")
+  scope.with_scope(function() end)()
+  equal(opened, 1, "Regular test run still opens summary")
+  local dap_before = package.loaded.dap
+  local debug_before = package.loaded.dapui
+  local fake_dap =
+    { listeners = { before = { event_initialized = {} }, after = { event_stopped = {}, event_terminated = {}, event_exited = {} } } }
+  package.loaded.dap = fake_dap
+  package.loaded.dapui = { setup = function() end }
+  require("util.debug_ui").setup()
+  fake_dap.listeners.before.event_initialized.close_test_summary()
+  equal(closed, 6, "DAP initialization closes summary for non-test debug entry points")
+  package.loaded.dap = dap_before
+  package.loaded.dapui = debug_before
   package.loaded.neotest = nil
 
   -- A builder that yields while B activates must still launch A from A's root.
@@ -191,8 +269,13 @@ local function run()
   scope.activate_scope()
   vim.cmd.source(vim.fn.fnameescape(session))
   equal(scope.get_scope().focus_root, root_b, "Restored session uses restored source scope")
-  equal(scope.scoped_discovery_filter("tests", ".", root_a), false, "Old discovery scopes cleared on session restore")
-  equal(scope.scoped_discovery_filter("tests", ".", root_b), true, "Restored project remains discoverable")
+  equal(scope.scoped_discovery_filter("tests", "tests", root_a), false, "Old discovery scopes cleared on session restore")
+  equal(scope.scoped_discovery_filter("tests", "tests", root_b), true, "Restored project remains discoverable")
+  async(function()
+    local files = require("neotest.lib").files.find(fixture, { filter_dir = scope.scoped_discovery_filter })
+    equal(vim.tbl_contains(files, path_b), true, "Restored discovery safely reads fallback scope in real scan")
+    equal(vim.tbl_contains(files, path_a), false, "Restored discovery excludes previous session's scopes")
+  end)
 
   write("java/pom.xml", {})
   local java = write("java/src/test/java/ExampleTest.java", {})

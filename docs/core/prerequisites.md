@@ -75,16 +75,16 @@ tools; restart after initial setup.
 
 `lua/plugins/mason.lua` requests:
 
-| Tools | Purpose |
-|---|---|
-| stylua, selene | Lua formatting and linting |
-| bash-language-server, json-lsp, yaml-language-server | Shell/JSON/YAML LSP |
-| typescript-language-server, pyright | JS/TS and Python LSP |
-| ruff, prettier, eslint_d | Python linting, JSON/JS/TS formatting and linting |
-| shellcheck, markdownlint-cli2, yamllint | Shell/Markdown/YAML linting |
-| golangci-lint, gopls | Go linting and LSP |
-| gofumpt, goimports-reviser, golines | Go formatting |
-| delve, debugpy | Go/Python debugging |
+| Tools                                                | Purpose                                           |
+|------------------------------------------------------|---------------------------------------------------|
+| stylua, selene                                       | Lua formatting and linting                        |
+| bash-language-server, json-lsp, yaml-language-server | Shell/JSON/YAML LSP                               |
+| typescript-language-server, pyright                  | JS/TS and Python LSP                              |
+| ruff, prettier, eslint_d                             | Python linting, JSON/JS/TS formatting and linting |
+| shellcheck, markdownlint-cli2, yamllint              | Shell/Markdown/YAML linting                       |
+| golangci-lint, gopls                                 | Go linting and LSP                                |
+| gofumpt, goimports-reviser, golines                  | Go formatting                                     |
+| delve, debugpy                                       | Go/Python debugging                               |
 
 ## Standalone formatter
 

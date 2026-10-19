@@ -214,6 +214,37 @@ has a check and removal condition; larger workflow limits remain explicit.
 - **Remove when:** upstream persists/removes stale pins safely without recovery;
   verify persistence and deletion transitions before dropping the helper.
 
+## Session pins, order, and Git watcher startup
+
+- **Owners:** `lua/util/bufferline.lua`, `lua/util/session_branch.lua`,
+  `lua/plugins/sessions.lua`.
+- **Dependencies:** auto-session `save_extra_data`, `restore_extra_data` (name,
+  payload), pre/post-restore and no-restore hooks; Git watcher start/stop methods
+  and `uv_git_watcher`; Bufferline group methods, `state.set`, `state.components`,
+  `state.custom_sort`, and `utils.save_positions`.
+- **Failure:** Bufferline globals are absent from session files and its pin
+  restore runs only once. Auto-session starts Git watching only after a restore
+  and assumes a relative `.git/HEAD`, missing fresh startups and worktrees.
+- **Check:** `tests/session_workspace.lua` uses real saves, repeated restores,
+  another Neovim process, and Git notifications with disposable repositories.
+- **Remove when:** upstream supplies per-session pins/order and starts a watcher
+  without requiring a saved session, resolving HEAD for nested cwd and worktrees.
+
+## Session breakpoints
+
+- **Owners:** `lua/util/session_breakpoints.lua`, `lua/plugins/sessions.lua`.
+- **Dependencies:** the same auto-session extra-data/lifecycle hooks as buffer
+  metadata; `dap.breakpoints.get/set`, DAP source sign positions, public
+  `dap.clear_breakpoints`, `dap.sessions`, and session `set_breakpoints`.
+- **Behavior:** save path/line/condition/hit-condition/log-message data per
+  cwd/branch, replace breakpoints on restore, and update attached adapters.
+  Empty and legacy snapshots clear old breakpoints. Missing files and stale
+  lines are skipped; unlisted files remain unlisted. No adapter state is saved.
+- **Check:** `tests/session_workspace.lua` covers real session and branch
+  restores, a fresh process, clearing, unlisted files, and missing/stale locations.
+- **Remove when:** upstream provides compatible per-session source-breakpoint
+  persistence, including clearing and the existing condition/logpoint semantics.
+
 ## Glance fork and Java winbar
 
 - **Owners:** `lua/plugins/glance.lua`; pinned fork
@@ -252,3 +283,23 @@ has a check and removal condition; larger workflow limits remain explicit.
   and normal diagnostics usable.
 - **Remove when:** upstream uses the supported diagnostic API and its behavior
   matches the repo's buffer-local toggling policy.
+
+## Persistent Gitsigns commands
+
+- **Owner:** `lua/util/preferences.lua`, `bind_gitsigns()`.
+- **Dependency:** Gitsigns public display-toggle APIs and
+  `gitsigns.actions._get_cmd_func(name)` returning a CLI callback accepting parsed
+  positional arguments. Verified with locked revision
+  `eb60cc7b94c46005237fd34170d76f3a089a90aa`.
+- **Reason:** Gitsigns captures its toggle functions in a separate command table.
+  Replacing public APIs alone leaves `:Gitsigns toggle_*` outside persistence.
+  The local bridge intercepts four owned display commands and delegates all
+  other command lookups unchanged. Original setters apply persisted preferences
+  without calling back through the bridge.
+- **Check:** `tests/persist_preferences.lua` restores the real Gitsigns config,
+  runs `:Gitsigns toggle_current_line_blame false`, and checks both persisted and
+  live values. It also checks the public line-highlight API.
+- **Manual smoke:** toggle blame/word diff/line highlighting/deleted lines using
+  keymaps and commands in an attached Git buffer, then restart Neovim.
+- **Remove when:** upstream provides persistence hooks covering both public APIs
+  and CLI display toggles. Preserve durable preferences during replacement.

@@ -7,13 +7,16 @@ return {
   config = function(_, opts)
     -- Install before setup so startup restores also sanitize their exact path.
     require("util.session_scrub").setup()
-    require("auto-session").setup(opts)
+    require("util.session_branch").setup()
+    local preferences = require("util.preferences")
+    opts.auto_save = preferences.get("session_autosave")
+    opts.auto_restore = preferences.get("session_autorestore")
+    local session = require("auto-session")
+    session.setup(opts)
   end,
   opts = {
-    -- Enable auto-save and auto-restore
-    auto_save = true,
+    -- Runtime auto-save/restore preferences are supplied during setup.
     args_allow_files_auto_save = true,
-    auto_restore = true,
     auto_restore_last_session = false, -- Don't restore last session automatically when starting nvim without args
     git_use_branch_name = true,
     git_auto_restore_on_branch_change = true,
@@ -33,6 +36,35 @@ return {
     -- restored buffers attach fresh clients for the branch contents.
     lsp_stop_on_restore = true,
 
+    save_extra_data = function()
+      local data = vim.json.decode(require("util.bufferline").save_session())
+      data.breakpoints = require("util.session_breakpoints").save_session()
+      return vim.json.encode(data)
+    end,
+    restore_extra_data = function(_, data)
+      require("util.bufferline").load_session(data)
+      require("util.session_breakpoints").load_session(data)
+    end,
+    pre_restore_cmds = {
+      function()
+        require("util.bufferline").before_restore()
+        require("util.session_breakpoints").before_restore()
+      end,
+    },
+    post_restore_cmds = {
+      function()
+        require("util.bufferline").after_restore()
+        require("util.session_breakpoints").after_restore()
+      end,
+    },
+    no_restore_cmds = {
+      function(is_startup)
+        if is_startup then
+          require("util.session_branch").start()
+        end
+      end,
+    },
+
     post_save_cmds = {
       function()
         require("util.session_scrub").post_save()
@@ -48,6 +80,12 @@ return {
     { "<leader>Sr", "<cmd>AutoSession restore<cr>", desc = "Restore session" },
     { "<leader>Sd", "<cmd>AutoSession delete<cr>", desc = "Delete session" },
     { "<leader>Sf", "<cmd>AutoSession search<cr>", desc = "Find sessions" },
-    { "<leader>Sa", "<cmd>AutoSession enable<cr>", desc = "Enable auto-save" },
+    {
+      "<leader>Sa",
+      function()
+        require("util.preferences").toggle("session_autosave")
+      end,
+      desc = "Toggle session auto-save",
+    },
   },
 }

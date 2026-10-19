@@ -3,8 +3,8 @@
 local M = {}
 
 M.reference_style_state = {
-  background = false,
-  underline = true,
+  background = require("util.preferences").get("reference_background"),
+  underline = require("util.preferences").get("reference_underline"),
 }
 
 -- Safe keymap set (replaces LazyVim.safe_keymap_set)
@@ -21,23 +21,19 @@ end
 
 -- Toggle option helper (replaces LazyVim.toggle)
 function M.toggle(option, values)
-  if values then
-    if vim.opt_local[option]:get() == values[1] then
-      vim.opt_local[option] = values[2]
-    else
-      vim.opt_local[option] = values[1]
-    end
-    vim.notify(option .. " set to " .. vim.opt_local[option]:get())
-  else
-    vim.opt_local[option] = not vim.opt_local[option]:get()
-    vim.notify(option .. " set to " .. tostring(vim.opt_local[option]:get()))
+  if not values then
+    return require("util.preferences").toggle(option)
   end
+  if vim.opt_local[option]:get() == values[1] then
+    vim.opt_local[option] = values[2]
+  else
+    vim.opt_local[option] = values[1]
+  end
+  vim.notify(option .. " set to " .. vim.opt_local[option]:get())
 end
 
 function M.toggle_mouse()
-  local enabled = vim.o.mouse ~= ""
-  vim.o.mouse = enabled and "" or "a"
-  vim.notify("mouse " .. (enabled and "off" or "on"))
+  return require("util.preferences").toggle("mouse")
 end
 
 local function get_reference_background_color()
@@ -94,15 +90,11 @@ function M.apply_notify_style()
 end
 
 function M.toggle_reference_underline()
-  M.reference_style_state.underline = not M.reference_style_state.underline
-  M.apply_reference_style()
-  vim.notify("reference underline " .. (M.reference_style_state.underline and "on" or "off"))
+  return require("util.preferences").toggle("reference_underline")
 end
 
 function M.toggle_reference_background()
-  M.reference_style_state.background = not M.reference_style_state.background
-  M.apply_reference_style()
-  vim.notify("reference background " .. (M.reference_style_state.background and "on" or "off"))
+  return require("util.preferences").toggle("reference_background")
 end
 
 -- Root detection (simplified version of LazyVim.root)
@@ -165,7 +157,7 @@ local explorer_cwd_state = {
 
 local function neotree_reveal_on_open_default()
   if vim.g.neotree_reveal_on_open == nil then
-    vim.g.neotree_reveal_on_open = true
+    vim.g.neotree_reveal_on_open = require("util.preferences").get("neotree_reveal_on_open")
   end
   return vim.g.neotree_reveal_on_open
 end
@@ -282,10 +274,7 @@ function M.set_neotree_reveal_on_open(enabled)
 end
 
 function M.toggle_neotree_reveal_on_open()
-  local enabled = not M.neotree_reveal_on_open_enabled()
-  M.set_neotree_reveal_on_open(enabled)
-  vim.notify("neo-tree reveal on open " .. (enabled and "on" or "off"))
-  return enabled
+  return require("util.preferences").toggle("neotree_reveal_on_open")
 end
 
 function M.get_marker_root(bufnr)

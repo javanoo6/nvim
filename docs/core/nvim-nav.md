@@ -78,17 +78,17 @@ Direction model in this config follows Vim defaults: `j = down`, `k = up`.
 | Neo-tree file preview      | `<C-u>` / `<C-d>` | Scroll preview up/down    |
 | Neo-tree file preview      | `l`               | Focus preview window      |
 
-| Key               | Action                                    |
-|-------------------|-------------------------------------------|
-| `<C-u>` | Half-page up, centered |
-| `<C-d>` | Duplicate line (normal) / selected lines (visual) |
-| `<C-f>` / `<C-b>` | Full page down/up                         |
-| `gg` / `G`        | File start/end                            |
-| `{` / `}`         | Paragraph up/down                         |
-| `%`               | Matching bracket                          |
-| `*` / `#`         | Search word under cursor forward/backward |
-| `gd` | Glance definitions in LSP buffers; local declaration otherwise |
-| `gf`              | Go to file under cursor                   |
+| Key               | Action                                                         |
+|-------------------|----------------------------------------------------------------|
+| `<C-u>`           | Half-page up, centered                                         |
+| `<C-d>`           | Duplicate line (normal) / selected lines (visual)              |
+| `<C-f>` / `<C-b>` | Full page down/up                                              |
+| `gg` / `G`        | File start/end                                                 |
+| `{` / `}`         | Paragraph up/down                                              |
+| `%`               | Matching bracket                                               |
+| `*` / `#`         | Search word under cursor forward/backward                      |
+| `gd`              | Glance definitions in LSP buffers; local declaration otherwise |
+| `gf`              | Go to file under cursor                                        |
 
 ## Marks
 

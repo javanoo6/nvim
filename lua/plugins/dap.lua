@@ -7,6 +7,7 @@ return {
     dependencies = {
       "theHamsta/nvim-dap-virtual-text",
       "nvim-neotest/nvim-nio",
+      "rcarriga/nvim-dap-ui",
       -- Java adapter is registered by util.java_launch (IntelliJ Step 5).
       -- Go debug adapter
       "leoluz/nvim-dap-go",
@@ -136,9 +137,9 @@ return {
       {
         "<leader>dr",
         function()
-          require("dap").repl.toggle()
+          require("util.debug_ui").toggle_bottom()
         end,
-        desc = "Toggle REPL",
+        desc = "Switch Locals / Console",
       },
       {
         "<leader>ds",
@@ -166,7 +167,7 @@ return {
         function()
           require("util.debug_ui").toggle()
         end,
-        desc = "Toggle IntelliJ Debug Panel",
+        desc = "Toggle Debugger UI",
       },
       {
         "<leader>dU",
@@ -178,7 +179,7 @@ return {
       {
         "<leader>de",
         function()
-          require("intellij-lsp.debug").evaluate_at_cursor()
+          require("util.debug_ui").evaluate()
         end,
         desc = "Evaluate Expression",
         mode = { "n", "x" },
@@ -311,5 +312,4 @@ return {
       -- Java adapter/UI setup follows IntelliJ plugin initialization.
     end,
   },
-  { "rcarriga/nvim-dap-ui", enabled = false },
 }

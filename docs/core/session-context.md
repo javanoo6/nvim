@@ -11,6 +11,15 @@ Update this file when:
 
 ## Start Here
 
+- `<leader>pe` shows the selected Python, loaded project `.env` path, current
+  values of its variables, and effective merged PATH.
+
+- Venv picker selection is bound to its originating Python buffer by
+  `util.python_venv_picker`. Upstream resolves the alternate/first Python buffer
+  while the popup is open, which can save the selection to the wrong project.
+  The helper also records the buffer selection when the interpreter is already
+  active (upstream otherwise returns before updating buffer memory/cache).
+
 - [docs/core/crash-course.md](/home/konkov/.config/nvim/docs/core/crash-course.md:1): practical usage guide
 - [docs/core/plugin-map.md](/home/konkov/.config/nvim/docs/core/plugin-map.md:1): plugin inventory and wiring
 - [docs/core/nvim-nav.md](/home/konkov/.config/nvim/docs/core/nvim-nav.md:1): focused navigation cheat sheet
@@ -77,6 +86,43 @@ Update this file when:
 - Plugin-local mappings still need explicit overrides when their default
   `j/k` or `<C-j>/<C-k>` behavior diverges from this config's movement model.
 
+## Persistent Preferences
+
+- `javanoo6/persist-toggle.nvim` loads before other eager plugins (priority 10000).
+  [lua/util/preferences.lua](/home/konkov/.config/nvim/lua/util/preferences.lua:1)
+  owns all 24 registered defaults, their setters, and plugin command bridges.
+  [docs/core/preferences.md](/home/konkov/.config/nvim/docs/core/preferences.md:1)
+  lists IDs, controls, startup behavior, and scope.
+- Saved values live at `stdpath("state") .. "/persist-toggle/state.json"`.
+  Existing keymaps persist editing options, diagnostics, hints, reference style,
+  Neo-tree reveal, auto-save, autoformat, debug keep-open, Gitsigns display modes,
+  Oil hidden files, and Flash search. Session auto-save/restore and automatic
+  test-summary opening are also registered preferences.
+- Plugin setup consumes or applies saved values rather than overriding them.
+  Native `ASToggle`, `TinyInlineDiag enable/disable/toggle`, and the four
+  Gitsigns display commands persist the same preferences as their keymaps.
+  Auto-session's operational safety disables remain temporary; `<leader>Sa`
+  toggles `session_autosave` through persist-toggle and saves the durable preference.
+- Editing-option changes apply to normal file windows and future window defaults;
+  special plugin buffers keep their own layout settings. Session restore reapplies
+  these preferences, preventing saved session local options from winning.
+  Markdown/text/gitcommit keep wrap/spell on until an explicit saved override
+  exists. Resetting the override restores those filetype defaults.
+- `:PersistToggleInfo`, `:PersistToggle {id}`, `:PersistToggleSet {id} true|false`,
+  `:PersistToggleReset {id}`, and `:PersistToggleResetAll` manage preferences.
+- Temporary windows, watch targets, and buffer-local debugging controls keep
+  their existing scope. Themery owns theme persistence; sessions own buffer pins,
+  order, and DAP breakpoints.
+- Debug-test keys never auto-open the summary and close an existing summary.
+  Ordinary test runs honor `test_summary_on_run`; `<leader>ts` remains explicit.
+  DAP initialization also closes a loaded test summary for other debug entry
+  points. `<leader>tl` explicitly uses the integrated strategy so a previous
+  debug run cannot silently turn a regular rerun into another debug run.
+- `tests/persist_preferences.lua` verifies actual plugin setup and command paths,
+  saved false values across two Neovim processes, prose overrides, session restore,
+  and resets using disposable state. `tests/neotest_scope.lua` exercises all five
+  debug mappings and the DAP listener without launching debuggers.
+
 ## Core Editing Deviations
 
 - `$` and `^` are swapped from upstream Vim behavior:
@@ -132,12 +178,15 @@ Update this file when:
   skipped by repo `.gitignore` rules.
 - Neo-tree sidebar cwd is intentionally tied to global cwd to avoid stale
   tab-local reopen behavior.
+- Neo-tree closes in the active tab after opening a file, including split and
+  window-picker opens, through its `file_opened` event. Directory expansion and
+  previews keep the tree open; opening a new tab leaves the original tab's tree.
 - Neo-tree does not auto-follow the current file on buffer switches. In large
   monorepos this keeps the sidebar/root stable while opening buffers; scope
   changes stay explicit via `<leader>e`, `<leader>E`, or `.` inside Neo-tree.
 - Neo-tree reopen behavior reveals the current file by default when opened via
   `<leader>e` or `<leader>E`, without enabling full `follow_current_file`.
-  `<leader>ue` toggles that reveal-on-open behavior for the current session.
+  `<leader>ue` toggles that reveal-on-open preference and persists it across restarts.
 - `project.nvim` runs in manual mode. Opening files, including Python files in
   nested monorepo packages, must not auto-`cd` the session; use explicit root
   changes instead.
@@ -161,6 +210,35 @@ Update this file when:
   different session, including Git branch auto-restores. Restored buffers then
   attach fresh clients for the branch contents instead of carrying old workspace
   state across branches.
+- Session saves include Bufferline pins and display order as path-based JSON in
+  auto-session's companion `*x.vim` file. `util.bufferline` captures this through
+  `save_extra_data` and reapplies it in `post_restore_cmds`, after native session
+  events and Bufferline's one-shot restore have finished. Each cwd/branch owns
+  its pins/order; repeated restores and restarts recover both. Legacy sessions
+  without metadata restore without pins instead of inheriting another branch's
+  state. Existing pin state becomes durable on the next session save; lost pins
+  cannot be recovered from older session files. This does not enable broad
+  `sessionoptions+=globals` persistence.
+- `util.session_branch` starts auto-session's Git watcher even when startup finds
+  no saved session. It resolves HEAD via `git rev-parse --git-path HEAD` with
+  absolute paths, supporting nested cwd and worktrees, rearms on global cwd
+  changes, and closes stopped watcher handles. Upstream still owns branch save,
+  modified-buffer confirmation, and restore behavior. A branch without a saved
+  session retains the current buffers until a session is saved for it.
+  `tests/session_workspace.lua` exercises actual branch notifications from a
+  fresh workspace, repeated branch/manual restores, a separate Neovim process,
+  unpinning, legacy sessions, nested cwd, worktrees, and leaving Git.
+- `util.session_breakpoints` saves DAP source breakpoints in the same per-session
+  companion JSON as pins/order. Absolute paths and current sign line numbers are
+  saved with conditions, hit conditions, and log messages; adapter IDs and
+  verification state are discarded. Restore replaces the previous workspace's
+  breakpoints, including when the saved set is empty or a legacy session has no
+  breakpoint metadata. Existing files outside the listed buffer set are loaded
+  unlisted to place signs; missing files and lines beyond EOF are skipped.
+  Saving without DAP usage does not load the debugger. Restoring a nonempty set
+  loads DAP but does not launch an adapter/program. Existing saved sessions gain
+  breakpoint metadata on their next save. `tests/session_workspace.lua` covers
+  fresh-process and branch restoration, clearing, unlisted files, and stale paths.
 - `auto-session` scrubs invalid `setlocal includeformatexpr=...` lines from
   saved session files, plus orphaned `winminheight`/`winminwidth` restore lines
   whose saved script-local variables are absent, before restore and after save.
@@ -310,19 +388,31 @@ Update this file when:
   [lua/util/neotest_failed.lua](/home/konkov/.config/nvim/lua/util/neotest_failed.lua:1).
   `<leader>tF` reruns currently failed test positions from Neotest's cached
   results, limited to the active test scope/project root.
-- IntelliJ's debug panel is the default UI for all `nvim-dap` adapters;
-  `nvim-dap-ui` is disabled. [lua/util/debug_ui.lua](/home/konkov/.config/nvim/lua/util/debug_ui.lua:1)
-  installs its listeners separately from upstream run/debug defaults, preserving
-  our global mappings. The panel opens on stops and closes on exit by default.
-  `<leader>du` toggles it; `<leader>dU` keeps it open on exit; `<leader>de`
-  evaluates the source expression/selection; `<leader>df` opens the panel and
-  focuses the current frame. Panel keys: Enter/Tab expand, `e` evaluate, `w`
-  watch, `dd` remove watch, `c/n/i/o` continue/step, `q` close.
-- The panel displays the stopped thread's stack and first scope, with no thread
-  or scope selector. Upstream clears locals/frame values on termination, even
-  when keep-open is enabled; watch expressions survive. DAP REPL and virtual
-  text (including secret masking) remain configured. Source jumps avoid both
-  IntelliJ panels and the REPL.
+- `nvim-dap-ui` is the shared debugger UI for Java, Go, Python, and other DAP
+  adapters. [lua/util/debug_ui.lua](/home/konkov/.config/nvim/lua/util/debug_ui.lua:1)
+  owns setup and lifecycle; IntelliJ's combined debug panel/listeners are disabled.
+  Stack stays on the left (select a frame to inspect its locals). The bottom
+  defaults to Locals/scopes with Watches alongside. `<Tab>` in a debug pane or
+  `<leader>dr` anywhere switches to Console: interactive DAP REPL plus integrated
+  terminal output. Adapter `output` events appear in the REPL; adapters requesting
+  an integrated terminal use the output pane. External-terminal output remains
+  external. The chosen bottom view survives closing/reopening during this session.
+- `<leader>du` toggles the complete UI; `<leader>dU` keeps it open on exit;
+  `<leader>df` opens it and focuses the current source frame. It opens on stops
+  without taking source focus, and closes after the last session terminates by
+  default. Watches survive closing/reopening. Variable visibility after exit is
+  managed by dap-ui; terminated values are not a saved snapshot.
+- Debug-pane Normal keys: `e` evaluate prompt, `w` add-watch prompt, `dd` remove
+  watch, `E` edit value/watch, Enter expand/select, `c` continue, `n` step over,
+  `s` step into, `o` step out, `p` pause, `t` terminate, `q` close the whole UI.
+  `i` also steps into in Stack/Locals; in REPL/Watches it retains insert mode.
+  `j/k` keep standard movement. Use `<Esc>` to leave Console insert/terminal mode
+  before pane shortcuts. `<leader>de` evaluates the source expression/selection
+  through dap-ui, retaining IntelliJ's dotted/call-chain extraction in Normal mode.
+  Expression syntax and evaluation/stepping support depend on the adapter.
+  Virtual text (including secret masking) remains configured; source jumps avoid
+  debugger panes, IntelliJ output, and the REPL. `tests/dap_ui.lua` checks actual
+  plugin layouts, focus, keymaps and watch persistence without launching adapters.
 - Neotest output rendering is guarded by
   [lua/util/neotest_output_guard.lua](/home/konkov/.config/nvim/lua/util/neotest_output_guard.lua:1).
   Upstream `output` and `output_panel` read each result output file fully before
@@ -508,6 +598,10 @@ Update this file when:
   session, so activating another project/module does not exclude an earlier
   asynchronous discovery pass. Ignored directories and unactivated siblings
   remain excluded. `SessionLoadPost` clears those remembered scopes.
+- Discovery filtering uses Neotest's root-relative directory path as supplied
+  (it already includes the directory name). Before any scope is activated, the
+  current-buffer fallback yields out of libuv fast callbacks before reading
+  buffer APIs, avoiding `E5560` during cold/session-restored discovery.
 - Go test-file detection uses the most specific activated scope for its
   GOPATH/GOROOT check, falling back to editor cwd for unactivated paths. This
   keeps an activated GOPATH project discoverable after switching projects,
@@ -522,8 +616,9 @@ Update this file when:
   `<leader>tt`, `<leader>tf`, `<leader>tp`, and `<leader>tP` aimed at the test
   file that had focus when the key was pressed, even when split/UI window changes
   leave another buffer visible or current.
-- `<leader>tr` and `<leader>td` also capture the source cursor before opening
-  the Neotest summary. They resolve the nearest test from that original
+- `<leader>tr` and `<leader>td` also capture the source cursor before changing
+  Neotest UI (regular runs may open the summary; debug runs close it). They
+  resolve the nearest test from that original
   buffer/line instead of relying on Neotest's no-argument `run.run()`, because
   the summary split becomes current before the run starts.
 - The Neotest summary window uses the repo-local opener in
@@ -569,13 +664,15 @@ Update this file when:
   smoke test in a disposable Maven project updated a method declaration and
   call site, refreshed hints, and preserved the global handler. Interactive
   typing and complex refactoring conflicts were not exercised by that probe.
-- Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, enabled on
-  LSP attach, and toggled with `<leader>ud`.
+- Inline diagnostics are provided by `tiny-inline-diagnostic.nvim`, restored from
+  `persist-toggle` after setup on LSP attach, and toggled with `<leader>ud`.
+  The former immediate and scheduled unconditional enables were removed.
 - LSP inlay hints are managed by
   [lua/util/inlay_hints.lua](/home/konkov/.config/nvim/lua/util/inlay_hints.lua:1)
   through Neovim's native `vim.lsp.inlay_hint` API and toggled with
   `<leader>uh`. Switching between normal and insert mode does not toggle hints;
-  Java, Go, and Python still clear stale hint text after edits.
+  Go and Python clear stale hint text after edits. Java relies on native LSP hint
+  updates without the custom clear-on-edit hook.
 - Noice is allowed to own command/message UI, but hover/signature rendering is
   intentionally disabled there to avoid conflicts with the chosen editing setup.
   Inlay-hint error suppression was removed so both invalid-column errors and
@@ -610,7 +707,7 @@ Update this file when:
 - DAP virtual text masks values when the variable name or rendered value
   contains common secret terms: `secret`, `api_key`, `apikey`, `token`,
   `password`, `passwd`, `credential`, or `authorization`.
-- IntelliJ's DAP panel opens on stops and closes on exit by default.
+- The shared DAP UI opens on stops and closes on exit by default.
   `<leader>dU` keeps the panel open, but upstream clears terminated-frame values.
 
 ## Git / Merge Decisions
@@ -677,9 +774,10 @@ Update this file when:
   for dynamic ref arguments.
 - Planned work:
   [docs/plans/code-action-cleanup-highlight-plan.md](/home/konkov/.config/nvim/docs/plans/code-action-cleanup-highlight-plan.md:1)
-  tracks unimplemented code-action cleanup highlighting;
+  tracks unimplemented code-action cleanup highlighting. Toggle persistence is
+  implemented through `persist-toggle.nvim`; the old local-helper proposal in
   [docs/plans/persist-toggle-state-task.md](/home/konkov/.config/nvim/docs/plans/persist-toggle-state-task.md:1)
-  proposes durable toggle preferences. Neither proposal supplies active commands.
+  is superseded.
 
 ## External Workflow Helpers
 

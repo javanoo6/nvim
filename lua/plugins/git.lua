@@ -91,6 +91,14 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPre", "BufNewFile" },
+    config = function(_, opts)
+      local gs = require("gitsigns")
+      gs.setup(opts)
+      require("util.preferences").bind_gitsigns(gs)
+      for _, id in ipairs({ "git_blame", "git_word_diff", "git_linehl", "git_deleted" }) do
+        require("util.preferences").apply(id)
+      end
+    end,
     opts = {
       signs = {
         add = { text = "▎" },
@@ -153,14 +161,22 @@ return {
         map("n", "<leader>Ghb", function()
           gs.blame_line({ full = true })
         end, { desc = "Blame line" })
-        map("n", "<leader>GhB", gs.toggle_current_line_blame, { desc = "Toggle blame" })
+        map("n", "<leader>GhB", function()
+          require("util.preferences").toggle("git_blame")
+        end, { desc = "Toggle blame" })
         map("n", "<leader>GhF", gs.blame, { desc = "Blame file" })
         map("n", "<leader>Ghd", gs.diffthis, { desc = "Diff this" })
 
         -- Toggles
-        map("n", "<leader>Ghw", gs.toggle_word_diff, { desc = "Toggle word diff" })
-        map("n", "<leader>Ghl", gs.toggle_linehl, { desc = "Toggle line highlight" })
-        map("n", "<leader>Ghv", gs.toggle_deleted, { desc = "Toggle deleted lines" })
+        map("n", "<leader>Ghw", function()
+          require("util.preferences").toggle("git_word_diff")
+        end, { desc = "Toggle word diff" })
+        map("n", "<leader>Ghl", function()
+          require("util.preferences").toggle("git_linehl")
+        end, { desc = "Toggle line highlight" })
+        map("n", "<leader>Ghv", function()
+          require("util.preferences").toggle("git_deleted")
+        end, { desc = "Toggle deleted lines" })
 
         -- Text object
         map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Select hunk" })

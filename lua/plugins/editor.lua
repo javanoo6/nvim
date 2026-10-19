@@ -331,6 +331,12 @@ return {
     opts = {
       event_handlers = {
         {
+          event = "file_opened",
+          handler = function()
+            require("neo-tree.command").execute({ action = "close" })
+          end,
+        },
+        {
           event = "file_added",
           handler = function(path)
             require("util.java_file_templates").on_file_added(path)
@@ -532,6 +538,12 @@ return {
         desc = "Open Oil (cwd)",
       },
     },
+    config = function(_, opts)
+      opts.view_options = vim.tbl_extend("force", opts.view_options or {}, {
+        show_hidden = require("util.preferences").get("oil_hidden"),
+      })
+      require("oil").setup(opts)
+    end,
     opts = {
       default_file_explorer = false, -- neo-tree stays as netrw replacement
       columns = { "icon" },
@@ -544,7 +556,11 @@ return {
         ["<C-t>"] = "actions.select_tab",
         ["-"] = "actions.parent",
         ["_"] = "actions.open_cwd",
-        ["g."] = "actions.toggle_hidden",
+        ["g."] = function()
+          local oil = require("oil")
+          oil.toggle_hidden()
+          require("util.preferences").set("oil_hidden", require("oil.config").view_options.show_hidden)
+        end,
         ["gx"] = "actions.open_external",
         ["<C-r>"] = "actions.refresh",
         ["q"] = "actions.close",

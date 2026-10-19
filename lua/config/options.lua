@@ -30,14 +30,15 @@ vim.g.loaded_ruby_provider = 0
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true, desc = "Leader placeholder" })
 
 local opt = vim.opt
+local preferences = require("util.preferences")
 
-opt.number = true
-opt.relativenumber = true
-opt.mouse = ""
+opt.number = preferences.get("number")
+opt.relativenumber = preferences.get("relativenumber")
+opt.mouse = preferences.get("mouse") and "a" or ""
 opt.ignorecase = true
 opt.smartcase = true
 opt.hlsearch = true
-opt.wrap = false
+opt.wrap = preferences.get("wrap")
 opt.breakindent = true
 opt.tabstop = 2
 opt.shiftwidth = 2
@@ -76,7 +77,7 @@ opt.smoothscroll = true -- Smooth scrolling (Neovim 0.10+)
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 -- Disable folding - always show unfolded code
-opt.foldenable = false
+opt.foldenable = preferences.get("foldenable")
 
 -- Better completion experience
 opt.completeopt = "menu,menuone,noselect,preview"
