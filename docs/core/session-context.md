@@ -411,6 +411,9 @@ Update this file when:
   only ordinary `intellij_jvm` runs (`noDebug = true`) auto-open IntelliJ output.
   Java/Python/Go and other debug sessions use the shared DAP Console without
   opening a duplicate output window. Manual output access remains available.
+- Neotest summary shows a `Neotest keys` popup via `util.neotest_help`.
+  `gH` toggles it; `?` retains full help. Hints include run/debug, marked
+  tests, output, stop, targets, and failure navigation.
 - Neo-tree and Oil show matching shortcut popups in Normal mode, supplied by
   `util.explorer_help` and registered from `config.autocmds`. `gH` toggles each
   explorer's popup independently for the current Neovim session. Existing full

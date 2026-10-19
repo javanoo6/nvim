@@ -69,6 +69,26 @@ end
 function M.register(name, profile)
   local first = next(profiles) == nil
   profiles[name] = profile
+  if profile.filetypes then
+    local function attach(buffer)
+      vim.keymap.set("n", "gH", function()
+        M.toggle(name)
+      end, { buffer = buffer, silent = true, desc = "Toggle " .. profile.title .. " popup" })
+    end
+    local group = vim.api.nvim_create_augroup("FocusShortcutHelp_" .. name, { clear = true })
+    vim.api.nvim_create_autocmd("FileType", {
+      group = group,
+      pattern = profile.filetypes,
+      callback = function(event)
+        attach(event.buf)
+      end,
+    })
+    for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.tbl_contains(profile.filetypes, vim.bo[buffer].filetype) then
+        attach(buffer)
+      end
+    end
+  end
   if first then
     local group = vim.api.nvim_create_augroup("FocusShortcutHelp", { clear = true })
     vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter", "FileType", "ModeChanged", "VimResized", "WinClosed" }, {
