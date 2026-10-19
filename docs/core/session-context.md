@@ -442,6 +442,8 @@ Update this file when:
   help remains `?` in Neo-tree and `g?` in Oil. Popups do not take focus and hide
   in source, other dialogs, or insert mode. All three tools share one popup via
   `util.focus_help`, so switching tools replaces the hints instead of stacking.
+  Neo-tree hints explicitly show Ctrl-u/Ctrl-d scrolling its preview up/down ten
+  lines from the tree, and j/k moving down/up after `l` focuses the preview.
 - A compact, nonfocusable `DAP keys` popup appears at the upper right while a
   DAP pane has Normal-mode focus. It hides in source, prompts, and insert/terminal
   mode. `?` in a pane toggles the popup for the current Neovim session; it is
