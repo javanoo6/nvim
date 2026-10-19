@@ -862,6 +862,9 @@ exit unless keep-open is enabled.
 | Tab                    | Switch Locals / Console               |
 | `q`                    | Close the complete UI                 |
 
+A small `DAP keys` popup appears while a debugger pane has Normal-mode focus.
+Press `?` to hide/show it; returning to source or typing input hides it automatically.
+
 `j/k` keep normal movement. In Stack/Locals, `i` also steps into; in
 REPL/Watches, `i` starts typing. Leave insert/terminal mode with `<Esc>` before
 using pane shortcuts. Watches survive closing/reopening. Expression syntax,

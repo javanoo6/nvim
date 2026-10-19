@@ -16,6 +16,7 @@ local function is_open()
 end
 
 function M.close()
+  require("util.debug_help").close()
   require("dapui").close()
 end
 
@@ -109,6 +110,9 @@ local function panel_keys(buf)
   end, "Add watch")
   map("<Tab>", M.toggle_bottom, "Switch Locals / Console")
   map("q", M.close, "Close debugger UI")
+  map("?", function()
+    require("util.debug_help").toggle()
+  end, "Show/hide shortcut help")
   -- Keep insert mode available in the REPL and Watches prompt buffer.
   if vim.bo[buf].filetype == "dapui_scopes" or vim.bo[buf].filetype == "dapui_stacks" then
     map("i", stopped("step_into"), "Step into")
@@ -118,6 +122,7 @@ end
 function M.setup()
   local dap = require("dap")
   local group = vim.api.nvim_create_augroup("LocalDebugUI", { clear = true })
+  require("util.debug_help").setup(group)
   vim.api.nvim_create_autocmd("FileType", {
     group = group,
     pattern = { "dapui_*", "dap-repl" },

@@ -220,6 +220,16 @@ end
 function M.setup()
   local run = require("intellij-lsp.run")
   run.setup({ build_before_run = true })
+  -- Upstream opens its output panel for every adapter's first output event.
+  -- Debug sessions already have the shared DAP Console; only normal Java runs
+  -- need the separate IntelliJ output window.
+  local dap = require("dap")
+  local open_output = dap.listeners.before.event_output["intellij-lsp.run.panel"]
+  dap.listeners.before.event_output["intellij-lsp.run.panel"] = function(session, body)
+    if session.config.type == "intellij_jvm" and session.config.noDebug == true and open_output then
+      open_output(session, body)
+    end
+  end
   run.launch = M.launch
   run.run_at_cursor = M.at_cursor
   -- Upstream captures its original launch in the lens handler; replace it too.
