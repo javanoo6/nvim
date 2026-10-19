@@ -47,12 +47,16 @@ return {
           },
         },
         hooks = {
+          file_open_post = function()
+            vim.schedule(require("util.focus_help").refresh)
+          end,
           diff_buf_read = function()
             vim.opt_local.wrap = false
           end,
         },
         keymaps = {
           view = {
+            { "n", "gH", require("util.diffview_help").toggle, { desc = "Toggle shortcut popup" } },
             { "n", "<leader>co", false },
             { "n", "<leader>ct", false },
             { "n", "<leader>cb", false },
@@ -72,6 +76,7 @@ return {
             { "n", "<leader>CA", actions.conflict_choose_all("all"), { desc = "Conflict: choose all (file)" } },
           },
           file_panel = {
+            { "n", "gH", require("util.diffview_help").toggle, { desc = "Toggle shortcut popup" } },
             { "n", "<leader>cO", false },
             { "n", "<leader>cT", false },
             { "n", "<leader>cB", false },
@@ -81,6 +86,9 @@ return {
             { "n", "<leader>CB", actions.conflict_choose_all("base"), { desc = "Conflict: choose base (file)" } },
             { "n", "<leader>CA", actions.conflict_choose_all("all"), { desc = "Conflict: choose all (file)" } },
             { "n", "<leader>C0", actions.conflict_choose_all("none"), { desc = "Conflict: choose none (file)" } },
+          },
+          file_history_panel = {
+            { "n", "gH", require("util.diffview_help").toggle, { desc = "Toggle shortcut popup" } },
           },
         },
       }

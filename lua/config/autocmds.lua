@@ -5,6 +5,7 @@ local augroup = util.augroup
 require("util.ui_debug").register_commands()
 require("util.explorer_help").setup()
 require("util.neotest_help").setup()
+require("util.diffview_help").setup()
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {

@@ -411,6 +411,9 @@ Update this file when:
   only ordinary `intellij_jvm` runs (`noDebug = true`) auto-open IntelliJ output.
   Java/Python/Go and other debug sessions use the shared DAP Console without
   opening a duplicate output window. Manual output access remains available.
+- Diffview shows contextual shortcut hints via `util.diffview_help` in its
+  file/history panels and active diff windows, including local merge mappings.
+  `gH` toggles hints; `g?` retains full help. File-open hooks refresh hints.
 - Neotest summary shows a `Neotest keys` popup via `util.neotest_help`.
   `gH` toggles it; `?` retains full help. Hints include run/debug, marked
   tests, output, stop, targets, and failure navigation.
