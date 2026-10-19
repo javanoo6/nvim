@@ -411,6 +411,9 @@ Update this file when:
   only ordinary `intellij_jvm` runs (`noDebug = true`) auto-open IntelliJ output.
   Java/Python/Go and other debug sessions use the shared DAP Console without
   opening a duplicate output window. Manual output access remains available.
+- Aerial's outline shows `util.aerial_help` hints for symbol jumps, source
+  scrolling, splits, and folds. `gH` toggles them and `?` retains full help.
+  Hints reflect local close-on-select and standard down/up navigation.
 - Undotree's history tree shows `util.undotree_help` hints for state restore,
   undo/redo, saved states, diff markers, and returning to the editor.
   `gH` toggles the popup; `?` retains the plugin's built-in help.

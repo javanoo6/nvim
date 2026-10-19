@@ -10,6 +10,7 @@ require("util.trouble_help").setup()
 require("util.glance_help").setup()
 require("util.quicker_help").setup()
 require("util.undotree_help").setup()
+require("util.aerial_help").setup()
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
