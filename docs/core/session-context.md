@@ -199,6 +199,8 @@ Update this file when:
 
 ## File / Root / Explorer Decisions
 
+- `<C-y>` in a normal file buffer copies its absolute path, matching Neo-tree's
+  `Y` (Shift-y). Both use the clipboard helper with unnamed-register fallback.
 - Neo-tree and file finding are split by scope:
   `<leader>e` uses current explorer cwd, `<leader>E` uses project root.
 - Telescope grep defaults to literal ripgrep matching for the main grep keys:

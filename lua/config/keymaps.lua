@@ -63,6 +63,20 @@ require("util.java_workspace").register_commands()
 live_hunks.setup()
 conflict_markers.setup()
 
+map("n", "<C-y>", function()
+  local path = vim.api.nvim_buf_get_name(0)
+  if path == "" or vim.bo.buftype ~= "" then
+    vim.notify("Copy path needs a file buffer", vim.log.levels.WARN)
+    return
+  end
+  local register, err = require("util.clipboard").set_text(path)
+  if register == "+" then
+    vim.notify("Copied path to clipboard: " .. path)
+    return
+  end
+  vim.notify("Copied path to unnamed register: " .. path .. "\nClipboard unavailable: " .. tostring(err), vim.log.levels.WARN)
+end, { desc = "Copy absolute file path" })
+
 -- Movement (no leader)
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Down (display line)" })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Up (display line)" })
