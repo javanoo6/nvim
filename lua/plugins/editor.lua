@@ -331,6 +331,31 @@ return {
     opts = {
       event_handlers = {
         {
+          event = "neo_tree_window_before_close",
+          handler = function(args)
+            if args.source == "filesystem" then
+              require("neo-tree.sources.common.preview").hide()
+            end
+          end,
+        },
+        {
+          event = "after_render",
+          handler = function(state)
+            if state.name ~= "filesystem" or not state.winid or not vim.api.nvim_win_is_valid(state.winid) then
+              return
+            end
+            if vim.api.nvim_get_current_win() ~= state.winid or vim.w[state.winid].neotree_preview_started then
+              return
+            end
+            -- Start once per window, after the initial selection is available.
+            -- Reuse P's config and let later renders preserve a manual toggle-off.
+            vim.w[state.winid].neotree_preview_started = true
+            if not require("neo-tree.sources.common.preview").is_active() then
+              state.resolved_mappings["P"].handler()
+            end
+          end,
+        },
+        {
           event = "file_opened",
           handler = function()
             require("neo-tree.command").execute({ action = "close" })
