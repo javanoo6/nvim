@@ -50,3 +50,10 @@ On Linux, system `google-chrome` is selected when available and
 Experimental scaled headings are disabled. Automatic source/render switching
 on insert mode is left off; source/render transitions stay explicit.
 Obsidian continues to own its source-buffer UI and vault navigation.
+
+Diagram placements are hidden while entering commands or searches and restored
+afterward, so terminal images cannot cover the Noice command palette. This is
+a local workaround for terminal image layering. A second guard repaints images
+when synchronized split scrolling reports the source window first: upstream
+otherwise misses the preview's scroll and leaves diagram images frozen over
+moving text. Off-screen diagrams are cleared; visible ones are placed again.

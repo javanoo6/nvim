@@ -144,6 +144,17 @@ Update this file when:
   this Ubuntu host, while system Chrome works with the sandbox enabled.
   Experimental insert-mode auto-toggle is not
   enabled, and experimental scaled headings are explicitly disabled.
+  `util.markdown_images` clears existing image placements on command-line entry
+  and suppresses new placements until command-line exit. It then asks the
+  renderer to place images again, preserving transmitted image data. This keeps
+  delayed image redraws from covering Noice's command palette. The guard wraps
+  upstream `setup_images`/`put_image` and reads the pinned renderer's image state;
+  check those interfaces when upgrading. It also checks every changed window
+  in `v:event` for `WinScrolled`: upstream checks only the first window in
+  `<amatch>`, which misses synchronized preview scrolling when the source is
+  first. The helper schedules an image repaint for that missed preview, so
+  off-screen diagrams are cleared and visible ones move with the text.
+  Wrap/smoothscroll settings remain unchanged.
 - `$` and `^` are swapped from upstream Vim behavior:
   `$` goes to first non-blank, `^` goes to end of line.
 - Plain `j/k` use wrapped display-line movement when no count is given, but

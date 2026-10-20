@@ -19,5 +19,6 @@ return {
     end
     -- Keep normal terminal text sizing; scaled headings are experimental.
     require("md-render.text_size").setup({ enabled = false })
+    require("util.markdown_images").setup()
   end,
 }
