@@ -84,6 +84,26 @@ map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease height" })
 map("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease width" })
 map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase width" })
 map("n", "<leader>wq", "<cmd>close<cr>", { desc = "Close window" })
+map("n", "<leader>ws", function()
+  local fixed = {}
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.api.nvim_win_get_config(win).relative == "" then
+      fixed[win] = { width = vim.wo[win].winfixwidth, height = vim.wo[win].winfixheight }
+      vim.wo[win].winfixwidth = false
+      vim.wo[win].winfixheight = false
+    end
+  end
+  local ok, err = pcall(vim.cmd, "wincmd =")
+  for win, opts in pairs(fixed) do
+    if vim.api.nvim_win_is_valid(win) then
+      vim.wo[win].winfixwidth = opts.width
+      vim.wo[win].winfixheight = opts.height
+    end
+  end
+  if not ok then
+    error(err)
+  end
+end, { desc = "Equalize window sizes" })
 
 -- Terminal mode
 map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })

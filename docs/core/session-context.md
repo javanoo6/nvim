@@ -71,6 +71,8 @@ Update this file when:
 - `[w` and `]w` cycle to the previous/next window. They complement spatial
   window movement on `<C-h/j/k/l>`, while preserving the bracket-prefix pattern
   used by buffer and tab navigation.
+- `<leader>ws` equalizes split widths and heights in the current tab, including
+  fixed-size sidebars. Their fixed-size settings are restored afterward.
 - Telescope is configured so `<C-j>` means next/down and `<C-k>` means
   previous/up in pickers. See [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:186).
 - Glance is configured consistently: `j` next/down, `k` previous/up. See
@@ -841,7 +843,8 @@ Update this file when:
 - Live git hunks view is repo-local glue in
   [lua/util/live_hunks.lua](/home/konkov/.config/nvim/lua/util/live_hunks.lua:1).
   `<leader>ug` / `:LiveHunksToggle` opens a right-side scratch buffer for the
-  current file's unstaged hunks. Gitsigns `get_hunks()` is its only data source;
+  current file's unstaged hunks, taking half the screen width when opened.
+  Gitsigns `get_hunks()` is its only data source;
   there is no separate Git process or diff parser. A nil result means Gitsigns
   is not attached, while an empty table means no unstaged hunks. The panel shows
   that distinction and refreshes on `GitSignsUpdate`, including after delayed
