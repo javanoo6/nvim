@@ -5,8 +5,6 @@ local group = vim.api.nvim_create_augroup("custom_live_hunks", { clear = true })
 local states = {}
 local timers = {}
 
-local width = 55
-
 local function is_valid_buf(bufnr)
   return bufnr and vim.api.nvim_buf_is_valid(bufnr)
 end
@@ -219,6 +217,7 @@ local function configure_view_window(winid)
 end
 
 local function create_view(source_buf, source_win)
+  local width = math.max(1, math.floor((vim.o.columns - 1) / 2))
   local view_buf = vim.api.nvim_create_buf(false, true)
   vim.bo[view_buf].buftype = "nofile"
   vim.bo[view_buf].bufhidden = "wipe"

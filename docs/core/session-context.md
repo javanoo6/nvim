@@ -71,6 +71,8 @@ Update this file when:
 - `[w` and `]w` cycle to the previous/next window. They complement spatial
   window movement on `<C-h/j/k/l>`, while preserving the bracket-prefix pattern
   used by buffer and tab navigation.
+- `<leader>ws` equalizes split widths and heights in the current tab, including
+  fixed-size sidebars. Their fixed-size settings are restored afterward.
 - Telescope is configured so `<C-j>` means next/down and `<C-k>` means
   previous/up in pickers. See [lua/plugins/editor.lua](/home/konkov/.config/nvim/lua/plugins/editor.lua:186).
 - Glance is configured consistently: `j` next/down, `k` previous/up. See
@@ -125,6 +127,36 @@ Update this file when:
 
 ## Core Editing Deviations
 
+- Agents format explicit code/Markdown paths with `./format.sh FILE...`
+  (`--help` for usage). Paths are relative to the caller, so the absolute script
+  path also works from other projects. It starts a formatter-only Neovim,
+  loads `plugins.formatting` options and Mason's executable PATH, and calls
+  `util.format` synchronously without loading sessions, LSPs, or UI plugins.
+  Missing/unsupported files or unavailable formatters fail before writes;
+  runtime formatter failures exit nonzero and earlier files may already be saved.
+- Markdown preview uses `delphinus/md-render.nvim`, loaded on `:MdRender` or
+  `<leader>m` actions. `<leader>mt` swaps source/render in the current window;
+  `<leader>ms` opens a vertical source/render split with live updates and
+  synchronized navigation; `<leader>mp` toggles a floating preview;
+  `<leader>md` opens the upstream demo. Render buffers are read-only and the
+  source stays editable. Mermaid diagrams render locally through `mmdc` and
+  display through Kitty graphics. On Linux, loading the plugin sets
+  `PUPPETEER_EXECUTABLE_PATH` to detected system `google-chrome` when no explicit
+  override exists: Puppeteer's downloaded Chrome cannot start its sandbox on
+  this Ubuntu host, while system Chrome works with the sandbox enabled.
+  Experimental insert-mode auto-toggle is not
+  enabled, and experimental scaled headings are explicitly disabled.
+  `util.markdown_images` clears existing image placements on command-line entry
+  and suppresses new placements until command-line exit. It then asks the
+  renderer to place images again, preserving transmitted image data. This keeps
+  delayed image redraws from covering Noice's command palette. The guard wraps
+  upstream `setup_images`/`put_image` and reads the pinned renderer's image state;
+  check those interfaces when upgrading. It also checks every changed window
+  in `v:event` for `WinScrolled`: upstream checks only the first window in
+  `<amatch>`, which misses synchronized preview scrolling when the source is
+  first. The helper schedules an image repaint for that missed preview, so
+  off-screen diagrams are cleared and visible ones move with the text.
+  Wrap/smoothscroll settings remain unchanged.
 - `$` and `^` are swapped from upstream Vim behavior:
   `$` goes to first non-blank, `^` goes to end of line.
 - Plain `j/k` use wrapped display-line movement when no count is given, but
@@ -167,6 +199,8 @@ Update this file when:
 
 ## File / Root / Explorer Decisions
 
+- `<C-y>` in a normal file buffer copies its absolute path, matching Neo-tree's
+  `Y` (Shift-y). Both use the clipboard helper with unnamed-register fallback.
 - Neo-tree and file finding are split by scope:
   `<leader>e` uses current explorer cwd, `<leader>E` uses project root.
 - Telescope grep defaults to literal ripgrep matching for the main grep keys:
@@ -181,6 +215,10 @@ Update this file when:
 - Neo-tree closes in the active tab after opening a file, including split and
   window-picker opens, through its `file_opened` event. Directory expansion and
   previews keep the tree open; opening a new tab leaves the original tab's tree.
+- Neo-tree's filesystem tree starts its floating preview automatically after
+  the first render of each new tree window. Moving the selection updates the
+  preview; `P` toggles it, and `l` focuses it. Turning it off stays effective
+  through redraws until the tree is closed and reopened.
 - Neo-tree does not auto-follow the current file on buffer switches. In large
   monorepos this keeps the sidebar/root stable while opening buffers; scope
   changes stay explicit via `<leader>e`, `<leader>E`, or `.` inside Neo-tree.
@@ -807,7 +845,8 @@ Update this file when:
 - Live git hunks view is repo-local glue in
   [lua/util/live_hunks.lua](/home/konkov/.config/nvim/lua/util/live_hunks.lua:1).
   `<leader>ug` / `:LiveHunksToggle` opens a right-side scratch buffer for the
-  current file's unstaged hunks. Gitsigns `get_hunks()` is its only data source;
+  current file's unstaged hunks, taking half the screen width when opened.
+  Gitsigns `get_hunks()` is its only data source;
   there is no separate Git process or diff parser. A nil result means Gitsigns
   is not attached, while an empty table means no unstaged hunks. The panel shows
   that distinction and refreshes on `GitSignsUpdate`, including after delayed

@@ -58,6 +58,7 @@ return {
         { "<leader>H", group = "history" },
         { "<leader>l", group = "lsp" },
         { "<leader>L", group = "leetcode" },
+        { "<leader>m", group = "markdown" },
         { "<leader>j", group = "java" },
         { "<leader>o", group = "oil" },
         { "<leader>O", group = "obsidian" },
