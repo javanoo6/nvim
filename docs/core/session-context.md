@@ -653,8 +653,12 @@ Update this file when:
   accidental boolean assignments do report warnings. See `docs/java/java-workflow.md` for diagnostic limits; Lua display settings
   cannot enable checks the server does not emit.
 - `JavaInfo` includes progress state and whether initial import finished.
-- Conform uses the standalone `intellij-code-formatter` jar for Java, Markdown,
-  XML, Python, YAML, and shell. Full-file Java formatting optimizes imports and rearranges members;
+- Conform uses the standalone `intellij-code-formatter` 0.0.7 jar (submodule
+  `232b3b9`) for Java, Markdown, HTML/XHTML, XML/XSLT, Python (`.py`/`.pyw`/`.pyi`),
+  JSON/JSONC/JSON5, TOML, YAML (`.yaml`/`.yml`, including Helm values), and
+  Bash/Zsh. `util.format.standalone_filetypes` owns the routes, availability
+  checks, disabled LSP fallback, and the 10-second format-on-save timeout.
+  Full-file Java formatting optimizes imports and rearranges members;
   range requests omit both cleanup flags and use Conform's filtered formatting
   edits. The jar is more capable than pinned LSP formatting for these routes;
   the comparison table is in `lua/plugins/formatting.lua`.
@@ -663,8 +667,10 @@ Update this file when:
   Formatting does not wait for the IntelliJ language server or project import.
   The explicit style file is this config's `.editorconfig`, restoring the previous
   standalone formatter policy.
-- Python, YAML, and shell routes use the standalone jar by explicit user request,
-  with LSP fallback disabled. Other languages retain their existing formatters.
+- JSON now uses the jar too; Prettier remains for JavaScript/TypeScript.
+  Shell formatting uses bundled shfmt; Python formatting requires no interpreter,
+  but Python import sorting/removal remain unsupported. Helm templates keep
+  their distinct `helm` filetype; only plain YAML values use the YAML formatter.
 - Conform LSP requests run inside `nvim_buf_call` for their target because this
   Conform revision builds formatting parameters from the current buffer's URI
   and indentation even when `bufnr` is supplied. Directory writes temporarily

@@ -124,6 +124,12 @@ Neovim expects `formatter-cli/target/formatter-cli-full.jar`. The nested
 IntelliJ source submodule is not required for this CLI build. `:FormatterInfo`
 reports the jar, Java executable, style path, and other formatter dependencies.
 
+The formatter submodule is pinned to `232b3b9` (0.0.7). Its build downloads the
+Python plugin from JetBrains Marketplace and checksum-verified shfmt binaries
+from GitHub. Python and shell formatting need no separate interpreter or shfmt
+installation. All supported Neovim filetypes use the built jar, including
+JSON/JSONC/JSON5, TOML, YAML, Bash, and Zsh.
+
 ## Go and Java test helpers
 
 neotest-golang's build hook installs `gotestsum v1.13.0` through `go install`.

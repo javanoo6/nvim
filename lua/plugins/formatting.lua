@@ -20,15 +20,19 @@ local function notify_format_skipped_for_errors(bufnr, error_count)
   vim.notify(message, vim.log.levels.WARN, { title = "Conform" })
 end
 
-local slow_formatter_filetypes = {
-  java = true,
-  markdown = true,
-  python = true,
-  ruby = true,
-  sh = true,
-  xml = true,
-  yaml = true,
+local standalone_filetypes = require("util.format").standalone_filetypes
+local formatters_by_ft = {
+  lua = { "stylua" },
+  go = { "gofumpt", "goimports-reviser", "golines" },
+  ruby = { "rubocop_rvm" },
+  javascript = { "prettier" },
+  javascriptreact = { "prettier" },
+  typescript = { "prettier" },
+  typescriptreact = { "prettier" },
 }
+for ft in pairs(standalone_filetypes) do
+  formatters_by_ft[ft] = { "idea_formatter", lsp_format = "never" }
+end
 
 local function ruby_rubocop_command(ctx)
   local ruby = require("util.ruby")
@@ -58,7 +62,8 @@ local function ruby_rubocop_available(ctx)
 end
 
 local function format_on_save_timeout(bufnr)
-  if slow_formatter_filetypes[vim.bo[bufnr].filetype] then
+  local ft = vim.bo[bufnr].filetype
+  if standalone_filetypes[ft] or ft == "ruby" then
     return 10000
   end
 
@@ -94,8 +99,8 @@ return {
         -- Optimize Java imports      | Yes                  | Yes (separate command)
         -- Rearrange Java members     | Yes                  | Unavailable
         -- Markdown / XML formatting  | Verified in baseline | Unavailable
-        -- Python / YAML              | Enabled by request   | Unavailable
-        -- Shell                      | Enabled by request   | Unavailable
+        -- Python / YAML / JSON / TOML| Bundled in 0.0.7     | Unavailable
+        -- Bash / Zsh                 | Bundled shfmt        | Unavailable
         idea_formatter = {
           command = "java",
           args = function(_, ctx)
@@ -144,22 +149,7 @@ return {
           stdin = false,
         },
       },
-      formatters_by_ft = {
-        lua = { "stylua" },
-        go = { "gofumpt", "goimports-reviser", "golines" },
-        python = { "idea_formatter", lsp_format = "never" },
-        ruby = { "rubocop_rvm" },
-        json = { "prettier" },
-        javascript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescript = { "prettier" },
-        typescriptreact = { "prettier" },
-        yaml = { "idea_formatter", lsp_format = "never" },
-        markdown = { "idea_formatter", lsp_format = "never" },
-        java = { "idea_formatter", lsp_format = "never" },
-        xml = { "idea_formatter", lsp_format = "never" },
-        sh = { "idea_formatter", lsp_format = "never" },
-      },
+      formatters_by_ft = formatters_by_ft,
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
           return

@@ -52,7 +52,7 @@ function M.formatter_info()
   local home = vim.env.HOME
   local lines = {
     "Java: standalone IntelliJ formatter (reformat + optimize imports + rearrange)",
-    "Markdown/Python/XML/YAML (.yaml/.yml)/shell: standalone IntelliJ formatter",
+    "HTML/XHTML/Markdown/Python/XML/XSLT/JSON/JSONC/JSON5/TOML/YAML/Helm values/Bash/Zsh: standalone IntelliJ formatter",
     "Formatter jar: " .. vim.fn.stdpath("config") .. "/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar",
     "Formatter jar readable: " .. tostring(
       vim.fn.filereadable(vim.fn.stdpath("config") .. "/intellij-code-formatter/formatter-cli/target/formatter-cli-full.jar") == 1

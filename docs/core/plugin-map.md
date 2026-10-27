@@ -189,9 +189,9 @@ conform.nvim  (formatting.lua)
     go         → gofumpt → goimports-reviser → golines
     python     → standalone IntelliJ formatter jar
     ruby       → rubocop_rvm
-    json       → prettier
+    json/jsonc/json5/toml → standalone IntelliJ formatter jar
     javascript/typescript/javascriptreact/typescriptreact → prettier
-    java/markdown/xml/yaml/sh → standalone IntelliJ formatter jar
+    java/markdown/html/xhtml/xml/xslt/yaml/yaml.helm-values/sh/zsh → standalone IntelliJ formatter jar
   Note: Go skips format-on-save (done via LSP/manual); format-on-save skips files with LSP errors
 
 nvim-lint  (linting.lua)

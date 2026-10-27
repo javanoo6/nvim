@@ -1,6 +1,7 @@
 -- Run: nvim --headless -u NONE -i NONE -l tests/format_cli.lua
 -- Exercise real formatter subprocesses against disposable files only.
 local root = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h")
+vim.opt.runtimepath:prepend(root)
 local temp = vim.fn.tempname()
 vim.fn.mkdir(temp, "p")
 local checks = 0
@@ -25,6 +26,35 @@ local function read(name)
 end
 
 local function suite()
+  local helper = require("util.format")
+  local config = require("plugins.formatting")[1].opts
+  for _, ft in ipairs({
+    "java",
+    "json",
+    "jsonc",
+    "json5",
+    "markdown",
+    "python",
+    "sh",
+    "zsh",
+    "toml",
+    "html",
+    "xhtml",
+    "xml",
+    "xslt",
+    "yaml",
+    "yaml.helm-values",
+  }) do
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.bo[buf].filetype = ft
+    check(config.formatters_by_ft[ft][1] == "idea_formatter", ft .. " must use the jar")
+    local opts, err = helper.options(buf)
+    check(opts and opts.lsp_format == "never", ft .. ": " .. tostring(err))
+    check(config.format_on_save(buf).timeout_ms == 10000, ft .. " needs the standalone timeout")
+    vim.api.nvim_buf_delete(buf, { force = true })
+  end
+  check(config.formatters_by_ft.javascript[1] == "prettier", "JavaScript keeps its formatter")
+
   check(run({ "--help" }).code == 0, "Help failed")
   check(run({}).code == 2, "No paths must be a usage error")
   check(run({ "--unknown" }).code == 2, "Unknown option must be a usage error")
@@ -59,12 +89,55 @@ local function suite()
   write("document.md", { "# Example", "", "Some **Markdown**." })
   check(run({ "document.md" }).code == 0, "Standalone Markdown formatting failed")
   check(read("document.md"):find("Some **Markdown**.", 1, true), "Markdown content lost")
+
+  local samples = {
+    { "Sample.java", { "class Sample{int sum(int a,int b){return a+b;}}" }, "return a + b;" },
+    { "sample.py", { "def add(a,b):", "    return a+b" }, "def add(a, b):" },
+    { "sample.pyw", { "def add(a,b):", "    return a+b" }, "def add(a, b):" },
+    { "sample.pyi", { "def add(a:int,b:int)->int: ..." }, "def add(a: int, b: int) -> int:" },
+    { "sample.json", { '{"key":1}' }, '"key": 1' },
+    { "sample.jsonc", { "// keep this comment", '{"key":1}' }, '"key": 1' },
+    { "sample.json5", { "{key:'value',}" }, "key: 'value'" },
+    { "sample.toml", { "[section]", "key=1" }, "key = 1" },
+    { "sample.xml", { "<root><child>value</child></root>" }, "\n  <child>" },
+    { "sample.html", { "<html><body><div><p>Hello</p></div></body></html>" }, "<html>\n" },
+    { "sample.xhtml", { '<html xmlns="http://www.w3.org/1999/xhtml"><body><div><p>Hello</p></div></body></html>' }, "<body>\n" },
+    {
+      "sample.xsl",
+      {
+        '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"><xsl:template match="/"><output/></xsl:template></xsl:stylesheet>',
+      },
+      "\n  <xsl:template",
+    },
+    { "sample.yaml", { "root:", "   child:  1" }, "\n  child: 1" },
+    { "sample.yml", { "root:", "   child:  1" }, "\n  child: 1" },
+    { "sample.sh", { "#!/bin/bash", "if true;then", "echo  hello", "fi" }, "if true; then" },
+    { "sample.bash", { "#!/bin/bash", "if true;then", "echo  hello", "fi" }, "if true; then" },
+    { "sample.zsh", { "#!/bin/zsh", "if true;then", "echo  hello", "fi" }, "if true; then" },
+    { "shell-script", { "#!/usr/bin/env bash", "if true;then", "echo  hello", "fi" }, "if true; then" },
+  }
+  local paths = {}
+  for _, sample in ipairs(samples) do
+    write(sample[1], sample[2])
+    paths[#paths + 1] = sample[1]
+  end
+  result = run(paths)
+  check(result.code == 0, result.stdout .. result.stderr)
+  for _, sample in ipairs(samples) do
+    check(read(sample[1]):find(sample[3], 1, true), sample[1] .. " was not formatted: " .. read(sample[1]))
+  end
+  check(read("sample.jsonc"):find("// keep this comment", 1, true), "JSONC comment lost")
+
+  write("invalid.sh", { "#!/bin/bash", "if true; then" })
+  result = run({ "invalid.sh" })
+  check(result.code == 1, "Invalid shell script must fail")
+  check(read("invalid.sh") == "#!/bin/bash\nif true; then", "Failed shell formatting changed the source")
 end
 
 local ok, err = pcall(suite)
 vim.fn.delete(temp, "rf")
 if not ok then
-  io.stderr:write(tostring(err) .. "\n")
+  vim.api.nvim_err_writeln(tostring(err))
   vim.cmd("cquit 1")
 end
 print("PASS: " .. checks .. " format.sh checks")
