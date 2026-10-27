@@ -18,6 +18,7 @@ check-config: check-compatibility
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/dap_ui.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/config_refinement.lua DiffviewOpen
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/neotest_scope.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/neotest_summary.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/python_venv_picker.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/root_policy.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lsp_rename.lua

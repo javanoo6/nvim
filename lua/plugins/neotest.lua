@@ -194,6 +194,7 @@ return {
     },
     config = function()
       require("util.neotest_output_guard").install()
+      require("util.neotest_summary").install()
 
       local golang = require("neotest-golang")({ runner = "gotestsum" })
       golang.is_test_file = function(path)

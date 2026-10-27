@@ -116,6 +116,11 @@ Update this file when:
   their existing scope. Themery owns theme persistence; sessions own buffer pins,
   order, and DAP breakpoints.
 - Debug-test keys never auto-open the summary and close an existing summary.
+  `util.neotest_summary` guards every summary close path: when the summary is
+  the tab's last nonfloating window, it first restores an editing split with
+  the most recently used listed normal buffer (or a new empty buffer).
+  The editing window clears inherited `winfixbuf` so buffer cycling works;
+  floating help windows do not count as editing windows.
   Ordinary test runs honor `test_summary_on_run`; `<leader>ts` remains explicit.
   DAP initialization also closes a loaded test summary for other debug entry
   points. `<leader>tl` explicitly uses the integrated strategy so a previous
