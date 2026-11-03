@@ -154,6 +154,8 @@ return {
       vim.lsp.config("basedpyright", {})
       local python_lsp = require("util.python_lsp")
       python_lsp.select("pyright")
+      vim.lsp.config("pylsp", require("util.python_refactoring"))
+      vim.lsp.enable("pylsp")
 
       vim.lsp.config("ruby_lsp", {
         cmd = function(dispatchers, config)
@@ -279,10 +281,11 @@ return {
           "gopls",
           "pyright",
           "basedpyright",
+          "pylsp",
           "ts_ls",
         },
         automatic_enable = {
-          exclude = { "pyright", "basedpyright" },
+          exclude = { "pyright", "basedpyright", "pylsp" },
         },
       })
 

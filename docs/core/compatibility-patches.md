@@ -20,7 +20,7 @@ Revision drift fails with the plugin name and a reminder to review this registry
 | `neotest-python`    | `51c453d57f8d5156671b42ea57fafa2e1c9fb641` |
 | `neotest-golang`    | `542cbaf37f1233a2723ccd64ce8ed7e3acbd192b` |
 | `neotest-java`      | `78d236da986cca4dd95cb10b1250c4c6e1508240` |
-| `intellij-lsp.nvim` | `9cfad18005470e4187090013e08f92ec9e437219` |
+| `intellij-lsp.nvim` | `77dc3e118a381e59f0d0b3e368e4b3a088280ab7` |
 | `bufferline.nvim`   | `655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3` |
 | `glance.nvim`       | `e813e1230d7aba362df19e7d292f6f6766277af1` |
 | `auto-session`      | `6cde3874a9283c2db55627acca5f28e4fa402320` |
@@ -28,8 +28,17 @@ Revision drift fails with the plugin name and a reminder to review this registry
 | `nvim-nio`          | `21f5324bfac14e22ba26553caf69ec76ae8a7662` |
 
 The IntelliJ plugin remains explicitly pinned in `lua/plugins/intellij-lsp.lua`;
-its bundled server baseline is `263.6379.0`. Plugin revision checks do not prove
+its bundled server baseline is `263.7084.0`. Plugin revision checks do not prove
 compatibility with a different downloaded server or JDK.
+IntelliJ alone was re-reviewed on 2026-10-30 at
+`77dc3e118a381e59f0d0b3e368e4b3a088280ab7`: consent/licensing, function-valued
+launch command, virtual-buffer guards, and restart lifecycle changes were read
+against the local wrappers. The client factory now receives settled consent as
+its third argument; the local wrapper forwards it. Download checksum and
+`--version` passed. The read-only license status reported `StartedUnlicensed`;
+interactive agreement acceptance/activation and Java editing/debug smoke checks
+remain user steps. The upstream unit suite has a build-stop reporting failure
+on this host; local compatibility and config checks cover the integrations.
 
 ## Upgrade workflow
 
@@ -164,7 +173,7 @@ has a check and removal condition; larger workflow limits remain explicit.
 - **Owner:** `lua/util/java_intellij.lua` wraps `intellij-lsp.client.config`,
   guards `find_root` against virtual/non-file buffers, and
   overrides `extensions.EDITOR_COMMANDS` suggestion/rename entries.
-- **Dependencies:** factory config signature/capabilities/on_attach callback,
+- **Dependencies:** factory config signature (including settled consent), capabilities/on_attach callback,
   editor command table, readiness/status helpers, template prompt, and debug setup.
 - **Reason:** preserve cmp and file-operation capabilities, let cmp own completion,
   restrict follow-up rename to IntelliJ, select Maven for mixed build roots,

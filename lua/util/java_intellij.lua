@@ -35,11 +35,13 @@ function M.setup(opts)
     local client = vim.lsp.get_clients({ bufnr = 0, name = "intellij" })[1]
     local cfg = plugin.config
     local status, detail = require("intellij-lsp.server_download").status(cfg)
+    local server = cfg.server_path or (status == "cached" and detail)
+    local consent = server and require("intellij-lsp.consent").resolve(cfg, require("intellij-lsp.launch").server_root(server))
     local progress = require("intellij-lsp.status")
     local state = client and (progress.describe(progress.get(client.id)) or "idle") or "unavailable"
     local lines = {
       "backend: IntelliJ LSP (JDTLS disabled)",
-      "EULA accepted: " .. tostring(opts.accept_eula),
+      "EULA accepted: " .. tostring(consent and consent.eula_accepted or false),
       "analysis JDK: " .. opts.default_sdk,
       "server bundle: " .. require("intellij-lsp.server_bundles").version,
       "server: " .. tostring(cfg.server_path or detail),
@@ -52,9 +54,8 @@ function M.setup(opts)
     vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "JavaInfo" })
   end, { desc = "Show IntelliJ Java backend configuration" })
 
-  -- Until acceptance, keep the plugin inspectable without launching a server
-  -- that is guaranteed to reject its missing --eula argument.
-  if not opts.accept_eula then
+  -- An explicit opt-out keeps Java disabled; nil lets upstream ask for consent.
+  if opts.accept_eula == false then
     plugin.config = opts
     return
   end
@@ -77,9 +78,9 @@ function M.setup(opts)
     vim.lsp.buf.rename(nil, { name = "intellij", bufnr = vim.api.nvim_get_current_buf() })
   end
   original_config = original_config or factory.config
-  factory.config = function(root, cfg)
+  factory.config = function(root, cfg, consent)
     cfg = M.project_options(root, cfg)
-    local config = original_config(root, cfg)
+    local config = original_config(root, cfg, consent)
     config.capabilities = vim.tbl_deep_extend(
       "force",
       config.capabilities,

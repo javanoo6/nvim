@@ -5,7 +5,9 @@ return {
   {
     "williamboman/mason.nvim",
     cmd = "Mason",
-    opts = {},
+    opts = {
+      registries = { "lua:util.mason_registry", "github:mason-org/mason-registry" },
+    },
   },
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
@@ -27,6 +29,7 @@ return {
         "yaml-language-server",
         "typescript-language-server",
         "pyright",
+        "python-lsp-server",
         "ruff",
         "prettier",
         "eslint_d",

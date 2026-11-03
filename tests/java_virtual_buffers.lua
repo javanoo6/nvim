@@ -4,9 +4,16 @@ vim.opt.runtimepath:prepend(repo)
 vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/lazy/intellij-lsp.nvim")
 local plugin = require("intellij-lsp")
 local factory = require("intellij-lsp.client")
-plugin.setup = function() end
+plugin.setup = function(opts)
+  plugin.config = opts
+end
 require("util.java_file_templates").setup = function() end
-require("util.java_intellij").setup({ accept_eula = true })
+require("util.java_intellij").setup({
+  server_path = "/fixture/intellij-server/bin/intellij-server",
+  accept_eula = true,
+  region = "europe",
+  data_sharing = "none",
+})
 require("util.java_workspace").setup()
 
 local fixture = vim.fn.tempname()

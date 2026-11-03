@@ -373,6 +373,19 @@ Update this file when:
   `util.python_lsp` owns session-wide selection: switching disables the other
   server, and venv restarts reactivate only the selected server. A generation
   guard prevents delayed restarts from undoing a newer selection.
+- Python refactoring actions come from a separate `pylsp` client with
+  `pylsp-rope`, alongside the selected Pyright/BasedPyright client.
+  `util.python_refactoring` disables other pylsp plugins and removes unrelated
+  advertised capabilities so completions, navigation, rename, linting, and
+  formatting retain their existing providers. Python LSP switching leaves this
+  refactoring client enabled. `<leader>ca` / `<A-CR>` offers
+  `Inline method/variable/parameter` on a resolvable symbol; select code for
+  extract method/variable actions. Inline can replace all calls and remove the
+  original definition. Rope actions are command-backed, so the picker has no
+  diff preview before execution.
+  Mason's local `lua:util.mason_registry` overrides only `python-lsp-server`,
+  installing server `1.15.0` and `pylsp-rope==0.1.17` in the same managed venv.
+  The package spec is `util.mason_pylsp`; reinstalls preserve the extension.
 - gopls inherits nvim-lspconfig's callback-based root resolver, including Go
   workspace/module/Git and dependency-source handling, rather than a legacy
   return-value-only `root_pattern()` override.
@@ -583,14 +596,29 @@ Update this file when:
   plugin spec have been removed. `spring-boot.nvim` is not configured.
   Neotest uses `util.neotest_intellij` with
   neotest-java's discovery/XML result readers; no JDTLS execution path or backend selector.
-- Plugin revision: `9cfad18005470e4187090013e08f92ec9e437219`; server bundle:
-  `263.6379.0`. The user explicitly accepted its EAP EULA on 2026-10-10.
+- Plugin revision: `77dc3e118a381e59f0d0b3e368e4b3a088280ab7`; server bundle:
+  `263.7084.0`, updated on 2026-10-30 after the previous EAP bundle
+  `263.6379.0` expired. The new bundle has a different agreement, so acceptance
+  of the old EAP agreement (2026-10-10) is no longer forced in config. Upstream
+  asks for region, agreement acceptance, and data-sharing preferences and stores
+  the answers. `:IntellijLspLicense setup` repeats setup; `:IntellijLspLicense`
+  handles activation. The new server reported `StartedUnlicensed` at upgrade;
+  no license or trial was activated by the update.
+- IntelliJ server JVM options are explicit in `lua/plugins/intellij-lsp.lua`:
+  128 MiB initial heap, 1 GiB maximum heap, 512 MiB reserved code cache, G1 GC,
+  and the user's diagnostic/system-property options. Crash logs and heap dumps
+  resolve to `~/java_error_in_idea_%p.log` and `~/java_error_in_idea.hprof`;
+  Lua expands the home directory because JVM arguments do not pass through a
+  shell. The plugin supplies these options through `IJ_JAVA_OPTIONS`.
 - `gt` opens IntelliJ type hierarchy (subtypes) in attached Java buffers. It is
   buffer-local; other filetypes keep Vim's next-tab behavior.
 - Current Java workflows and their limitations are documented in
   [docs/java/java-workflow.md](/home/konkov/.config/nvim/docs/java/java-workflow.md:1).
 - `lua/util/java_intellij.lua` wraps the pinned plugin's client factory to merge
   cmp/file-operation capabilities and disable built-in completion after attach.
+  The wrapper forwards settled consent as the factory's third argument, and
+  an unset `accept_eula` delegates to upstream consent setup. `JavaInfo` reads
+  actual stored consent rather than only the config's acceptance flag.
   Upstream `autotrigger=false` alone still enables built-in completion.
 - IntelliJ root detection and local workspace attachment skip virtual/non-file
   buffers. Diffview revision and index buffers can still have `filetype=java`

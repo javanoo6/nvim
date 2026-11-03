@@ -2,8 +2,8 @@
 
 IntelliJ LSP owns Java editing, project import, navigation, and launch metadata.
 The active spec is `lua/plugins/intellij-lsp.lua`, pinned to
-`9cfad18005470e4187090013e08f92ec9e437219`. The configured server bundle is
-`263.6379.0`; agreement acceptance is recorded in the spec. JDTLS and nvim-java
+`77dc3e118a381e59f0d0b3e368e4b3a088280ab7`. The configured server bundle is
+`263.7084.0`; upstream consent screens record agreement acceptance. JDTLS and nvim-java
 are not used. neotest-java supplies discovery and XML result reading through the
 local IntelliJ bridge.
 
@@ -14,6 +14,15 @@ readiness. `:checkhealth intellij-lsp` checks the installed server.
 `NVIM_JAVA_HOME` takes precedence over `JAVA_HOME` for the project JDK; the
 server uses its bundled JBR. See [prerequisites](../core/prerequisites.md) and
 [macOS setup](../core/macos-setup.md) for platform setup.
+
+The 2026-10-30 update replaced expired EAP bundle `263.6379.0`. The newer bundle
+has a different agreement, so the previous `accept_eula = true` override is
+removed. On first Java startup, choose region, review/accept the agreement, and
+choose data sharing in the plugin's screens. Answers are saved by upstream.
+`:IntellijLspLicense setup` opens setup again; `:IntellijLspLicense` manages
+activation through a JetBrains account, trial, activation code, or license server.
+The installed bundle reported `StartedUnlicensed` during the upgrade; the update
+does not activate a license or trial. Java features require activation after consent.
 
 Maven and Gradle projects are supported. Roots with both build systems prefer
 Maven unless explicitly configured otherwise. Workspace actions target the

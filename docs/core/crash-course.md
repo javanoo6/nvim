@@ -1438,6 +1438,13 @@ Notes:
 - `:PyrightInfo` shows the exact `pyright-langserver` command/path used by the current Neovim session.
 - `:PythonLspUseBasedPyright` switches Python buffers to BasedPyright for the current session; `:PythonLspUsePyright` switches back.
 - Python formatting uses the standalone IntelliJ jar; Ruff provides linting.
+- Python refactoring uses `pylsp-rope` alongside Pyright/BasedPyright. Put the
+  cursor on a function or variable and press `<leader>ca` / `<A-CR>` for
+  `Inline method/variable/parameter`. Select code in visual mode for extract
+  method/variable actions. Inline can replace all calls and remove the original
+  definition; these command-backed actions have no diff preview. Use undo to
+  revert edits in each affected buffer. Mason installs the Rope extension in
+  the server's own environment automatically.
 - Use `<leader>tt` to run the current Python test target after selecting a venv. `neotest-python` resolves Python from the active venv and `.env`
   values loaded during venv activation are inherited by test runs.
 

@@ -292,9 +292,14 @@ local function run()
   equal(type(extensions.EDITOR_COMMANDS), "table", "IntelliJ editor command registry")
   local plugin = require("intellij-lsp")
   local original_setup, original_factory = plugin.setup, factory.config
-  plugin.setup = function() end
+  local setup_opts
+  plugin.setup = function(opts)
+    setup_opts = opts
+  end
   local upstream_attached = 0
-  factory.config = function()
+  local upstream_consent
+  factory.config = function(_, _, consent)
+    upstream_consent = consent
     return {
       capabilities = {},
       on_attach = function()
@@ -303,8 +308,12 @@ local function run()
     }
   end
   local java = require("util.java_intellij")
+  java.setup({ default_sdk = "/fixture/jdk" })
+  equal(type(setup_opts), "table", "IntelliJ setup without preaccepted EULA reaches upstream consent flow")
   java.setup({ accept_eula = true, default_sdk = "/fixture/jdk" })
-  local cfg = factory.config(fixture, {})
+  local consent = { eula_accepted = true, region = "europe", data_sharing = "none" }
+  local cfg = factory.config(fixture, {}, consent)
+  equal(upstream_consent, consent, "IntelliJ settled consent reaches upstream launch config")
   equal(cfg.capabilities.textDocument.completion.completionItem.snippetSupport, true, "IntelliJ retains cmp capabilities")
   equal(cfg.capabilities.workspace.fileOperations.willRename, true, "IntelliJ retains file-operation capabilities")
   local completion = vim.lsp.completion.enable

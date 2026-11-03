@@ -66,8 +66,13 @@ Pyright note:
 - `mason-lspconfig` automatic-enable excludes `pyright` and `basedpyright` so
   repo-local command/switching policy is not bypassed.
 - `:PyrightInfo` prints the exact command path for the current session.
+- A separate `pylsp` client supplies Rope refactoring actions only, configured
+  in `util/python_refactoring.lua`. Mason's local `util.mason_registry` package
+  override installs `python-lsp-server` and `pylsp-rope` together; all other
+  packages use the upstream registry. Pyright/BasedPyright switching leaves
+  pylsp enabled.
 
-**LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`, `basedpyright`, `ts_ls`
+**LSP servers auto-installed:** `lua_ls`, `bashls`, `helm_ls`, `jsonls`, `yamlls`, `gopls`, `pyright`, `basedpyright`, `pylsp`, `ts_ls`
 **Ruby LSP:** handled through RVM and the `ruby-lsp` gem, not Mason. Projects can use `.ruby-version`, `.ruby-gemset`, and `.env` `BUNDLE_GEMFILE`.
 **Java LSP:** handled separately by IntelliJ LSP — see Java section.
 
