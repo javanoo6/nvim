@@ -10,10 +10,18 @@ return {
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     dependencies = { "williamboman/mason.nvim" },
+    init = function()
+      require("util.selene").setup()
+    end,
     opts = {
       ensure_installed = {
         "stylua",
-        "selene",
+        {
+          "selene",
+          condition = function()
+            return not require("util.selene").source_install() and vim.fn.executable("selene") == 0
+          end,
+        },
         "bash-language-server",
         "json-lsp",
         "yaml-language-server",

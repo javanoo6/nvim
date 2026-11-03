@@ -2,7 +2,7 @@
 
 MASON_BIN ?= $(HOME)/.local/share/nvim/mason/bin
 STYLUA ?= $(MASON_BIN)/stylua
-SELENE ?= $(MASON_BIN)/selene
+SELENE ?= $(or $(wildcard $(MASON_BIN)/selene),$(shell command -v selene 2>/dev/null),selene)
 NVIM_BIN ?= nvim
 LUA_TARGETS := init.lua lua after tests
 
@@ -15,6 +15,7 @@ check-lint:
 	$(SELENE) $(LUA_TARGETS)
 
 check-config: check-compatibility
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/selene_bootstrap.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/dap_ui.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/config_refinement.lua DiffviewOpen
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/neotest_scope.lua
