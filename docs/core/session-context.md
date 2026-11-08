@@ -541,6 +541,8 @@ Update this file when:
   the Neotest method node instead of leaving a stale failed summary status.
 - `:FormatterInfo` reports active formatter dependencies, including the standalone
   jar, Java executable, and explicit EditorConfig path.
+- `:FormatterDaemonStop` or `./stop-formatter-daemons.sh` stops all standalone
+  formatter daemons owned by the current user. Later formatting starts one again.
 - Directory formatting commands are registered from
   [lua/util/format_dir.lua](/home/konkov/.config/nvim/lua/util/format_dir.lua:1)
   so [lua/plugins/formatting.lua](/home/konkov/.config/nvim/lua/plugins/formatting.lua:1)

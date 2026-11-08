@@ -372,3 +372,10 @@ ij_python_use_continuation_indent_for_arguments = true
 ij_python_use_continuation_indent_for_collection_and_comprehensions = true
 ij_python_use_continuation_indent_for_parameters = true
 ij_python_wrap_long_lines = false
+
+[{*.sh,*.bash,*.zsh}]
+indent_style = space
+indent_size = 2
+tab_width = 2
+ij_continuation_indent_size = 2
+max_line_length = 120

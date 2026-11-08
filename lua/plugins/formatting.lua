@@ -74,7 +74,16 @@ return {
   {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
-    cmd = { "ConformInfo", "FormatterInfo", "FormatEnable", "FormatDisable", "FormatDir", "FormatDirPick", "FormatDirCancel" },
+    cmd = {
+      "ConformInfo",
+      "FormatterInfo",
+      "FormatEnable",
+      "FormatDisable",
+      "FormatDir",
+      "FormatDirPick",
+      "FormatDirCancel",
+      "FormatterDaemonStop",
+    },
     keys = {
       {
         "<leader>cf",
@@ -176,6 +185,16 @@ return {
     config = function(_, opts)
       local conform = require("conform")
       conform.setup(opts)
+
+      vim.api.nvim_create_user_command("FormatterDaemonStop", function()
+        local script = vim.fn.stdpath("config") .. "/stop-formatter-daemons.sh"
+        vim.system({ script }, { text = true }, function(result)
+          vim.schedule(function()
+            local message = vim.trim((result.stdout or "") .. (result.stderr or ""))
+            vim.notify(message, result.code == 0 and vim.log.levels.INFO or vim.log.levels.ERROR, { title = "Formatter" })
+          end)
+        end)
+      end, { desc = "Stop all formatter daemons for the current user" })
 
       vim.api.nvim_create_user_command("FormatDisable", function(args)
         if args.bang then
