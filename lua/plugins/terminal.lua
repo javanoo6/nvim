@@ -6,6 +6,7 @@ return {
     { "<A-a>", "<cmd>ToggleTerm<cr>", desc = "Toggle terminal", mode = { "n", "t" } },
   },
   opts = {
+    shell = "zsh",
     open_mapping = false, -- managed via keys above
     hide_numbers = true,
     direction = "float",

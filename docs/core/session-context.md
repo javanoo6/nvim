@@ -30,6 +30,8 @@ Update this file when:
 
 ## Input Model
 
+- ToggleTerm runs Zsh explicitly, independent of Neovim's default shell.
+
 - Direction model follows standard Vim movement:
   `h = left`, `j = down`, `k = up`, `l = right`
 - `<leader>` is space, and the `<Space>` placeholder mapping is defined in
