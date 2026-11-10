@@ -34,6 +34,9 @@ Start here:
 
 ## Configuration refinement
 
+- [Plugin update tracker](plans/2026-11-10-plugin-updates.md):
+  one-at-a-time checklist for all locked plugins and their validation.
+
 - [Architecture and quality audit tracker](plans/2026-11-10-configuration-audit.md):
   prioritized fixes, verification work, and decisions to preserve existing behavior.
 - [Compatibility patches and upgrade checks](core/compatibility-patches.md):
