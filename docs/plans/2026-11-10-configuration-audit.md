@@ -21,7 +21,7 @@ Checks performed during the audit:
   benchmark, or clean installation was performed.
 
 Line references below describe the audit baseline and may drift after changes.
-No recommendation should be interpreted as an already implemented behavior.
+Implementation status is recorded in the Open work and Completed sections.
 
 ## Tracking rules
 
@@ -52,181 +52,74 @@ coverage are strong safeguards, but do not make those contracts stable.
 Keep the existing structure. Prefer small corrections and retiring individual
 patches over a rewrite, generic language framework, or indiscriminate lazy loading.
 
-## P0 — Correctness and reliability
+## Open work and verification
 
-- [ ] **AUD-01 — Restore the lint quality gate.**
-    - Severity/category/confidence: High / quality gate / Confirmed by execution.
-    - Location: `tests/markdown_images.lua:70`, `vim.yml`, `Makefile`.
-    - Problem: the standard lint target fails on `io.stderr:write`. This is a
-      lint-model mismatch, not evidence that Lua cannot execute that expression.
-    - Fix: correct the local standard-library definition or use the established
-      test error-reporting idiom. Avoid suppressing unrelated diagnostics.
-    - Benefit: a usable quality gate. Effort: small. Risk/trade-off: low; preserve
-      failure reporting and nonzero exit behavior.
-    - [x] `make check-lint` passes.
-    - [ ] The affected test still reports failures correctly.
+Implemented portions are recorded under Completed at the bottom. These unchecked
+items retain only the remaining work; they do not request reimplementation.
 
-- [ ] **AUD-02 — Flatten LuaLS workspace library paths.**
-    - Severity/category/confidence: Medium / LSP correctness / Confirmed malformed
-      configuration; actual server reaction was not tested.
-    - Location: `lua/plugins/lsp.lua:248`.
-    - Problem: `nvim_get_runtime_file("lua", true)` is inserted as a nested table
-      in `workspace.library`, which expects a list of paths.
-    - Fix: extend the path list with the returned paths; keep library scope explicit.
-    - Benefit: valid settings. Effort: small. Risk/trade-off: low, but expanding
-      libraries can increase indexing work.
-    - [x] Every library entry sent to LuaLS is a string path.
-    - [ ] Neovim API completion works in this repository.
-    - [x] Project-local LuaLS configuration retains its intended precedence.
+### P0 — Correctness and reliability
 
-- [ ] **AUD-03 — Make Mason server activation explicit.**
-    - Severity/category/confidence: High / workspace reliability / Confirmed policy
-      mismatch; duplicate Java attachment needs runtime verification.
-    - Location: `lua/plugins/lsp.lua:287`, `lua/config/options.lua`,
-      `docs/core/session-context.md`, `docs/core/plugin-map.md`.
-    - Problem: automatic activation excludes three Python servers but not JDTLS,
-      despite documentation saying JDTLS is excluded. Installed tools can change
-      active servers independently of configuration changes.
-    - Fix: prefer an explicit automatic-enable allowlist; at minimum exclude JDTLS.
-    - Benefit: predictable server ownership. Effort: small. Risk/trade-off:
-      low–medium; adding a server requires updating the activation policy.
-    - [ ] IntelliJ remains the sole intended Java server even with JDTLS installed.
-    - [ ] Python selection and the separate refactoring server still work.
-    - [ ] Intended other language servers attach normally.
-    - [x] Documentation matches the actual activation policy.
+- [ ] **AUD-01:** Force a Markdown image test failure and verify its error output
+  and nonzero exit. The lint fix and passing suite are complete.
+- [ ] **AUD-02:** Verify Neovim API completion in a live LuaLS session. Flat library
+  paths and project-local settings precedence already have regression coverage.
+- [ ] **AUD-03:** Verify live server attachment: IntelliJ alone for Java even with
+  JDTLS installed, Python selection/refactoring, and other intended languages.
+  JDTLS exclusion is implemented; an activation allowlist was rejected.
 
-## P1 — High-impact simplifications
+### P1 — Formatting policy verification
 
-- [ ] **AUD-04 — Clarify diagnostic-based formatting suppression.**
-    - Severity/category/confidence: Medium / predictability / Confirmed.
-    - Location: `lua/plugins/formatting.lua:171`, `lua/plugins/auto-save.lua`.
-    - Problem: the check described as “LSP errors” reads all diagnostic namespaces,
-      including linters. Unrelated or stale errors can suppress formatting.
-    - Fix: explicitly choose all errors or selected LSP diagnostics, then align
-      implementation, notifications, and documentation with that decision.
-    - Benefit: understandable save behavior. Effort: small. Risk/trade-off: medium;
-      narrowing the rule permits formatting despite lint errors.
-    - [x] Record the chosen policy and rationale.
-    - [ ] Verify manual save and autosave with LSP-only and linter-only errors.
-    - [ ] Verify explicit manual formatting remains intentional and predictable.
+- [ ] **AUD-04:** Verify manual save/autosave with LSP-only and linter-only errors,
+  plus explicit manual formatting. Preserve the existing all-diagnostics rule;
+  only its description and warning were corrected.
 
-- [ ] **AUD-05 — Decouple Markdown linting from BasedPyright's bundled Node.**
-    - Severity/category/confidence: Medium / dependency coupling / Confirmed.
-    - Location: `lua/plugins/linting.lua:51`, `docs/core/prerequisites.md`.
-    - Problem: Markdown tooling reaches into another language tool's private
-      Python package layout to locate Node.
-    - Fix: use a supported Node executable and document the required version.
-    - Benefit: independent, reproducible tooling. Effort: small. Risk/trade-off:
-      low; a suitable Node runtime must be installed separately.
-    - [ ] Markdown linting works without BasedPyright installed.
-    - [ ] Missing/incompatible Node is diagnosable.
+### P2 — Maintainability and observability
 
-- [ ] **AUD-06 — Review compatibility patches individually during upgrades.**
-    - Severity/category/confidence: Medium / upgrade maintenance / Confirmed risk,
-      not evidence of current failure.
-    - Locations: `docs/core/compatibility-patches.md` and its listed owners.
-    - Problem: private contracts create significant upgrade work across completion,
-      Which-key, Bufferline, Neotest, sessions, and IntelliJ.
-    - Fix: use each documented reproduction to evaluate supported upstream
-      replacements; retire only patches proven unnecessary.
-    - Benefit: largest potential long-term maintenance reduction. Effort: ongoing.
-      Risk/trade-off: medium–high; removing patches can reintroduce old failures.
-    - [ ] Record a disposition for each patch reviewed: retain, replace, or remove.
-    - [ ] Run its reproduction without the patch before removal.
-    - [ ] Preserve required local behavior and update registry/tests.
-    - [ ] Complete applicable interactive smoke checks, not only structural probes.
+- [ ] **AUD-07:** Complete the regression entrypoint inventory. Every test should
+  have an invocation or reason for exclusion. Markdown image checks are now in
+  `make check-config`; the resulting standard targets pass.
+- [ ] **AUD-09:** Force actions-preview setup/invocation failure and verify that
+  warnings retain the cause and native code actions still work.
 
-## P2 — Maintainability and consistency
+## Deferred investigations
 
-- [ ] **AUD-07 — Inventory regression test entrypoints.**
-    - Severity/category/confidence: Medium / coverage integration / Confirmed direct
-      omission; indirect coverage was not exhaustively traced.
-    - Location: `Makefile:17`, `tests/`.
-    - Problem: `tests/markdown_images.lua` is linted but not directly invoked by
-      standard regression targets; other standalone tests also lack direct entries.
-    - Fix: map tests to targets; include intended suites or document separate runs.
-    - Benefit: tests cannot quietly become orphaned. Effort: small. Risk/trade-off:
-      low; some suites may require a terminal or external tools.
-    - [ ] Every test has a documented invocation or reason for exclusion.
-    - [ ] Run the resulting applicable standard targets.
+- **AUD-06 — Compatibility patches:** retain current patches. No supported
+  replacement or upstream update was established. During upgrades, use the
+  [patch registry](../core/compatibility-patches.md), reproduce failures without
+  each patch, and retire only proven unnecessary fixes. Complete applicable
+  interactive smoke checks before accepting replacements.
+- **AUD-08 — RuboCop availability cache:** cached failures survive environment
+  repair. Restarting is the current recovery path. Defer invalidation machinery
+  or repeated synchronous probes until this causes practical workflow trouble.
+- **AUD-11 — Save latency:** ten-second formatter budgets and autosave on buffer
+  leave/focus loss are confirmed paths, not measured performance defects. Measure
+  warm/cold formatting and navigation before changing automatic-save budgets.
+- **AUD-12 — Startup/runtime profiling:** measure repeated empty/project startup,
+  first and many-buffer completion, large-file highlighting, and filesystem root
+  lookup costs before adding caches, cutoffs, or loading mechanisms.
 
-- [ ] **AUD-08 — Allow RuboCop availability to recover within a session.**
-    - Severity/category/confidence: Medium / recovery / Confirmed cache behavior.
-    - Location: `lua/plugins/formatting.lua:44`.
-    - Problem: availability results are cached indefinitely by root/Gemfile path;
-      repairing gems does not invalidate a cached failure.
-    - Fix: explicit invalidation or avoid indefinitely retaining negative results.
-    - Benefit: recovery without restarting. Effort: small. Risk/trade-off: low;
-      repeated shell probes may be expensive.
-    - [ ] Failed availability followed by environment repair succeeds in one session.
-    - [ ] Ordinary saves do not repeatedly run expensive availability checks.
-
-- [ ] **AUD-09 — Preserve code-action fallback error details.**
-    - Severity/category/confidence: Low / observability / Confirmed.
-    - Location: `lua/plugins/lsp.lua`, actions-preview setup and invocation guards.
-    - Problem: caught errors are discarded, leaving generic fallback warnings.
-    - Fix: include the original error in a warning or existing diagnostic output.
-    - Benefit: actionable failures. Effort: small. Risk/trade-off: low; more text.
-    - [ ] A forced failure exposes its cause and still reaches native code actions.
-
-- [ ] **AUD-10 — Revisit cohesion of the general utility module when touched.**
-    - Severity/category/confidence: Low / architecture / Confirmed mixed ownership.
-    - Location: `lua/util/init.lua`, its root/explorer callers.
-    - Problem: mappings, highlights, root policy, explorer state, picker dispatch,
-      and icons share one module with preference-derived initialization.
-    - Proposal: extract root/explorer policy only when making substantive changes
-      there; do not split every small helper or create a generic service layer.
-    - Benefit: easier tracing. Effort: medium. Risk/trade-off: medium; more imports
-      and possible load-order changes. Deferral is a valid decision.
-    - [x] Record whether extraction delivers enough practical value.
-    - [ ] If changed, preserve root/cwd behavior and run root/session regressions.
-
-## P3 — Measurement and optional improvements
-
-No performance problem was measured during the audit. The following are
-investigations, not mandates to optimize.
-
-- [ ] **AUD-11 — Measure synchronous formatting and autosave latency.**
-    - Severity/category/confidence: Medium / responsiveness / Confirmed synchronous
-      path; user-visible latency Needs verification.
-    - Locations: `formatting.lua:64`, `auto-save.lua:12`.
-    - Ten-second save-time budgets and saves on buffer leave/focus loss can make
-      slow formatting affect navigation. Measure warm/cold formatter execution.
-    - Effort: medium. Risk: low for measurement. Trade-off if changed: shorter
-      automatic budgets may skip formatting; retain an explicit manual route.
-    - [ ] Record warm/cold times and navigation behavior.
-    - [ ] Decide whether automatic-save budgets need changing.
-
-- [ ] **AUD-12 — Profile startup and everyday hot paths.**
-    - Locations: `lua/plugins/ui.lua:165`, `lua/util/init.lua`,
-      `lua/plugins/completion.lua:85`, `lua/plugins/treesitter.lua`.
-    - Candidates: uncached filesystem root detection in the statusline, completion
-      across all loaded buffers below 512 KiB each, and large-buffer highlighting.
-    - Confidence: Needs verification. Effort: medium. Risk: low for measurement.
-    - [ ] Compare empty and representative project startup across repeated runs.
-    - [ ] Measure first completion and many-buffer completion.
-    - [ ] Inspect large-file highlighting and root lookups on slow filesystems.
-    - [ ] Record evidence before adding caching, cutoffs, or lazy-loading logic.
-
-Suggested commands (create profiling output outside the repository):
+Suggested profiling commands (output outside the repository):
 
 ```sh
 nvim --startuptime /tmp/nvim-empty-startup.log
 nvim --startuptime /tmp/nvim-project-startup.log path/to/representative/file
 ```
 
-Also use `:Lazy profile`. Separate first launches from warm runs, and session
-restoration from ordinary startup. Startup measurements do not establish editing
-responsiveness.
+Use `:Lazy profile` too. Separate first launches from warm runs and session
+restoration from ordinary startup. No performance problem was measured here.
 
-- [ ] **AUD-13 — Review optional UI overlap and unused themes.**
-    - Compare actual usage of Aerial/ Trouble symbols, notification/prompt owners,
-      marks/Harpoon, and alternative themes. Overlap alone is not redundancy.
-    - Consider upstream defaults for the custom actions-preview presentation if
-      its extra labels/layout are not useful.
-    - Benefit: less optional maintenance. Effort: small. Risk: preference-dependent.
-    - [ ] Record actual usage and keep/remove/simplify decisions.
-    - [ ] Preserve useful behavior; do not replace concise plugins with custom Lua.
+## Rejected changes and retained behavior
+
+- **AUD-03, broader allowlist:** reject changing activation for unrelated installed
+  servers without evidence. The narrow JDTLS exclusion addresses Java ownership.
+- **AUD-05, remove bundled Node fallback:** reject for this environment. Session
+  context documents that system Node 18 lacks regex support required by the
+  installed Markdown linter. Removing the fallback would regress functionality;
+  a supported Node upgrade can justify revisiting this coupling later.
+- **AUD-10, utility-module extraction:** reject for this change. Moving root and
+  explorer state adds import churn without a demonstrated practical benefit.
+- **AUD-13, plugin removals/presentation changes:** reject changes based solely on
+  apparent overlap. Usage evidence is unavailable; preserve current workflows.
 
 ## Plugin disposition baseline
 
@@ -308,7 +201,6 @@ they are not claims of new implementation or exhaustive runtime validation.
 
 - [ ] **COVER-01:** Read remaining custom helpers and scripts in full; inspect
   interactions beyond the initial sampled paths.
-- [x] **COVER-02:** Run the full applicable regression suite after restoring the gate.
 - [ ] **COVER-03:** Validate Java, Python, Go, and Ruby interactive workflows,
   including attachment/detachment and project switching.
 - [ ] **COVER-04:** Verify clean installation, missing external dependencies,
@@ -332,53 +224,29 @@ they are not claims of new implementation or exhaustive runtime validation.
 |------------|----------|------------------------------------------------------------|--------|----------------------------------------------------------------------------|
 | 2026-11-10 | Baseline | Recorded initial audit; no configuration fixes implemented | —      | Static review and checks listed above; comprehensive coverage remains open |
 
-## Independent review and implementation — 2026-11-10
+## Completed — 2026-11-10
 
-The original priorities overstated some risks: AUD-02 is a settings-shape defect,
-not demonstrated loss of completion; AUD-03 is a documented ownership safeguard,
-not an observed duplicate Java client. No architecture rewrite is warranted.
+These entries record completed implementation or validation, not completion of
+all interactive acceptance checks. Pending checks remain in Open work above.
+Changes are uncommitted; no commit was requested.
 
-- AUD-01 accepted and implemented using the existing `nvim_err_writeln` test
-  convention. Lint and the real Markdown image suite pass.
-- AUD-02 accepted and implemented with a flat list of runtime Lua directories.
-  The redundant nested lspconfig directory entry was removed. Configuration
-  assertions verify string paths and project-local settings precedence. Actual
-  LuaLS completion remains an interactive verification item.
-- AUD-03 accepted narrowly: add JDTLS to exclusions. Reject an allowlist because
-  it would change activation of unrelated installed servers without evidence.
-  Configuration assertions check exclusion; no live Java server was launched.
-- AUD-04 accepted as a wording correction. Preserve suppression for errors from
-  every diagnostic namespace; changing that policy would change existing behavior.
-  Notifications and core comments/documentation now describe diagnostic errors.
-- AUD-05 rejected for this environment. Session context documents that system
-  Node 18 lacks required regex support. Removing the fallback would regress
-  Markdown linting; requiring a runtime upgrade exceeds this focused correction.
-- AUD-06 retain the documented compatibility patches. Their reproductions and
-  locked contracts justify them; no upstream update or replacement was established.
-  Retirement remains work for a future dependency upgrade.
-- AUD-07 partially accepted: include the headless Markdown image suite in
-  `make check-config`. `tests/format_cli.lua` remains an explicit invocation
-  (`nvim --headless -u NONE -i NONE -l tests/format_cli.lua`) because it needs
-  built external formatters. `tests/markdown_scroll.py` remains explicit
-  (`python3 tests/markdown_scroll.py`) because it exercises a disposable TUI.
-  A complete entrypoint inventory remains open.
-- AUD-08 deferred: restarting after Ruby environment repair is currently a simple
-  recovery path. Do not add timers, invalidation commands, or repeated synchronous
-  probes without an actual workflow need.
-- AUD-09 accepted: preserve caught setup/invocation errors in fallback warnings.
-  The existing native fallback behavior remains intact.
-- AUD-10 rejected for this change: extracting root/explorer state creates import
-  churn without changing a demonstrated maintenance problem.
-- AUD-11/AUD-12 deferred: keep timeouts, loading, roots, and highlighting unchanged
-  until representative latency measurements justify changes.
-- AUD-13 reject removals or presentation changes based solely on apparent overlap;
-  actual usage evidence is unavailable and existing workflows must be preserved.
+| Item             | Completed change                                                                                             | Validation                                                                        |
+|------------------|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| AUD-01           | Replaced `io.stderr:write` with the established `nvim_err_writeln` convention in `tests/markdown_images.lua` | Lint passes; 8 Markdown image checks pass                                         |
+| AUD-02           | Flattened LuaLS runtime library paths; removed redundant nested lspconfig path                               | String-path and project-settings precedence assertions pass                       |
+| AUD-03           | Added JDTLS to Mason activation exclusions, preserving other server activation                               | Exclusion assertion passes; documentation matches policy                          |
+| AUD-04           | Corrected notifications/comments/docs to say diagnostic errors; preserved suppression across all namespaces  | Full configuration checks pass; save policy unchanged                             |
+| AUD-07 (partial) | Added Markdown image suite to `make check-config`                                                            | Full standard targets pass                                                        |
+| AUD-09           | Included caught setup/invocation errors in code-action fallback warnings                                     | Formatting/lint and full regression suite pass; forced-failure check remains open |
+| COVER-02         | Ran full applicable standard regression suite after restoring quality gate                                   | `make check` passes                                                               |
 
-Unchecked verification items above remain open where interactive checks or full
-coverage have not been performed. This review does not claim completion of the
-original comprehensive audit. Changes are uncommitted; no commit was requested.
+Explicit separate test invocations remain:
 
-### Validation of implemented groups
+- `nvim --headless -u NONE -i NONE -l tests/format_cli.lua`: real formatter
+  subprocesses; requires built external formatters.
+- `python3 tests/markdown_scroll.py`: disposable Neovim TUI scrolling checks.
+
+Validation after each implementation group:
 
 - Group 1: repository formatter, `make check-format check-lint`, Markdown image
   checks (8), and configuration refinement checks (142) passed. Inspected diff.
@@ -386,5 +254,5 @@ original comprehensive audit. Changes are uncommitted; no commit was requested.
   compatibility contracts (151), session workspace checks (32), and all other
   standard targets. Inspected final diff; `git diff --check` passed.
 - Live completion, live Java attachment, forced code-action failure, and Ruby
-  environment repair were not exercised. Remaining unchecked acceptance items
-  continue to track these limits rather than claiming end-to-end validation.
+  environment repair were not exercised. The original comprehensive audit still
+  has the coverage gaps listed above.
