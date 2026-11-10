@@ -76,6 +76,7 @@ return {
         },
         options = {
           fd_binary_name = fd_binary,
+          override_notify = false,
           notify_user_on_venv_activation = true,
           cached_venv_automatic_activation = true,
           activate_venv_in_terminal = true,

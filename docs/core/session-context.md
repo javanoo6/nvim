@@ -595,6 +595,9 @@ Update this file when:
 - `nvim-notify` background is derived from the active float/normal highlights
   via the local `NotifyBackground` refresh hook instead of a TokyoNight-specific
   hex color, so fade animations and popup contrast survive theme switches.
+- `venv-selector.nvim` sets `options.override_notify = false` so loading Python
+  support preserves Noice's `vim.notify` handler instead of replacing it with
+  `nvim-notify` directly.
 - Bufferline slant separators are tied to `TabLine` / `TabLineSel` /
   `TabLineFill` highlights rather than ad hoc colors so separators stay readable
   across the installed themes.
