@@ -16,7 +16,7 @@ local function notify_format_skipped_for_errors(bufnr, error_count)
     error_count = error_count,
   }
 
-  local message = string.format("Format on save skipped: %d LSP error(s)", error_count)
+  local message = string.format("Format on save skipped: %d diagnostic error(s)", error_count)
   vim.notify(message, vim.log.levels.WARN, { title = "Conform" })
 end
 
@@ -167,7 +167,7 @@ return {
           return
         end
 
-        -- Skip formatting if there are LSP errors
+        -- Skip formatting if there are diagnostic errors
         local diagnostics = vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR })
         if #diagnostics > 0 then
           notify_format_skipped_for_errors(bufnr, #diagnostics)

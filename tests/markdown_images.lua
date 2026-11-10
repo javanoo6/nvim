@@ -67,7 +67,7 @@ local function run()
 end
 local ok, err = pcall(run)
 if not ok then
-  io.stderr:write(tostring(err) .. "\n")
+  vim.api.nvim_err_writeln(tostring(err))
   vim.cmd("cquit 1")
 end
 print("PASS: " .. checks .. " Markdown image command-line checks")

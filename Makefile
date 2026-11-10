@@ -30,6 +30,7 @@ check-config: check-compatibility
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/portability.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/format_dir.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/gotestsum_build.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/markdown_images.lua
 
 check-compatibility:
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/persist_preferences.lua

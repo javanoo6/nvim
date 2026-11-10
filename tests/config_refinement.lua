@@ -167,8 +167,13 @@ local function run()
       end,
     }
   end
+  local mason_options
   package.preload["mason-lspconfig"] = function()
-    return { setup = function() end }
+    return {
+      setup = function(opts)
+        mason_options = opts
+      end,
+    }
   end
   local enabled = {}
   local clients = {}
@@ -181,6 +186,18 @@ local function run()
     end
   end
   require("plugins.lsp")[1].config()
+  equal(vim.tbl_contains(mason_options.automatic_enable.exclude, "jdtls"), true, "Mason excludes competing Java server")
+  local lua_client = { config = { settings = { Lua = {} } } }
+  vim.lsp.config.lua_ls.on_init(lua_client)
+  for _, path in ipairs(lua_client.config.settings.Lua.workspace.library) do
+    equal(type(path), "string", "LuaLS library entries are paths")
+  end
+  local project = fixture .. "/lua-project"
+  write("lua-project/.luarc.json", { "{}" })
+  local project_client =
+    { workspace_folders = { { name = project } }, config = { settings = { Lua = { workspace = { library = { project } } } } } }
+  vim.lsp.config.lua_ls.on_init(project_client)
+  equal(project_client.config.settings.Lua.workspace.library, { project }, "Project LuaLS settings retain precedence")
   equal(type(vim.lsp.config.gopls.root_dir), "function", "Native gopls root retained")
   -- Stub only go env discovery; the installed root resolver reads real fixtures.
   local system = vim.system

@@ -1,6 +1,6 @@
 # Configuration architecture and quality audit
 
-Date: 2026-11-10. Status: initial assessment; recommendations not implemented.
+Date: 2026-11-10. Status: independently reviewed; targeted corrections implemented, broader work deferred.
 
 ## Scope and evidence
 
@@ -63,7 +63,7 @@ patches over a rewrite, generic language framework, or indiscriminate lazy loadi
       test error-reporting idiom. Avoid suppressing unrelated diagnostics.
     - Benefit: a usable quality gate. Effort: small. Risk/trade-off: low; preserve
       failure reporting and nonzero exit behavior.
-    - [ ] `make check-lint` passes.
+    - [x] `make check-lint` passes.
     - [ ] The affected test still reports failures correctly.
 
 - [ ] **AUD-02 — Flatten LuaLS workspace library paths.**
@@ -75,9 +75,9 @@ patches over a rewrite, generic language framework, or indiscriminate lazy loadi
     - Fix: extend the path list with the returned paths; keep library scope explicit.
     - Benefit: valid settings. Effort: small. Risk/trade-off: low, but expanding
       libraries can increase indexing work.
-    - [ ] Every library entry sent to LuaLS is a string path.
+    - [x] Every library entry sent to LuaLS is a string path.
     - [ ] Neovim API completion works in this repository.
-    - [ ] Project-local LuaLS configuration retains its intended precedence.
+    - [x] Project-local LuaLS configuration retains its intended precedence.
 
 - [ ] **AUD-03 — Make Mason server activation explicit.**
     - Severity/category/confidence: High / workspace reliability / Confirmed policy
@@ -93,7 +93,7 @@ patches over a rewrite, generic language framework, or indiscriminate lazy loadi
     - [ ] IntelliJ remains the sole intended Java server even with JDTLS installed.
     - [ ] Python selection and the separate refactoring server still work.
     - [ ] Intended other language servers attach normally.
-    - [ ] Documentation matches the actual activation policy.
+    - [x] Documentation matches the actual activation policy.
 
 ## P1 — High-impact simplifications
 
@@ -106,7 +106,7 @@ patches over a rewrite, generic language framework, or indiscriminate lazy loadi
       implementation, notifications, and documentation with that decision.
     - Benefit: understandable save behavior. Effort: small. Risk/trade-off: medium;
       narrowing the rule permits formatting despite lint errors.
-    - [ ] Record the chosen policy and rationale.
+    - [x] Record the chosen policy and rationale.
     - [ ] Verify manual save and autosave with LSP-only and linter-only errors.
     - [ ] Verify explicit manual formatting remains intentional and predictable.
 
@@ -178,7 +178,7 @@ patches over a rewrite, generic language framework, or indiscriminate lazy loadi
       there; do not split every small helper or create a generic service layer.
     - Benefit: easier tracing. Effort: medium. Risk/trade-off: medium; more imports
       and possible load-order changes. Deferral is a valid decision.
-    - [ ] Record whether extraction delivers enough practical value.
+    - [x] Record whether extraction delivers enough practical value.
     - [ ] If changed, preserve root/cwd behavior and run root/session regressions.
 
 ## P3 — Measurement and optional improvements
@@ -308,7 +308,7 @@ they are not claims of new implementation or exhaustive runtime validation.
 
 - [ ] **COVER-01:** Read remaining custom helpers and scripts in full; inspect
   interactions beyond the initial sampled paths.
-- [ ] **COVER-02:** Run the full applicable regression suite after restoring the gate.
+- [x] **COVER-02:** Run the full applicable regression suite after restoring the gate.
 - [ ] **COVER-03:** Validate Java, Python, Go, and Ruby interactive workflows,
   including attachment/detachment and project switching.
 - [ ] **COVER-04:** Verify clean installation, missing external dependencies,
@@ -331,3 +331,60 @@ they are not claims of new implementation or exhaustive runtime validation.
 | Date       | Item     | Decision / implementation                                  | Commit | Validation / limitations                                                   |
 |------------|----------|------------------------------------------------------------|--------|----------------------------------------------------------------------------|
 | 2026-11-10 | Baseline | Recorded initial audit; no configuration fixes implemented | —      | Static review and checks listed above; comprehensive coverage remains open |
+
+## Independent review and implementation — 2026-11-10
+
+The original priorities overstated some risks: AUD-02 is a settings-shape defect,
+not demonstrated loss of completion; AUD-03 is a documented ownership safeguard,
+not an observed duplicate Java client. No architecture rewrite is warranted.
+
+- AUD-01 accepted and implemented using the existing `nvim_err_writeln` test
+  convention. Lint and the real Markdown image suite pass.
+- AUD-02 accepted and implemented with a flat list of runtime Lua directories.
+  The redundant nested lspconfig directory entry was removed. Configuration
+  assertions verify string paths and project-local settings precedence. Actual
+  LuaLS completion remains an interactive verification item.
+- AUD-03 accepted narrowly: add JDTLS to exclusions. Reject an allowlist because
+  it would change activation of unrelated installed servers without evidence.
+  Configuration assertions check exclusion; no live Java server was launched.
+- AUD-04 accepted as a wording correction. Preserve suppression for errors from
+  every diagnostic namespace; changing that policy would change existing behavior.
+  Notifications and core comments/documentation now describe diagnostic errors.
+- AUD-05 rejected for this environment. Session context documents that system
+  Node 18 lacks required regex support. Removing the fallback would regress
+  Markdown linting; requiring a runtime upgrade exceeds this focused correction.
+- AUD-06 retain the documented compatibility patches. Their reproductions and
+  locked contracts justify them; no upstream update or replacement was established.
+  Retirement remains work for a future dependency upgrade.
+- AUD-07 partially accepted: include the headless Markdown image suite in
+  `make check-config`. `tests/format_cli.lua` remains an explicit invocation
+  (`nvim --headless -u NONE -i NONE -l tests/format_cli.lua`) because it needs
+  built external formatters. `tests/markdown_scroll.py` remains explicit
+  (`python3 tests/markdown_scroll.py`) because it exercises a disposable TUI.
+  A complete entrypoint inventory remains open.
+- AUD-08 deferred: restarting after Ruby environment repair is currently a simple
+  recovery path. Do not add timers, invalidation commands, or repeated synchronous
+  probes without an actual workflow need.
+- AUD-09 accepted: preserve caught setup/invocation errors in fallback warnings.
+  The existing native fallback behavior remains intact.
+- AUD-10 rejected for this change: extracting root/explorer state creates import
+  churn without changing a demonstrated maintenance problem.
+- AUD-11/AUD-12 deferred: keep timeouts, loading, roots, and highlighting unchanged
+  until representative latency measurements justify changes.
+- AUD-13 reject removals or presentation changes based solely on apparent overlap;
+  actual usage evidence is unavailable and existing workflows must be preserved.
+
+Unchecked verification items above remain open where interactive checks or full
+coverage have not been performed. This review does not claim completion of the
+original comprehensive audit. Changes are uncommitted; no commit was requested.
+
+### Validation of implemented groups
+
+- Group 1: repository formatter, `make check-format check-lint`, Markdown image
+  checks (8), and configuration refinement checks (142) passed. Inspected diff.
+- Group 2: repository formatter and full `make check` passed, including installed
+  compatibility contracts (151), session workspace checks (32), and all other
+  standard targets. Inspected final diff; `git diff --check` passed.
+- Live completion, live Java attachment, forced code-action failure, and Ruby
+  environment repair were not exercised. Remaining unchecked acceptance items
+  continue to track these limits rather than claiming end-to-end validation.

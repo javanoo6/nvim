@@ -1,6 +1,6 @@
 -- Auto-save for normal file buffers.
 -- Formatting remains owned by conform.nvim's BufWritePre hook, which skips
--- formatting when LSP errors are present.
+-- formatting when diagnostic errors are present.
 
 return {
   "okuuva/auto-save.nvim",

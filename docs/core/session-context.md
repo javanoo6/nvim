@@ -557,11 +557,11 @@ Update this file when:
   [lua/util/format_dir.lua](/home/konkov/.config/nvim/lua/util/format_dir.lua:1)
   so [lua/plugins/formatting.lua](/home/konkov/.config/nvim/lua/plugins/formatting.lua:1)
   stays focused on Conform configuration.
-- Format-on-save skips buffers with LSP errors and shows a Conform warning once
+- Format-on-save skips buffers with diagnostic errors from any namespace (LSP or linter) and shows a Conform warning once
   per unchanged error state, so repeated saves do not spam notifications.
-- Buffer auto-save writes normal file buffers even when LSP errors exist; in
+- Buffer auto-save writes normal file buffers even when diagnostic errors exist; in
   that case the write proceeds without format-on-save because Conform skips
-  formatting on LSP errors.
+  formatting on diagnostic errors.
 - Format-on-save uses `10000ms` for standalone IntelliJ formatter routes and
   Ruby/RuboCop, and `500ms` for other auto-formatted filetypes.
 - Pyright is configured locally through `vim.lsp.config("pyright", ...)` using

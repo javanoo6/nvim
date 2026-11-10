@@ -245,11 +245,7 @@ return {
             },
             workspace = {
               checkThirdParty = false,
-              library = {
-                vim.env.VIMRUNTIME,
-                vim.api.nvim_get_runtime_file("lua", true),
-                vim.api.nvim_get_runtime_file("lua/lspconfig", false)[1],
-              },
+              library = vim.list_extend({ vim.env.VIMRUNTIME }, vim.api.nvim_get_runtime_file("lua", true)),
             },
             telemetry = {
               enable = false,
@@ -285,7 +281,7 @@ return {
           "ts_ls",
         },
         automatic_enable = {
-          exclude = { "pyright", "basedpyright", "pylsp" },
+          exclude = { "pyright", "basedpyright", "pylsp", "jdtls" },
         },
       })
 
@@ -395,7 +391,7 @@ return {
         end
       end
 
-      local setup_ok = pcall(actions.setup, {
+      local setup_ok, setup_err = pcall(actions.setup, {
         diff = {
           algorithm = "patience",
           ignore_whitespace = true,
@@ -432,18 +428,18 @@ return {
       })
 
       if not setup_ok then
-        vim.notify("actions-preview setup failed; using native LSP code actions", vim.log.levels.WARN)
+        vim.notify("actions-preview setup failed; using native LSP code actions: " .. tostring(setup_err), vim.log.levels.WARN)
         set_code_action_maps(native_code_action)
         return
       end
 
       local function preview_or_native_code_action()
-        local ok = pcall(actions.code_actions)
+        local ok, err = pcall(actions.code_actions)
         if ok then
           return
         end
 
-        vim.notify("actions-preview failed; using native LSP code actions", vim.log.levels.WARN)
+        vim.notify("actions-preview failed; using native LSP code actions: " .. tostring(err), vim.log.levels.WARN)
         native_code_action()
       end
 
