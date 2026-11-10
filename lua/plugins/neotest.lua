@@ -196,23 +196,13 @@ return {
       require("util.neotest_output_guard").install()
       require("util.neotest_summary").install()
 
-      local golang = require("neotest-golang")({ runner = "gotestsum" })
-      golang.is_test_file = function(path)
-        if not vim.endswith(path, "_test.go") or vim.fn.executable("go") ~= 1 then
-          return false
-        end
-        -- Bind GOPATH/GOROOT checks to the file's activated test workspace,
-        -- even if another workspace becomes current during discovery.
-        return not require("neotest-golang.lib.goenv").should_skip(path, scope.discovery_cwd(path))
-      end
-
       require("neotest").setup({
         discovery = {
           filter_dir = scope.scoped_discovery_filter,
         },
         adapters = {
           require("util.neotest_intellij").create(),
-          golang,
+          require("util.neotest_golang").create(),
           require("util.neotest_python").with_project_cwd(require("neotest-python")({
             dap = { justMyCode = false },
             python = function()

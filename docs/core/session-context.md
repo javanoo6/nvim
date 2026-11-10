@@ -439,7 +439,15 @@ Update this file when:
   silently treated as upstream code. These checks launch no language servers,
   debuggers, or test processes.
 - Go Neotest uses `gotestsum v1.13.0`, pinned in the neotest-golang build hook
-  independently of `lazy-lock.json`. Its upstream
+  and `util.neotest_golang` owns adapter construction. Root detection searches
+  upward for the nearest `go.work` or `go.mod` only. Upstream's recursive
+  fallback blocked the editor for roughly 10 seconds when opening unrelated
+  files such as `.semgrepignore` in a large non-Go repo. Parent directories
+  without a Go marker no longer aggregate descendant modules automatically;
+  open a module or add a `go.work` to define that workspace explicitly.
+  `tests/neotest_scope.lua` rejects recursive scans during repeated root probes
+  and checks module/workspace detection and switching between projects.
+  The gotestsum pin is independent of `lazy-lock.json`. Its upstream
   [go.mod](https://github.com/gotestyourself/gotestsum/blob/v1.13.0/go.mod)
   requires Go 1.24.0; local validation used Go 1.25.6. Installation retains Go's
   normal GOBIN/GOPATH destination. Missing Go, launch/wait errors, and nonzero

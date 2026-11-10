@@ -134,15 +134,18 @@ has a check and removal condition; larger workflow limits remain explicit.
 
 ## Python and Go test scope wrappers
 
-- **Owners:** `lua/util/neotest_python.lua`, `lua/plugins/neotest.lua`,
+- **Owners:** `lua/util/neotest_python.lua`, `lua/util/neotest_golang.lua`,
   `lua/util/neotest_scope.lua`.
 - **Dependencies:** Python adapter `root/build_spec`, spec `cwd/strategy.cwd`;
-  Go adapter `is_test_file` and `neotest-golang.lib.goenv.should_skip(path, cwd)`.
+  Go adapter `root/is_test_file` and `neotest-golang.lib.goenv.should_skip(path, cwd)`.
 - **Reason:** test execution must use its source project without changing editor
   cwd; Go detection must not require Go for unrelated Python files or consult
-  another project's most recently activated scope.
+  another project's most recently activated scope. Go root probes use upward-only
+  marker detection: upstream's synchronous recursive fallback froze non-Go repos
+  while Neotest checked adapters on buffer entry.
 - **Checks:** `tests/neotest_scope.lua` uses the installed Python builder, delayed
-  builders, explicit cwd overrides, nested scopes, and Go SDK filtering;
+  builders, explicit cwd overrides, nested scopes, Go SDK filtering, and repeated
+  Go root probes with recursive scanning forbidden;
   compatibility suite checks the installed Go filter API.
 - **Manual smoke:** run Python tests in two projects and a Go module from an
   unrelated editor cwd; each process must resolve its own root-relative files.

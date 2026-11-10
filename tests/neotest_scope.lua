@@ -59,6 +59,32 @@ local function async(fn)
 end
 local function run()
   vim.cmd.cd(vim.fn.fnameescape(fixture))
+  -- Root probes run for all buffers. Never recursively scan unrelated repos,
+  -- even when they contain nested Go modules or have already returned no root.
+  local golang = require("util.neotest_golang").create()
+  local scandir = require("plenary.scandir")
+  local scan_dir = scandir.scan_dir
+  scandir.scan_dir = function()
+    error("Go root detection must not recursively scan directories")
+  end
+  local plain = write("non-go/.semgrepignore", { "src/generated" })
+  write("non-go/nested/module/go.mod", { "module example.com/nested" })
+  local go_test = write("go-module/pkg/example_test.go", { "package pkg" })
+  write("go-module/go.mod", { "module example.com/module" })
+  local workspace_test = write("go-workspace/pkg/example_test.go", { "package pkg" })
+  write("go-workspace/go.work", { "go 1.24" })
+  for _ = 1, 3 do
+    equal(golang.root(vim.fs.dirname(plain)), nil, "Non-Go directory ignores descendant modules")
+    equal(golang.root(plain), nil, "Ignore file root probe stays upward-only")
+  end
+  equal(golang.root(go_test), fixture .. "/go-module", "Go test file finds owning module")
+  equal(golang.root(vim.fs.dirname(go_test)), fixture .. "/go-module", "Go package finds owning module")
+  equal(golang.root(workspace_test), fixture .. "/go-workspace", "Go workspace marker is supported")
+  equal(golang.root(vim.fs.dirname(plain)), nil, "Go project does not leak its cached root to other projects")
+  equal(golang.root(go_test), fixture .. "/go-module", "Switching Go projects retains correct roots")
+  write("non-go/go.mod", { "module example.com/new" })
+  equal(golang.root(plain), fixture .. "/non-go", "New module marker is detected without restarting")
+  scandir.scan_dir = scan_dir
   buffer(path_a)
   util.pin_explorer_cwd(fixture, 5000)
   local events = {}
