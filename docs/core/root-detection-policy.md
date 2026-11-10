@@ -104,11 +104,15 @@ current manual behavior does not require merging the two detection policies.
 
 ## Statusline Root Cost
 
-The statusline resolves `get_root_basename()` without a cache.
-This keeps filename, cwd, workspace, and marker changes visible on the next
-resolution without cache invalidation rules.
+Navigation and `get_root_basename()` resolve roots without a cache.
+The statusline uses `util.statusline_root.get()` to cache only its label for up
+to 1 second, avoiding filesystem traversal on repeated redraws. Its single entry
+checks the buffer, filename, and window/tab/global cwd on every call. Writes,
+renames, cwd changes, LSP attach/detach, and focus invalidate it immediately.
+External marker and workspace-folder changes appear on the first refresh after
+expiry. There is no background timer or cache of navigation results.
 
-Run `make check-config` for root-policy fixtures.
+Run `make check-config` for root-policy and display-cache fixtures.
 
 ## When To Reuse Shared Root Logic
 

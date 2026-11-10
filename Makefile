@@ -22,6 +22,7 @@ check-config: check-compatibility
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/neotest_summary.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/python_venv_picker.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/root_policy.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/responsiveness.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lsp_rename.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_scrub.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_workspace.lua

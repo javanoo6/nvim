@@ -162,7 +162,7 @@ return {
             },
             {
               function()
-                return require("util").get_root_basename()
+                return require("util.statusline_root").get()
               end,
               icon = " ",
               color = { fg = "#6272a4" },

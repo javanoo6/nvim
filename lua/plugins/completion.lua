@@ -82,18 +82,7 @@ return {
           name = "buffer",
           keyword_length = keyword_length or 4,
           option = {
-            get_bufnrs = function()
-              local bufs = {}
-              for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-                if vim.api.nvim_buf_is_loaded(bufnr) then
-                  local byte_size = vim.api.nvim_buf_get_offset(bufnr, vim.api.nvim_buf_line_count(bufnr))
-                  if byte_size <= 512 * 1024 then
-                    bufs[#bufs + 1] = bufnr
-                  end
-                end
-              end
-              return bufs
-            end,
+            get_bufnrs = require("util.completion_buffers").get,
           },
         }
       end
@@ -249,7 +238,7 @@ return {
       -- Command line completion uses nvim-cmp's preset cmdline mappings.
       cmp.setup.cmdline({ "/", "?" }, {
         mapping = cmdline_mapping,
-        sources = { { name = "buffer" } },
+        sources = { buffer_source(1) },
       })
 
       cmp.setup.cmdline(":", {

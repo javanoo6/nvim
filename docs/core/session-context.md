@@ -237,8 +237,12 @@ Update this file when:
   changes instead.
   Its explicit detection keeps upstream LSP-first ordering and stock markers;
   it does not use `util.root_patterns`. The shared statusline/navigation helper
-  remains marker-first and honors explicit cwd narrowing. It resolves roots
-  without a cache; the policy is in `docs/core/root-detection-policy.md`.
+  remains marker-first and honors explicit cwd narrowing. Navigation resolves
+  roots without a cache. The statusline alone uses `util.statusline_root`, a
+  single-entry 1-second label cache keyed by buffer/name and all cwd scopes.
+  Writes, renames, cwd changes, LSP attach/detach, and focus invalidate it;
+  external marker/workspace changes appear after expiry on the next refresh.
+  The policy is in `docs/core/root-detection-policy.md`.
 - `util.frequent_roots` now manages manual directories only (`<leader>hm`).
   Inactive project tracking/picking and unused exports were removed. Legacy
   `pinned` entries still load as manual dirs; project/history and unknown JSON
@@ -413,7 +417,11 @@ Update this file when:
   opened Java buffer.
 - Completion source ordering is filetype-aware: Markdown/text/gitcommit and
   shell/YAML prefer path-aware sources before buffer words, Python keeps LSP and
-  signature help first, and buffer completion ignores buffers above 512 KiB.
+  signature help first. `util.completion_buffers` restricts buffer-word indexing
+  to the current buffer and visible splits in the current tab, current first,
+  deduplicated, excluding special buffers. It caps each buffer at 512 KiB and
+  the total at 1 MiB. Hidden session buffers are no longer completion sources.
+  Search-line completion uses the same bounds with a 1-character threshold.
 - `cmp-buffer` is patched at runtime in
   [lua/plugins/completion.lua](/home/konkov/.config/nvim/lua/plugins/completion.lua:38)
   so its async/on-lines indexer clamps requested line ranges to the live buffer

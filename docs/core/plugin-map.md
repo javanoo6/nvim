@@ -123,7 +123,9 @@ Filetype source policy:
 - Markdown/text/gitcommit: path + snippets first, then buffer words.
 - Shell/YAML: LSP + path + snippets first, then buffer words.
 - Python: LSP + signature help + snippets + path first, then buffer words.
-- `cmp-buffer` ignores buffers larger than 512 KiB and starts at 4 characters.
+- `cmp-buffer` indexes only the current buffer and visible splits in the current
+  tab, excluding special buffers, with limits of 512 KiB per buffer and 1 MiB
+  total. Insert completion starts at 4 characters; search completion starts at 1.
 
 **Completion keymaps:**
 
