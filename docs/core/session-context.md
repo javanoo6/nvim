@@ -30,6 +30,14 @@ Update this file when:
 
 ## Input Model
 
+- Standard Russian ЙЦУКЕН keys work as their US QWERTY equivalents for
+  Normal/Visual commands and mappings through `langmap`, including shifted
+  letters and punctuation. `Space й й` executes `<leader>qq`; `р/о/л/д`
+  preserve `h/j/k/l` movement. Inserted text and search/command-line text stay
+  Russian. `langremap` is off so mapping output is not translated again.
+  `util.russian_layout` also translates which-key's `state.getchar()` result,
+  since its popup input loop bypasses native `langmap`.
+
 - ToggleTerm runs Zsh explicitly, independent of Neovim's default shell.
 
 - Direction model follows standard Vim movement:

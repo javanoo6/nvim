@@ -82,6 +82,21 @@ local function run()
 
   -- Actual which-key internals: seed, suspend/reattach, and Diffview refresh.
   vim.g.mapleader = " "
+  require("util.russian_layout").setup()
+  local russian_quit = 0
+  vim.keymap.set("n", "<leader>qq", function()
+    russian_quit = russian_quit + 1
+  end)
+  buffer({ "one", "two", "three" })
+  vim.api.nvim_feedkeys("о", "xt", false)
+  equal(vim.fn.line("."), 2, "Russian j moves down")
+  vim.api.nvim_feedkeys("л", "xt", false)
+  equal(vim.fn.line("."), 1, "Russian k moves up")
+  vim.api.nvim_feedkeys(vim.keycode("шПривет<Esc>"), "xt", false)
+  equal(vim.fn.getline(1), "Приветone", "Russian insert text stays Russian")
+  vim.api.nvim_feedkeys(vim.keycode("/Привет<CR>"), "xt", false)
+  equal(vim.fn.getreg("/"), "Привет", "Russian search text stays Russian")
+  vim.api.nvim_set_current_buf(b)
   vim.o.timeoutlen = 1
   vim.keymap.set("n", " ", "<Nop>")
   vim.keymap.set("n", "<leader>zz", function() end, { desc = "fixture action" })
@@ -93,6 +108,15 @@ local function run()
   callable(wkbuf.clear, "which-key.buf.clear")
   local spec = require("plugins.ui")[2]
   spec.config(nil, spec.opts)
+  local state = require("which-key.state")
+  local translated_getchar = state.getchar
+  require("util.russian_layout").setup_which_key()
+  equal(state.getchar, translated_getchar, "Russian which-key wrapper installs once")
+  for _, pair in ipairs({ { "й", "q" }, { "Й", "Q" }, { "ж", ";" }, { "Ю", ">" }, { "q", "q" }, { " ", " " } }) do
+    vim.api.nvim_feedkeys(pair[1], "t", false)
+    local ok, char = state.getchar()
+    equal({ ok, char }, { true, pair[2] }, "which-key translates " .. pair[1])
+  end
   nio.sleep(100)
   local mode = wkbuf.get({ buf = b, mode = "n" })
   callable(mode.buf.valid, "which-key mode.buf.valid")
@@ -107,6 +131,8 @@ local function run()
   vim.api.nvim_exec_autocmds("User", { pattern = "DiffviewViewClosed" })
   nio.sleep(100)
   equal(vim.fn.maparg(" ", "n", false, true).desc:find("which-key-trigger", 1, true) ~= nil, true, "Diffview close restores trigger")
+  vim.api.nvim_feedkeys(" йй", "xt", false)
+  equal(russian_quit, 1, "Russian leader sequence through which-key")
 
   -- Neotest private client layout used by nearest/file, failed and sequential.
   local core_client = require("neotest.client")({})
