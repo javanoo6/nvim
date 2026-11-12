@@ -896,31 +896,42 @@ section. Programs configured with an external terminal still use that terminal.
 
 ## Testing (Neotest)
 
-| Key          | Action                      |
-|--------------|-----------------------------|
-| `<leader>tt` | Run file                    |
-| `<leader>tT` | Run all test files          |
-| `<leader>tr` | Run nearest test            |
-| `<leader>td` | Debug nearest test          |
-| `<leader>tp` | Run package                 |
-| `<leader>tP` | Debug package               |
-| `<leader>tq` | Run file tests sequentially |
-| `<leader>tl` | Run last                    |
-| `<leader>tL` | Debug last                  |
-| `<leader>tf` | Debug file                  |
-| `<leader>tD` | Debug all test files        |
-| `<leader>ta` | Attach to running test      |
-| `<leader>tF` | Run failed tests            |
-| `<leader>ts` | Toggle summary              |
-| `<leader>to` | Show output                 |
-| `<leader>tO` | Toggle output panel         |
-| `<leader>tc` | Clear output panel          |
-| `<leader>tS` | Stop (interactive)          |
-| `<leader>tw` | Toggle watch                |
+| Key          | Action                                            |
+|--------------|---------------------------------------------------|
+| `<leader>tt` | Run file                                          |
+| `<leader>tT` | Run all test files                                |
+| `<leader>tr` | Run nearest test                                  |
+| `<leader>td` | Debug nearest test                                |
+| `<leader>tp` | Run package                                       |
+| `<leader>tP` | Debug package                                     |
+| `<leader>tq` | Run file tests sequentially                       |
+| `<leader>tl` | Run last                                          |
+| `<leader>tu` | Repeat nearest until failure                      |
+| `<leader>tn` | Repeat nearest up to N times, stopping on failure |
+| `<leader>tL` | Debug last                                        |
+| `<leader>tf` | Debug file                                        |
+| `<leader>tD` | Debug all test files                              |
+| `<leader>ta` | Attach to running test                            |
+| `<leader>tF` | Run failed tests                                  |
+| `<leader>ts` | Toggle summary                                    |
+| `<leader>to` | Show output                                       |
+| `<leader>tO` | Toggle output panel                               |
+| `<leader>tc` | Clear output panel                                |
+| `<leader>tS` | Stop (interactive)                                |
+| `<leader>tw` | Toggle watch                                      |
 
 Debug-test mappings close the summary and never auto-open it. Use `<leader>ts`
 to open it manually. Regular runs honor the persisted `test_summary_on_run`
 preference. `<leader>tl` reruns normally even if the last run was a debug run.
+
+`<leader>tu` repeats the nearest test using the same discovery and cursor target
+as `<leader>tr`. `<leader>tn` prompts for a maximum run count for that nearest
+test; the file and cursor are captured before the prompt opens. Both stop on
+failure and run sequentially with the integrated strategy, including after a
+debug run. `<leader>tS` cancels the repeat loop and stops its current process;
+otherwise it opens the usual interactive stop picker. Missing results, runner
+errors, and all-skipped attempts also stop the loop. The final results and output
+remain available through the usual test mappings.
 
 ### Java-specific
 

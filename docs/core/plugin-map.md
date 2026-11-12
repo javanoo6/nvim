@@ -429,7 +429,8 @@ neotest.lua
 ```
 
 **Neotest keymaps** (`<leader>t*`): tt run file, tT run all, tr nearest, td debug nearest, tp run package, tP debug package, tq run file tests sequentially,
-tl last, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, ts summary, to output, tO output panel, tc clear output panel, tS stop
+tl last, tu repeat nearest until failure, tn repeat nearest up to N times or failure, tL debug last, tf debug file, tD debug all, ta attach, tF run failed, ts
+summary, to output, tO output panel, tc clear output panel, tS stop
 (interactive), tw watch
 
 ---

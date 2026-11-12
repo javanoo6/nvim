@@ -303,8 +303,8 @@ local function neotest_client()
   end
 end
 
-local function ensure_current_file_discovered(path)
-  local client = neotest_client()
+local function ensure_current_file_discovered(path, client)
+  client = client or neotest_client()
   if not client then
     return
   end
@@ -321,6 +321,21 @@ local function ensure_current_file_discovered(path)
   client:_update_positions(path, { adapter = adapter_id })
 end
 
+-- Async resolver shared by ordinary and repeated nearest runs.
+function M.resolve_nearest(ctx, args, client)
+  local path = ctx and ctx.path or vim.api.nvim_buf_get_name(0)
+  local row = ctx and ctx.cursor and (ctx.cursor[1] - 1) or (vim.fn.line(".") - 1)
+  client = client or neotest_client()
+  if not client then
+    return
+  end
+  if path ~= "" then
+    path = normalize(path)
+    ensure_current_file_discovered(path, client)
+  end
+  return client:get_nearest(path, row, args or {})
+end
+
 function M.run_nearest(ctx, args)
   local path = ctx and ctx.path or vim.api.nvim_buf_get_name(0)
   if path == "" then
@@ -328,17 +343,8 @@ function M.run_nearest(ctx, args)
     return
   end
 
-  path = normalize(path)
-  local row = ctx and ctx.cursor and (ctx.cursor[1] - 1) or (vim.fn.line(".") - 1)
-
   require("nio").run(function()
-    ensure_current_file_discovered(path)
-
-    local client = neotest_client()
-    local tree, adapter_id = nil, nil
-    if client then
-      tree, adapter_id = client:get_nearest(path, row, args or {})
-    end
+    local tree, adapter_id = M.resolve_nearest(ctx, args)
 
     if not tree then
       vim.notify("No tests found", vim.log.levels.WARN, { title = "neotest" })

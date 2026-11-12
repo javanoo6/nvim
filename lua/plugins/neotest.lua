@@ -107,6 +107,20 @@ return {
         desc = "Run Last",
       },
       {
+        "<leader>tu",
+        scope.with_scope(function(ctx)
+          require("neotest").repeat_run.run(nil, ctx)
+        end),
+        desc = "Repeat Nearest Until Failure",
+      },
+      {
+        "<leader>tn",
+        scope.with_scope(function(ctx)
+          require("neotest").repeat_run.prompt(ctx)
+        end),
+        desc = "Repeat Nearest N Times or Until Failure",
+      },
+      {
         "<leader>tF",
         function()
           require("util.neotest_failed").run_failed()
@@ -180,7 +194,9 @@ return {
       {
         "<leader>tS",
         function()
-          require("neotest").run.stop({ interactive = true })
+          if not require("neotest").repeat_run.stop() then
+            require("neotest").run.stop({ interactive = true })
+          end
         end,
         desc = "Stop (Interactive)",
       },
@@ -197,6 +213,9 @@ return {
       require("util.neotest_summary").install()
 
       require("neotest").setup({
+        consumers = {
+          repeat_run = require("util.neotest_repeat"),
+        },
         discovery = {
           filter_dir = scope.scoped_discovery_filter,
         },

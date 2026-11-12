@@ -791,6 +791,15 @@ Update this file when:
   to collect discovered `test` nodes under the current file and run them one by
   one. It is generic Neotest plumbing, but Java is the main supported use case;
   adapters must support running individual test-node IDs for it to behave well.
+- `<leader>tu` repeats the nearest test until failure; `<leader>tn` prompts for
+  a maximum number of attempts for the nearest test, stopping early on failure.
+  Both share `<leader>tr` discovery through `util.neotest_scope.resolve_nearest`
+  and capture the file/cursor before opening any UI. The custom Neotest
+  consumer `util.neotest_repeat` receives the client through consumer setup,
+  waits for each run, and checks its results before starting another. Repeats
+  force integrated execution and disable concurrency; missing results, runner
+  errors, and all-skipped runs stop the loop. `<leader>tS` cancels an active loop
+  and stops its target, otherwise retaining the interactive stop picker.
 
 ## LSP / UI Decisions
 
