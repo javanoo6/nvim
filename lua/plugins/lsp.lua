@@ -269,6 +269,7 @@ return {
 
       require("mason-lspconfig").setup({
         ensure_installed = {
+          "astro",
           "lua_ls",
           "bashls",
           "helm_ls",

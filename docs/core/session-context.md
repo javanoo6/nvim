@@ -142,6 +142,10 @@ Update this file when:
 
 ## Core Editing Deviations
 
+- Astro uses Prettier with `prettier-plugin-astro`, preferring the nearest
+  project installation and falling back to `stdpath("data")/astro-formatter`.
+  Install the fallback with `npm install --prefix ~/.local/share/nvim/astro-formatter prettier-plugin-astro`.
+  CSS, JavaScript, TypeScript, JSX, TSX, and MJS use Prettier; project config applies.
 - Agents format explicit code/Markdown paths with `./format.sh FILE...`
   (`--help` for usage). Paths are relative to the caller, so the absolute script
   path also works from other projects. It starts a formatter-only Neovim,

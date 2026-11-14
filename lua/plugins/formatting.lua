@@ -22,6 +22,8 @@ end
 
 local standalone_filetypes = require("util.format").standalone_filetypes
 local formatters_by_ft = {
+  astro = { "prettier_astro" },
+  css = { "prettier" },
   lua = { "stylua" },
   go = { "gofumpt", "goimports-reviser", "golines" },
   ruby = { "rubocop_rvm" },
@@ -63,7 +65,7 @@ end
 
 local function format_on_save_timeout(bufnr)
   local ft = vim.bo[bufnr].filetype
-  if standalone_filetypes[ft] or ft == "ruby" then
+  if standalone_filetypes[ft] or ft == "ruby" or ft == "astro" then
     return 10000
   end
 
@@ -101,6 +103,16 @@ return {
     },
     opts = {
       formatters = {
+        prettier_astro = {
+          inherit = "prettier",
+          prepend_args = function(_, ctx)
+            local root = vim.fs.root(ctx.dirname, function(name, path)
+              return name == "node_modules" and vim.uv.fs_stat(path .. "/node_modules/prettier-plugin-astro/dist/index.js") ~= nil
+            end)
+            local base = root and (root .. "/node_modules") or (vim.fn.stdpath("data") .. "/astro-formatter/node_modules")
+            return { "--plugin", base .. "/prettier-plugin-astro/dist/index.js" }
+          end,
+        },
         -- Our standalone formatter is more capable than the pinned LSP formatter
         -- for Java cleanup and the demonstrated non-Java formatting routes.
         -- Capability                 | Standalone jar       | LSP 263.6379.0

@@ -10,6 +10,7 @@ return {
     config = function()
       local treesitter = require("nvim-treesitter")
       local languages = {
+        "astro",
         "bash",
         "c",
         "css",
