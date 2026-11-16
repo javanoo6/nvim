@@ -848,6 +848,9 @@ Update this file when:
   This is an observation decision, not a claim that the original error is fixed.
 - `<C-CR>` and `<leader>Hy` open Yanky's Telescope `yank_history` picker through
   [lua/util/yank_history.lua](/home/konkov/.config/nvim/lua/util/yank_history.lua:1).
+  In the picker's Normal mode, `y` copies the selected entry to the default
+  register and closes without pasting, matching upstream `r` / Insert `<C-r>`.
+  Insert-mode `y` remains search input.
 - `<C-A-CR>` opens Yanky's built-in ring-history picker. Dressing has a
   prompt-specific override for `Ring history>` so this picker uses a larger
   no-preview horizontal Telescope window (`80%` width, `70%` height) without

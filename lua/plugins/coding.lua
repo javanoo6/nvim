@@ -67,6 +67,18 @@ return {
     event = "VeryLazy",
     opts = {
       ring = { history_length = 50 },
+      picker = {
+        telescope = {
+          mappings = {
+            n = {
+              y = function(prompt_bufnr)
+                local register = require("yanky.utils").get_default_register()
+                require("yanky.telescope.mapping").set_register(register)(prompt_bufnr)
+              end,
+            },
+          },
+        },
+      },
     },
     keys = {
       { "p", "<Plug>(YankyPutAfter)", mode = "n", desc = "Put after" },

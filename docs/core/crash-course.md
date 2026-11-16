@@ -1279,6 +1279,9 @@ git commit                 →  finalize merge
 
 **Tip:** paste with `p`, then keep pressing `<C-p>` to replace the pasted text with earlier yanks.
 
+Inside the Telescope picker, press `Esc` then `y` to copy the selected entry
+and close without pasting. Insert-mode `<C-r>` and Normal-mode `r` do the same.
+
 ---
 
 ## Harpoon (Quick File Switching)
