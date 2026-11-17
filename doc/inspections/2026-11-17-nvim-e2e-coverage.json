@@ -1,0 +1,438 @@
+{
+  "date": "2026-11-17",
+  "environment": {
+    "neovim": "0.12.2",
+    "nvim_mcp": "1.1.1",
+    "orchestration": "Sol orchestrator with Terra agents",
+    "isolation": "Dedicated stdio MCP servers, disposable PTY editors, private state and scratch projects; installed runtime directories shared.",
+    "limits": "MCP editor-state checks use injected key events; physical keyboard delivery and pixel screenshots were not tested."
+  },
+  "status_definitions": {
+    "functional": "Exercised workflow worked, without implying complete feature coverage.",
+    "partial": "Some workflow observed; stated limits remain.",
+    "dependency": "A configured dependency of exercised consumers; not independently verified.",
+    "blocked": "A required prerequisite prevented the workflow.",
+    "anomaly": "Observed mismatch or failure with stated scope.",
+    "unverified": "No individual functional behavior was established."
+  },
+  "inventory": {
+    "configured_count": 96,
+    "basis": "lazy-lock.json reconciled with runtime configured inventory",
+    "excluded_lock_entry": {
+      "name": "spring-boot.nvim",
+      "reason": "Disabled/stale lock entry, not in configured runtime inventory."
+    }
+  },
+  "core_input_anomaly": "Batched English viw selected alpha; Russian physical equivalent мшц ended Normal at column 0 in separate fresh instances. Physical keyboard unverified.",
+  "evidence": [
+    "tests/e2e/run.py",
+    "tests/e2e/scenarios.py",
+    "/tmp/nvim-e2e-audit/editing-findings.md",
+    "/tmp/nvim-e2e-audit/editing-extra-findings.md",
+    "/tmp/nvim-e2e-audit/languages-findings.md",
+    "/tmp/nvim-e2e-audit/navigation-findings.md",
+    "/tmp/nvim-e2e-audit/misc-independent-findings.md",
+    "/tmp/nvim-e2e-audit/misc-output.log",
+    "/tmp/nvim-e2e-audit/visual-repro.txt",
+    "/tmp/nvim-e2e-audit/fidget-check.log",
+    "/tmp/nvim-e2e-audit/fidget-signature.log",
+    "/tmp/nvim-e2e-2026-11-17-final/results.json",
+    "/tmp/nvim-go-dap-investigate2.log",
+    "/tmp/nvim-lint-investigate.log",
+    "/tmp/nvim-e2e-audit/fileops-findings.md",
+    "/tmp/nvim-e2e-audit/leetcode-local.log"
+  ],
+  "plugins": {
+    "actions-preview.nvim": {
+      "status": "partial",
+      "observation": "Code action picker showed Ruff edit preview and pylsp refactors; no action applied."
+    },
+    "aerial.nvim": {
+      "status": "partial",
+      "observation": "Python outline displayed fixture symbols; navigation and other backends untested."
+    },
+    "auto-save.nvim": {
+      "status": "partial",
+      "observation": "Disposable file edit was written automatically in saved core scenario; other triggers and exclusions untested."
+    },
+    "auto-session": {
+      "status": "partial",
+      "observation": "Disposable session save and restore exercised in English and Russian; wider state and restart behavior not exhaustively checked."
+    },
+    "better-escape.nvim": {
+      "status": "partial",
+      "observation": "Insert jk exited Insert mode without inserting the chord; other modes not checked."
+    },
+    "bufferline.nvim": {
+      "status": "partial",
+      "observation": "Saved core scenario checked H and Russian Д buffer navigation; visual rendering and other controls untested."
+    },
+    "cmp-buffer": {
+      "status": "partial",
+      "observation": "Manual completion displayed and accepted a buffer word; indexing boundaries untested."
+    },
+    "cmp-cmdline": {
+      "status": "partial",
+      "observation": "Command-line completion displayed entries from cmdline source; other commands untested."
+    },
+    "cmp-nvim-lsp": {
+      "status": "partial",
+      "observation": "Pyright completion menu showed entries from nvim_lsp source for a Python call; selection and other servers untested."
+    },
+    "cmp-nvim-lsp-signature-help": {
+      "status": "partial",
+      "observation": "Manual completion in Pyright Python call showed first: int from nvim_lsp_signature_help source; accepting item and other servers untested."
+    },
+    "cmp-path": {
+      "status": "partial",
+      "observation": "Completion offered existing foobarfile.txt; accepting a path was not checked."
+    },
+    "cmp_luasnip": {
+      "status": "dependency",
+      "observation": "LuaSnip API expansion and completion menu exercised consumers; snippet-source acceptance was not isolated."
+    },
+    "Comment.nvim": {
+      "status": "anomaly",
+      "observation": "English gcc comments a Lua line; equivalent batched Russian псс leaves it unchanged. Physical input unverified."
+    },
+    "conform.nvim": {
+      "status": "partial",
+      "observation": "Python, Go and Java fixtures formatted with leader cf; other filetypes and failure handling untested."
+    },
+    "diffview.nvim": {
+      "status": "partial",
+      "observation": "Opened and closed repo diff and committed-marker merge view; history showed fixture commits and selected revision; full merge untested."
+    },
+    "dressing.nvim": {
+      "status": "partial",
+      "observation": "DressingInput prompt accepted audit.lua and created named scratch in isolated state; select UI and other input paths untested."
+    },
+    "evergarden": {
+      "status": "partial",
+      "observation": "Configured colorscheme command completed; visual appearance and persisted selection not checked."
+    },
+    "fidget.nvim": {
+      "status": "partial",
+      "observation": "Synthetic non-LSP progress handle showed starting 0%, halfway 50%, then 100% and checkmark in Fidget virtual-text extmarks; real LSP progress and pixel rendering untested."
+    },
+    "FixCursorHold.nvim": {
+      "status": "dependency",
+      "observation": "Neotest test runs exercised its configured consumer; no independent CursorHold behavior checked."
+    },
+    "flash.nvim": {
+      "status": "partial",
+      "observation": "Jump search for unique target moved cursor to second line; other modes and label selection untested."
+    },
+    "friendly-snippets": {
+      "status": "dependency",
+      "observation": "LuaSnip consumer expanded repo-defined main snippet; bundled snippet expansion not individually checked."
+    },
+    "git-conflict.nvim": {
+      "status": "partial",
+      "observation": "Scratch conflict marker navigation and ours/theirs/both/none produced expected text; actual Git merge untested."
+    },
+    "gitsigns.nvim": {
+      "status": "partial",
+      "observation": "Scratch hunk preview, stage and undo changed index as expected; other hunk operations untested."
+    },
+    "glance.nvim": {
+      "status": "partial",
+      "observation": "References displayed and j/k moved selection and preview; other location kinds and Russian input untested."
+    },
+    "gopher.nvim": {
+      "status": "blocked",
+      "observation": "JSON struct tag attempt left fixture unchanged because gomodifytags was unavailable; GoInstallDeps is prerequisite."
+    },
+    "grug-far.nvim": {
+      "status": "partial",
+      "observation": "Literal search and replacement changed only matching scratch file text; regex replacement untested."
+    },
+    "harpoon": {
+      "status": "partial",
+      "observation": "Added current file and jumped back using slot 1; menu listed it, Russian add untested."
+    },
+    "indent-blankline.nvim": {
+      "status": "partial",
+      "observation": "Indent whitespace extmarks observed in Lua fixture; pixel appearance untested."
+    },
+    "intellij-lsp.nvim": {
+      "status": "partial",
+      "observation": "Attached disposable Maven workspace and completed indexing; Java formatting and tests exercised; Java DAP untested."
+    },
+    "jb.nvim": {
+      "status": "partial",
+      "observation": "Configured colorscheme command completed; visual appearance and persistence untested."
+    },
+    "kanagawa.nvim": {
+      "status": "partial",
+      "observation": "Configured variant commands completed with shared kanagawa colors_name; visual appearance untested."
+    },
+    "lazy.nvim": {
+      "status": "partial",
+      "observation": "Isolated startup discovered configured plugin inventory with installs disabled; installation/update behavior untested."
+    },
+    "lazygit.nvim": {
+      "status": "partial",
+      "observation": "Opened disposable repo terminal and q returned to file; staging and Russian TUI input untested."
+    },
+    "leetcode.nvim": {
+      "status": "partial",
+      "observation": "Opened unauthenticated plugin Sign in menu with HOME redirected to a disposable directory and no cookie; authenticated actions, network and submission untested."
+    },
+    "lspkind.nvim": {
+      "status": "dependency",
+      "observation": "Configured as completion formatter; individual icon rendering was not assessed."
+    },
+    "lualine.nvim": {
+      "status": "partial",
+      "observation": "Statusline state exposed mode, file and position; pixel rendering untested."
+    },
+    "LuaSnip": {
+      "status": "partial",
+      "observation": "Python main snippet expanded and placeholder jumped through LuaSnip API; completion mapping not established."
+    },
+    "marks.nvim": {
+      "status": "anomaly",
+      "observation": "Fresh independent editors: m] and m[ moved between marks; equivalent Russian ьъ and ьх did not. Physical input unverified."
+    },
+    "mason-lspconfig.nvim": {
+      "status": "dependency",
+      "observation": "Configured LSP bridge consumed during language-server attachment; automatic installation and bridge operations not isolated."
+    },
+    "mason-tool-installer.nvim": {
+      "status": "unverified",
+      "observation": "Startup installation was deliberately disabled for isolated audit; tool installation not exercised."
+    },
+    "mason.nvim": {
+      "status": "partial",
+      "observation": "Mason package-manager UI opened with filetype mason and package list; installations and updates intentionally not exercised."
+    },
+    "md-render.nvim": {
+      "status": "partial",
+      "observation": "Saved core scenario checked Markdown render toggle and heading navigation; pixel and Mermaid graphics untested."
+    },
+    "mini.ai": {
+      "status": "partial",
+      "observation": "vi{ selected Lua table interior; other objects and next/previous variants untested."
+    },
+    "mini.surround": {
+      "status": "anomaly",
+      "observation": "English gsaiw quote surrounded hello; equivalent Russian sequence surrounded only h in fresh editor. Physical input unverified."
+    },
+    "neo-tree.nvim": {
+      "status": "partial",
+      "observation": "Opened explorer, previewed and opened file, created and renamed file, and selected a target window; other commands untested."
+    },
+    "neotest": {
+      "status": "partial",
+      "observation": "Python, Go and Java fixtures each reported one pass and one intentional failure; summary/debug lifecycle not fully checked."
+    },
+    "neotest-golang": {
+      "status": "partial",
+      "observation": "Russian leader tt ran Go fixture with one pass and one intentional failure; debugger untested."
+    },
+    "neotest-java": {
+      "status": "partial",
+      "observation": "Maven/JUnit fixture ran one pass and one intentional failure with existing JUnit jar; Java debugger untested."
+    },
+    "neotest-python": {
+      "status": "partial",
+      "observation": "Pytest fixture ran one pass and one intentional failure; debug session started but stopped frame not inspected."
+    },
+    "noice.nvim": {
+      "status": "partial",
+      "observation": "Command-line/message UI and notification buffers were observed; layout and full message routing untested."
+    },
+    "nordic.nvim": {
+      "status": "partial",
+      "observation": "Configured colorscheme command completed; visual appearance and persistence untested."
+    },
+    "nui.nvim": {
+      "status": "dependency",
+      "observation": "Configured UI component dependency used by exercised interfaces; standalone behavior not separately tested."
+    },
+    "nvim-autopairs": {
+      "status": "partial",
+      "observation": "Inserting opening parenthesis produced a pair with cursor inside; completion integration untested."
+    },
+    "nvim-cmp": {
+      "status": "partial",
+      "observation": "Buffer completion shown and accepted; path, cmdline, Pyright LSP and signature sources displayed; LSP and snippet acceptance untested."
+    },
+    "nvim-dap": {
+      "status": "partial",
+      "observation": "Python debug session started; Go debug stopped at breakpoint with locals inspected and UI closed on exit; stepping and other adapters untested."
+    },
+    "nvim-dap-go": {
+      "status": "partial",
+      "observation": "Go debug stopped at calc_test.go line 8; frame locals included number 41 and result 42; other adapters and controls untested."
+    },
+    "nvim-dap-python": {
+      "status": "partial",
+      "observation": "Python debug session started from test; stopped frame, locals and stepping not verified."
+    },
+    "nvim-dap-ui": {
+      "status": "partial",
+      "observation": "Go DAP session displayed scopes, stacks and watches and closed the UI on session end; other lifecycle paths untested."
+    },
+    "nvim-dap-virtual-text": {
+      "status": "partial",
+      "observation": "Stopped Go debug frame produced NvimDapVirtualText extmarks with values 41 and 42; pixel rendering untested."
+    },
+    "nvim-lint": {
+      "status": "blocked",
+      "observation": "YAML lint scenario could not obtain lint namespace diagnostics because installed yamllint --version exits 1 with ModuleNotFoundError: no module named yamllint; YAML LSP separately emitted diagnostics."
+    },
+    "nvim-lsp-file-operations": {
+      "status": "blocked",
+      "observation": "Neo-tree renamed disposable Go directory, but attached gopls did not support workspace/willRenameFiles, so LSP reference/import updates could not be verified; basic filesystem rename succeeded."
+    },
+    "nvim-lspconfig": {
+      "status": "partial",
+      "observation": "Python and Go clients attached and emitted expected fixture diagnostics; other servers untested."
+    },
+    "nvim-nio": {
+      "status": "dependency",
+      "observation": "Neotest and DAP consumers ran; asynchronous I/O dependency not tested separately."
+    },
+    "nvim-notify": {
+      "status": "partial",
+      "observation": "Notifications created editor buffers; rendering and lifecycle untested."
+    },
+    "nvim-spider": {
+      "status": "partial",
+      "observation": "w advanced within fooBarBaz and Russian и moved backward; other motions untested."
+    },
+    "nvim-treehopper": {
+      "status": "partial",
+      "observation": "Visual m displayed node labels; selecting a chose a Lua node; Russian input not tested."
+    },
+    "nvim-treesitter": {
+      "status": "partial",
+      "observation": "Lua incremental selection and parser-backed extmarks observed; other parsers and indentation untested."
+    },
+    "nvim-treesitter-textobjects": {
+      "status": "partial",
+      "observation": "vif selected Lua function body; remaining text objects and layout parity untested."
+    },
+    "nvim-ts-context-commentstring": {
+      "status": "dependency",
+      "observation": "Comment consumer operated on Lua; embedded-language context handling not exercised."
+    },
+    "nvim-web-devicons": {
+      "status": "dependency",
+      "observation": "Configured icon consumer used by explorers and statusline; individual icon rendering not checked."
+    },
+    "nvim-window-picker": {
+      "status": "partial",
+      "observation": "Neo-tree s and picker F opened selected file in requested existing window; other layouts untested."
+    },
+    "obsidian.nvim": {
+      "status": "partial",
+      "observation": "Disposable vault checkbox toggled in English and Russian and note link opened second file; warning re-entry check inconclusive after FileType E31, rendering unverified."
+    },
+    "oil.nvim": {
+      "status": "partial",
+      "observation": "Opened parent, toggled hidden files, and created scratch file through confirmation; other file operations untested."
+    },
+    "onenord.nvim": {
+      "status": "partial",
+      "observation": "Configured colorscheme command completed; visual appearance and persistence untested."
+    },
+    "oxocarbon.nvim": {
+      "status": "partial",
+      "observation": "Configured colorscheme command completed; visual appearance and persistence untested."
+    },
+    "persist-toggle.nvim": {
+      "status": "partial",
+      "observation": "Saved core scenario toggled wrap in both layouts and inspected persisted preference; full registry and restart behavior untested."
+    },
+    "plenary.nvim": {
+      "status": "dependency",
+      "observation": "Configured shared utility consumed by Telescope, Neotest and other exercised plugins; not tested independently."
+    },
+    "poimandres.nvim": {
+      "status": "partial",
+      "observation": "Configured colorscheme command completed; visual appearance and persistence untested."
+    },
+    "project.nvim": {
+      "status": "partial",
+      "observation": "ProjectRoot changed cwd to scratch Git root; picker selected root and opened Find Files; persistence untested."
+    },
+    "quicker.nvim": {
+      "status": "partial",
+      "observation": "Quickfix context expanded and collapsed with > and literal <; editing and writeback untested."
+    },
+    "rainbow-delimiters.nvim": {
+      "status": "partial",
+      "observation": "RainbowDelimiterRed extmarks observed for Lua delimiters; visual colors untested."
+    },
+    "scratch.nvim": {
+      "status": "partial",
+      "observation": "Scratch type picker and named scratch created Lua files in disposable state; Java project-local behavior untested."
+    },
+    "telescope-fzf-native.nvim": {
+      "status": "dependency",
+      "observation": "Fzf extension loaded in file picker that filtered and opened a file; native sorter behavior not separately isolated."
+    },
+    "telescope.nvim": {
+      "status": "partial",
+      "observation": "File finder opened matching file; literal and regex grep, selection and English/Russian Ctrl-j/k exercised."
+    },
+    "themery.nvim": {
+      "status": "partial",
+      "observation": "Theme picker opened and j plus Enter changed scheme in private state; restart persistence untested."
+    },
+    "tiny-inline-diagnostic.nvim": {
+      "status": "partial",
+      "observation": "Warning virtual text extmarks observed; display toggles and rendering untested."
+    },
+    "todo-comments.nvim": {
+      "status": "partial",
+      "observation": "English and Russian next-TODO motions moved to fixture entries; Trouble list opened and selected FIXME."
+    },
+    "toggleterm.nvim": {
+      "status": "partial",
+      "observation": "Saved core scenario opened and hid terminal in English and Russian; physical modified-key delivery untested."
+    },
+    "tokyonight.nvim": {
+      "status": "partial",
+      "observation": "Active tokyonight-night observed and theme picker selected storm; visual appearance and restart persistence untested."
+    },
+    "trouble.nvim": {
+      "status": "partial",
+      "observation": "Buffer/root diagnostics and TODO entries displayed; selecting TODO opened target; multi-project filtering untested."
+    },
+    "undotree": {
+      "status": "partial",
+      "observation": "English and Russian mapped actions opened undo tree in scratch instance; restoring older edits untested."
+    },
+    "vague.nvim": {
+      "status": "partial",
+      "observation": "Configured colorscheme command completed; visual appearance and persistence untested."
+    },
+    "venv-selector.nvim": {
+      "status": "partial",
+      "observation": "API activated disposable venv and set VIRTUAL_ENV; picker UI and project memory untested."
+    },
+    "vim-illuminate": {
+      "status": "partial",
+      "observation": "Read and write reference extmarks observed; style toggles and pixel appearance untested."
+    },
+    "which-key.nvim": {
+      "status": "partial",
+      "observation": "Leader popup displayed and Russian г opened UI group; modified-key loop and recovery untested."
+    },
+    "yanky.nvim": {
+      "status": "partial",
+      "observation": "Two yanks, paste, ring cycling and history picker checked; deletion and persistence untested."
+    }
+  },
+  "environment_anomalies": [
+    {
+      "name": "yamllint executable",
+      "observation": "Installed yamllint --version exits 1 with ModuleNotFoundError: no module named yamllint. YAML lint scenario was blocked; this does not establish an nvim-lint implementation defect.",
+      "evidence": "/tmp/nvim-lint-investigate.log"
+    }
+  ]
+}

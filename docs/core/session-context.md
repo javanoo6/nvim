@@ -496,6 +496,13 @@ Update this file when:
   The regression runner uses installed plugins/parsers without installing tools
   or launching LSPs. Selene uses the repo-local [vim.yml](/home/konkov/.config/nvim/vim.yml:1)
   standard library so the Neovim `vim` global is accepted.
+- Optional interactive regressions live in
+  [tests/e2e/README.md](/home/konkov/.config/nvim/tests/e2e/README.md:1).
+  The Python runner uses dedicated MCP servers and disposable PTY editors,
+  preserves evidence, and disables automatic plugin/tool installation. It is
+  separate from `make check`; language cases launch real servers and tests.
+  The `layout` suite preserves confirmed Russian-input anomalies as failing
+  parity assertions until those defects are resolved.
 - [docs/core/compatibility-patches.md](/home/konkov/.config/nvim/docs/core/compatibility-patches.md:1)
   records internal patches, verified plugin revisions, checks, removal criteria,
   and live workflow limits. `make check-compatibility` checks installed contracts

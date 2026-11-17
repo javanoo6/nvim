@@ -1,0 +1,133 @@
+{
+  "date": "2026-11-17",
+  "source_commit": "7b0348cb1494d03f898abd4e5ada1bbf32899f8b",
+  "neovim": "0.12.2",
+  "nvim_mcp": "1.1.1",
+  "method": "Final 22-case run plus targeted rerun of lint prerequisite and new Go debugging case; latest observation per unique case.",
+  "counts": {
+    "pass": 18,
+    "fail": 4,
+    "blocked": 1
+  },
+  "evidence_directories": [
+    "/tmp/nvim-e2e-2026-11-17-final",
+    "/tmp/nvim-e2e-2026-11-17-supplement"
+  ],
+  "results": [
+    {
+      "case": "smoke-startup",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "core-preferences",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "core-bufferline",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "core-lint",
+      "status": "blocked",
+      "detail": "Installed yamllint cannot run: Traceback (most recent call last):\n  File \"/tmp/nvim-e2e-2026-11-17-supplement/core-lint-pdjwfoeb/data/nvim/mason/bin/yamllint\", line 5, in <module>\n    from yamllint.cli import run\nModuleNotFoundError: No module named 'yamllint'\n"
+    },
+    {
+      "case": "core-mason",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "core-terminal",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "core-markdown",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "core-autosave",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "core-session",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "core-quickfix",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "layout-comment",
+      "status": "fail",
+      "detail": "Russian line comment parity: expected ['-- alpha']; observed ['alpha']"
+    },
+    {
+      "case": "layout-surround",
+      "status": "fail",
+      "detail": "Russian surround text object parity: expected ['\"hello\" world']; observed ['\"h\"ello world']"
+    },
+    {
+      "case": "layout-marks",
+      "status": "fail",
+      "detail": "Russian previous mark parity: expected 1; observed 3"
+    },
+    {
+      "case": "layout-visual-word",
+      "status": "fail",
+      "detail": "Russian Visual inner-word parity: expected {'mode': 'v', 'cursor': [1, 4]}; observed {'mode': 'n', 'cursor': [1, 0]}"
+    },
+    {
+      "case": "navigation-telescope",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "navigation-neotree",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "navigation-git",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "navigation-grug",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "languages-python_lsp_format",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "languages-python_tests",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "languages-go_lsp_format_tests",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "languages-java_lsp_tests",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "case": "languages-go_debug",
+      "status": "pass",
+      "detail": ""
+    }
+  ]
+}
