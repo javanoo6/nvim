@@ -906,6 +906,15 @@ Update this file when:
 - LazyGit is customized via both user config and repo-local
   [lazygit/config.yml](/home/konkov/.config/nvim/lazygit/config.yml:1).
 - LazyGit opens from `<leader>Gg` or the direct alternate shortcut `<A-g>`.
+- `util.lazygit_layout` adds buffer-local Russian ЙЦУКЕН command aliases
+  inside LazyGit's terminal, including uppercase letters and punctuation.
+  `о/л` move down/up and `й` quits. Ordinary terminals keep plain Russian input.
+  LazyGit's cursor-show/hide output selects text entry versus command input,
+  preserving Russian commit messages and search/filter text automatically.
+  This follows LazyGit 0.58's editable-view cursor behavior; recheck it after
+  upgrades. The helper wraps `vim.fn.jobstart` only for terminal argv launches
+  whose executable is `lazygit`, preserving the original stdout callback.
+  `b:lazygit_russian_text_input` exposes the detected state for inspection.
 - LazyGit uses an explicit dark selected-line background in the repo-local
   config so green diff text remains readable while staging hunks from the TUI.
 - LazyGit's `o` open-file action is overridden through `os.open` in the

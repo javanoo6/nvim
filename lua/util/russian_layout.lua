@@ -57,4 +57,12 @@ function M.setup_which_key()
   state._russian_layout = true
 end
 
+function M.setup_terminal(buf, translate)
+  for char, target in pairs(translations) do
+    vim.keymap.set("t", char, function()
+      return translate() and target or char
+    end, { buffer = buf, expr = true, replace_keycodes = false, desc = "which_key_ignore" })
+  end
+end
+
 return M
