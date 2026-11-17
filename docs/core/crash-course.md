@@ -1298,8 +1298,11 @@ git commit                 →  finalize merge
 
 **Tip:** paste with `p`, then keep pressing `<C-p>` to replace the pasted text with earlier yanks.
 
-Inside the Telescope picker, press `Esc` then `y` to copy the selected entry
-and close without pasting. Insert-mode `<C-r>` and Normal-mode `r` do the same.
+Inside the Telescope picker, `<C-x>` deletes the selected entry (or entries
+marked with `<Tab>`). Repeated deletions work without reopening the picker.
+`Esc` closes the picker. To enter Normal mode, press `<C-\><C-n>`; there,
+`d` deletes and `y` copies the selected entry and closes without pasting.
+Insert-mode `<C-r>` and Normal-mode `r` also copy without pasting.
 
 ---
 

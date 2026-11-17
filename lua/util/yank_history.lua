@@ -6,6 +6,22 @@ local function load_yanky()
   pcall(require("lazy").load, { plugins = { "yanky.nvim" } })
 end
 
+function M.delete_selection(prompt_bufnr)
+  local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+  picker:delete_selection(function(entry)
+    local index = entry.value.history_index
+    require("yanky.history").delete(index)
+
+    -- Yanky snapshots storage indexes when opening the picker. Every deletion
+    -- shifts the remaining indexes, including entries hidden by the search.
+    for _, remaining in ipairs(picker.finder.results) do
+      if remaining.value.history_index > index then
+        remaining.value.history_index = remaining.value.history_index - 1
+      end
+    end
+  end)
+end
+
 function M.open_history()
   load_yanky()
 

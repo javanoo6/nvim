@@ -870,6 +870,12 @@ Update this file when:
   In the picker's Normal mode, `y` copies the selected entry to the default
   register and closes without pasting, matching upstream `r` / Insert `<C-r>`.
   Insert-mode `y` remains search input.
+  Insert `<C-x>` and Normal `d` use the local deletion action, which updates
+  every remaining entry's storage index after each removal. This fixes upstream
+  Yanky's stale indexes during repeated or multi-selection deletion, including
+  entries hidden by a search. `Esc` closes the picker; use `<C-\><C-n>` to enter
+  Normal mode. The deletion action assumes history is not externally changed
+  while the picker is open.
 - `<C-A-CR>` opens Yanky's built-in ring-history picker. Dressing has a
   prompt-specific override for `Ring history>` so this picker uses a larger
   no-preview horizontal Telescope window (`80%` width, `70%` height) without

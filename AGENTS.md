@@ -34,6 +34,12 @@ Start every session here:
 
 ## Interactive Plugin Checks
 
+- Before recommending a Neovim mapping, command, or workflow based on an
+  assumption, execute it through the `nvim` MCP server and inspect the resulting
+  state to establish concrete proof that it works in this configuration.
+  Reading plugin defaults or mapping definitions alone is not verification.
+  If MCP verification is unavailable, explicitly state that the suggestion is
+  unverified and describe the blocker instead of presenting it as working.
 - Use the `nvim` MCP server for interactive plugin checks when available.
   Connect to the intended instance by socket path; multiple editors may be open.
   Inspect state before and after triggering the actual mapping or command.

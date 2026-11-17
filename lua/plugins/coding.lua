@@ -1,5 +1,9 @@
 -- ./lua/plugins/coding.lua
 
+local function delete_yank_entry(prompt_bufnr)
+  require("util.yank_history").delete_selection(prompt_bufnr)
+end
+
 -- Coding: Mini.nvim utilities for coding
 return {
   -- Context-aware comment strings (e.g. JSX, Vue, HTML embedded langs)
@@ -70,7 +74,13 @@ return {
       picker = {
         telescope = {
           mappings = {
+            i = {
+              ["<c-x>"] = delete_yank_entry,
+              ["<c-ч>"] = delete_yank_entry,
+            },
             n = {
+              d = delete_yank_entry,
+              ["в"] = delete_yank_entry,
               y = function(prompt_bufnr)
                 local register = require("yanky.utils").get_default_register()
                 require("yanky.telescope.mapping").set_register(register)(prompt_bufnr)
