@@ -30,6 +30,18 @@ Update this file when:
 
 ## Input Model
 
+- Codex has a global `nvim` MCP server running
+  `/home/konkov/.local/bin/nvim-mcp` (`nvim-mcp==1.1.1`, installed with
+  `uv tool install nvim-mcp==1.1.1`). It discovers native Neovim RPC sockets;
+  no Neovim plugin or fixed shared socket is needed. Use `connect` with the
+  intended socket when multiple instances are running, then inspect state,
+  send mappings/commands, and query diagnostics. Restart Codex if newly
+  registered tools are absent. Reinstall with the command above and register
+  with `codex mcp add nvim -- /home/konkov/.local/bin/nvim-mcp` on a new host.
+  The server exposes editor state rather than pixel screenshots; its
+  `send_keys` starts with Escape, so use raw `vim.api.nvim_input` through
+  `send_command` when verifying mode-sensitive Insert/Terminal mappings.
+
 - Standard Russian ЙЦУКЕН keys work as their US QWERTY equivalents for
   Normal/Visual commands and mappings through `langmap`, including shifted
   letters and punctuation. `Space й й` executes `<leader>qq`; `р/о/л/д`

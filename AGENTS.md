@@ -26,3 +26,15 @@ Start every session here:
 - Treat Java support as heavily customized. Read
   [docs/java/java-workflow.md](/home/konkov/.config/nvim/docs/java/java-workflow.md:1)
   before changing IntelliJ LSP, Java scratch behavior, or `neotest-java` flows.
+
+## Interactive Plugin Checks
+
+- Use the `nvim` MCP server for interactive plugin checks when available.
+  Connect to the intended instance by socket path; multiple editors may be open.
+  Inspect state before and after triggering the actual mapping or command.
+- Prefer disposable editor instances and scratch projects for checks that edit
+  files, run jobs, or alter sessions/preferences. Preserve the user's live work.
+- `send_keys` prepends Escape. For checks that must stay in Insert or Terminal
+  mode, use `send_command` with `lua vim.api.nvim_input(...)` instead.
+- MCP state inspection is not a pixel screenshot or a physical keyboard test.
+  Report which workflows were exercised and any remaining rendering/input gaps.
