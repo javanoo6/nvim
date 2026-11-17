@@ -378,4 +378,4 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 ij_continuation_indent_size = 2
-max_line_length = 120
+max_line_length = 160
