@@ -991,7 +991,11 @@ Update this file when:
 - `git-conflict.nvim` is installed for inline marker resolution in ordinary
   files, including accidentally committed conflict markers. `:GitConflictMarkers`
   and `<leader>GC` search tracked files for committed marker lines and open the
-  results in quickfix.
+  results in quickfix. The scanner reads working-tree contents of tracked files
+  and matches each marker prefix with a separate Lua pattern (Lua patterns do
+  not support regex `|` alternation). Git's NUL-delimited tracked-file list is
+  read with `vim.system` to preserve filename boundaries. Markdown fenced
+  examples are skipped.
 - `git-conflict.nvim` diagnostic suppression is handled in
   [lua/plugins/git.lua](/home/konkov/.config/nvim/lua/plugins/git.lua:1) with
   `vim.diagnostic.enable(false, { bufnr = ... })`, because plugin release 2.1.0

@@ -28,6 +28,7 @@ check-config: check-compatibility
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_scrub.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/session_workspace.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/live_hunks.lua
+	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/conflict_markers.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lazy_bootstrap.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/lazygit_layout.lua
 	$(NVIM_BIN) --headless -u NONE -i NONE -l tests/portability.lua

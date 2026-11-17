@@ -1,6 +1,5 @@
 local M = {}
 
-local marker_pattern = "^(<<<<<<<|=======|>>>>>>>)"
 local ours_pattern = "^<<<<<<<"
 local base_pattern = "^|||||||"
 local separator_pattern = "^======="
@@ -16,11 +15,12 @@ local function git_root()
 end
 
 local function tracked_files(root)
-  local output = vim.fn.system({ "git", "-C", root, "ls-files", "-z" })
-  if vim.v.shell_error ~= 0 then
+  -- vim.fn.system replaces NUL bytes with SOH, losing ls-files -z boundaries.
+  local result = vim.system({ "git", "-C", root, "ls-files", "-z" }):wait()
+  if result.code ~= 0 then
     return nil
   end
-  return vim.split(output, "\0", { plain = true, trimempty = true })
+  return vim.split(result.stdout, "\0", { plain = true, trimempty = true })
 end
 
 local function is_markdown(path)
@@ -41,7 +41,7 @@ local function marker_items_for_file(root, file)
   for index, line in ipairs(lines) do
     if skip_fences and (line:match("^%s*```") or line:match("^%s*~~~")) then
       in_markdown_fence = not in_markdown_fence
-    elseif not in_markdown_fence and line:match(marker_pattern) then
+    elseif not in_markdown_fence and (line:match(ours_pattern) or line:match(separator_pattern) or line:match(theirs_pattern)) then
       table.insert(items, {
         filename = path,
         lnum = index,
