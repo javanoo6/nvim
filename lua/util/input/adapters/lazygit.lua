@@ -1,7 +1,7 @@
 local M = {}
 local installed = false
 
-function M.setup()
+function M.setup(normalizer)
   if installed then
     return
   end
@@ -34,7 +34,7 @@ function M.setup()
     end
     local job = jobstart(command, opts)
     if job > 0 then
-      require("util.russian_layout").setup_terminal(buf, function()
+      require("util.input.adapters.terminal").setup(buf, normalizer, function()
         return not text_input
       end)
     end

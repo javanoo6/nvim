@@ -17,10 +17,10 @@ local function translated(char)
   return vim.fn.maparg(char, "t", false, true).callback()
 end
 local function run()
-  local layout = require("util.lazygit_layout")
-  layout.setup()
+  local input = require("util.input")
+  input.setup_lazygit()
   local wrapped = vim.fn.jobstart
-  layout.setup()
+  input.setup_lazygit()
   equal(vim.fn.jobstart, wrapped, "Repeated setup keeps one wrapper")
   local ordinary = { term = true }
   vim.fn.jobstart({ "zsh" }, ordinary)

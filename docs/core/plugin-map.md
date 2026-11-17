@@ -15,6 +15,8 @@ init.lua
 
 lua/util/init.lua        — shared helpers (map, augroup, toggle, get_root,
                            pick, M.icons) used by keymaps + plugins
+lua/util/input/          — English/Russian layout definitions, key normalizer,
+                           Neovim/which-key/terminal/LazyGit input adapters
 ```
 
 ---

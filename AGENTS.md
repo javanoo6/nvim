@@ -20,8 +20,8 @@ Start every session here:
   `h = left`, `j = down`, `k = up`, `l = right`
 - Every new or changed English-layout keymap must also work on the equivalent
   physical keys in the Russian ЙЦУКЕН layout, including shifted and modified
-  keys. Use the existing `util.russian_layout` translation where it applies;
-  add aliases for plugin input loops or modes it does not cover. Verify both
+  keys. Use the shared `util.input` adapters and normalization where they apply;
+  add aliases for plugin input loops or modes they do not cover. Verify both
   layouts when checking mappings.
 - When a plugin exposes its own `j/k` or `<C-j>/<C-k>` mappings, keep them
   aligned with that model unless there is a strong reason not to.

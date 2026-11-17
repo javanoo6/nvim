@@ -76,7 +76,7 @@ has a check and removal condition; larger workflow limits remain explicit.
 ## Which-key trigger recovery
 
 Russian-layout input also wraps `which-key.state.getchar()` in
-`lua/util/russian_layout.lua`: the popup's `getcharstr()` loop bypasses native
+`lua/util/input/adapters/which_key.lua`: the popup's `getcharstr()` loop bypasses native
 `langmap`. The compatibility suite checks real input for Cyrillic/shifted keys
 and unchanged English input. Remove the wrapper when upstream applies `langmap`
 inside its popup input loop; retain the native layout option.

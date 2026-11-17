@@ -20,7 +20,7 @@ end
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
-require("util.russian_layout").setup()
+require("util.input").setup()
 vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_python3_provider = 0

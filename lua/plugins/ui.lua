@@ -27,7 +27,7 @@ return {
     config = function(_, opts)
       local wk = require("which-key")
       wk.setup(opts)
-      require("util.russian_layout").setup_which_key()
+      require("util.input").setup_which_key()
       require("util.which_key_refresh").setup()
 
       local triggers = require("which-key.triggers")

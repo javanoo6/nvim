@@ -42,12 +42,25 @@ Update this file when:
   `send_keys` starts with Escape, so use raw `vim.api.nvim_input` through
   `send_command` when verifying mode-sensitive Insert/Terminal mappings.
 
+- `util.input` wires layout-neutral input adapters to a shared normalizer.
+  `util.input.layouts` defines the `keys` / `normalize(char)` interface:
+  English returns input unchanged; Russian maps physical ЙЦУКЕН keys to US
+  QWERTY. `util.input.normalizer.new(layout)` compiles plain, Shift, Alt, Ctrl,
+  and Ctrl+Alt aliases, `langmap`, and raw `getcharstr()` normalization without
+  installing mappings or touching plugins. Adapters in `util/input/adapters/`
+  own Neovim modes, which-key input, and terminal/LazyGit integration. Actions
+  and existing English mappings remain independent of layouts. The default
+  normalizer translates Russian input and passes English/unknown keys through;
+  it needs no OS layout detection or runtime layout switching.
+  `tests/input_normalizer.lua` checks both implementations and another injected
+  layout; compatibility and LazyGit checks cover the adapters.
+
 - Standard Russian ЙЦУКЕН keys work as their US QWERTY equivalents for
   Normal/Visual commands and mappings through `langmap`, including shifted
   letters and punctuation. `Space й й` executes `<leader>qq`; `р/о/л/д`
   preserve `h/j/k/l` movement. Inserted text and search/command-line text stay
   Russian. `langremap` is off so mapping output is not translated again.
-  `util.russian_layout` also translates which-key's `state.getchar()` result,
+  `util.input.adapters.which_key` translates which-key's `state.getchar()` result,
   since its popup input loop bypasses native `langmap`.
   Alt, Ctrl, and Ctrl+Alt combinations have recursive Russian-to-US aliases
   in Normal, Visual/Select, Operator-pending, Insert, Command-line, and Terminal
@@ -930,7 +943,8 @@ Update this file when:
   pop action through the existing terminal layout aliases.
   `tests/lazygit_unstash.lua` checks apply/pop, older stash selection, restored
   additions/edits/deletions, pre-existing staging/working edits, and conflicts.
-- `util.lazygit_layout` adds buffer-local Russian ЙЦУКЕН command aliases
+- `util.input.adapters.lazygit` uses the shared terminal adapter to add
+  buffer-local Russian ЙЦУКЕН command aliases
   inside LazyGit's terminal, including uppercase letters and punctuation.
   `о/л` move down/up and `й` quits. Ordinary terminals keep plain Russian input.
   LazyGit's cursor-show/hide output selects text entry versus command input,

@@ -1,5 +1,6 @@
 -- Run make check-compatibility after plugin updates; no installs or servers.
 local repo = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h")
+dofile(repo .. "/tests/input_normalizer.lua")
 local plugin_dir = vim.fn.stdpath("data") .. "/lazy/"
 vim.opt.runtimepath:prepend(repo)
 local plugins = {
@@ -82,7 +83,7 @@ local function run()
 
   -- Actual which-key internals: seed, suspend/reattach, and Diffview refresh.
   vim.g.mapleader = " "
-  require("util.russian_layout").setup()
+  require("util.input").setup()
   local russian_quit = 0
   vim.keymap.set("n", "<leader>qq", function()
     russian_quit = russian_quit + 1
@@ -152,7 +153,7 @@ local function run()
   spec.config(nil, spec.opts)
   local state = require("which-key.state")
   local translated_getchar = state.getchar
-  require("util.russian_layout").setup_which_key()
+  require("util.input").setup_which_key()
   equal(state.getchar, translated_getchar, "Russian which-key wrapper installs once")
   for _, pair in ipairs({
     { "й", "q" },

@@ -1,7 +1,7 @@
 local M = {}
 
 function M.setup()
-  require("util.lazygit_layout").setup()
+  require("util.input").setup_lazygit()
   local nvim_config = vim.fn.stdpath("config")
   vim.env.NVIM_LAZYGIT_OPEN_HELPER = nvim_config .. "/scripts/lazygit-open-in-nvim.sh"
   vim.env.NVIM_LAZYGIT_UNSTASH_HELPER = nvim_config .. "/scripts/lazygit-unstash.sh"
