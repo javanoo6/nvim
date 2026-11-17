@@ -996,6 +996,13 @@ Update this file when:
   not support regex `|` alternation). Git's NUL-delimited tracked-file list is
   read with `vim.system` to preserve filename boundaries. Markdown fenced
   examples are skipped.
+  After jumping, `<leader>GC` opens a marker-derived three-pane merge tab:
+  read-only ours/theirs above, the original editable buffer below.
+  `<leader>Cm` / `:GitConflictMerge` opens this view directly.
+  `<leader>Gq` closes it and keeps unsaved source edits in the original tab.
+  References are snapshots of the marker sides, not historical Git stages;
+  choices use the existing `<leader>Co/Ct/Cb/C0` mappings in the result pane.
+  `:GitConflictMarkers!` remains quickfix-only.
 - `git-conflict.nvim` diagnostic suppression is handled in
   [lua/plugins/git.lua](/home/konkov/.config/nvim/lua/plugins/git.lua:1) with
   `vim.diagnostic.enable(false, { bufnr = ... })`, because plugin release 2.1.0

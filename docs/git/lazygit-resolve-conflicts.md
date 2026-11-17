@@ -97,9 +97,13 @@ or Diffview conflict choices, rather than classic vimdiff copy-hunk mappings.
 
 Committed markers are normal file text; they do not recreate Git's unmerged
 index state. Use `<leader>GC` / `:GitConflictMarkers` to scan tracked files,
-fill quickfix, and jump to the first hit. Examples in fenced Markdown code
+fill quickfix, jump to the first hit, and open a merge tab. Examples in fenced Markdown code
 blocks are skipped. `:GitConflictMarkers!` fills quickfix without jumping.
 
-Resolve with inline choices or manual edits, save, test, stage, and create a
-normal fix commit. Diffview can compare versions, but it cannot reconstruct an
-active merge from marker text alone.
+The merge tab shows read-only ours/theirs snapshots above the original editable
+result buffer. These references come from the marker text, not Git index stages.
+Use `<leader>Co/Ct/Cb/C0` in the result pane to choose ours/theirs/both/neither,
+or edit it manually. `<leader>Cm` / `:GitConflictMerge` opens this view directly
+from any buffer containing complete marker blocks. `<leader>Gq` closes the tab
+and preserves unsaved edits in the original buffer. Save, test, stage, and create
+a normal fix commit. This view does not stage files or continue Git operations.

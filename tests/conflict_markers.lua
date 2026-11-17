@@ -35,6 +35,27 @@ local function run()
   end
   equal(vim.api.nvim_win_get_cursor(0)[1], 2)
   equal(vim.bo.buftype, "")
+  equal(vim.t.conflict_marker_merge, true)
+  equal(#vim.api.nvim_tabpage_list_wins(0), 3)
+  local source = vim.api.nvim_get_current_buf()
+  local sides = {}
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    equal(vim.wo[win].diff, true)
+    local buffer = vim.api.nvim_win_get_buf(win)
+    if buffer ~= source then
+      equal(vim.bo[buffer].modifiable, false)
+      sides[#sides + 1] = table.concat(vim.api.nvim_buf_get_lines(buffer, 0, -1, false), "\n")
+    end
+  end
+  table.sort(sides)
+  equal(sides, { "#!/bin/sh\nours", "#!/bin/sh\ntheirs" })
+  markers.choose("ours")
+  equal(vim.api.nvim_buf_get_lines(source, 0, -1, false), { "#!/bin/sh", "ours" })
+  markers.close_merge()
+  equal(vim.api.nvim_get_current_buf(), source)
+  equal(vim.bo.modified, true)
+  equal(vim.wo.diff, false)
+  equal(vim.fn.readfile(fixture .. "/ci/utils.sh"), conflict)
   vim.cmd.cclose()
   vim.cmd("GitConflictMarkers!")
   equal(vim.bo.buftype, "quickfix")

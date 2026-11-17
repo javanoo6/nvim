@@ -377,20 +377,21 @@ git.lua
 
 **Diffview keymaps** (keymaps.lua):
 
-| Key          | Action                          |
-|--------------|---------------------------------|
-| `<leader>GD` | DiffviewOpen (repo diff)        |
-| `<leader>GF` | File history                    |
-| `<leader>GH` | Repo history                    |
-| `<leader>GL` | Line/range history              |
-| `<leader>Gt` | Open `git mergetool`            |
-| `<leader>GC` | Find committed conflict markers |
-| `<leader>GQ` | Finish `git mergetool`          |
-| `<leader>GA` | Abort `git mergetool`           |
-| `<leader>Gb` | Diff vs branch/ref              |
-| `<leader>Gm` | Diff vs main/master             |
-| `<leader>GM` | Diff vs origin/main             |
-| `<leader>Gq` | Close Diffview                  |
+| Key          | Action                           |
+|--------------|----------------------------------|
+| `<leader>GD` | DiffviewOpen (repo diff)         |
+| `<leader>GF` | File history                     |
+| `<leader>GH` | Repo history                     |
+| `<leader>GL` | Line/range history               |
+| `<leader>Gt` | Open `git mergetool`             |
+| `<leader>GC` | Find markers and open merge view |
+| `<leader>Cm` | Merge current buffer markers     |
+| `<leader>GQ` | Finish `git mergetool`           |
+| `<leader>GA` | Abort `git mergetool`            |
+| `<leader>Gb` | Diff vs branch/ref               |
+| `<leader>Gm` | Diff vs main/master              |
+| `<leader>GM` | Diff vs origin/main              |
+| `<leader>Gq` | Close Git diff/merge view        |
 
 Keep these mappings only in `lua/config/keymaps.lua`. Duplicating the same lhs in a lazy.nvim plugin `keys` list can make lazy.nvim delete the real mapping on
 first use.

@@ -193,6 +193,64 @@ function M.prev()
   vim.api.nvim_win_set_cursor(0, { blocks[#blocks].start, 0 })
 end
 
+function M.open_merge()
+  if vim.t.conflict_marker_merge then
+    return
+  end
+  local lines, blocks = conflict_blocks()
+  if #blocks == 0 then
+    vim.notify("No conflict marker block found", vim.log.levels.WARN)
+    return
+  end
+  local source = vim.api.nvim_get_current_buf()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local function side_buffer(side)
+    local content = vim.deepcopy(lines)
+    for index = #blocks, 1, -1 do
+      local block = blocks[index]
+      for _ = block.start, block.finish do
+        table.remove(content, block.start)
+      end
+      local replacement = replacement_lines(lines, block, side)
+      for offset = #replacement, 1, -1 do
+        table.insert(content, block.start, replacement[offset])
+      end
+    end
+    local buffer = vim.api.nvim_create_buf(false, true)
+    vim.bo[buffer].bufhidden = "wipe"
+    vim.bo[buffer].filetype = vim.bo[source].filetype
+    vim.api.nvim_buf_set_lines(buffer, 0, -1, false, content)
+    vim.bo[buffer].modifiable = false
+    return buffer
+  end
+  local ours, theirs = side_buffer("ours"), side_buffer("theirs")
+  vim.cmd.tabnew()
+  vim.t.conflict_marker_merge = true
+  vim.api.nvim_win_set_buf(0, source)
+  local result_win = vim.api.nvim_get_current_win()
+  vim.cmd("leftabove split")
+  vim.api.nvim_win_set_buf(0, ours)
+  vim.wo.winbar = " Ours (from markers)"
+  vim.cmd.diffthis()
+  vim.cmd("rightbelow vsplit")
+  vim.api.nvim_win_set_buf(0, theirs)
+  vim.wo.winbar = " Theirs (from markers)"
+  vim.cmd.diffthis()
+  vim.api.nvim_set_current_win(result_win)
+  vim.wo.winbar = " Merge result — <leader>Co/Ct/Cb/C0 choose; <leader>Gq close"
+  vim.cmd.diffthis()
+  vim.api.nvim_win_set_cursor(0, cursor)
+end
+
+function M.close_merge()
+  if vim.t.conflict_marker_merge then
+    -- The source remains visible in the original tab, including unsaved edits.
+    vim.cmd.tabclose()
+  else
+    vim.cmd.DiffviewClose()
+  end
+end
+
 function M.find(opts)
   opts = opts or {}
 
@@ -228,12 +286,16 @@ function M.find(opts)
 
   if not opts.list_only then
     pcall(vim.cmd.cfirst)
+    M.open_merge()
   end
 
   vim.notify(("Found %d conflict marker lines"):format(#items))
 end
 
 function M.setup()
+  vim.api.nvim_create_user_command("GitConflictMerge", M.open_merge, {
+    desc = "Open ours/theirs/result panes from current buffer conflict markers",
+  })
   vim.api.nvim_create_user_command("GitConflictMarkers", function(command)
     M.find({ list_only = command.bang })
   end, {
