@@ -356,6 +356,7 @@ git.lua
 | Key                   | Action                                |
 |-----------------------|---------------------------------------|
 | `]h` / `[h`           | Next / prev hunk                      |
+| `]H` / `[H`           | Next / prev staged hunk               |
 | `<leader>Ghs/Ghr`     | Stage / reset hunk                    |
 | `<leader>GhS/GhR`     | Stage / reset buffer                  |
 | `<leader>Ghu`         | Undo stage                            |

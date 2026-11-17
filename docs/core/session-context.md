@@ -954,6 +954,8 @@ Update this file when:
   still calls the removed `vim.diagnostic.disable()` API on Neovim 0.12.
 - Gitsigns hunk commands are intentionally buffer-local and grouped under
   `<leader>Gh*`.
+- `]H` / `[H` navigate next/previous staged hunks in the current buffer using
+  Gitsigns' `target = "staged"`; `]h` / `[h` keep their existing unstaged navigation.
 - Gitsigns uses visible but quiet delete/topdelete signs instead of empty delete
   markers, so removed-line context is visible in the sign column.
 - Live git hunks view is repo-local glue in

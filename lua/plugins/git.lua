@@ -147,9 +147,19 @@ return {
           return "<Ignore>"
         end, { expr = true, desc = "Prev hunk" })
 
+        map("n", "]H", function()
+          gs.nav_hunk("next", { target = "staged" })
+        end, { desc = "Next staged hunk" })
+
+        map("n", "[H", function()
+          gs.nav_hunk("prev", { target = "staged" })
+        end, { desc = "Prev staged hunk" })
+
         wk.add({
           { "[h", desc = "Prev hunk", buffer = bufnr },
           { "]h", desc = "Next hunk", buffer = bufnr },
+          { "[H", desc = "Prev staged hunk", buffer = bufnr },
+          { "]H", desc = "Next staged hunk", buffer = bufnr },
           { "<leader>Gh", group = "hunks", buffer = bufnr, mode = { "n", "v" } },
         })
 

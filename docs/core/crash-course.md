@@ -1264,23 +1264,24 @@ git commit                 →  finalize merge
 
 ### Gitsigns (in-buffer)
 
-| Key           | Action            |
-|---------------|-------------------|
-| `]h` / `[h`   | Next / Prev hunk  |
-| `<leader>Ghs` | Stage hunk        |
-| `<leader>Ghr` | Reset hunk        |
-| `<leader>GhS` | Stage buffer      |
-| `<leader>GhR` | Reset buffer      |
-| `<leader>Ghu` | Undo stage hunk   |
-| `<leader>Ghp` | Preview hunk      |
-| `<leader>Ghb` | Blame line (full) |
-| `<leader>GhB` | Toggle blame      |
-| `<leader>GhF` | Blame file        |
-| `<leader>Ghd` | Diff this         |
-| `<leader>Ghw` | Toggle word diff  |
-| `<leader>Ghl` | Toggle line hl    |
-| `<leader>Ghv` | Toggle deleted    |
-| `ih`          | Text object: hunk |
+| Key           | Action                  |
+|---------------|-------------------------|
+| `]h` / `[h`   | Next / Prev hunk        |
+| `]H` / `[H`   | Next / Prev staged hunk |
+| `<leader>Ghs` | Stage hunk              |
+| `<leader>Ghr` | Reset hunk              |
+| `<leader>GhS` | Stage buffer            |
+| `<leader>GhR` | Reset buffer            |
+| `<leader>Ghu` | Undo stage hunk         |
+| `<leader>Ghp` | Preview hunk            |
+| `<leader>Ghb` | Blame line (full)       |
+| `<leader>GhB` | Toggle blame            |
+| `<leader>GhF` | Blame file              |
+| `<leader>Ghd` | Diff this               |
+| `<leader>Ghw` | Toggle word diff        |
+| `<leader>Ghl` | Toggle line hl          |
+| `<leader>Ghv` | Toggle deleted          |
+| `ih`          | Text object: hunk       |
 
 ---
 
