@@ -21,10 +21,10 @@ fi
 # Write cookie file for the plugin
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/nvim/leetcode"
 mkdir -p "$CACHE_DIR"
-echo "csrftoken=$CSRF; LEETCODE_SESSION=$SESSION" > "$CACHE_DIR/cookie"
+echo "csrftoken=$CSRF; LEETCODE_SESSION=$SESSION" >"$CACHE_DIR/cookie"
 
 # Update private.lua
-cat > "$HOME/.config/nvim/lua/private.lua" << EOF
+cat >"$HOME/.config/nvim/lua/private.lua" <<EOF
 return {
   leetcode = {
     session = "$SESSION",

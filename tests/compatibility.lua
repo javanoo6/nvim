@@ -96,6 +96,42 @@ local function run()
   equal(vim.fn.getline(1), "Приветone", "Russian insert text stays Russian")
   vim.api.nvim_feedkeys(vim.keycode("/Привет<CR>"), "xt", false)
   equal(vim.fn.getreg("/"), "Привет", "Russian search text stays Russian")
+  local modified_hits = {}
+  for _, mode in ipairs({ "n", "i", "x", "c" }) do
+    vim.keymap.set(mode, "<A-a>", function()
+      modified_hits[#modified_hits + 1] = mode
+    end)
+  end
+  for _, keys in ipairs({ "<A-ф>", "i<A-ф><Esc>", "v<A-ф><Esc>", ":<A-ф><C-c>" }) do
+    vim.api.nvim_feedkeys(vim.keycode(keys), "xt", false)
+  end
+  equal(modified_hits, { "n", "i", "x", "c" }, "Russian Alt works across editing modes")
+  for _, keys in ipairs({
+    { "<A-п>", "<A-g>" },
+    { "<C-ы>", "<C-s>" },
+    { "<C-в>", "<C-d>" },
+    { "<C-г>", "<C-u>" },
+    { "<C-р>", "<C-h>" },
+    { "<C-о>", "<C-j>" },
+    { "<C-л>", "<C-k>" },
+    { "<C-д>", "<C-l>" },
+    { "<C-A-о>", "<C-A-j>" },
+    { "<A-Б>", "<A-lt>" },
+  }) do
+    local hits = 0
+    vim.keymap.set("n", keys[2], function()
+      hits = hits + 1
+    end)
+    vim.api.nvim_feedkeys(vim.keycode(keys[1]), "xt", false)
+    equal(hits, 1, keys[1] .. " resolves English mapping installed after setup")
+    vim.keymap.set("n", keys[2], function()
+      hits = hits + 10
+    end, { buffer = true })
+    vim.api.nvim_feedkeys(vim.keycode(keys[1]), "xt", false)
+    equal(hits, 11, keys[1] .. " respects buffer-local English override")
+  end
+  equal(vim.fn.maparg("<A-ф>", "t", false, true).rhs, "<A-a>", "Russian terminal toggle forwards to English key")
+  equal(vim.fn.maparg("<A-с>", "t", false, true).noremap, 0, "Russian terminal hide resolves buffer-local target recursively")
   vim.api.nvim_set_current_buf(b)
   vim.o.timeoutlen = 1
   vim.keymap.set("n", " ", "<Nop>")
@@ -112,7 +148,16 @@ local function run()
   local translated_getchar = state.getchar
   require("util.russian_layout").setup_which_key()
   equal(state.getchar, translated_getchar, "Russian which-key wrapper installs once")
-  for _, pair in ipairs({ { "й", "q" }, { "Й", "Q" }, { "ж", ";" }, { "Ю", ">" }, { "q", "q" }, { " ", " " } }) do
+  for _, pair in ipairs({
+    { "й", "q" },
+    { "Й", "Q" },
+    { "ж", ";" },
+    { "Ю", ">" },
+    { "q", "q" },
+    { " ", " " },
+    { vim.keycode("<A-п>"), vim.keycode("<A-g>") },
+    { vim.keycode("<C-ы>"), vim.keycode("<C-s>") },
+  }) do
     vim.api.nvim_feedkeys(pair[1], "t", false)
     local ok, char = state.getchar()
     equal({ ok, char }, { true, pair[2] }, "which-key translates " .. pair[1])

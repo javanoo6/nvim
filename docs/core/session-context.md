@@ -37,6 +37,13 @@ Update this file when:
   Russian. `langremap` is off so mapping output is not translated again.
   `util.russian_layout` also translates which-key's `state.getchar()` result,
   since its popup input loop bypasses native `langmap`.
+  Alt, Ctrl, and Ctrl+Alt combinations have recursive Russian-to-US aliases
+  in Normal, Visual/Select, Operator-pending, Insert, Command-line, and Terminal
+  modes. For example, `Alt+п` runs `<A-g>` (LazyGit), `Alt+ф` runs `<A-a>`
+  (ToggleTerm), and `Alt+с` runs the terminal-local `<A-c>` hide action.
+  Aliases resolve the current English mapping, including lazy loaders and
+  buffer-local overrides; plain Russian typing stays unchanged. The terminal
+  must deliver the modified key to Neovim rather than intercept it itself.
 
 - ToggleTerm runs Zsh explicitly, independent of Neovim's default shell.
 

@@ -12,7 +12,6 @@ import termios
 import threading
 import time
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -21,7 +20,7 @@ def main():
         socket = str(Path(directory) / "socket")
         init = Path(directory) / "init.lua"
         init.write_text(
-            "vim.opt.rtp:prepend(" + json.dumps(str(ROOT)) + ")\n" + """
+                "vim.opt.rtp:prepend(" + json.dumps(str(ROOT)) + ")\n" + """
 vim.opt.rtp:append(vim.fn.stdpath('data') .. '/lazy/md-render.nvim')
 vim.opt.splitright = true
 vim.opt.scrolloff = 0
@@ -53,14 +52,14 @@ vim.api.nvim_create_autocmd('VimEnter', {once=true, callback=function()
   end)
 end})
 """,
-            encoding="utf-8",
+                encoding="utf-8",
         )
         master, slave = pty.openpty()
         fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 35, 100, 1000, 700))
         process = subprocess.Popen(
-            ["nvim", "--clean", "-u", str(init), "-i", "NONE", "-n", "--listen", socket],
-            stdin=slave, stdout=slave, stderr=slave, cwd=directory,
-            env={**os.environ, "TERM": "xterm-kitty"},
+                ["nvim", "--clean", "-u", str(init), "-i", "NONE", "-n", "--listen", socket],
+                stdin=slave, stdout=slave, stderr=slave, cwd=directory,
+                env={**os.environ, "TERM": "xterm-kitty"},
         )
         os.close(slave)
 
@@ -77,8 +76,8 @@ end})
         def remote(code):
             expression = "luaeval(" + json.dumps("vim.json.encode((function() " + code + " end)())") + ")"
             result = subprocess.run(
-                ["nvim", "--server", socket, "--remote-expr", expression],
-                capture_output=True, text=True, timeout=5, check=True,
+                    ["nvim", "--server", socket, "--remote-expr", expression],
+                    capture_output=True, text=True, timeout=5, check=True,
             )
             return json.loads(result.stdout)
 
@@ -117,8 +116,8 @@ vim.api.nvim_win_call(render,function() vim.cmd('normal! ggzt') end)
 return true
 """)
             wait_for(
-                lambda: remote("return repaints > 0 and table.concat(output):find('a=p',1,true) ~= nil"),
-                "Scrolling back did not restore the image",
+                    lambda: remote("return repaints > 0 and table.concat(output):find('a=p',1,true) ~= nil"),
+                    "Scrolling back did not restore the image",
             )
             print("PASS: combined split scroll clears off-screen images and restores visible images")
         finally:

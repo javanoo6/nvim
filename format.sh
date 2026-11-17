@@ -2,8 +2,8 @@
 set -eu
 
 case "${1:-}" in
-  -h|--help)
-    cat <<'HELP'
+-h | --help)
+  cat <<'HELP'
 Usage: ./format.sh [--] FILE...
 
 Format existing files in place with this repo's Neovim formatter configuration.
@@ -18,16 +18,16 @@ Examples:
 
 Exit codes: 0 success, 1 formatting/setup error, 2 invalid arguments.
 HELP
-    exit 0
-    ;;
+  exit 0
+  ;;
 esac
 
 case "${1:-}" in
-  --) shift ;;
-  -*)
-    printf '%s\n' 'error: Unknown option' 'help: ./format.sh --help; use -- before dash-leading filenames'
-    exit 2
-    ;;
+--) shift ;;
+-*)
+  printf '%s\n' 'error: Unknown option' 'help: ./format.sh --help; use -- before dash-leading filenames'
+  exit 2
+  ;;
 esac
 if [ "$#" -eq 0 ]; then
   printf '%s\n' 'error: No files supplied' 'help: ./format.sh [--] FILE...'

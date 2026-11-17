@@ -4,8 +4,8 @@ set -eu
 file=${1:?missing filename}
 
 case "$file" in
-  /*) path=$file ;;
-  *) path=$(pwd)/$file ;;
+/*) path=$file ;;
+*) path=$(pwd)/$file ;;
 esac
 
 vim_string_literal() {
