@@ -283,7 +283,8 @@ Update this file when:
 - Neo-tree's filesystem tree starts its floating preview automatically after
   the first render of each new tree window. Moving the selection updates the
   preview; `P` toggles it, and `l` focuses it. Turning it off stays effective
-  through redraws until the tree is closed and reopened.
+  through redraws until the tree is closed and reopened. Snacks renders image
+  previews in terminals supporting Kitty graphics, including Kitty.
 - Neo-tree does not auto-follow the current file on buffer switches. In large
   monorepos this keeps the sidebar/root stable while opening buffers; scope
   changes stay explicit via `<leader>e`, `<leader>E`, or `.` inside Neo-tree.

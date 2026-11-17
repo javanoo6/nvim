@@ -327,6 +327,10 @@
     "branch": "main",
     "commit": "01e4fa9347941f5fe6bd0ec2581ffc12d3234d66"
   },
+  "snacks.nvim": {
+    "branch": "main",
+    "commit": "882c996cf28183f4d63640de0b4c02ec886d01f2"
+  },
   "spring-boot.nvim": {
     "branch": "main",
     "commit": "218c0c26c14d99feca778e4d13f5ec3e8b1b60f0"

@@ -279,6 +279,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
+      { "folke/snacks.nvim", opts = {} },
       -- Window picker for choosing which window to open files in
       {
         "s1n7ax/nvim-window-picker",
@@ -528,7 +529,6 @@ return {
               config = {
                 use_float = true,
                 use_snacks_image = true,
-                use_image_nvim = true,
               },
             },
             ["l"] = "focus_preview",
