@@ -99,6 +99,12 @@ Update this file when:
   Without that explicit refresh, the live buffer can stay on the plain
   `<Space> -> <Nop>` placeholder and `<leader>` will not pop up which-key until
   the buffer is re-entered.
+- `util.which_key_refresh` also schedules active-buffer attachment after
+  `which-key.buf.clear()` invalidates triggers (including LSP attach/detach and
+  buffer-read events). Upstream's fallback timer checks its last `BufEnter`
+  buffer, which can be stale after a `noautocmd` switch, leaving the actual
+  current buffer on the leader placeholder indefinitely. Reattachment waits
+  until macro recording finishes; `RecordingLeave` schedules it again.
 - Node, Perl, Python 3, and Ruby remote-plugin providers are intentionally disabled
   because this config does not use provider-backed remote plugins; this keeps
   `:checkhealth` focused on relevant integrations.

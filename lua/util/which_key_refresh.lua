@@ -20,8 +20,36 @@ function M.refresh_current_buffer()
 end
 
 function M.setup()
+  local buf = require("which-key.buf")
+  local function attach_current()
+    vim.schedule(function()
+      if not require("which-key.util").in_macro() then
+        buf.get()
+      end
+    end)
+  end
+
+  if not buf._custom_clear_guard then
+    local clear = buf.clear
+    buf.clear = function(opts)
+      clear(opts)
+      -- Upstream's recovery timer checks the last BufEnter buffer, which
+      -- can differ from the actual current buffer after a noautocmd switch.
+      -- Rebuild after invalidation without depending on that stale pointer.
+      attach_current()
+    end
+    buf._custom_clear_guard = true
+  end
+
+  local group = vim.api.nvim_create_augroup("custom_which_key_refresh", { clear = true })
+  vim.api.nvim_create_autocmd("RecordingLeave", {
+    group = group,
+    desc = "Restore which-key triggers cleared when macro recording started",
+    callback = attach_current,
+  })
+
   vim.api.nvim_create_autocmd("User", {
-    group = vim.api.nvim_create_augroup("custom_which_key_refresh", { clear = true }),
+    group = group,
     pattern = "DiffviewViewClosed",
     desc = "Rebuild which-key triggers after Diffview closes",
     callback = function()

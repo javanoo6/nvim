@@ -83,13 +83,19 @@ inside its popup input loop; retain the native layout option.
 
 - **Owners:** `lua/plugins/ui.lua`, `lua/util/which_key_refresh.lua`.
 - **Dependencies:** `which-key.triggers.suspend/attach/suspended`,
-  `which-key.buf.get/clear`, `mode.buf:valid()`, and `which-key.util.mapmode()`.
+  `which-key.buf.get/clear`, `mode.buf:valid()`, and `which-key.util.mapmode/in_macro()`.
 - **Failure:** leader popups can stop after timeout/cancel or Diffview closes;
   session restoration can precede which-key's first buffer attachment.
+  LSP/read invalidation can also leave the active buffer without triggers when
+  the upstream recovery timer's last `BufEnter` buffer is stale.
 - **Fixes:** same-mode deferred reattachment, explicit startup seeding, and
   rebuilding normal/visual triggers on `DiffviewViewClosed` or `:WhichKeyRefresh`.
+  Cache clearing schedules attachment for the actual current buffer, with
+  `RecordingLeave` restoring attachment deferred during macro recording.
 - **Check:** compatibility suite uses real which-key setup and verifies the leader
-  trigger after seeding, suspension, and a Diffview close event.
+  trigger after seeding, suspension, a Diffview close event, LSP/read invalidation
+  after a silent buffer switch, and macro recording. English/Russian leader
+  actions must still execute after invalidation.
 - **Manual smoke:** open/cancel/timeout the popup, enter/leave Visual mode, restore
   a session, and close a real Diffview tab; leader popups must remain usable.
 - **Remove when:** all of those transitions work without the relevant local fix.

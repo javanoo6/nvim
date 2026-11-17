@@ -192,6 +192,31 @@ local function run()
   vim.api.nvim_feedkeys(" йй", "xt", false)
   equal(russian_quit, 1, "Russian leader sequence through which-key")
 
+  -- Upstream's fallback timer tracks BufEnter rather than the actual current
+  -- buffer. A silent switch leaves it checking a healthy, unrelated buffer
+  -- after an LSP/read event clears the active buffer's trigger cache.
+  local other = buffer()
+  nio.sleep(100)
+  vim.cmd("noautocmd buffer " .. b)
+  for _, event in ipairs({ "LspAttach", "LspDetach", "BufReadPost" }) do
+    vim.api.nvim_exec_autocmds(event, { buffer = b })
+    nio.sleep(100)
+    equal(vim.fn.maparg(" ", "n", false, true).desc, "which-key-trigger", event .. " restores leader despite stale BufEnter tracking")
+    for _, keys in ipairs({ " qq", " йй" }) do
+      local before = russian_quit
+      vim.api.nvim_feedkeys(keys, "xt", false)
+      equal(russian_quit, before + 1, event .. " preserves leader actions for " .. keys)
+    end
+  end
+  vim.api.nvim_feedkeys("qa", "xt", false)
+  nio.sleep(100)
+  equal(vim.fn.reg_recording(), "a", "macro recording starts")
+  equal(vim.fn.maparg(" ", "n", false, true).desc == "which-key-trigger", false, "triggers stay detached during recording")
+  vim.api.nvim_feedkeys("q", "xt", false)
+  nio.sleep(100)
+  equal(vim.fn.maparg(" ", "n", false, true).desc, "which-key-trigger", "recording exit rebuilds active buffer triggers")
+  vim.api.nvim_buf_delete(other, { force = true })
+
   -- Neotest private client layout used by nearest/file, failed and sequential.
   local core_client = require("neotest.client")({})
   for _, name in ipairs({ "get_adapter", "_get_adapter", "get_position", "_update_positions", "get_results", "run_tree" }) do
