@@ -160,6 +160,24 @@ Count behavior for `j` and `k`:
 | `R` (operator/visual)  | Treesitter search                    |
 | `<C-s>` (command mode) | Toggle flash search                  |
 
+### Find a Character (f / F / t / T)
+
+Press the motion, then the target character. `<S-f>` is `F`; `<S-t>` is `T`.
+
+| Keys                  | Action                                              |
+|-----------------------|-----------------------------------------------------|
+| `f{char}` / `F{char}` | Find forward / backward, landing on the character   |
+| `t{char}` / `T{char}` | Find forward / backward, stopping before / after it |
+| `;` / `,`             | Repeat in the original / opposite direction         |
+| `2f,`                 | Jump to the second comma ahead                      |
+
+`dt)` deletes up to the next `)` and keeps it; `df)` includes the `)`.
+These motions also work in Visual mode and after operators such as `c` or `y`.
+Flash highlights matches and allows searching across lines in the current
+window; stock Vim searches only the current line. This works independently of
+the Flash search toggle. See the [navigation cheatsheet](nvim-nav.md) for active
+Flash repeat keys and the full navigation reference.
+
 ### Jump Lists
 
 | Key     | Action       |
