@@ -9,6 +9,26 @@ os:
   open: 'sh "${NVIM_LAZYGIT_OPEN_HELPER:-${XDG_CONFIG_HOME:-$HOME/.config}/${NVIM_APPNAME:-nvim}/scripts/lazygit-open-in-nvim.sh}" {{filename}}'
 
 customCommands:
+  - key: "<space>"
+    context: "stash"
+    description: "Apply stash, leave restored changes unstaged"
+    command: 'sh "${NVIM_LAZYGIT_UNSTASH_HELPER:-${XDG_CONFIG_HOME:-$HOME/.config}/${NVIM_APPNAME:-nvim}/scripts/lazygit-unstash.sh}" apply {{.SelectedStashEntry.Index}}'
+    loadingText: "Applying stash"
+    after:
+      checkForConflicts: true
+
+  - key: "g"
+    context: "stash"
+    description: "Pop stash, leave restored changes unstaged"
+    prompts:
+      - type: "confirm"
+        title: "Pop stash"
+        body: "Apply this stash as unstaged changes and remove it after success?"
+    command: 'sh "${NVIM_LAZYGIT_UNSTASH_HELPER:-${XDG_CONFIG_HOME:-$HOME/.config}/${NVIM_APPNAME:-nvim}/scripts/lazygit-unstash.sh}" pop {{.SelectedStashEntry.Index}}'
+    loadingText: "Popping stash"
+    after:
+      checkForConflicts: true
+
   - key: "X"
     context: "localBranches"
     description: "Delete local branches with gone upstream"

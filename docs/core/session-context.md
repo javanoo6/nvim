@@ -906,6 +906,16 @@ Update this file when:
 - LazyGit is customized via both user config and repo-local
   [lazygit/config.yml](/home/konkov/.config/nvim/lazygit/config.yml:1).
 - LazyGit opens from `<leader>Gg` or the direct alternate shortcut `<A-g>`.
+- In LazyGit's stash panel, `Space` applies and `g` pops via
+  [scripts/lazygit-unstash.sh](/home/konkov/.config/nvim/scripts/lazygit-unstash.sh:1).
+  Successful restores leave restored changes unstaged, including new files;
+  the helper saves the pre-apply index tree and restores it without touching
+  working files, preserving pre-existing staged content. A failed apply keeps
+  Git's conflict/index state and retains the stash. Pop drops the selected stash
+  only after apply and index restoration succeed. Russian `п` uses the same
+  pop action through the existing terminal layout aliases.
+  `tests/lazygit_unstash.lua` checks apply/pop, older stash selection, restored
+  additions/edits/deletions, pre-existing staging/working edits, and conflicts.
 - `util.lazygit_layout` adds buffer-local Russian ЙЦУКЕН command aliases
   inside LazyGit's terminal, including uppercase letters and punctuation.
   `о/л` move down/up and `й` quits. Ordinary terminals keep plain Russian input.
@@ -956,6 +966,8 @@ Update this file when:
   `<leader>Gh*`.
 - `]H` / `[H` navigate next/previous staged hunks in the current buffer using
   Gitsigns' `target = "staged"`; `]h` / `[h` keep their existing unstaged navigation.
+  Explicit buffer-local `ъР` / `хР` aliases forward to the English staged-hunk
+  mappings so direct Russian input works as well as which-key's translated input.
 - Gitsigns uses visible but quiet delete/topdelete signs instead of empty delete
   markers, so removed-line context is visible in the sign column.
 - Live git hunks view is repo-local glue in

@@ -4,6 +4,7 @@ function M.setup()
   require("util.lazygit_layout").setup()
   local nvim_config = vim.fn.stdpath("config")
   vim.env.NVIM_LAZYGIT_OPEN_HELPER = nvim_config .. "/scripts/lazygit-open-in-nvim.sh"
+  vim.env.NVIM_LAZYGIT_UNSTASH_HELPER = nvim_config .. "/scripts/lazygit-unstash.sh"
 
   local paths = {}
   if vim.fn.executable("lazygit") == 1 then

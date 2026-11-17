@@ -155,6 +155,9 @@ return {
           gs.nav_hunk("prev", { target = "staged" })
         end, { desc = "Prev staged hunk" })
 
+        map("n", "ъР", "]H", { remap = true, desc = "which_key_ignore" })
+        map("n", "хР", "[H", { remap = true, desc = "which_key_ignore" })
+
         wk.add({
           { "[h", desc = "Prev hunk", buffer = bufnr },
           { "]h", desc = "Next hunk", buffer = bufnr },

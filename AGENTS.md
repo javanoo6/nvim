@@ -18,6 +18,11 @@ Start every session here:
   If formatting fails, resolve the error or report the blocker before handing off.
 - Preserve the standard Vim direction model:
   `h = left`, `j = down`, `k = up`, `l = right`
+- Every new or changed English-layout keymap must also work on the equivalent
+  physical keys in the Russian ЙЦУКЕН layout, including shifted and modified
+  keys. Use the existing `util.russian_layout` translation where it applies;
+  add aliases for plugin input loops or modes it does not cover. Verify both
+  layouts when checking mappings.
 - When a plugin exposes its own `j/k` or `<C-j>/<C-k>` mappings, keep them
   aligned with that model unless there is a strong reason not to.
 - Prefer updating [docs/core/session-context.md](/home/konkov/.config/nvim/docs/core/session-context.md:1)
