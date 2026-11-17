@@ -107,6 +107,11 @@ local function run()
   end
   equal(modified_hits, { "n", "i", "x", "c" }, "Russian Alt works across editing modes")
   for _, keys in ipairs({
+    { "р", "h" },
+    { "Р", "H" },
+    { "Д", "L" },
+    { "<S-р>", "H" },
+    { "<S-д>", "L" },
     { "<A-п>", "<A-g>" },
     { "<C-ы>", "<C-s>" },
     { "<C-в>", "<C-d>" },
@@ -129,6 +134,7 @@ local function run()
     end, { buffer = true })
     vim.api.nvim_feedkeys(vim.keycode(keys[1]), "xt", false)
     equal(hits, 11, keys[1] .. " respects buffer-local English override")
+    vim.keymap.del("n", keys[2], { buffer = true })
   end
   equal(vim.fn.maparg("<A-ф>", "t", false, true).rhs, "<A-a>", "Russian terminal toggle forwards to English key")
   equal(vim.fn.maparg("<A-с>", "t", false, true).noremap, 0, "Russian terminal hide resolves buffer-local target recursively")
@@ -157,6 +163,12 @@ local function run()
     { " ", " " },
     { vim.keycode("<A-п>"), vim.keycode("<A-g>") },
     { vim.keycode("<C-ы>"), vim.keycode("<C-s>") },
+    { vim.keycode("<C-р>"), vim.keycode("<C-h>") },
+    { vim.keycode("<C-о>"), vim.keycode("<C-j>") },
+    { vim.keycode("<C-л>"), vim.keycode("<C-k>") },
+    { vim.keycode("<C-д>"), vim.keycode("<C-l>") },
+    { vim.keycode("<S-р>"), "H" },
+    { vim.keycode("<S-д>"), "L" },
   }) do
     vim.api.nvim_feedkeys(pair[1], "t", false)
     local ok, char = state.getchar()

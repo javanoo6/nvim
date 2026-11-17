@@ -56,6 +56,14 @@ Update this file when:
   Aliases resolve the current English mapping, including lazy loaders and
   buffer-local overrides; plain Russian typing stays unchanged. The terminal
   must deliver the modified key to Neovim rather than intercept it itself.
+  Normal/Visual/Operator-pending modes also have explicit plain-letter aliases:
+  `langmap` alone can execute the translated native command without invoking
+  its English mapping (notably `Р/Д` versus Bufferline's `H/L`). Explicit
+  Shift events such as `<S-р>/<S-д>` resolve the same mappings. Plain aliases
+  stay out of Insert, Command-line, and Select modes to preserve Russian text.
+  which-key's modified-key lookup uses raw `getcharstr()` UTF-8 rather than
+  feedkeys-escaped bytes; this matters for `<C-р>` / `<S-р>`, since `р`
+  contains Neovim's internal K_SPECIAL byte.
 
 - ToggleTerm runs Zsh explicitly, independent of Neovim's default shell.
 
