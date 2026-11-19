@@ -2,7 +2,7 @@
 
 Sol coordinated three Terra agents. Checks used Neovim 0.12.2 and nvim-mcp
 1.1.1, dedicated MCP servers, real disposable TUI instances, and scratch projects.
-The configured inventory contains 96 plugins; the stale disabled Spring Boot
+T/home/konkov/Desktop/rqc/cloudos/doc/cloudfs_lookup_example.mdhe configured inventory contains 96 plugins; the stale disabled Spring Boot
 lock entry is excluded. Individual observations and incomplete coverage are
 recorded in [the coverage ledger](2026-11-17-nvim-e2e-coverage.json).
 

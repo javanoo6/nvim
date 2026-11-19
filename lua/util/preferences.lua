@@ -26,6 +26,8 @@ local defaults = {
   git_deleted = false,
   oil_hidden = false,
   flash_search = false,
+  mermaid_width = 78,
+  mermaid_height = 25,
 }
 local ready = false
 local git_actions = {}
@@ -196,6 +198,14 @@ function M.setup(opts)
     end
   end)
   register("test_summary_on_run")
+  for _, id in ipairs({ "mermaid_width", "mermaid_height" }) do
+    register(id, function()
+      local mermaid = package.loaded["util.markdown_mermaid"]
+      if mermaid then
+        mermaid.refresh()
+      end
+    end)
+  end
   for id, key in pairs({ session_autosave = "auto_save", session_autorestore = "auto_restore" }) do
     local field = key
     register(id, function(value)

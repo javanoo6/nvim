@@ -13,6 +13,34 @@ return {
     },
     { "<leader>mp", "<cmd>MdRender float<cr>", desc = "Markdown floating preview" },
     { "<leader>md", "<cmd>MdRender demo<cr>", desc = "Markdown render demo" },
+    {
+      "<leader>mmw+",
+      function()
+        require("util.markdown_mermaid").adjust("width", 1)
+      end,
+      desc = "Increase Mermaid width",
+    },
+    {
+      "<leader>mmw-",
+      function()
+        require("util.markdown_mermaid").adjust("width", -1)
+      end,
+      desc = "Decrease Mermaid width",
+    },
+    {
+      "<leader>mmh+",
+      function()
+        require("util.markdown_mermaid").adjust("height", 1)
+      end,
+      desc = "Increase Mermaid height",
+    },
+    {
+      "<leader>mmh-",
+      function()
+        require("util.markdown_mermaid").adjust("height", -1)
+      end,
+      desc = "Decrease Mermaid height",
+    },
   },
   config = function()
     -- Ubuntu may block Puppeteer's downloaded Chrome sandbox. System Chrome
@@ -26,5 +54,6 @@ return {
     -- Keep normal terminal text sizing; scaled headings are experimental.
     require("md-render.text_size").setup({ enabled = false })
     require("util.markdown_images").setup()
+    require("util.markdown_mermaid").setup()
   end,
 }

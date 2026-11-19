@@ -5,12 +5,21 @@ and the rendered document in the current window. Press `<leader>ms` for a
 vertical split with both views; press it again from either side to close the
 rendered preview. Source edits update the preview live.
 
-| Key          | Action                                       |
-|--------------|----------------------------------------------|
-| `<leader>mt` | Toggle source / render in the current window |
-| `<leader>ms` | Toggle a vertical source / render split      |
-| `<leader>mp` | Toggle floating preview                      |
-| `<leader>md` | Open the upstream demo                       |
+| Key                             | Action                                               |
+|---------------------------------|------------------------------------------------------|
+| `<leader>mt`                    | Toggle source / render in the current window         |
+| `<leader>ms`                    | Toggle a vertical source / render split              |
+| `<leader>mp`                    | Toggle floating preview                              |
+| `<leader>md`                    | Open the upstream demo                               |
+| `<leader>mmw+` / `<leader>mmw-` | Increase / decrease Mermaid width limit by 5 columns |
+| `<leader>mmh+` / `<leader>mmh-` | Increase / decrease Mermaid height limit by 5 rows   |
+
+Mermaid size limits are global and saved through `persist-toggle.nvim`: width
+defaults to 78 columns, height to 25 rows. Changes rebuild open previews and
+survive reopening documents and restarting Neovim. Images keep their proportions;
+the other limit, available window width, or original image resolution may constrain
+growth. Widen the preview window or increase both limits when necessary.
+Russian physical-key equivalents are `Space ььц+/-` and `Space ььр+/-`.
 
 ## Mermaid example
 

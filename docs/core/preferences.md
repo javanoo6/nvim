@@ -29,6 +29,8 @@ are declared in `lua/util/preferences.lua`; values survive restarts in
 | `git_linehl`             | false   | `<leader>Ghl`, `:Gitsigns toggle_linehl`              |
 | `git_deleted`            | false   | `<leader>Ghv`, `:Gitsigns toggle_deleted`             |
 | `oil_hidden`             | false   | Oil `g.`                                              |
+| `mermaid_width`          | 78      | `<leader>mmw+` / `<leader>mmw-`                       |
+| `mermaid_height`         | 25      | `<leader>mmh+` / `<leader>mmh-`                       |
 | `flash_search`           | false   | Command-line `<C-s>`                                  |
 
 Use `:PersistToggleInfo` to inspect saved and current values. For example:
@@ -37,6 +39,8 @@ Use `:PersistToggleInfo` to inspect saved and current values. For example:
 PersistToggleSet session_autorestore false
 PersistToggleSet test_summary_on_run false
 PersistToggleReset inline_diagnostics
+PersistToggleSet mermaid_width 120
+PersistToggleReset mermaid_height
 PersistToggleResetAll
 ```
 

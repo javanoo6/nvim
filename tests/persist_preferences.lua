@@ -24,15 +24,21 @@ local function spec(module, name)
 end
 local function run(path, mode)
   preferences.setup({ path = path, notify = false })
+  local function changed(default)
+    if type(default) == "number" then
+      return default + 10
+    end
+    return not default
+  end
   if mode == "seed" then
     for id, default in pairs(toggles.defaults()) do
-      preferences.set(id, not default)
+      preferences.set(id, changed(default))
     end
     return
   end
   -- Saved false must survive getters, plugin setup, and scheduled callbacks.
   for id, default in pairs(toggles.defaults()) do
-    equal(preferences.get(id), not default, "Restored " .. id)
+    equal(preferences.get(id), changed(default), "Restored " .. id)
   end
   equal(vim.diagnostic.is_enabled(), false, "Diagnostics restored off")
   equal(vim.g.disable_autoformat, true, "Formatting restored off")

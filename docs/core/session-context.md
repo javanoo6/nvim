@@ -148,7 +148,7 @@ Update this file when:
 
 - `javanoo6/persist-toggle.nvim` loads before other eager plugins (priority 10000).
   [lua/util/preferences.lua](/home/konkov/.config/nvim/lua/util/preferences.lua:1)
-  owns all 24 registered defaults, their setters, and plugin command bridges.
+  owns all 26 registered defaults, their setters, and plugin command bridges.
   [docs/core/preferences.md](/home/konkov/.config/nvim/docs/core/preferences.md:1)
   lists IDs, controls, startup behavior, and scope.
 - Saved values live at `stdpath("state") .. "/persist-toggle/state.json"`.
@@ -215,6 +215,14 @@ Update this file when:
   this Ubuntu host, while system Chrome works with the sandbox enabled.
   Experimental insert-mode auto-toggle is not
   enabled, and experimental scaled headings are explicitly disabled.
+  `util.markdown_mermaid` implements `<leader>mmw+/-` (5 columns) and
+  `<leader>mmh+/-` (5 rows). Global numeric limits `mermaid_width` (78) and
+  `mermaid_height` (25) are saved through the preference registry and rebuild
+  visible previews immediately; hidden sessions are marked dirty. It scopes
+  dimension/sizing hooks to synchronous `preview.build_content`, identifying
+  Mermaid cache paths so other images and text keep upstream sizing. Images
+  preserve aspect ratio and fit the actual preview window. Check upstream
+  `build_content`, `_sessions`, cache paths, and sizing call order on upgrades.
   `util.markdown_images` clears existing image placements on command-line entry
   and suppresses new placements until command-line exit. It then asks the
   renderer to place images again, preserving transmitted image data. This keeps
