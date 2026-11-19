@@ -41,7 +41,7 @@ Markdown and Mermaid diagrams can be rendered inside Neovim with
 | Key          | Action                                                  |
 |--------------|---------------------------------------------------------|
 | `<leader>mt` | Toggle raw source / rendered view in the current window |
-| `<leader>ms` | Open source and rendered view in a vertical split       |
+| `<leader>ms` | Toggle source and rendered view in a vertical split     |
 | `<leader>mp` | Toggle floating rendered preview                        |
 | `<leader>md` | Open the renderer's built-in demo                       |
 

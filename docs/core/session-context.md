@@ -201,8 +201,12 @@ Update this file when:
   runtime formatter failures exit nonzero and earlier files may already be saved.
 - Markdown preview uses `delphinus/md-render.nvim`, loaded on `:MdRender` or
   `<leader>m` actions. `<leader>mt` swaps source/render in the current window;
-  `<leader>ms` opens a vertical source/render split with live updates and
-  synchronized navigation; `<leader>mp` toggles a floating preview;
+  `<leader>ms` toggles a vertical source/render split with live updates and
+  synchronized navigation. `util.markdown_preview` closes the current document's
+  rendered splits in the current tab from either side, including duplicates;
+  if the source window was closed, it restores the source first. It uses upstream
+  `md_render_state` window variables; check that interface when upgrading.
+  `<leader>mp` toggles a floating preview;
   `<leader>md` opens the upstream demo. Render buffers are read-only and the
   source stays editable. Mermaid diagrams render locally through `mmdc` and
   display through Kitty graphics. On Linux, loading the plugin sets

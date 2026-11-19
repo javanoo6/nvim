@@ -4,7 +4,13 @@ return {
   cmd = "MdRender",
   keys = {
     { "<leader>mt", "<cmd>MdRender toggle<cr>", desc = "Toggle Markdown source/render" },
-    { "<leader>ms", "<cmd>vert MdRender split<cr>", desc = "Markdown source/render split" },
+    {
+      "<leader>ms",
+      function()
+        require("util.markdown_preview").toggle_split()
+      end,
+      desc = "Toggle Markdown source/render split",
+    },
     { "<leader>mp", "<cmd>MdRender float<cr>", desc = "Markdown floating preview" },
     { "<leader>md", "<cmd>MdRender demo<cr>", desc = "Markdown render demo" },
   },

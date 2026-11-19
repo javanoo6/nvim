@@ -514,7 +514,7 @@ editor.lua
 
 `markdown.lua` adds `delphinus/md-render.nvim`, lazy-loaded on `:MdRender` or
 its mappings: `<leader>mt` source/render toggle in the current window,
-`<leader>ms` vertical source/render split, `<leader>mp` floating preview,
+`<leader>ms` vertical source/render split toggle, `<leader>mp` floating preview,
 and `<leader>md` upstream demo. It renders Mermaid images locally using
 `mmdc` and a Kitty graphics compatible terminal. Scaled headings are disabled;
 experimental automatic source/render switching is left off.

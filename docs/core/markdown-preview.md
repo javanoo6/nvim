@@ -2,12 +2,13 @@
 
 Open this file in Neovim and press `<leader>mt` to switch between the raw source
 and the rendered document in the current window. Press `<leader>ms` for a
-vertical split with both views. Source edits update the preview live.
+vertical split with both views; press it again from either side to close the
+rendered preview. Source edits update the preview live.
 
 | Key          | Action                                       |
 |--------------|----------------------------------------------|
 | `<leader>mt` | Toggle source / render in the current window |
-| `<leader>ms` | Open a vertical source / render split        |
+| `<leader>ms` | Toggle a vertical source / render split      |
 | `<leader>mp` | Toggle floating preview                      |
 | `<leader>md` | Open the upstream demo                       |
 
