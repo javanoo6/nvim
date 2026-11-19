@@ -215,8 +215,8 @@ Update this file when:
   this Ubuntu host, while system Chrome works with the sandbox enabled.
   Experimental insert-mode auto-toggle is not
   enabled, and experimental scaled headings are explicitly disabled.
-  `util.markdown_mermaid` implements `<leader>mmw+/-` (5 columns) and
-  `<leader>mmh+/-` (5 rows). Global numeric limits `mermaid_width` (78) and
+  `util.markdown_mermaid` implements `<leader>mmw+/-` (20 columns) and
+  `<leader>mmh+/-` (20 rows). Global numeric limits `mermaid_width` (78) and
   `mermaid_height` (25) are saved through the preference registry and rebuild
   visible previews immediately; hidden sessions are marked dirty. It scopes
   dimension/sizing hooks to synchronous `preview.build_content`, identifying

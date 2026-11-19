@@ -2,8 +2,8 @@
 local M = {}
 local ready = false
 local limits = {
-  width = { id = "mermaid_width", default = 78, step = 5, min = 10, max = 500 },
-  height = { id = "mermaid_height", default = 25, step = 5, min = 5, max = 300 },
+  width = { id = "mermaid_width", default = 78, step = 20, min = 10, max = 500 },
+  height = { id = "mermaid_height", default = 25, step = 20, min = 5, max = 300 },
 }
 
 local function value(axis)

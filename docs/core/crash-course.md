@@ -44,8 +44,8 @@ Markdown and Mermaid diagrams can be rendered inside Neovim with
 | `<leader>ms`                    | Toggle source and rendered view in a vertical split     |
 | `<leader>mp`                    | Toggle floating rendered preview                        |
 | `<leader>md`                    | Open the renderer's built-in demo                       |
-| `<leader>mmw+` / `<leader>mmw-` | Increase / decrease Mermaid width limit by 5 columns    |
-| `<leader>mmh+` / `<leader>mmh-` | Increase / decrease Mermaid height limit by 5 rows      |
+| `<leader>mmw+` / `<leader>mmw-` | Increase / decrease Mermaid width limit by 20 columns   |
+| `<leader>mmh+` / `<leader>mmh-` | Increase / decrease Mermaid height limit by 20 rows     |
 
 The split updates live and synchronizes navigation. Use `<C-h>` / `<C-l>` to
 move between its windows, and `<C-w>c` to close the focused split. Rendered
