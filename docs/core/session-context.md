@@ -983,6 +983,8 @@ Update this file when:
   config so green diff text remains readable while staging hunks from the TUI.
 - LazyGit's float uses scaling factor `1` with no border, filling the editor
   area above the command line. Nested Diffview merge editors inherit that space.
+- LazyGit's left panel column uses 25% of the width (`gui.sidePanelWidth`),
+  leaving 75% for the main diff instead of the upstream one-third/two-thirds split.
 - LazyGit's `o` open-file action is overridden through `os.open` in the
   repo-local config. It runs
   [scripts/lazygit-open-in-nvim.sh](/home/konkov/.config/nvim/scripts/lazygit-open-in-nvim.sh:1),

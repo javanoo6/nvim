@@ -1,4 +1,5 @@
 gui:
+  sidePanelWidth: 0.25
   theme:
     selectedLineBgColor:
       - "#283457"
