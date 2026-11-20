@@ -37,6 +37,12 @@ function M.setup(normalizer)
       require("util.input.adapters.terminal").setup(buf, normalizer, function()
         return not text_input
       end)
+      -- The outer editor must not consume navigation intended for a nested
+      -- merge editor running inside LazyGit's terminal.
+      for _, key in ipairs({ "h", "j", "k", "l" }) do
+        local lhs = "<C-" .. key .. ">"
+        vim.keymap.set("t", lhs, lhs, { buffer = buf, remap = false, desc = "Pass navigation to LazyGit or merge editor" })
+      end
     end
     return job
   end
