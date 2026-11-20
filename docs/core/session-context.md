@@ -981,6 +981,8 @@ Update this file when:
   `b:lazygit_russian_text_input` exposes the detected state for inspection.
 - LazyGit uses an explicit dark selected-line background in the repo-local
   config so green diff text remains readable while staging hunks from the TUI.
+- LazyGit's float uses scaling factor `1` with no border, filling the editor
+  area above the command line. Nested Diffview merge editors inherit that space.
 - LazyGit's `o` open-file action is overridden through `os.open` in the
   repo-local config. It runs
   [scripts/lazygit-open-in-nvim.sh](/home/konkov/.config/nvim/scripts/lazygit-open-in-nvim.sh:1),
